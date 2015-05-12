@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="Alec Nikolas Reiter" />
+        <meta name="copyright" content="Alec Nikolas Reiter" />
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="/theme/slicknav.css">
+        <script src="/theme/jquery.slicknav.min.js"></script>
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+        <script type="text/javascript"
+            src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+        </script>
+        <!--[if lt IE 9]>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.2/html5shiv.js"></script>
+        <![endif]-->
+
+
+<meta name="keywords" content="classes, data model, descriptors, pynads, cool stuff, " />
+        <title>Fun With&nbsp;Descriptors - ballin octo bear
+</title>
+        <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="/theme/css/style.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/theme/css/solarizedlight.css" media="screen">
+        <link rel="shortcut icon" href="/theme/images/favicon.ico" type="image/x-icon" />
+        <link rel="apple-touch-icon" href="/theme/images/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" sizes="57x57" href="/theme/images/apple-touch-icon-57x57.png" />
+        <link rel="apple-touch-icon" sizes="72x72" href="/theme/images/apple-touch-icon-72x72.png" />
+        <link rel="apple-touch-icon" sizes="114x114" href="/theme/images/apple-touch-icon-114x114.png" />
+        <link rel="apple-touch-icon" sizes="144x144" href="/theme/images/apple-touch-icon-144x144.png" />
+        <link rel="icon" href="/theme/images/apple-touch-icon-144x144.png" />
+    </head>
+    <body>
+        <div id="content-sans-footer">
+        <div class="navbar navbar-static-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="/"><span class=site-name>ballin octo bear</span></a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav pull-right top-menu">
+                            <li ><a href="">Home</a></li>
+                            <li ><a href="/categories.html">Categories</a></li>
+                            <li ><a href="/tags.html">Tags</a></li>
+                            <li ><a href="/archives.html">Archives</a></li>
+                            <li><form class="navbar-search" action="/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span1"></div>
+                <div class="span10">
+<article>
+<div class="row-fluid">
+    <header class="page_header span10 offset2">
+    <h1><a href="/fun-with-descriptors"> Fun With&nbsp;Descriptors  </a></h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+
+            <p>Once you understand their purpose and power, playing with descriptors is
+a lot of&nbsp;fun.</p>
+<p>I recently found myself needing to set an instance of a class as a class
+attribute on the class in question. I&#8217;m not crazy, I swear. It&#8217;s for
+pynads&#8217; implementation of Monoids. However, doing&nbsp;this:</p>
+<pre class="code python literal-block">
+<span class="k">class</span> <span class="nc">Thing</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">mempty</span> <span class="o">=</span> <span class="n">Thing</span><span class="p">()</span>
+</pre>
+<pre class="literal-block">
+---------------------------------------------------------------------------
+
+NameError                                 Traceback (most recent call last)
+
+&lt;ipython-input-1-cf5ea63fa573&gt; in &lt;module&gt;()
+----&gt; 1 class Thing(object):
+      2     mempty = Thing()
+
+
+&lt;ipython-input-1-cf5ea63fa573&gt; in Thing()
+      1 class Thing(object):
+----&gt; 2     mempty = Thing()
+
+
+NameError: name 'Thing' is not defined
+</pre>
+<p>Doesn&#8217;t work. Wah wah wah. So my brain began turning, and I first tried&nbsp;this:</p>
+<pre class="code python literal-block">
+<span class="k">class</span> <span class="nc">Thing</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="nd">&#64;classmethod</span>
+    <span class="nd">&#64;property</span>
+    <span class="k">def</span> <span class="nf">mempty</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="p">()</span>
+
+<span class="n">Thing</span><span class="o">.</span><span class="n">mempty</span>
+</pre>
+<pre class="literal-block">
+&lt;bound method type.? of &lt;class '__main__.Thing'&gt;&gt;
+</pre>
+<p>At least that didn&#8217;t blow up&#8230;, what if I swapped&nbsp;them?</p>
+<pre class="code python literal-block">
+<span class="k">class</span> <span class="nc">Thing</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="nd">&#64;property</span>
+    <span class="nd">&#64;classmethod</span>
+    <span class="k">def</span> <span class="nf">mempty</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="p">()</span>
+
+<span class="n">Thing</span><span class="o">.</span><span class="n">mempty</span>
+</pre>
+<pre class="literal-block">
+&lt;property at 0x7fd39c1601d8&gt;
+</pre>
+<p>Well, that didn&#8217;t work either. Hm. I had hoped that composing
+<tt class="docutils literal">classmethod</tt> and <tt class="docutils literal">property</tt> together would work and that Python
+would magically infer what I wanted. However, Python does no such thing,
+unsurprisingly. So, what if I made my <em>own</em> <tt class="docutils literal">classproperty</tt>
+descriptor?</p>
+<pre class="code python literal-block">
+<span class="k">class</span> <span class="nc">classproperty</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">method</span>
+    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="p">(</span><span class="n">cls</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">Thing</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="nd">&#64;classproperty</span>
+    <span class="k">def</span> <span class="nf">mempty</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="p">()</span>
+
+<span class="n">Thing</span><span class="o">.</span><span class="n">mempty</span>
+</pre>
+<pre class="literal-block">
+&lt;__main__.Thing at 0x7fd39c159588&gt;
+</pre>
+<p>It works! Five lines of code plus another three to use it! Yeah! Except
+that three line use was repeated at least three times in pynads. I&#8217;m not
+sure about you, but I hate repeating myself. I&#8217;m gonna make a mistake
+somewhere (and did with List). Mainly because I was caching the instance
+like&nbsp;this:</p>
+<pre class="code python literal-block">
+<span class="k">class</span> <span class="nc">Thing</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">_mempty</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="nd">&#64;classproperty</span>
+    <span class="k">def</span> <span class="nf">mempty</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">cls</span><span class="o">.</span><span class="n">_mempty</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">cls</span><span class="o">.</span><span class="n">_mempty</span> <span class="o">=</span> <span class="n">cls</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">_mempty</span>
+
+<span class="k">assert</span> <span class="n">Thing</span><span class="o">.</span><span class="n">mempty</span> <span class="ow">is</span> <span class="n">Thing</span><span class="o">.</span><span class="n">mempty</span>
+</pre>
+<p>That&#8217;s great, but that&#8217;s also six lines of boilerplate, which is one
+line longer than the implementation. ): After the benadryl wore off and
+I was able to think straight, what if I just moved the boiler plate into
+the&nbsp;descriptor?</p>
+<pre class="code python literal-block">
+<span class="k">class</span> <span class="nc">Instance</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="p">()</span>
+
+<span class="k">class</span> <span class="nc">Thing</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">mempty</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">Thing</span><span class="o">.</span><span class="n">mempty</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">Thing</span><span class="o">.</span><span class="n">mempty</span> <span class="ow">is</span> <span class="n">Thing</span><span class="o">.</span><span class="n">mempty</span><span class="p">)</span>
+</pre>
+<pre class="literal-block">
+&lt;__main__.Thing object at 0x7fd39c166e80&gt;
+False
+</pre>
+<p>Awesome. That&#8217;s a much nicer use of it. The caching can also be moved
+into the descriptor&nbsp;too:</p>
+<pre class="code python literal-block">
+<span class="k">class</span> <span class="nc">Instance</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_inst</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">cls</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inst</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_inst</span> <span class="o">=</span> <span class="n">cls</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inst</span>
+
+<span class="k">class</span> <span class="nc">Thing</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">mempty</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">()</span>
+
+<span class="k">assert</span> <span class="n">Thing</span><span class="o">.</span><span class="n">mempty</span> <span class="ow">is</span> <span class="n">Thing</span><span class="o">.</span><span class="n">mempty</span>
+</pre>
+<p>And, if needed, a specific instance can be created and&nbsp;cached:</p>
+<pre class="code python literal-block">
+<span class="k">class</span> <span class="nc">Instance</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_inst</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">cls</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inst</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_inst</span> <span class="o">=</span> <span class="n">cls</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inst</span>
+
+<span class="k">class</span> <span class="nc">Thing</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">mempty</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">hello</span><span class="o">=</span><span class="s">'world'</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hello</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">hello</span><span class="p">)</span>
+
+<span class="n">Thing</span><span class="o">.</span><span class="n">mempty</span>
+</pre>
+<pre class="literal-block">
+world
+</pre>
+<pre class="literal-block">
+&lt;__main__.Thing at 0x7fd39c1f5e10&gt;
+</pre>
+<p>And to show it&#8217;s&nbsp;cached:</p>
+<pre class="code python literal-block">
+<span class="n">Thing</span><span class="o">.</span><span class="n">mempty</span>
+</pre>
+<pre class="literal-block">
+&lt;__main__.Thing at 0x7fd39c1f5e10&gt;
+</pre>
+<p>Ta-da! Setting an instance of a class on the class as a class attribute
+&#8212; a sentence that is no less confusing to read now than&nbsp;before.</p>
+
+            <aside>
+            <nav>
+            <ul class="articles_timeline">
+ 
+                <li class="previous_article">« <a href="/crazy-ideas-and-i" title="Previous: Crazy Ideas and&nbsp;I">Crazy Ideas and&nbsp;I</a></li>
+ 
+                <li class="next_article"><a href="/pep-484-and-me" title="Next: <span class="caps">PEP</span> 484 and&nbsp;Me"><span class="caps">PEP</span> 484 and&nbsp;Me</a> »</li>
+            </ul>
+            </nav>
+            </aside>
+        </div>
+        <section>
+        <div class="span2" style="float:right;font-size:0.9em;">
+ 
+            <h4>Published</h4>
+            <time pubdate="pubdate" datetime="2015-04-22T00:00:00-04:00">Apr 22, 2015</time>
+            <h4>Category</h4>
+            <a class="category-link" href="/categories.html#cool-stuff-ref">cool stuff</a> 
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article"> 
+                <li><a href="/tags.html#classes-ref">classes
+                    <span>1</span>
+</a></li>
+                <li><a href="/tags.html#data-model-ref">data model
+                    <span>1</span>
+</a></li>
+                <li><a href="/tags.html#descriptors-ref">descriptors
+                    <span>1</span>
+</a></li>
+                <li><a href="/tags.html#pynads-ref">pynads
+                    <span>2</span>
+</a></li>
+            </ul>
+
+        </div>
+        </section>
+    </div>
+    </article>
+                </div>
+                <div class="span1"></div>
+            </div>
+        </div>
+    </div>
+<footer>
+<div id="footer">
+    <ul class="footer-content">
+        <li class="elegant-license">MIT</li>
+        <li class="elegant-power">Powered by <a href="http://getpelican.com/" title="Pelican Home Page">Pelican</a>. Theme: <a href="http://oncrashreboot.com/pelican-elegant" title="Theme Elegant Home Page">Elegant</a> by <a href="http://oncrashreboot.com" title="Talha Mansoor Home Page">Talha Mansoor</a></li>
+    </ul>
+</div>
+</footer>            <script src="http://code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+    </body>
+</html>

@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="Alec Nikolas Reiter" />
+        <meta name="copyright" content="Alec Nikolas Reiter" />
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="/theme/slicknav.css">
+        <script src="/theme/jquery.slicknav.min.js"></script>
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+        <script type="text/javascript"
+            src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+        </script>
+        <!--[if lt IE 9]>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.2/html5shiv.js"></script>
+        <![endif]-->
+
+
+<meta name="keywords" content="flask, sqlalchemy, marshmallow, api, tutorials, " />
+        <title>Quotly: Building a simple <span class="caps">JSON</span> <span class="caps">API</span> with Flask, Marshmallow and&nbsp;SQLAlchemy - ballin octo bear
+</title>
+        <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="/theme/css/style.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/theme/css/solarizedlight.css" media="screen">
+        <link rel="shortcut icon" href="/theme/images/favicon.ico" type="image/x-icon" />
+        <link rel="apple-touch-icon" href="/theme/images/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" sizes="57x57" href="/theme/images/apple-touch-icon-57x57.png" />
+        <link rel="apple-touch-icon" sizes="72x72" href="/theme/images/apple-touch-icon-72x72.png" />
+        <link rel="apple-touch-icon" sizes="114x114" href="/theme/images/apple-touch-icon-114x114.png" />
+        <link rel="apple-touch-icon" sizes="144x144" href="/theme/images/apple-touch-icon-144x144.png" />
+        <link rel="icon" href="/theme/images/apple-touch-icon-144x144.png" />
+    </head>
+    <body>
+        <div id="content-sans-footer">
+        <div class="navbar navbar-static-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="/"><span class=site-name>ballin octo bear</span></a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav pull-right top-menu">
+                            <li ><a href="">Home</a></li>
+                            <li ><a href="/categories.html">Categories</a></li>
+                            <li ><a href="/tags.html">Tags</a></li>
+                            <li ><a href="/archives.html">Archives</a></li>
+                            <li><form class="navbar-search" action="/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span1"></div>
+                <div class="span10">
+<article>
+<div class="row-fluid">
+    <header class="page_header span10 offset2">
+    <h1><a href="/quotly-building-a-simple-json-api-with-flask-marshmallow-and-sqlalchemy"> Quotly: Building a simple <span class="caps">JSON</span> <span class="caps">API</span> with Flask, Marshmallow and&nbsp;SQLAlchemy  </a></h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+
+            <p>My love of Flask is well known. It&#8217;s a great microframework that puts
+you in control of the pieces needed in your webapp. It comes with
+templating, requests, responses, cookies, sessions, routing and&#8230;
+really, that&#8217;s it. Routes can be built by decorating functions or by
+inheriting from <tt class="docutils literal">flask.views.View</tt> or <tt class="docutils literal">flask.views.MethodView</tt>
+depending on your&nbsp;needs.</p>
+<p>Something I&#8217;ve explored in the past is building a simple RESTful service
+using Flask and SQLAlchemy. However, that blog post fell into the trap
+of &quot;Look at all this code!&quot; that happens to me regretfully often. D:
+However, I&#8217;d like revisit the idea and explore the topic a little more
+in&nbsp;depth.</p>
+<p>I will forewarn, that this post is still pretty code heavy. If that&#8217;s
+the sort of thing that makes your eyes glaze over, you may want to go to
+<a class="reference external" href="https://www.reddit.com/r/pitbulls">/r/pitbulls</a>&nbsp;instead.</p>
+<div class="section" id="quotly-cheeky-movie-quotes-for-web-2-0">
+<h2>Quotly: Cheeky Movie Quotes for Web&nbsp;2.0</h2>
+<p>Okay, lame. But it&#8217;s not another <span class="caps">TODO</span> list, though not much better. But
+by the end, hopefully we&#8217;ll feel comfortable with Flask,
+Flask-SQLAlchemy, Marshmallow (12/10 serializer library) and a little
+bit of Flask-Restful (though, it&#8217;s going to be used as a base that we&#8217;re
+going to&nbsp;modify).</p>
+<p>This post was written with Python 3.4, but it should work with at least
+2.7 and 3.3. I&#8217;m not sure about others and I&#8217;m too lazy to add the
+deadsnakes <span class="caps">PPA</span> right now.&nbsp;D:</p>
+<p>You can follow along with vim or PyCharm or whatever. The full
+application is at the bottom of the post as well if you&#8217;d rather peek&nbsp;now.</p>
+<p>If you are following along, I recommend making two files: <tt class="docutils literal">app.py</tt> and
+<tt class="docutils literal">run.py</tt>. <tt class="docutils literal">app.py</tt> is where we&#8217;ll obviously be building Quotly. The
+<tt class="docutils literal">run.py</tt> will simply run the debug server on the side, just set that
+one up to look like&nbsp;this:</p>
+<pre class="code python literal-block">
+<span class="kn">from</span> <span class="nn">app</span> <span class="kn">import</span> <span class="n">app</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="nb">reload</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre>
+<div class="section" id="step-zero-needed-packages">
+<h3>Step Zero: Needed&nbsp;packages</h3>
+<p>Instead of installing packages along every step, let&#8217;s just get all that
+mess out the way&nbsp;now&#8230;</p>
+<pre class="literal-block">
+pip install --user -U marshmallow --pre
+pip install --user -U flask-sqlalchemy flask-restful
+</pre>
+<p>That&#8217;ll install everything you need to follow along here. A note about
+that Marshmallow install: This installs a pre-release version of
+Marshmallow, which we&#8217;ll need to take advantage of some cool stuff
+that&#8217;s coming in Marshmallow. If you&#8217;re also wanting to use
+Flask-Marshmallow (perhaps to avoid writing your own hyperlink
+serializer), install it <em>afterwards</em> to avoid getting a potentially
+older&nbsp;version.</p>
+</div>
+<div class="section" id="step-one-considering-our-data">
+<h3>Step One: Considering Our&nbsp;Data</h3>
+<p>First, let&#8217;s consider what our data looks like. We have quotes. People
+say quotes. And that&#8217;s really about it. We could use a list of
+dictionaries for this, but since we&#8217;ll eventually involve SQLAlchemy
+which returns objects, lets use namedtuple&nbsp;instead.</p>
+<pre class="code python literal-block">
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+
+<span class="c"># basic quote object</span>
+<span class="c"># can also use to represent many with [Quote(person..., quote=...)[,...]]</span>
+<span class="n">Quote</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s">'Quote'</span><span class="p">,</span> <span class="p">[</span><span class="s">'person'</span><span class="p">,</span> <span class="s">'quote'</span><span class="p">])</span>
+
+<span class="c"># Let's prepopulate an example quote list</span>
+<span class="n">quotes</span> <span class="o">=</span> <span class="p">[</span><span class="n">Quote</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">q</span> <span class="ow">in</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s">&quot;Herbert West&quot;</span><span class="p">,</span> <span class="s">&quot;I was busy pushing bodies around as you well know &quot;</span>
+         <span class="s">&quot;and what would a note say, Dan? 'Cat dead, details later'?&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s">&quot;Jack Burton&quot;</span><span class="p">,</span> <span class="s">&quot;You remember what ol' Jack Burton always says at a time like that: &quot;</span>
+         <span class="s">&quot;'Have ya paid your dues, Jack?' 'Yessir, the check is in the mail.'&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s">&quot;Igor&quot;</span><span class="p">,</span> <span class="s">&quot;Well, why isn't it Froaderick Fronkensteen?&quot;</span><span class="p">)</span>
+<span class="p">]]</span>
+</pre>
+<p>I wouldn&#8217;t blame you if you took a break to track down one of these
+movies and turned it on the&nbsp;background.</p>
+<pre class="code python literal-block">
+<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="n">Image</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s">&quot;http://i.imgur.com/9VeIbMZ.gif&quot;</span><span class="p">)</span>
+</pre>
+<img src="http://i.imgur.com/9VeIbMZ.gif"/></div>
+<div class="section" id="step-two-serializing-to-json">
+<h3>Step Two: Serializing to <span class="caps">JSON</span></h3>
+<p>Assumuing you&#8217;ve not been distracted, let&#8217;s see about taking these quote
+objects and turning them into <span class="caps">JSON</span>.</p>
+<pre class="code python literal-block">
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">quotes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+</pre>
+<pre class="literal-block">
+[
+  &quot;Herbert West&quot;,
+  &quot;I was busy pushing bodies around as you well know and what would a note say, Dan? 'Cat dead, details later'?&quot;
+]
+</pre>
+<p>&#8230;um&#8230;er&#8230;That&#8217;s not what we really wanted. Since <span class="caps">JSON</span> has no
+notation of tuples, let alone namedtuples, Python helpfully transforms
+them into <span class="caps">JSON</span>&#8217;s nearest relation: lists. However, we&#8217;d probably find it
+nicer to have key-value pairs pop out the otherside. Of course, we could
+<em>just</em> use a dictionary, or write a <tt class="docutils literal">namedtuple_to_dict</tt> function
+that&#8217;ll do it&nbsp;ourselves:</p>
+<pre class="code python literal-block">
+<span class="n">namedtuple_to_dict</span> <span class="o">=</span> <span class="nb">vars</span>
+<span class="k">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">namedtuple_to_dict</span><span class="p">(</span><span class="n">quotes</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+</pre>
+<pre class="literal-block">
+{
+  &quot;person&quot;: &quot;Herbert West&quot;,
+  &quot;quote&quot;: &quot;I was busy pushing bodies around as you well know and what would a note say, Dan? 'Cat dead, details later'?&quot;
+}
+</pre>
+<p>But that&#8217;s no fun and will only work one level deep. What happens when
+we need to serialize objects that have <em>other objects</em> living inside
+them? That won&#8217;t work. I&#8217;ve seen lots of ways to handle this, most of
+them are just variations on a <tt class="docutils literal">__json__</tt> method on every object and
+subclassing <tt class="docutils literal">json.JSONEncoder</tt> to just invoke that when it encounters
+something it can&#8217;t serialize. Plus, it still wouldn&#8217;t work for
+namedtuple since it <em>can</em> be serialized to a&nbsp;list.</p>
+<pre class="code python literal-block">
+<span class="n">Image</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s">&quot;http://i.imgur.com/mWU6lP6.gif&quot;</span><span class="p">)</span>
+</pre>
+<img src="http://i.imgur.com/mWU6lP6.gif"/><p>Rather than hacking some function or a mixin together and making the
+object responsible for knowing how to transform itself into a
+dictionary, why not use a robust, well tested object serializer library?
+No, not pickle &#8212; pickles are unsafe and too vinegary for me. My sweet
+tooth is craving&nbsp;Marshmallows.</p>
+<pre class="code python literal-block">
+<span class="kn">from</span> <span class="nn">marshmallow</span> <span class="kn">import</span> <span class="n">Schema</span><span class="p">,</span> <span class="n">pprint</span>
+<span class="kn">from</span> <span class="nn">marshmallow.fields</span> <span class="kn">import</span> <span class="n">String</span>
+
+<span class="k">class</span> <span class="nc">QuoteSchema</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+    <span class="n">person</span> <span class="o">=</span> <span class="n">String</span><span class="p">()</span>
+    <span class="n">quote</span> <span class="o">=</span> <span class="n">String</span><span class="p">()</span>
+
+<span class="n">pprint</span><span class="p">(</span><span class="n">QuoteSchema</span><span class="p">()</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">quotes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</pre>
+<pre class="literal-block">
+{'person': 'Herbert West',
+ 'quote': 'I was busy pushing bodies around as you well know and what would '
+          &quot;a note say, Dan? 'Cat dead, details later'?&quot;}
+</pre>
+<p>&#8230;wait, is really that easy? Five lines, including the imports? It
+seems like it shouldn&#8217;t be, but it is. Actually it can even be&nbsp;easier:</p>
+<pre class="code python literal-block">
+<span class="k">class</span> <span class="nc">QuoteSchema</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">additional</span> <span class="o">=</span> <span class="p">(</span><span class="s">'person'</span><span class="p">,</span> <span class="s">'quote'</span><span class="p">)</span>
+
+<span class="n">pprint</span><span class="p">(</span><span class="n">QuoteSchema</span><span class="p">()</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">quotes</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</pre>
+<pre class="literal-block">
+{'person': 'Jack Burton',
+ 'quote': &quot;You remember what ol' Jack Burton always says at a time like &quot;
+          &quot;that: 'Have ya paid your dues, Jack?' 'Yessir, the check is in &quot;
+          &quot;the mail.'&quot;}
+</pre>
+<p>Marshmallow is smart enough to know how to serialize built-in types
+without us saying, &quot;This is a string.&quot; Which is fantastic. We can take
+that schema and <tt class="docutils literal">json.dumps</tt> and produce what we actually&nbsp;wanted:</p>
+<pre class="code python literal-block">
+<span class="k">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">QuoteSchema</span><span class="p">()</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">quotes</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+</pre>
+<pre class="literal-block">
+{
+  &quot;quote&quot;: &quot;Well, why isn't it Froaderick Fronkensteen?&quot;,
+  &quot;person&quot;: &quot;Igor&quot;
+}
+</pre>
+<p>And unlike many other solutions, Marshmallow will also allow us to
+serialize a collection of objects as&nbsp;well:</p>
+<pre class="code python literal-block">
+<span class="n">pprint</span><span class="p">(</span><span class="n">QuoteSchema</span><span class="p">(</span><span class="n">many</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">quotes</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</pre>
+<pre class="literal-block">
+[{'person': 'Herbert West',
+  'quote': 'I was busy pushing bodies around as you well know and what '
+           &quot;would a note say, Dan? 'Cat dead, details later'?&quot;},
+ {'person': 'Jack Burton',
+  'quote': &quot;You remember what ol' Jack Burton always says at a time like &quot;
+           &quot;that: 'Have ya paid your dues, Jack?' 'Yessir, the check is in &quot;
+           &quot;the mail.'&quot;},
+ {'person': 'Igor', 'quote': &quot;Well, why isn't it Froaderick Fronkensteen?&quot;}]
+</pre>
+<p>While this <em>is</em> valid <span class="caps">JSON</span> (a root object can be either an object <em>or</em>
+an array), Flask will only allow objects at the root level to prevent
+<a class="reference external" href="http://haacked.com/archive/2009/06/25/json-hijacking.aspx/">stuff like
+this</a>.
+However, asking a schema to create a dictionary if it serializes a
+collection isn&#8217;t hard to do at&nbsp;all:</p>
+<pre class="code python literal-block">
+<span class="kn">from</span> <span class="nn">marshmallow</span> <span class="kn">import</span> <span class="n">post_dump</span>
+
+<span class="k">class</span> <span class="nc">QuoteSchema</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">additional</span> <span class="o">=</span> <span class="p">(</span><span class="s">'person'</span><span class="p">,</span> <span class="s">'quote'</span><span class="p">)</span>
+
+    <span class="nd">&#64;post_dump</span><span class="p">(</span><span class="n">raw</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrap_if_many</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">many</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s">'quotes'</span><span class="p">:</span> <span class="n">data</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">data</span>
+
+<span class="n">pprint</span><span class="p">(</span><span class="n">QuoteSchema</span><span class="p">(</span><span class="n">many</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">quotes</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</pre>
+<pre class="literal-block">
+{'quotes': [{'person': 'Herbert West',
+             'quote': 'I was busy pushing bodies around as you well know '
+                      &quot;and what would a note say, Dan? 'Cat dead, details &quot;
+                      &quot;later'?&quot;},
+            {'person': 'Jack Burton',
+             'quote': &quot;You remember what ol' Jack Burton always says at a &quot;
+                      &quot;time like that: 'Have ya paid your dues, Jack?' &quot;
+                      &quot;'Yessir, the check is in the mail.'&quot;},
+            {'person': 'Igor',
+             'quote': &quot;Well, why isn't it Froaderick Fronkensteen?&quot;}]}
+</pre>
+<pre class="code python literal-block">
+<span class="n">Image</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s">&quot;http://i.imgur.com/BUtt2Jd.gif&quot;</span><span class="p">)</span>
+</pre>
+<img src="http://i.imgur.com/BUtt2Jd.gif"/></div>
+<div class="section" id="step-three-briefly-flask">
+<h3>Step Three: Briefly&nbsp;Flask</h3>
+<p>Now that the Quote objects can be correctly serialized to <span class="caps">JSON</span>, feeding
+it from Flask is easy&nbsp;peasy.</p>
+<pre class="code python literal-block">
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">jsonify</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="s">'notebooks'</span><span class="p">)</span>
+<span class="c"># reuse the same QuoteSchema instance rather than creating new with each request</span>
+<span class="n">QuoteSerializer</span> <span class="o">=</span> <span class="n">QuoteSchema</span><span class="p">()</span>
+
+<span class="nd">&#64;app.route</span><span class="p">(</span><span class="s">'/quote/&lt;int:id&gt;'</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">single_quote</span><span class="p">(</span><span class="n">idx</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">quotes</span><span class="p">):</span>
+        <span class="c"># flask allows return a tuple of data, status code, headers (dict)</span>
+        <span class="c"># status code is 200 by default</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s">'error'</span><span class="p">:</span> <span class="s">'quote out of range'</span><span class="p">},</span> <span class="mi">400</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">QuoteSerializer</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">quote</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span><span class="o">.</span><span class="n">data</span>
+    <span class="k">return</span> <span class="n">data</span>
+</pre>
+</div>
+<div class="section" id="step-four-deserialization">
+<h3>Step Four:&nbsp;Deserialization</h3>
+<p>However, only getting a quote is pretty simple stuff. What if we wanted
+to create new Quote objects from <span class="caps">JSON</span>? This is pretty easy to do by hand
+with Flask&#8217;s <tt class="docutils literal">request</tt> object (note: the <tt class="docutils literal">request.get_json</tt> method
+is currently the recommended method for plucking <span class="caps">JSON</span> out of the request
+rather than using the <tt class="docutils literal">request.json</tt> attribute):</p>
+<pre class="code python literal-block">
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">request</span>
+
+<span class="nd">&#64;app.route</span><span class="p">(</span><span class="s">'/quote/'</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">'POST'</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">make_new_quote</span><span class="p">():</span>
+    <span class="c"># get_json returns dict or None on failure</span>
+    <span class="n">json</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">json</span> <span class="ow">and</span> <span class="s">'quote'</span> <span class="ow">in</span> <span class="n">json</span><span class="p">:</span>
+        <span class="n">quotes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Quote</span><span class="p">(</span><span class="n">person</span><span class="o">=</span><span class="n">json</span><span class="p">[</span><span class="s">'person'</span><span class="p">],</span> <span class="n">quote</span><span class="o">=</span><span class="n">json</span><span class="p">[</span><span class="s">'quote'</span><span class="p">]))</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">{</span><span class="s">'success'</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> <span class="s">'msg'</span><span class="p">:</span> <span class="s">'Added quote.'</span><span class="p">}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">{</span><span class="s">'success'</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span> <span class="s">'msg'</span><span class="p">:</span> <span class="s">'must specify quote in JSON request'</span><span class="p">},</span> <span class="mi">400</span>
+    <span class="k">return</span> <span class="n">msg</span>
+</pre>
+<p>However, if we&#8217;re deserializing complex objects, say a tracklist that
+has an attribute that holds track objects which reference artist
+objects. Pretty soon manually deserializing an object becomes
+quite&#8230;messy. However, there is a better way. Marshmallow not only
+serializes objects, but will also handle deserialization if we give it a
+little bit of&nbsp;help:</p>
+<pre class="code python literal-block">
+<span class="k">class</span> <span class="nc">QuoteSchema</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">additional</span> <span class="o">=</span> <span class="p">(</span><span class="s">'person'</span><span class="p">,</span> <span class="s">'quote'</span><span class="p">)</span>
+
+    <span class="nd">&#64;post_dump</span><span class="p">(</span><span class="n">raw</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrap_if_many</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">many</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s">'quotes'</span><span class="p">:</span> <span class="n">data</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">data</span>
+
+    <span class="k">def</span> <span class="nf">make_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="s">'person'</span> <span class="ow">in</span> <span class="n">data</span> <span class="ow">and</span> <span class="s">'quote'</span> <span class="ow">in</span> <span class="n">data</span><span class="p">,</span> <span class="s">&quot;Must specify person and quote in request&quot;</span>
+        <span class="k">return</span> <span class="n">Quote</span><span class="p">(</span><span class="n">person</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'person'</span><span class="p">],</span> <span class="n">quote</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'quote'</span><span class="p">])</span>
+
+<span class="n">QuoteSchema</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">({</span><span class="s">&quot;person&quot;</span><span class="p">:</span> <span class="s">&quot;Ash&quot;</span><span class="p">,</span> <span class="s">&quot;quote&quot;</span><span class="p">:</span> <span class="s">&quot;Good. Bad. I'm the guy with the gun.&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">data</span>
+</pre>
+<pre class="literal-block">
+Quote(person='Ash', quote=&quot;Good. Bad. I'm the guy with the gun.&quot;)
+</pre>
+<p>Just the opposite of what we had before. Dictionary in, Object out. We
+can also deserialize a collection as&nbsp;well:</p>
+<pre class="code python literal-block">
+<span class="n">QuoteSchema</span><span class="p">(</span><span class="n">many</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span><span class="o">.</span><span class="n">load</span><span class="p">([</span>
+        <span class="p">{</span><span class="s">'person'</span><span class="p">:</span><span class="s">'Ash'</span><span class="p">,</span> <span class="s">'quote'</span><span class="p">:</span><span class="s">&quot;Good. Bad. I'm the guy with the gun.&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s">'person'</span><span class="p">:</span> <span class="s">'Shaun'</span><span class="p">,</span> <span class="s">'quote'</span><span class="p">:</span> <span class="s">&quot;You've got red on you.&quot;</span><span class="p">}</span>
+<span class="p">])</span><span class="o">.</span><span class="n">data</span>
+</pre>
+<pre class="literal-block">
+[Quote(person='Ash', quote=&quot;Good. Bad. I'm the guy with the gun.&quot;),
+ Quote(person='Shaun', quote=&quot;You've got red on you.&quot;)]
+</pre>
+<p>Hopefully the advantage of using Marshmallow for even sending and
+receiving simple <span class="caps">JSON</span> objects is apparent. With 11 lines we can take an
+object and cast it to a dictionary and we can take a dictionary with
+certain keys and build an object with it. Sure, we&#8217;re just serializing
+and deserializing a namedtuple&#8230;&quot;But that&#8217;s how it always begins. Very&nbsp;small.&quot;</p>
+<pre class="code python literal-block">
+<span class="n">Image</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s">&quot;http://i.imgur.com/zvv3ymL.gif&quot;</span><span class="p">)</span>
+</pre>
+<img src="http://i.imgur.com/zvv3ymL.gif"/></div>
+<div class="section" id="step-five-routing-with-flask-restful">
+<h3>Step Five: Routing with&nbsp;Flask-Restful</h3>
+<p><a class="reference external" href="https://flask-restful.readthedocs.org/en/0.3.2/">Flask-Restful</a> is a
+great library that builds on top of Flask&#8217;s MethodView and makes it
+pretty easy to support multiple <span class="caps">API</span> styles (<span class="caps">XML</span>, <span class="caps">CSV</span>, <span class="caps">JSON</span>, etc). It
+ships with <span class="caps">JSON</span> serialization by default, leaving the others up to the
+user to implement. There&#8217;s a bunch of other features as well, but I&#8217;m
+only to tread on the incredibly useful routing mechanism in place&nbsp;here.</p>
+<p>All we need to do to hook into this is to inherit from
+<tt class="docutils literal">flask_restful.Resource</tt> and return dictionaries from our methods.
+Dictionaries like the ones produced by Marshmallow. Changing the routing
+from vanilla Flask routing to class based is a little weird at first,
+but it quickly becomes very&nbsp;intuitive.</p>
+<p>And, since the methods for deserialization are in place, let&#8217;s also
+handle accepting <span class="caps">JSON</span> and appending quotes to our little&nbsp;list.</p>
+<pre class="code python literal-block">
+<span class="kn">from</span> <span class="nn">flask.ext.restful</span> <span class="kn">import</span> <span class="n">Resource</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">request</span>
+
+<span class="k">class</span> <span class="nc">SingleQuote</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">idx</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">quotes</span><span class="p">):</span>
+            <span class="c"># flask-restful also allows data, status code, header tuples</span>
+            <span class="k">return</span> <span class="n">QuoteSerializer</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">quotes</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span><span class="o">.</span><span class="n">data</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s">'error'</span><span class="p">:</span> <span class="s">'quote index out of range'</span><span class="p">},</span> <span class="mi">400</span>
+
+<span class="k">class</span> <span class="nc">ListQuote</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">QuoteSerializer</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">quotes</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
+
+    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">json</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">json</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s">&quot;success&quot;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span> <span class="s">&quot;msg&quot;</span><span class="p">:</span> <span class="s">&quot;malformed request&quot;</span><span class="p">},</span> <span class="mi">400</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="s">'quote'</span> <span class="ow">in</span> <span class="n">json</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s">&quot;success&quot;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span> <span class="s">&quot;msg&quot;</span><span class="p">:</span> <span class="s">&quot;must specify quote in request&quot;</span><span class="p">},</span> <span class="mi">400</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># remember QuoteSchema.make_object causes an assert</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">q</span> <span class="o">=</span> <span class="n">QuoteSerializer</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">request</span><span class="p">[</span><span class="s">'json'</span><span class="p">])</span><span class="o">.</span><span class="n">data</span>
+            <span class="k">except</span> <span class="ne">AssertionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">{</span><span class="s">'success'</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span> <span class="s">'msg'</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)},</span> <span class="mi">400</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">quotes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+                <span class="k">return</span> <span class="p">{</span><span class="s">&quot;success&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> <span class="s">&quot;msg&quot;</span><span class="p">:</span> <span class="s">&quot;Quote added.&quot;</span><span class="p">}</span>
+</pre>
+<p>And then we simply register these resources on an <span class="caps">API</span> object that&#8217;s
+hooked up to our&nbsp;application:</p>
+<pre class="code python literal-block">
+<span class="kn">from</span> <span class="nn">flask.ext.restful</span> <span class="kn">import</span> <span class="n">Api</span>
+
+<span class="n">api</span> <span class="o">=</span> <span class="n">Api</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+<span class="n">api</span><span class="o">.</span><span class="n">register_resource</span><span class="p">(</span><span class="n">SingleQuote</span><span class="p">,</span> <span class="s">'/quote/&lt;int:id&gt;'</span><span class="p">)</span>
+<span class="n">api</span><span class="o">.</span><span class="n">register_resource</span><span class="p">(</span><span class="n">ListQuote</span><span class="p">,</span> <span class="s">'/quotes'</span><span class="p">)</span>
+</pre>
+</div>
+<div class="section" id="step-six-persistence-with-sqla">
+<h3>Step Six: Persistence with <span class="caps">SQLA</span></h3>
+<p>This is great and all, but these quotes will only last as long as the
+session runs. If we need to restart, we lose it all except for the
+preloaded quotes. To achieve real persistence, we should shake up with a
+database. SQLite is a good choice for this, plus bindings come native
+with&nbsp;Python.</p>
+<pre class="code python literal-block">
+<span class="kn">from</span> <span class="nn">flask.ext.sqlalchemy</span> <span class="kn">import</span> <span class="n">SQLAlchemy</span>
+
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">'SQLALCHEMY_DATABASE_URI'</span><span class="p">]</span> <span class="o">=</span> <span class="s">'sqlite:///quotes.db'</span>
+
+<span class="n">db</span> <span class="o">=</span> <span class="n">SQLAlchemy</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">Quote</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">person</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">(</span><span class="mi">50</span><span class="p">))</span>
+    <span class="n">quote</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">UnicodeText</span><span class="p">)</span>
+</pre>
+<p>Our schema doesn&#8217;t change at all. Marshmallow doesn&#8217;t know or care if
+we&#8217;re passing a namedtuple or a <span class="caps">SQLA</span> model, just that it has the correct
+attributes. This is great because we can write many quick tests with
+something like <tt class="docutils literal">namedtuple</tt> to verify our schema behaves correctly and
+then just a few integration tests with the&nbsp;models.</p>
+<pre class="code python literal-block">
+<span class="n">Image</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s">&quot;http://i.imgur.com/mudwVxd.gif&quot;</span><span class="p">)</span>
+</pre>
+<img src="http://i.imgur.com/mudwVxd.gif"/><p>However, our resource end points do need to change some, though. Since
+we&#8217;re dealing with <span class="caps">SQLA</span> models now and not just simple lists. The
+changes are&nbsp;trivial:</p>
+<pre class="code python literal-block">
+<span class="k">class</span> <span class="nc">SingleQuote</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">idx</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Quote</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{</span><span class="s">'error'</span><span class="p">:</span> <span class="s">'quote does not exist'</span><span class="p">}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s">'error'</span><span class="p">:</span> <span class="s">'must specify quote id'</span><span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">ListQuote</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">QuoteSerializer</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">quotes</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
+
+    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">json</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">json</span><span class="p">:</span> <span class="c"># get_json will return a dict or None</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s">&quot;success&quot;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span> <span class="s">&quot;msg&quot;</span><span class="p">:</span> <span class="s">&quot;malformed request&quot;</span><span class="p">},</span> <span class="mi">400</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="s">'quote'</span> <span class="ow">in</span> <span class="n">json</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s">&quot;success&quot;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span> <span class="s">&quot;msg&quot;</span><span class="p">:</span> <span class="s">&quot;must specify quote in request&quot;</span><span class="p">},</span> <span class="mi">400</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">q</span> <span class="o">=</span> <span class="n">QuoteSerializer</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">request</span><span class="p">[</span><span class="s">'json'</span><span class="p">])</span><span class="o">.</span><span class="n">data</span>
+            <span class="k">except</span> <span class="ne">AssertionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">{</span><span class="s">'success'</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span> <span class="s">'msg'</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)},</span> <span class="mi">400</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+                <span class="k">return</span> <span class="p">{</span><span class="s">&quot;success&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> <span class="s">&quot;msg&quot;</span><span class="p">:</span> <span class="s">&quot;Quote added.&quot;</span><span class="p">}</span>
+</pre>
+<p>Just two simple changes to go from list to <span class="caps">SQLA</span> models. Be sure to run
+<tt class="docutils literal">db.create_all()</tt> somewhere before and load up initial quotes and
+Quotly is up and running, ready to send and receive cheeky movie quotes
+for&nbsp;everyone.</p>
+</div>
+<div class="section" id="parting-thoughts">
+<h3>Parting&nbsp;Thoughts</h3>
+<p>While this was more of a &quot;hit the ground running&quot; guide to building a
+simple <span class="caps">REST</span> <span class="caps">API</span> with Flask and its little ecosystem, I hope it&#8217;s been
+enlightening. I&#8217;ve included the whole application in <a class="reference external" href="https://gist.github.com/justanr/60f34a300ff4535c95fc">this
+gist</a> for
+reference. If you see a bug or have questions, hit me up on twitter
+([&#64;just_anr](<a class="reference external" href="https://twitter.com/just_anr">https://twitter.com/just_anr</a>)) or on github
+(<a class="reference external" href="https://github.com/justanr">justanr</a>).</p>
+</div>
+</div>
+
+            <aside>
+            <nav>
+            <ul class="articles_timeline">
+ 
+                <li class="previous_article">« <a href="/i-wrote-a-monad-tutorial-for-some-reason" title="Previous: I wrote a monad tutorial for some&nbsp;reason&#8230;">I wrote a monad tutorial for some&nbsp;reason&#8230;</a></li>
+            </ul>
+            </nav>
+            </aside>
+        </div>
+        <section>
+        <div class="span2" style="float:right;font-size:0.9em;">
+ 
+            <h4>Published</h4>
+            <time pubdate="pubdate" datetime="2015-05-10T00:00:00-04:00">May 10, 2015</time>
+            <h4>Category</h4>
+            <a class="category-link" href="/categories.html#tutorials-ref">tutorials</a> 
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article"> 
+                <li><a href="/tags.html#api-ref">api
+                    <span>1</span>
+</a></li>
+                <li><a href="/tags.html#flask-ref">flask
+                    <span>1</span>
+</a></li>
+                <li><a href="/tags.html#marshmallow-ref">marshmallow
+                    <span>1</span>
+</a></li>
+                <li><a href="/tags.html#sqlalchemy-ref">sqlalchemy
+                    <span>1</span>
+</a></li>
+            </ul>
+
+        </div>
+        </section>
+    </div>
+    </article>
+                </div>
+                <div class="span1"></div>
+            </div>
+        </div>
+    </div>
+<footer>
+<div id="footer">
+    <ul class="footer-content">
+        <li class="elegant-license">MIT</li>
+        <li class="elegant-power">Powered by <a href="http://getpelican.com/" title="Pelican Home Page">Pelican</a>. Theme: <a href="http://oncrashreboot.com/pelican-elegant" title="Theme Elegant Home Page">Elegant</a> by <a href="http://oncrashreboot.com" title="Talha Mansoor Home Page">Talha Mansoor</a></li>
+    </ul>
+</div>
+</footer>            <script src="http://code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+    </body>
+</html>
