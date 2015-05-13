@@ -395,7 +395,7 @@ classes will&nbsp;work.</p>
 <span class="k">print</span><span class="p">(</span><span class="s">&quot;Dummy  Cache: &quot;</span><span class="p">,</span> <span class="n">Dummy</span><span class="o">.</span><span class="n">cache</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
-Master Cache:  {&lt;class '__main__.Frob'&gt;: {((1,), None): Frob(1)}, &lt;class '__main__.Dummy'&gt;: {(None, None): Dummy}}
+Master Cache:  {&lt;class '__main__.Dummy'&gt;: {(None, None): Dummy}, &lt;class '__main__.Frob'&gt;: {((1,), None): Frob(1)}}
 Frob   Cache:  {((1,), None): Frob(1)}
 Dummy  Cache:  {(None, None): Dummy}
 </pre>
@@ -408,7 +408,7 @@ How about if we reset the cache for&nbsp;Frob?</p>
 <span class="k">print</span><span class="p">(</span><span class="s">&quot;Dummy  Cache: &quot;</span><span class="p">,</span> <span class="n">Dummy</span><span class="o">.</span><span class="n">cache</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
-Master Cache:  {&lt;class '__main__.Frob'&gt;: {}, &lt;class '__main__.Dummy'&gt;: {(None, None): Dummy}}
+Master Cache:  {&lt;class '__main__.Dummy'&gt;: {(None, None): Dummy}, &lt;class '__main__.Frob'&gt;: {}}
 Frob   Cache:  {}
 Dummy  Cache:  {(None, None): Dummy}
 </pre>
@@ -432,9 +432,27 @@ metaclasses are declared (at least in Python&nbsp;3):</p>
 <span class="k">print</span><span class="p">(</span><span class="n">KeywordTest</span><span class="o">.</span><span class="n">cache</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
-OrderedDict([('(1, 2, 3){}', &lt;__main__.KeywordTest object at 0x7fc36db29908&gt;), ('(4, 5, 6){}', &lt;__main__.KeywordTest object at 0x7fc36db295f8&gt;)])
+OrderedDict([('(1, 2, 3){}', &lt;__main__.KeywordTest object at 0x7fcdb018f358&gt;), ('(4, 5, 6){}', &lt;__main__.KeywordTest object at 0x7fcdb018f908&gt;)])
 </pre>
 <p>Now we have a cache that keeps order of when it&#8217;s values were&nbsp;created.</p>
+<p>Something curious about this setup is that instances of the memoized
+class <em>can&#8217;t</em> access the&nbsp;cache.</p>
+<pre class="code python literal-block">
+<span class="n">f</span><span class="o">.</span><span class="n">cache</span>
+</pre>
+<pre class="literal-block">
+---------------------------------------------------------------------------
+
+AttributeError                            Traceback (most recent call last)
+
+&lt;ipython-input-18-e5f688beb613&gt; in &lt;module&gt;()
+----&gt; 1 f.cache
+
+
+AttributeError: 'Frob' object has no attribute 'cache'
+</pre>
+<p>Which is very handy considering we probably don&#8217;t want instances
+accidentally mucking about and overwriting the&nbsp;cache.</p>
 </div>
 </div>
 <div class="section" id="currying-and-memoization-metaclass">
@@ -466,7 +484,7 @@ want to curry <em>then</em> memoize, we simply do&nbsp;this:</p>
 <span class="k">print</span><span class="p">(</span><span class="n">CMTester</span><span class="o">.</span><span class="n">cache</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
-{((1, 2, 3), None): &lt;__main__.CMTester object at 0x7fc36dabb080&gt;}
+{((1, 2, 3), None): &lt;__main__.CMTester object at 0x7fcdb011c438&gt;}
 </pre>
 <p>What about taking advantage of Memoized keyword&nbsp;arguments?</p>
 <pre class="code python literal-block">
@@ -479,7 +497,7 @@ want to curry <em>then</em> memoize, we simply do&nbsp;this:</p>
 <span class="k">print</span><span class="p">(</span><span class="n">CMKeywordTest</span><span class="o">.</span><span class="n">cache</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
-OrderedDict([('(1, 2, 3){}', &lt;__main__.CMKeywordTest object at 0x7fc36dabb5f8&gt;), ('(4, 5, 6){}', &lt;__main__.CMKeywordTest object at 0x7fc36dabb6d8&gt;)])
+OrderedDict([('(1, 2, 3){}', &lt;__main__.CMKeywordTest object at 0x7fcdb018fdd8&gt;), ('(4, 5, 6){}', &lt;__main__.CMKeywordTest object at 0x7fcdb018fd68&gt;)])
 </pre>
 <p>Now, if we had swapped Memoized and Curryable around in the <span class="caps">MRO</span>, we&#8217;d
 get compeletly different&nbsp;behavior:</p>
@@ -496,7 +514,7 @@ get compeletly different&nbsp;behavior:</p>
 <span class="k">print</span><span class="p">(</span><span class="n">MCTest</span><span class="o">.</span><span class="n">cache</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
-{(None, frozenset({('name', 'default frob')})): &lt;function MCTest at 0x7fc36db1dd08&gt;}
+{(None, frozenset({('name', 'default frob')})): &lt;function MCTest at 0x7fcdb01836a8&gt;}
 </pre>
 <p>In this case, we&#8217;re memoizing just what&#8217;s partially applied rather than
 the actual instance. In this particular case, it&#8217;s probably undesired
