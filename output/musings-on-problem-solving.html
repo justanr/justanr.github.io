@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="Alec Nikolas Reiter" />
+        <meta name="copyright" content="Alec Nikolas Reiter" />
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="/theme/slicknav.css">
+        <script src="/theme/jquery.slicknav.min.js"></script>
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+        <script type="text/javascript"
+            src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+        </script>
+        <!--[if lt IE 9]>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.2/html5shiv.js"></script>
+        <![endif]-->
+
+
+<meta name="keywords" content="python, tips and tricks, " />
+        <title>Musings on Problem&nbsp;Solving - from alec.thoughts import *
+</title>
+        <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="http://justanr.github.io/theme/css/style.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="http://justanr.github.io/theme/css/solarizedlight.css" media="screen">
+        <link rel="shortcut icon" href="http://justanr.github.io/theme/images/favicon.ico" type="image/x-icon" />
+        <link rel="apple-touch-icon" href="http://justanr.github.io/theme/images/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" sizes="57x57" href="http://justanr.github.io/theme/images/apple-touch-icon-57x57.png" />
+        <link rel="apple-touch-icon" sizes="72x72" href="http://justanr.github.io/theme/images/apple-touch-icon-72x72.png" />
+        <link rel="apple-touch-icon" sizes="114x114" href="http://justanr.github.io/theme/images/apple-touch-icon-114x114.png" />
+        <link rel="apple-touch-icon" sizes="144x144" href="http://justanr.github.io/theme/images/apple-touch-icon-144x144.png" />
+        <link rel="icon" href="http://justanr.github.io/theme/images/apple-touch-icon-144x144.png" />
+    </head>
+    <body>
+        <div id="content-sans-footer">
+        <div class="navbar navbar-static-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="http://justanr.github.io/"><span class=site-name>from alec.thoughts import *</span></a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav pull-right top-menu">
+                            <li ><a href="http://justanr.github.io">Home</a></li>
+                            <li ><a href="http://justanr.github.io/categories.html">Categories</a></li>
+                            <li ><a href="http://justanr.github.io/tags.html">Tags</a></li>
+                            <li ><a href="http://justanr.github.io/archives.html">Archives</a></li>
+                            <li><form class="navbar-search" action="http://justanr.github.io/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span1"></div>
+                <div class="span10">
+<article>
+<div class="row-fluid">
+    <header class="page_header span10 offset2">
+    <h1><a href="http://justanr.github.io/musings-on-problem-solving"> Musings on Problem&nbsp;Solving  </a></h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+
+            <p>I just started reading a book on algorithms and data structures in
+Python. I&#8217;ve also commited myself to reading every chapter, taking notes
+and doing every exercise at the end of each chapter (okay, Chapter 1 is
+all &quot;This is Python, this is the syntax, here&#8217;s how you loop&#8230;&quot; so I
+skimmed it) except for the ones I can&#8217;t reasonably fit in a single
+IPython Notebook cell (I&#8217;m not trying shove a calculator into a
+notebook) or are just plain boring (&quot;Print a statement 100 times!&quot; &#8212;
+seriously, this is an&nbsp;exercise).</p>
+<p>Most of the problems are okay, made me think some. Some are ones I&#8217;ve
+done before. Others made me think about how to decompose the problem
+into smaller, more managable bits. And I&#8217;d like to share my process on
+one in&nbsp;particular.</p>
+<div class="section" id="our-task">
+<h2>Our&nbsp;Task</h2>
+<p>To paraphrase the exercise: We want to accept three integer inputs and
+determine if either <tt class="docutils literal">a = f(b,c)</tt> or <tt class="docutils literal">f(a,b) = c</tt>, where f is some
+mathematical function (maybe addition, modulo but log and pow are
+candidates as well). Right now, if you feel this is a complex challenge,
+I want you attempt to code it and come back and see how your code and my
+code differs. If you get stuck, don&#8217;t feel bad and come along for the&nbsp;ride.</p>
+</div>
+<div class="section" id="the-steps">
+<h2>The&nbsp;Steps</h2>
+<p>The first thing I like to try to do is break a problem down into steps.
+If a step is ambigous, I try to decompose the step into smaller bits.
+Eventually, I have kinda procedural&nbsp;pseudo-code.</p>
+<ol class="arabic simple">
+<li>Collect&nbsp;Operations</li>
+<li>Collect&nbsp;Integers</li>
+<li>Map inputs to&nbsp;operations</li>
+<li>Check if at least one operation returned&nbsp;true</li>
+<li>Put the whole thing&nbsp;together.</li>
+</ol>
+<p>To me, those are pretty clear cut, atomic steps. Sure, they&#8217;re composed
+of smaller steps internally, but they represent a single unit of work
+each function of the program needs to do. Step 5 is usually implied, but
+I find it&#8217;s nice to list&nbsp;anyways.</p>
+<div class="section" id="step-1-collect-operations">
+<h3>Step 1: Collect&nbsp;Operations</h3>
+<p>We&#8217;ll just make a list of all the operations we want to check against.
+Since Python has first class functions (meaning functions can be treated
+like data), this is <em>really</em> easy. We&#8217;ll also make a simple root
+function for calculating things like cubic roots as&nbsp;well.</p>
+<pre class="code python literal-block">
+<span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">add</span><span class="p">,</span> <span class="n">sub</span><span class="p">,</span> <span class="n">mul</span><span class="p">,</span> <span class="n">mod</span><span class="p">,</span> <span class="n">truediv</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">log</span>
+
+<span class="c"># roots are just fractional exponentials when you get down to it</span>
+<span class="c"># ...or maybe exponentials are fractional roots...</span>
+<span class="k">def</span> <span class="nf">root</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">power</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">base</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">power</span><span class="p">)</span>
+
+<span class="n">operations</span> <span class="o">=</span> <span class="p">[</span><span class="n">add</span><span class="p">,</span> <span class="n">sub</span><span class="p">,</span> <span class="n">mul</span><span class="p">,</span> <span class="n">mod</span><span class="p">,</span> <span class="n">truediv</span><span class="p">,</span> <span class="n">log</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="nb">pow</span><span class="p">]</span>
+</pre>
+<p>Super simple. Now, let&#8217;s move&nbsp;on.</p>
+</div>
+<div class="section" id="step-3-map-inputs-to-operations">
+<h3>Step 3: Map Inputs To&nbsp;Operations</h3>
+<p>&quot;Alec,&quot; you say, &quot;You skipped a step!&quot; And I did. Because I/O is nasty
+and I&#8217;d like to do it last. For now, let&#8217;s assume the integers we
+collected are 1, 2 and&nbsp;3.</p>
+<pre class="code python literal-block">
+<span class="n">integers</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+</pre>
+<p>For this step we need to make our operation to a potential output.
+Basically: <tt class="docutils literal">f(a, b) == c</tt>. Again, this is easy. Even if we decide to
+check if <tt class="docutils literal">a == f(b,c)</tt> in the same step. Like I said before, Python&#8217;s
+functions can be treated just like data and this includes passing them
+as arguments to other&nbsp;functions.</p>
+<pre class="code python literal-block">
+<span class="k">def</span> <span class="nf">either_side_true</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">==</span> <span class="n">op</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="ow">or</span> <span class="n">op</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span> <span class="o">==</span> <span class="n">c</span>
+</pre>
+</div>
+<div class="section" id="step-4-determine-if-any-check-returned-true">
+<h3>Step 4: Determine if any check returned&nbsp;True</h3>
+<p>There&#8217;s many ways we could do this. But the key here is the word <tt class="docutils literal">any</tt>
+&#8212; which happens to be a Python built-in function. What <tt class="docutils literal">any</tt> does is
+accept an iterable of values and checks if at least one of them is True.
+There&#8217;s also its sibling <tt class="docutils literal">all</tt> which checks that none of the values
+are False. What&#8217;s really nice about <tt class="docutils literal">any</tt> and <tt class="docutils literal">all</tt> is they allow
+collapsing a bunch of <tt class="docutils literal">and</tt>/<tt class="docutils literal">or</tt> groupings in an <tt class="docutils literal">if</tt> statement
+into a single&nbsp;expression.</p>
+<p>Say you wanted to check if any variable in a given group was equal to
+something. You might do (ignoring that you&#8217;d actually have a list and do
+<tt class="docutils literal">if 1 in list_of_vars:</tt>)&#8230;</p>
+<pre class="code python literal-block">
+<span class="n">a</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">b</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">c</span> <span class="o">=</span> <span class="mi">5</span>
+
+<span class="k">if</span> <span class="n">a</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">b</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">c</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;We've got a winner!&quot;</span><span class="p">)</span>
+</pre>
+<pre class="literal-block">
+We've got a winner!
+</pre>
+<p>&#8230;but with <tt class="docutils literal">any</tt> we can simply do&nbsp;this&#8230;</p>
+<pre class="code python literal-block">
+<span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">v</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="p">[</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">]):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;I said We've got a winner!&quot;</span><span class="p">)</span>
+</pre>
+<pre class="literal-block">
+I said We've got a winner!
+</pre>
+<p>Of course, the true power of <tt class="docutils literal">any</tt> and <tt class="docutils literal">all</tt> comes when you combine
+them with generators, which will allow you to lazily compute your check.
+These aren&#8217;t a catch all, sometimes you want to store the output of a
+check or you already have a list built, in which case <tt class="docutils literal">x in my_list</tt>
+<em>is</em> superior, but these should be tools you consider from time to&nbsp;time.</p>
+<p>Now, we want to check if <tt class="docutils literal">any</tt> of our operations returns True if
+<tt class="docutils literal">a == f(c,b)</tt> or <tt class="docutils literal">c == f(a,b)</tt>.</p>
+<pre class="code python literal-block">
+<span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">either_side_true</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="o">*</span><span class="n">integers</span><span class="p">)</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">operations</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Heck yeah at least one did.&quot;</span><span class="p">)</span>
+</pre>
+<pre class="literal-block">
+Heck yeah at least one did.
+</pre>
+<p>Alternatively, we could store that as a separate function if we needed
+to fiddle with it more, but for this case, I feel that&#8217;s&nbsp;overkill.</p>
+</div>
+<div class="section" id="step-2-collect-integers">
+<h3>Step 2: Collect&nbsp;Integers</h3>
+<p>Okay, now we&#8217;ll worry about actually grabbing some input from the user.
+We need to collect three integers, probably using <span class="caps">STDIN</span>. But they could
+come from a file, a database or anywhere. But let&#8217;s focus on just
+grabbing them from <span class="caps">STDIN</span>.</p>
+<pre class="code python literal-block">
+<span class="k">def</span> <span class="nf">collect_ints_from_stdin</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+    <span class="n">ints</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">ints</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s">&quot;Please type an integer: &quot;</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ints</span>
+</pre>
+<p>Normally, I&#8217;d wince at a while loop used to build a fixed length list,
+but we have to trouble with users doing something like trying to enter
+the number <tt class="docutils literal">a</tt> (well&#8230;you <em>could</em> use hex&#8230;but who does that?).
+Since we&#8217;re just passing on the error, our list of integers could end up&nbsp;short!</p>
+<p>You might also notice that I&#8217;ve used <tt class="docutils literal">try/else</tt>. I am of the opinion
+that a <tt class="docutils literal">try</tt> block should be isolated to <em>just</em> the code that could
+raise an exception. <tt class="docutils literal">except</tt> handles cleaning up the exception. And
+then there&#8217;s <tt class="docutils literal">else</tt> which allows us to run code on the condition we
+didn&#8217;t encounter a problem. Mentally, if you replace
+<tt class="docutils literal">except ValueError</tt> with <tt class="docutils literal">if catch(ValueError)</tt> where <tt class="docutils literal">catch</tt> is
+some magic framehack or something, it begins to make sense. I&#8217;ll also
+note, for completion&#8217;s sake that there&#8217;s also an optional <tt class="docutils literal">finally</tt>
+clause which lets us run code regardless of an exception occuring. But
+the full <tt class="docutils literal">try/except/else/finally</tt> concept is for another&nbsp;time.</p>
+</div>
+<div class="section" id="step-5-put-it-altogther">
+<h3>Step 5: Put it&nbsp;altogther</h3>
+<p>Finally, we&#8217;ll take these individual components and piece them together
+into a cohesive&nbsp;answer.</p>
+<pre class="code python literal-block">
+<span class="k">def</span> <span class="nf">answer</span><span class="p">(</span><span class="n">operations</span><span class="p">,</span> <span class="n">num_ints</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">collector</span><span class="o">=</span><span class="n">collect_ints_from_stdin</span><span class="p">):</span>
+    <span class="n">ints</span> <span class="o">=</span> <span class="n">collector</span><span class="p">(</span><span class="n">num_ints</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">either_side_true</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="o">*</span><span class="n">ints</span><span class="p">)</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">operations</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;Heck yeah at least one did!&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;D: Nope!&quot;</span><span class="p">)</span>
+</pre>
+<p>If you add <tt class="docutils literal">if __name__ == &quot;__main__&quot;: answer(operations)</tt> and count
+spacing and imports, the whole thing&#8217;s less than forty&nbsp;lines!</p>
+</div>
+</div>
+<div class="section" id="the-take-away">
+<h2>The Take&nbsp;Away</h2>
+<ol class="arabic simple">
+<li>Break a problem down into steps as small as&nbsp;possible</li>
+<li>Small, functional pieces are more&nbsp;manageable</li>
+</ol>
+<p>Breaking down a problem is something that seems <em>so obvious</em> but it&#8217;s a
+skill that needs to be practiced and honed just like any other. After
+all, programming isn&#8217;t so much about code as solving problems. And part
+of solving problems is finding the smaller problems hidden inside&nbsp;them.</p>
+<p>What looked liked a complicated task on the surface, ended up being just
+five simple tasks on the inside. That&#8217;s not to say that every problem
+will immediately break down to simple tasks. Sometimes you&#8217;ll end up
+with a list of steps that&#8217;s nested five levels deep! But if you tackle
+each step one at a time, sprinkle in some Python idioms and a touch of
+abstraction, your application will come&nbsp;together.</p>
+<p>The other, writing smaller more functional code pieces allows your code
+to be modular. What if tomorrow, we want to grab the integers from a
+database? Well, since <tt class="docutils literal">collect_ints_from_stdin</tt> is separated from the
+main function, we can easily. Just build a callable that queries the
+database for integers and feeds them into the operations. Or if we need
+to change from integers to strings, we just swap out the collector and
+the operations and move on with our day &#8212; or better, pass a callback to
+coerce the type for&nbsp;us!</p>
+<p>But consider if we had just written a thirty line function that did all
+this? Ugh, it&#8217;d be a nightmare to untangle the pieces. Honestly, we&#8217;d
+probably have <em>two functions</em> that did the same thing, but just grabbed
+data from other locations. And then <em>two more</em> functions because maybe
+we need to work on strings. Quickly, this spirals out of control as the
+number of functions grows at (Data Types) * (Sources). We have four
+sources and four data types? That&#8217;s <em>16</em> functions! I don&#8217;t want to
+write the same function 16 times and I doubt you do&nbsp;either.</p>
+<p>Instead we can write four functions to grab the data, pass our coercion
+callback and maintain the lists of&nbsp;operations.</p>
+</div>
+<div class="section" id="going-further">
+<h2>Going&nbsp;Further</h2>
+<p>There are problems. What happens when we input <tt class="docutils literal">0</tt> and our checks make
+it to the division, modulo, log or root operations? We get a nasty
+exception. :( But handling it is easy (hint: ZeroDivisionError and
+ValueError would needed to be caught). Also, we should be able to tell
+the user <em>which</em> operations returned&nbsp;true.</p>
+<p>Of course, I&#8217;m not going to play my full hand. I&#8217;ll leave these as an
+exercise to you to figure&nbsp;out.</p>
+</div>
+
+            <aside>
+            <nav>
+            <ul class="articles_timeline">
+ 
+                <li class="previous_article">« <a href="http://justanr.github.io/self-describing-functions" title="Previous: Self-Describing&nbsp;Functions">Self-Describing&nbsp;Functions</a></li>
+ 
+                <li class="next_article"><a href="http://justanr.github.io/iterint" title="Next: iterint">iterint</a> »</li>
+            </ul>
+            </nav>
+            </aside>
+<section>
+<hr/>
+<p id="comment-message">I spilled my brains, spill some of yours. </p>
+<div class="accordion" id="accordion2">
+    <div class="accordion-group">
+        <div class="accordion-heading">
+            <a class="accordion-toggle disqus-comment-count" data-toggle="collapse" data-parent="#accordion2" 
+                href="http://justanr.github.io/musings-on-problem-solving/#disqus_thread">
+                Comments
+            </a>
+        </div>
+        <div id="disqus_thread" class="accordion-body collapse">
+            <div class="accordion-inner">
+                <div class="comments">
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ballinoctobear';
+        var disqus_identifier = 'http://justanr.github.io/musings-on-problem-solving';
+    var disqus_url = 'http://justanr.github.io/musings-on-problem-solving';
+
+    (function() {
+         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+         dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+     })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+        </div>
+        <section>
+        <div class="span2" style="float:right;font-size:0.9em;">
+ 
+            <h4>Published</h4>
+            <time pubdate="pubdate" datetime="2015-02-08T00:00:00-05:00">Feb 8, 2015</time>
+            <h4>Category</h4>
+            <a class="category-link" href="/categories.html#tips-and-tricks-ref">tips and tricks</a> 
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article"> 
+                <li><a href="/tags.html#python-ref">python
+                    <span>8</span>
+</a></li>
+            </ul>
+
+        </div>
+        </section>
+    </div>
+    </article>
+                </div>
+                <div class="span1"></div>
+            </div>
+        </div>
+    </div>
+<footer>
+<div id="footer">
+    <ul class="footer-content">
+        <li class="elegant-license">Shared under the Creative Commons for content and MIT for code</li>
+        <li class="elegant-power">Powered by <a href="http://getpelican.com/" title="Pelican Home Page">Pelican</a>. Theme: <a href="http://oncrashreboot.com/pelican-elegant" title="Theme Elegant Home Page">Elegant</a> by <a href="http://oncrashreboot.com" title="Talha Mansoor Home Page">Talha Mansoor</a></li>
+    </ul>
+</div>
+</footer>            <script src="http://code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+<script type="text/javascript">
+    var disqus_shortname = 'ballinoctobear';
+
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+    </script>
+    </body>
+</html>

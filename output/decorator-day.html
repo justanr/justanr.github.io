@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="Alec Nikolas Reiter" />
+        <meta name="copyright" content="Alec Nikolas Reiter" />
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="/theme/slicknav.css">
+        <script src="/theme/jquery.slicknav.min.js"></script>
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+        <script type="text/javascript"
+            src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+        </script>
+        <!--[if lt IE 9]>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.2/html5shiv.js"></script>
+        <![endif]-->
+
+
+<meta name="keywords" content="python, decorators, functions, tutorials, " />
+        <title>Decorator&nbsp;Day - from alec.thoughts import *
+</title>
+        <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="http://justanr.github.io/theme/css/style.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="http://justanr.github.io/theme/css/solarizedlight.css" media="screen">
+        <link rel="shortcut icon" href="http://justanr.github.io/theme/images/favicon.ico" type="image/x-icon" />
+        <link rel="apple-touch-icon" href="http://justanr.github.io/theme/images/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" sizes="57x57" href="http://justanr.github.io/theme/images/apple-touch-icon-57x57.png" />
+        <link rel="apple-touch-icon" sizes="72x72" href="http://justanr.github.io/theme/images/apple-touch-icon-72x72.png" />
+        <link rel="apple-touch-icon" sizes="114x114" href="http://justanr.github.io/theme/images/apple-touch-icon-114x114.png" />
+        <link rel="apple-touch-icon" sizes="144x144" href="http://justanr.github.io/theme/images/apple-touch-icon-144x144.png" />
+        <link rel="icon" href="http://justanr.github.io/theme/images/apple-touch-icon-144x144.png" />
+    </head>
+    <body>
+        <div id="content-sans-footer">
+        <div class="navbar navbar-static-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="http://justanr.github.io/"><span class=site-name>from alec.thoughts import *</span></a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav pull-right top-menu">
+                            <li ><a href="http://justanr.github.io">Home</a></li>
+                            <li ><a href="http://justanr.github.io/categories.html">Categories</a></li>
+                            <li ><a href="http://justanr.github.io/tags.html">Tags</a></li>
+                            <li ><a href="http://justanr.github.io/archives.html">Archives</a></li>
+                            <li><form class="navbar-search" action="http://justanr.github.io/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span1"></div>
+                <div class="span10">
+<article>
+<div class="row-fluid">
+    <header class="page_header span10 offset2">
+    <h1><a href="http://justanr.github.io/decorator-day"> Decorator&nbsp;Day  </a></h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+
+            <p><strong>An Aside:</strong> I originally wrote this as just a massive brain dump but
+in retrospect, it wasn&#8217;t helpful at all. In the process of preparing a
+presentation for PyATL, I decided to rewrite it to be much more
+informative and less example heavy. The original post was essentially
+just a series of examples of <em>how</em> you&#8217;d use decorators or <em>what</em> you&#8217;d
+use them for rather than <em>why</em> you&#8217;d use decorators and addressing
+patterns. I&#8217;m hoping this rewrite clarifies that instead of being a
+&quot;Look at all this code you probably don&#8217;t&nbsp;understand!&quot;</p>
+<p>Decorators are well championed but most posts I&#8217;ve seen about them don&#8217;t
+address many of the issues here. I wouldn&#8217;t say they&#8217;re something
+beginner or novice friendly since it delves into concepts like
+functional programming and &quot;higher order functions&quot; which is just scary
+talk for &quot;functions that accept functions as arguments&quot; and even
+currying, which basically boils down to &quot;reducing the number of inputs a
+function takes.&quot; I&#8217;m grossly over simplifying here for the sake of
+explaination, but I stand by these&nbsp;simplifications.</p>
+<p>Another note, apparently there was a lot of hemming and hawing in the
+Python mailing list when this construct (for lack of a better word) was
+introduced because of confusion with the decorator design pattern. Given
+that design patterns aren&#8217;t my strongest suit (at least in terms of
+knowing exactly what each does and how to best implement it), I think
+there&#8217;s quite of bit of one-to-one between the two on a basic level.
+Each take in an object and modifies it in a way that the original
+shouldn&#8217;t be worried about. The decorator pattern seems to be more
+concerned with adding data or processing information and is
+compositional whereas Python&#8217;s decorators seem to be more about removing
+logic that, yes, is associated with the object in question but doesn&#8217;t
+need to be mixed directly with the actual logic of the object. That
+makes it sound very confusing, but hopefully that will become clear
+through examples and&nbsp;explaination.</p>
+<div class="section" id="decorator-day">
+<h2>Decorator&nbsp;Day</h2>
+<p>This is meant to be a &quot;hit the ground running&quot; sort of thing decorators.
+Just enough information to make you feel confident but not enough that
+you know all there is to them. Though, honestly, once they click,
+they&#8217;re not so&nbsp;complicated.</p>
+<p>I&#8217;m going to make the dangerous assumption that you have a decent grasp
+on functions and how Python handles them. I&#8217;m going to briefly cover <em>a
+bit</em> about that, but just what &#8212; <em>I think</em> &#8212; is requisite knowledge
+for understanding decorators. If you&#8217;re confident with the concept of
+first class functions and closures, feel free to skip the next two&nbsp;sections.</p>
+<p>And just remember, a little knowledge is a dangerous thing; I&#8217;m giving
+you enough rope to hang yourself here but not enough to build a bridge.
+That comes with practice and exploration as well as digging deeper into
+subject matter. Don&#8217;t mistake me for a guru expert code ninja wizard
+(though, I do hope to attain that title some day) as I&#8217;m in the mire
+with everyone&nbsp;else.</p>
+</div>
+<div class="section" id="first-class-functions">
+<h2>First Class&nbsp;Functions</h2>
+<p>The first, and probably most important, piece of background knowledge is
+that everything in Python is an <tt class="docutils literal">object</tt>. Everything. Functions,
+Objects, Strings, and even Classes. This is what makes decorators
+possible in Python. We can assign functions to new names, stuff them in
+data structures, pass them as arguments to other functions and even
+return them from functions. That&#8217;s really all there is to first class
+functions, they are treated just the same as anything else in the
+language. And since methods are simply functions attached to a class or
+object, the same applied to them as well. <tt class="docutils literal">str.join</tt> is just as first
+class as <tt class="docutils literal">map</tt>.</p>
+<pre class="code python literal-block">
+<span class="n">my_func</span> <span class="o">=</span> <span class="nb">dir</span>
+
+<span class="n">funcs</span> <span class="o">=</span> <span class="p">[</span><span class="nb">filter</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
+
+<span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+
+<span class="k">def</span> <span class="nf">returns_func</span><span class="p">():</span>
+    <span class="k">return</span> <span class="nb">dict</span>
+</pre>
+</div>
+<div class="section" id="closures">
+<h2>Closures</h2>
+<p>The concept of closures scares a lot of people. But they&#8217;re really
+simple: closures are just functions defined inside of another function.
+That&#8217;s&nbsp;it.</p>
+<p>But there&#8217;s magic involved, too. Closures <em>close</em> over the available
+outer scope and stuff it into their <tt class="docutils literal">__closure__</tt> attribute &#8212; which
+is just simply a tuple of cell objects that contain other things. This
+is essentially a snapshot of the outer function when it&#8217;s created.
+Usually, the inner function is returned by the outer&nbsp;function.</p>
+<pre class="code python literal-block">
+<span class="k">def</span> <span class="nf">adds_four</span><span class="p">():</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="k">def</span> <span class="nf">inner</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">x</span><span class="o">+</span><span class="n">y</span>
+    <span class="k">return</span> <span class="n">inner</span>
+
+<span class="n">o</span> <span class="o">=</span> <span class="n">adds_four</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="n">o</span><span class="p">())</span>
+<span class="k">print</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">__closure__</span><span class="p">)</span>
+</pre>
+<pre class="literal-block">
+4
+(&lt;cell at 0x7f26c154bd68: int object at 0x9f8860&gt;,)
+</pre>
+<p>The same logic applies to values passed into a function as well. When an
+argument is passed into a function (say outer actually looked like
+<tt class="docutils literal">outer(x=4)</tt>), those values become part of the scope of the function
+as well and <em>are</em> available to closures for use if needed. Maybe I&#8217;ll go
+deeper into closures in the future, maybe&nbsp;not.</p>
+<div class="section" id="an-aside">
+<h3>An&nbsp;aside</h3>
+<p>If you&#8217;re wondering how Python knows what cell object to use well, my
+understanding is that it doesn&#8217;t and relies on the generated byte code
+to do the right thing. But I could very well be completely wrong on this&nbsp;matter.</p>
+</div>
+</div>
+<div class="section" id="so-decorators">
+<h2>So,&nbsp;Decorators</h2>
+<p>Now we finally get to decorators. Decorators are functions that take in
+a function, do something and return something &#8212; typically a callable,
+but it could be anything. Usually, decorators are used to either remove
+extraneous logic from a function or to attach additional functionality
+to&nbsp;it.</p>
+<p>There&#8217;s two ways to use decorators: the old way, pre-2.5, and the
+special <tt class="docutils literal">&#64;decorator</tt> syntax. They do the same thing, like using
+<tt class="docutils literal">list(1, 2, 3)</tt> or <tt class="docutils literal">[1, 2, 3]</tt>, one&#8217;s just syntatic&nbsp;sugar.</p>
+<pre class="code python literal-block">
+<span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">f</span>
+
+<span class="k">def</span> <span class="nf">my_func</span><span class="p">():</span>
+    <span class="k">pass</span>
+
+<span class="n">my_func</span> <span class="o">=</span> <span class="n">decorator</span><span class="p">(</span><span class="n">my_func</span><span class="p">)</span> <span class="c"># this is the old way</span>
+
+<span class="nd">&#64;decorator</span>
+<span class="k">def</span> <span class="nf">my_func</span><span class="p">():</span>
+    <span class="k">pass</span>
+</pre>
+<p>The <tt class="docutils literal">&#64;decorator</tt> syntax is the one you&#8217;ll see in most cases.
+Basically, what you&#8217;re telling Python is when it&#8217;s done creating
+<tt class="docutils literal">my_func</tt> pass it to <tt class="docutils literal">decorator</tt> and then assign the result back to
+<tt class="docutils literal">my_func</tt>. It sounds complicated to some, but it&#8217;s really&nbsp;not.</p>
+<p><tt class="docutils literal">&#64;decorator</tt> is just a way of shorthanding your intention to the
+interperter. And more importantly, it gives a heads up to people reading
+your code that something more is happening behind the scenes. If you
+manually wrap functions (which is needed sometimes), this can get lost
+at the bottom of your function definition unless you make glaringly
+obvious what&#8217;s happening. This applies double to longer fuctions and&nbsp;objects.</p>
+<p>If you&#8217;ve got that down, you&#8217;ll probably get the common patterns that&nbsp;follow.</p>
+</div>
+<div class="section" id="patterns">
+<h2>Patterns</h2>
+<p>There&#8217;s plenty of patterns you&#8217;ll encounter when working with
+decorators. I&#8217;m hoping to identify some of the most common&nbsp;ones.</p>
+<div class="section" id="pass-through-decorators">
+<h3>Pass Through&nbsp;Decorators</h3>
+<p>Basically, this is a decorator that takes in an object, does something
+and returns the original object. It might register it somewhere, gather
+some information about or add an attribute to&nbsp;it.</p>
+<pre class="code python literal-block">
+<span class="k">def</span> <span class="nf">pass_through</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">inspected</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="k">return</span> <span class="n">f</span>
+
+<span class="nd">&#64;pass_through</span>
+<span class="k">def</span> <span class="nf">thing</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s">&quot;Thing()&quot;</span>
+
+<span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">thing</span><span class="p">,</span> <span class="s">'inspected'</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">thing</span><span class="o">.</span><span class="n">__name__</span> <span class="o">==</span> <span class="s">'thing'</span>
+</pre>
+<p>It&#8217;s common enough but usually they&#8217;re not doing anything too exciting
+or surprising. But it&#8217;s definitely worth distinguishing it from
+decorators that use&nbsp;closures.</p>
+<p>The rest of the patterns I&#8217;m going to cover are all function closure
+oriented, except for two which will be&nbsp;obvious.</p>
+</div>
+<div class="section" id="flexible-decorators">
+<h3>Flexible&nbsp;Decorators</h3>
+<p>You&#8217;re going to want your decorators to work with as many functions as
+possible. Not just the one you initially noticed and thought, &quot;I can
+factor this other code out into a decorator.&quot; But what does a flexible
+decorator look like? It&#8217;s best to compare it to a brittle decorator to
+understand&nbsp;fully.</p>
+<pre class="code python literal-block">
+<span class="k">def</span> <span class="nf">brittle</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">,</span> <span class="n">kwarg1</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">kwarg2</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">,</span> <span class="n">kwarg1</span><span class="p">,</span> <span class="n">kwarg2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">wrapper</span>
+
+<span class="k">def</span> <span class="nf">flexible</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">wrapper</span>
+</pre>
+<p>What&#8217;s so important about this that we end up using <tt class="docutils literal">wrapper</tt> when we
+call a decorated function. If we used the first example, the brittle
+one, we&#8217;d have to write every function we decorate with it to accept
+four arguments. Where as the second example, the flexible one, can
+accept any number of positional or keyword&nbsp;arguments.</p>
+<p>To give a concrete&nbsp;example&#8230;</p>
+<pre class="code python literal-block">
+<span class="nd">&#64;flexible</span>
+<span class="k">def</span> <span class="nf">dinner</span><span class="p">(</span><span class="n">food</span><span class="p">,</span> <span class="n">beer</span><span class="p">):</span> <span class="c"># &lt;- becomes wrapper</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">'Eating'</span><span class="p">,</span> <span class="n">food</span><span class="p">,</span> <span class="s">'and drinking'</span><span class="p">,</span> <span class="n">beer</span><span class="p">)</span>
+
+<span class="n">dinner</span><span class="p">(</span><span class="s">'bratzel'</span><span class="p">,</span> <span class="s">'azazel'</span><span class="p">)</span> <span class="c"># &lt;- actually wrapper</span>
+</pre>
+<pre class="literal-block">
+Eating bratzel and drinking azazel
+</pre>
+<p>I&#8217;m a little homesick for Memphis. If you&#8217;re ever there, I&#8217;d recommend
+the Flying Saucer downtown.&nbsp;Anyways&#8230;</p>
+</div>
+<div class="section" id="preserving-metadata">
+<h3>Preserving&nbsp;metadata</h3>
+<p>When you lock your original function up in a closure, you lose the
+original metadata: <tt class="docutils literal">__name__</tt>, <tt class="docutils literal">__doc__</tt>, etc. There&#8217;s a few ways to
+retain it. Instead of hopping to the correct way, I&#8217;ll show you why
+you&#8217;ll want to do that instead. Just like ensuring defaults are set in a
+dictionary, there&#8217;s an increasing level of &quot;correctness&quot; or &quot;Pythonness&quot;
+from what you should start with and what you should end&nbsp;with.</p>
+<p>The first thing you might try is manually transfering these attributes
+inside the&nbsp;decorator.</p>
+<pre class="code python literal-block">
+<span class="k">def</span> <span class="nf">loggit</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">logger</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;Calling {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">__name__</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">__name__</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">__doc__</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">__doc__</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">logger</span>
+</pre>
+<p>Other than the fact that we&#8217;re missing three crucial attributes, this is
+a terrible way to migrate attributes. You&#8217;ll have to do this in every
+decorator you write &#8212; meaning it&#8217;ll be no fun to maintain when a new
+attribute is introduced. This is very similiar to the basic idiom of
+checking if a key is in a dictionary before we do something with&nbsp;it:</p>
+<pre class="literal-block">
+if something not in my_dict:
+    my_dict[something] = [value]
+my_dict[something].append(value)
+</pre>
+<p>Well, decorators are good at removing extraneous code from a function,
+let&#8217;s try writing a decorator decorator &#8212; as confusing as that sounds,
+it&#8217;s pretty common, so we&#8217;re catching two pythons with one&nbsp;net.</p>
+<pre class="code python literal-block">
+<span class="k">def</span> <span class="nf">decorator_decorator</span><span class="p">(</span><span class="n">deco</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">deco</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">__name__</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">__name__</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">__doc__</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">__doc__</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">g</span>
+    <span class="n">wrapper</span><span class="o">.</span><span class="n">__name__</span> <span class="o">=</span> <span class="n">deco</span><span class="o">.</span><span class="n">__name__</span>
+    <span class="n">wrapper</span><span class="o">.</span><span class="n">__doc__</span> <span class="o">=</span> <span class="n">deco</span><span class="o">.</span><span class="n">__doc__</span>
+    <span class="n">wrapper</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">deco</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">wrapper</span>
+
+<span class="nd">&#64;decorator_decorator</span>
+<span class="k">def</span> <span class="nf">loggit</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">logger</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;Calling {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">logger</span>
+
+<span class="nd">&#64;loggit</span>
+<span class="k">def</span> <span class="nf">double</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Doubles a number&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x</span>
+
+<span class="k">assert</span> <span class="n">double</span><span class="o">.</span><span class="n">__name__</span> <span class="o">==</span> <span class="s">'double'</span>
+<span class="k">assert</span> <span class="n">double</span><span class="o">.</span><span class="n">__doc__</span> <span class="o">==</span> <span class="s">'Doubles a number'</span>
+</pre>
+<p>That&#8217;s <em>almost</em> better. Except it&#8217;s really ugly. Like <em>really</em> ugly. And
+actually, I find it more confusing than helpful. When I initially wrote
+this code it was as an example of what <em>not</em> to do and it&#8217;s here for
+that same reason. It requires you to think on multiple levels at the
+same time, which is great if you&#8217;re just trying to anger people looking
+over it. This <tt class="docutils literal">decorator_decorator</tt> is pretty benign if you&#8217;re
+comfortable with what each piece means and works. But if you&#8217;re doing
+this in your code, unless you&#8217;re having to work with 2.4 or below,
+you&#8217;re doing it the wrong&nbsp;way.</p>
+<p>This is most akin to using <tt class="docutils literal">dict.setdefault</tt> to ensure a value is
+present in a dictionary, and just like that method, I find it confusing
+every time I look at it (though, there are <em>many</em> times when it&#8217;s&nbsp;useful):</p>
+<pre class="literal-block">
+grouping = my_dict.setdefault(something, [])
+grouping.append(value)
+</pre>
+<p>However, Python is batteries included and comes with something that
+handle this for us. Enter <tt class="docutils literal">functools.wraps</tt> and
+<tt class="docutils literal">functools.update_wrapper</tt>. <tt class="docutils literal">&#64;wraps</tt> is just the decorator form of
+<tt class="docutils literal">update_wrapper</tt> &#8212; using a decorator to create decorators seems
+counter intuitive, but it&#8217;s really not and <tt class="docutils literal">&#64;wraps</tt> is a testament to
+it&#8217;s power and another example further down delves a little deeper. But
+<tt class="docutils literal">update_wrapper</tt> is pretty simple, it&nbsp;merely:</p>
+<ul class="simple">
+<li>Copies needed attributes from the original function to the new<ul>
+<li>This includes the name, docstring, module, qualified name and
+module&nbsp;attributes</li>
+</ul>
+</li>
+<li>Updates the wrapper&#8217;s dict with the original function&#8217;s&nbsp;dict</li>
+<li>As of 3.2, it also supplies a <tt class="docutils literal">__wrapped__</tt> attribute that contains
+the original object<ul>
+<li>It doesn&#8217;t appear that this was backported to Python 2 at all. I&#8217;d
+seriously recommend monkey patching update_wrapper to handle this
+for reasons that&#8217;ll become obvious&nbsp;later.</li>
+</ul>
+</li>
+</ul>
+<p><tt class="docutils literal">update_wrapper</tt> is also smart enough to not blow up if one of these
+attributes isn&#8217;t present on the underlying object (such as <tt class="docutils literal">__name__</tt>
+on an instance of an&nbsp;object).</p>
+<p>Here&#8217;s how you <em>should</em> be perserving metadata through&nbsp;decorators:</p>
+<pre class="code python literal-block">
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+
+<span class="k">def</span> <span class="nf">loggit</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="nd">&#64;wraps</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">logger</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;Calling {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">logger</span>
+
+<span class="nd">&#64;loggit</span>
+<span class="k">def</span> <span class="nf">double</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Doubles a number&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x</span>
+
+<span class="k">assert</span> <span class="n">double</span><span class="o">.</span><span class="n">__name__</span> <span class="o">==</span> <span class="s">'double'</span>
+<span class="k">assert</span> <span class="n">double</span><span class="o">.</span><span class="n">__doc__</span> <span class="o">==</span> <span class="s">'Doubles a number'</span>
+<span class="k">assert</span> <span class="ow">not</span> <span class="n">double</span><span class="o">.</span><span class="n">__annotations__</span>
+</pre>
+<p>Using <tt class="docutils literal">&#64;wraps</tt> and <tt class="docutils literal">update_wrapper</tt> is like when you stumble across
+<tt class="docutils literal">defaultdict</tt> in the collections module. The complexity and hand
+holding you were previously doing just melts away into a few easy to
+grasp lines of&nbsp;code:</p>
+<pre class="literal-block">
+my_dict = defaultdict(list)
+my_dict[something].append(value)
+</pre>
+</div>
+<div class="section" id="minimum-decorator-best-practices">
+<h3>Minimum Decorator Best&nbsp;Practices</h3>
+<p>The two best things you can do for yourself is writing flexible
+decorators (using <tt class="docutils literal">*args</tt> and <tt class="docutils literal">**kwargs</tt>) and preserving metadata
+through <tt class="docutils literal">wraps</tt> and <tt class="docutils literal">update_wrapper</tt>. 80% of the headaches you&#8217;ll
+encounter will be fixed with these. The other 20% are&#8230;tricky. I&#8217;ll
+touch on those a little later,&nbsp;however.</p>
+</div>
+<div class="section" id="decorators-that-accept-optional-kwargs">
+<h3>Decorators that accept optional&nbsp;kwargs</h3>
+<p>Occasionally, you need to use keyword arguments in your decorators,
+either to pass context, run setup or just set flags. There&#8217;s a few ways
+to do&nbsp;it&#8230;</p>
+<pre class="code python literal-block">
+<span class="k">def</span> <span class="nf">print_before</span><span class="p">(</span><span class="n">phrase</span><span class="o">=</span><span class="s">&quot;Setting up!&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">actual_decorator</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+        <span class="nd">&#64;wraps</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">phrase</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">wrapper</span>
+    <span class="k">return</span> <span class="n">actual_decorator</span>
+
+<span class="nd">&#64;print_before</span><span class="p">(</span><span class="n">phrase</span><span class="o">=</span><span class="s">&quot;such setup&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">doubles</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span><span class="n">x</span>
+
+<span class="nd">&#64;print_before</span><span class="p">()</span> <span class="c"># parens required</span>
+<span class="k">def</span> <span class="nf">random</span><span class="p">():</span>
+    <span class="k">return</span> <span class="mi">4</span>
+</pre>
+<p>In case you&#8217;re wondering, the parens are required because we need to
+call the outermost function, which generates the decorator which in turn
+generators the wrapper function we&#8217;re actually using. To be 100% honest,
+outside of a handful of cases, I find this particular implementation to
+be lackluster because usually the outermost function just serves to pass
+information one level&nbsp;deeper.</p>
+<p>However, one of the best arguments for using this particular pattern is
+passing positional arguments to a decorator. This has more to do with
+how Python handles unpacking into functions than anything else. But
+using an outer function like this is certainly the easiest way I&#8217;ve
+thought of to handle positional arguments to a decorator. You <em>could</em>
+fiddle with pushing the fuction to the front of <tt class="docutils literal">*args</tt>, but I feel it
+would quickly become&nbsp;messy.</p>
+<p>Back to optional kwargs, instead of having an outermost function that we
+must explictly call, why not use <tt class="docutils literal">functools.partial</tt> and setup a
+little&nbsp;check?</p>
+<pre class="code python literal-block">
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+
+<span class="k">def</span> <span class="nf">print_before</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">phrase</span><span class="o">=</span><span class="s">&quot;Settin up!&quot;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">f</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">partial</span><span class="p">(</span><span class="n">print_before</span><span class="p">,</span> <span class="n">phrase</span><span class="o">=</span><span class="n">phrase</span><span class="p">)</span>
+
+    <span class="nd">&#64;wraps</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">phrase</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">wrapper</span>
+
+<span class="nd">&#64;print_before</span> <span class="c"># parens not needed</span>
+<span class="k">def</span> <span class="nf">double</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mi">2</span><span class="o">*</span><span class="n">x</span>
+
+<span class="nd">&#64;print_before</span><span class="p">(</span><span class="n">phrase</span><span class="o">=</span><span class="s">&quot;such dice roll!&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">random</span><span class="p">():</span>
+    <span class="k">return</span> <span class="mi">4</span>
+</pre>
+<p>That&#8217;s actually a lot better. The most interesting thing here is how
+using partial allows us to for go the parens when we don&#8217;t overide
+keyword arguments. Since we&#8217;re accepting only one positional argument
+(via Python 3&#8217;s keyword only syntax, there&#8217;s not really a good way to
+imitate this is Python 2 other than using positional arguments sparingly
+when calling a function), when Python puts the function into the
+decorator, it does it positionally. We don&#8217;t need to call the outermost
+function explicitly because Python will call it for us. And if we need
+to override a keyword argument, we can call the function explicitly to
+do&nbsp;so.</p>
+<p>However, we&#8217;ve just moved our primary concern inside the decorator and
+it&#8217;s creating noise. Moreover, if we decide that this is the best thing
+in the world, we&#8217;ll be copying that code into every decorator we write.
+And six months from now, when partial is considered as terrible as
+<tt class="docutils literal"><span class="caps">GOTO</span></tt>, we&#8217;ll have to replace all these instances (though, you can
+never take my partials from me!). I&#8217;m not sure if that&#8217;s better or worse
+than&nbsp;before.</p>
+<p>We&#8217;re already writing a decorator, and we&#8217;re getting pretty good at
+them, so why not a decorator that&#8217;ll handle this for us? This is
+probably the most confusing example, so hold&nbsp;on:</p>
+<pre class="code python literal-block">
+<span class="k">def</span> <span class="nf">optional_kwargs</span><span class="p">(</span><span class="n">deco</span><span class="p">):</span>
+    <span class="nd">&#64;wraps</span><span class="p">(</span><span class="n">deco</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span> <span class="c"># &lt;- actual function our decorator becomes</span>
+        <span class="k">if</span> <span class="n">f</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">partial</span><span class="p">(</span><span class="n">wrapper</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">deco</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">wrapper</span>
+
+<span class="nd">&#64;optional_kwargs</span>
+<span class="k">def</span> <span class="nf">print_before</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">phrase</span><span class="o">=</span><span class="s">&quot;Setting up!&quot;</span><span class="p">):</span> <span class="c"># &lt;- becomes the closure inside in optional_kwargs</span>
+    <span class="nd">&#64;wraps</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">phrase</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">wrapper</span>
+
+<span class="nd">&#64;print_before</span><span class="p">(</span><span class="n">phrase</span><span class="o">=</span><span class="s">&quot;much mind bend!&quot;</span><span class="p">)</span> <span class="c"># &lt;- optional_kwarg's closure</span>
+<span class="k">def</span> <span class="nf">random</span><span class="p">():</span> <span class="c"># &lt;- becomes print_before's closure</span>
+    <span class="k">return</span> <span class="mi">4</span>
+</pre>
+<p>This looks really complex and intimidating, but it&#8217;s really not when you
+get to understand decorators. All we&#8217;ve done is factor out the code
+<tt class="docutils literal">print_before</tt> shouldn&#8217;t be concerned with, namely if it actually
+recieved a function or not. What happens is that we replace
+<tt class="docutils literal">print_before</tt> with the closure inside <tt class="docutils literal">optional_kwargs</tt>. This
+closure handles the logic of ensuring that a function was passed or&nbsp;not.</p>
+<p>The true power of this becomes apparent when you replace the print
+statement with something that will preprocess inputs for you: escaping
+characters or changing integers and floats to <tt class="docutils literal">Decimal</tt> if you&#8217;re
+working with financial data. Here, it&#8217;s simply to illustrate <em>how</em> you
+would implement the&nbsp;pattern.</p>
+<p>Like the horrible <tt class="docutils literal">decorator_decorator</tt> example above, this sort of
+code forces your brain to operate on multiple levels at the same time.
+Once you&#8217;re comfortable with it, this makes quite a bit of sense as to
+why you&#8217;d do it. However, before that, it merely causes a&nbsp;headache.</p>
+</div>
+<div class="section" id="using-classes-as-decorators">
+<h3>Using classes as&nbsp;decorators</h3>
+<p>Sometimes a function closure doesn&#8217;t provide the <em>umph</em> needed to do
+something, or packing in the <em>umph</em> creates a twisted web of logic that
+causes your eyes to roll into the back of your head when you revisit it.
+Sometimes you just need a good &#8216;ol object to handle things for you.
+There&#8217;s two different ways to use objects as decorators, one is to use
+one instance per wrap and the other is to use one instance for every&nbsp;wrap.</p>
+<pre class="code python literal-block">
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">update_wrapper</span>
+
+<span class="k">class</span> <span class="nc">wrapperobj</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">f</span>
+        <span class="n">update_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<span class="nd">&#64;wrapperobj</span>
+<span class="k">def</span> <span class="nf">random</span><span class="p">():</span>
+    <span class="k">return</span> <span class="mi">4</span>
+</pre>
+<p>When using a single instance per wrap, you need to first store the
+wrapped obj on the instance (<tt class="docutils literal">self.f</tt>) and then when you need to call
+it, you simply pass it arguments. Fairly straight forward, but it&#8217;s
+pretty contrived example as well. This sort of pattern would be used
+when your logic becomes much more complex than what a simple function
+should reasonably handle, things like transcieving data to an event loop
+or socket for example or creating individual caches for each&nbsp;object.</p>
+<p>Let&#8217;s look at using a single instance to wrap multiple&nbsp;objects.</p>
+<pre class="code python literal-block">
+<span class="k">class</span> <span class="nc">onewrapper</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+        <span class="nd">&#64;wraps</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">wrapper</span>
+
+<span class="n">inst</span> <span class="o">=</span> <span class="n">onewrapper</span><span class="p">()</span>
+
+<span class="nd">&#64;inst</span>
+<span class="k">def</span> <span class="nf">random</span><span class="p">():</span>
+    <span class="k">return</span> <span class="mi">4</span>
+</pre>
+<p>This is essentially the same thing as using a function closure as a
+decorator, except it comes with the extra <em>umph</em> that comes with using
+an object as well. This sort of pattern would be used for linking
+several objects together in a shared state, a rudimentary messaging
+queue should be easy to write with this sort of pattern. Your
+<tt class="docutils literal">__init__</tt> method in this case would set the initial state for the
+object rather than accepting the function&nbsp;there.</p>
+<p>And of course, you don&#8217;t have to use <tt class="docutils literal">__init__</tt> or <tt class="docutils literal">__call__</tt> to
+register and run functions, you can create other methods that would
+handle these as well. <tt class="docutils literal">register</tt> and <tt class="docutils literal">run_wrapped</tt> for example could
+easily do the same&nbsp;thing.</p>
+<p>If you&#8217;re wrapping multiple objects with the same instance, it may be
+helpful to also use some sort of data structure to organize them if
+you&#8217;re doing more than simply wrapping them. In most cases the
+<tt class="docutils literal">weakref</tt> module will either provide the answer you need or set you on
+the right path; though, there are objects that can&#8217;t be weak referenced
+&#8212; including most of the built in or &quot;primitive&quot; types in Python (str,
+int, float, list, dict and tuple). However, for more complex objects,
+weakrefs are a powerful tool that let you conserve memory among other
+things. It&#8217;s worth balancing using something like <tt class="docutils literal">WeakKeyDictionary</tt>
+versus a regular dictionary for&nbsp;caching.</p>
+<p>I got sidelined,&nbsp;anyways&#8230;</p>
+</div>
+<div class="section" id="decorating-classes">
+<h3>Decorating&nbsp;Classes</h3>
+<p>As of Python 2.6, decorating classes is also supported. There&#8217;s all the
+same reasons you&#8217;d want to decorate a function with the added benefit
+that you can apply metaclasses uniformly between Python 2 and 3. Or
+maybe it&#8217;s just simpler than writing a metaclass in the first place.
+This next example comes from the
+<a class="reference external" href="https://github.com/kelp404/six">six.py</a> project and allows you to
+decorate a class to be applied in Python 2 and&nbsp;3.</p>
+<pre class="code python literal-block">
+<span class="c"># from six.py</span>
+<span class="k">def</span> <span class="nf">add_metaclass</span><span class="p">(</span><span class="n">metaclass</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class decorator for creating a class with a metaclass.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="n">orig_vars</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">slots</span> <span class="o">=</span> <span class="n">orig_vars</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">'__slots__'</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">slots</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">slots</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">slots</span> <span class="o">=</span> <span class="p">[</span><span class="n">slots</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">slots_var</span> <span class="ow">in</span> <span class="n">slots</span><span class="p">:</span>
+                <span class="n">orig_vars</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">slots_var</span><span class="p">)</span>
+        <span class="n">orig_vars</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">'__dict__'</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="n">orig_vars</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">'__weakref__'</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">metaclass</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">__bases__</span><span class="p">,</span> <span class="n">orig_vars</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">wrapper</span>
+</pre>
+</div>
+<div class="section" id="applying-multiple-decorators">
+<h3>Applying multiple&nbsp;decorators</h3>
+<p>This generally works. Especially if you&#8217;ve used <tt class="docutils literal">wraps</tt> or
+<tt class="docutils literal">update_wrapper</tt> consistently. The important thing to note here is
+that decorators are evaluated from the bottom up. The first thing that
+happens is that Python defines the original object, then it walks up
+each decorator, passing the return value from each to the next
+decorator. That&#8217;s pretty much all there is to stacking decorators,
+except for one thing that I&#8217;ll cover in the next&nbsp;section.</p>
+<pre class="code python literal-block">
+<span class="nd">&#64;wrapperobj</span>
+<span class="nd">&#64;print_before</span>
+<span class="k">def</span> <span class="nf">random</span><span class="p">():</span>
+    <span class="k">return</span> <span class="mi">4</span>
+
+<span class="n">random</span><span class="p">()</span>
+</pre>
+<pre class="literal-block">
+Setting up!
+</pre>
+<pre class="literal-block">
+4
+</pre>
+<p>One nice thing is if you remember to use <tt class="docutils literal">wraps</tt> or
+<tt class="docutils literal">update_wrapper</tt>, Python will very helpfully pass along added
+attributes as well (since they are really just key-value pairs sitting
+in <tt class="docutils literal">__dict__</tt>). In case you forgot, <tt class="docutils literal">pass_through</tt> is the first
+example in this section, it merely adds an attribute called
+<tt class="docutils literal">inspected</tt> to an&nbsp;object.</p>
+<pre class="code python literal-block">
+<span class="nd">&#64;wrapperobj</span>
+<span class="nd">&#64;pass_through</span>
+<span class="k">def</span> <span class="nf">random</span><span class="p">():</span>
+    <span class="k">return</span> <span class="mi">4</span>
+
+<span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">random</span><span class="p">,</span> <span class="s">'inspected'</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+</pre>
+<pre class="literal-block">
+{'__annotations__': {}, 'f': &lt;function random at 0x7f26c0039d08&gt;, '__qualname__': 'random', '__wrapped__': &lt;function random at 0x7f26c0039d08&gt;, 'inspected': True, '__doc__': None, '__module__': '__main__', '__name__': 'random'}
+</pre>
+</div>
+</div>
+<div class="section" id="issues-and-problems">
+<h2>Issues and&nbsp;Problems</h2>
+<p>As with anything, there are certain problems and issues you&#8217;ll run into.
+Decorators are no exception. At some point, at least one of these will
+bite you, maybe&nbsp;hard.</p>
+<div class="section" id="stacking-wrong">
+<h3>Stacking&nbsp;wrong</h3>
+<p>This is something that will happen more often then you think. However,
+as long as you remember that they&#8217;re evaluated from the bottom up and
+you&#8217;ve used <tt class="docutils literal">wraps</tt> and <tt class="docutils literal">update_wrapper</tt> through out, you&#8217;ll
+probably be okay. Sometimes, it&#8217;s important to note which decorators
+allow an object to pass through and which lock the object in a closure
+&#8212; you <em>shouldn&#8217;t</em> have to, but at least once you&nbsp;will.</p>
+<p>However, there is something to be said for the <tt class="docutils literal">&#64;property</tt>,
+<tt class="docutils literal">&#64;classmethod</tt> and <tt class="docutils literal">&#64;staticmethod</tt> decorators. These return
+<strong>*descriptors*</strong> which are a slightly different sort of object that
+behave in a peculiar way. I&#8217;ve gone into detail about them else where,
+but the rule of thumb is to always apply these decorators&nbsp;last.</p>
+</div>
+<div class="section" id="testing">
+<h3>Testing</h3>
+<p>This is something of a sticky point. Pass through decorators are easy to
+test, those wrapped objects aren&#8217;t hidden away anywhere. However, you&#8217;re
+far more likely to encounter a closure decorator which makes testing
+much&nbsp;harder.</p>
+<p>The easiest way is to use the <tt class="docutils literal">__wrapped__</tt> attribute if it&#8217;s
+available. Python 3.4 does provide a very nice function in <tt class="docutils literal">inspect</tt>
+called <tt class="docutils literal">unwrap</tt> which continually unravels a decorated function until
+it&#8217;s no longer wrapped&nbsp;up.</p>
+<p>But if neither of these are available to you, and you&#8217;re decorator does
+something like connect to a database or ensure a user&#8217;s logged in, you
+might be in for a head&nbsp;ache.</p>
+</div>
+<div class="section" id="introspection-and-blowing-stuff-up">
+<h3>Introspection and blowing stuff&nbsp;up.</h3>
+<p>More than once I&#8217;ve been bitten by bad introspection (looking at you,
+Google <span class="caps">API</span> wrapper), thankfully it was <em>only</em> me manually inspecting a
+function to see how to use it. Even using <tt class="docutils literal">update_wrapper</tt> isn&#8217;t
+enough to solve this&nbsp;problem.</p>
+<ul class="simple">
+<li>Argument&nbsp;specification</li>
+<li>Closely related is annotations in Python&nbsp;3</li>
+<li>Ability to pull source&nbsp;code</li>
+<li>type and isinstance stop&nbsp;working</li>
+</ul>
+<p>I&#8217;ll admit blowing up code is one of the ways I learn the best. &quot;What
+did I do that I shouldn&#8217;t have done and how do I fix it?&quot; Though,
+sometimes the errors are hard to track&nbsp;down.</p>
+<p>Python 2&#8217;s <tt class="docutils literal">inspect.getargspec</tt> doesn&#8217;t like being passed an object
+and complains loudly about it. Python 3&#8217;s version doesn&#8217;t seem to mind,
+though take that with a grain of salt because I&#8217;m sure there&#8217;s a corner
+case somewhere that blows it up. Python 2 will display the argument
+specification and source code of the wrapper. Python 3 <em>seems</em> to do the
+right thing (at least in 3.4, and this may be because of
+<tt class="docutils literal">inspect.unwrap</tt> and the <tt class="docutils literal">__wrapped__</tt> attribute).</p>
+<p>Wrapping classes can seriously put a kink in your inheritance pattern if
+you&#8217;re not careful about it. If your class simply passes through the
+decorator, you&#8217;ll be okay. If it doesn&#8217;t, you need to take care to make
+sure to either return the actual class (most likely using descriptors)
+or use something like <tt class="docutils literal">__wrapped__</tt> or <tt class="docutils literal">inspect.unwrap</tt> in your
+inheritance line, both are which are&nbsp;ugly.</p>
+<p>Similar to inheritance, <tt class="docutils literal">isinstance</tt> isn&#8217;t too happy about having a
+function passed to it. This behavior looks consistent between Python 2
+and 3. The same fixes should apply&nbsp;here.</p>
+<p>The final thing, which I&#8217;m unsure about fixing, is using <tt class="docutils literal">type</tt> to
+identify explicitly what an object is. Descriptors seems like they
+should work and rudimentary testing with it seems to cause <tt class="docutils literal">type</tt> to
+behave as expected, but I&#8217;ve not battle tested this &#8212; and the real
+question is, &quot;Why are you using <tt class="docutils literal">type</tt> anyways?&quot;</p>
+<div class="section" id="actually-fixing-these">
+<h4>Actually fixing&nbsp;these</h4>
+<p>If you&#8217;re much more curious about the proper way to fix these issues, I
+highly recommend Graham Dumpleton&#8217;s blog series <a class="reference external" href="http://blog.dscpl.com.au/2014/01/how-you-implemented-your-python.html">How you implemented
+your Python decorator is
+wrong.</a>
+which goes into so much more depth than I have here and really opened my
+eyes to what I was actually doing when writing decorators beyond just
+stuffing one function inside of another. It also serves as a decent
+introduction into how descriptors work and practical uses of&nbsp;them.</p>
+</div>
+</div>
+</div>
+<div class="section" id="no-man-is-an-island-unto-himself">
+<h2>No Man is an Island Unto&nbsp;Himself</h2>
+<p>This post wouldn&#8217;t have been possible without the writings of Graham
+Dumpleton (sourced above), <a class="reference external" href="http://www.jeffknupp.com/blog/2013/11/29/improve-your-python-decorators-explained/">Jeff
+Knupp</a>
+and <a class="reference external" href="http://simeonfranklin.com/blog/2012/jul/1/python-decorators-in-12-steps/">Simeon
+Franklin</a>.
+All three of these &#8212; as well as countless other blog posts and
+StackOverflow questions &#8212; introduced me and explained what decorators
+are to me. I&#8217;d also like to give thanks to both PyATL and Doug Hellman
+for sparking my interest in giving a presentation as well as the online
+learning group I&#8217;m a member of for sitting through about forty minutes
+of me listening to the sound of my own voice and asking for
+clarifications on <em>many</em> things I glossed over initially, thinking that
+people think the same way I do (which is probably a lot more twisted and
+convoluted than&nbsp;most).</p>
+<p>I&#8217;m probably going to rewrite several other posts as well in a more
+frank &quot;This is what&#8217;s happening&quot; manner instead of the usual &quot;Here&#8217;s a
+bunch of code, I hope you get it!&quot; that makes sense to me more than
+anyone&nbsp;else.</p>
+</div>
+
+            <aside>
+            <nav>
+            <ul class="articles_timeline">
+ 
+                <li class="previous_article">« <a href="http://justanr.github.io/sliding-windows-in-python" title="Previous: Sliding Windows in&nbsp;Python">Sliding Windows in&nbsp;Python</a></li>
+ 
+                <li class="next_article"><a href="http://justanr.github.io/describing-descriptors" title="Next: Describing&nbsp;Descriptors">Describing&nbsp;Descriptors</a> »</li>
+            </ul>
+            </nav>
+            </aside>
+<section>
+<hr/>
+<p id="comment-message">I spilled my brains, spill some of yours. </p>
+<div class="accordion" id="accordion2">
+    <div class="accordion-group">
+        <div class="accordion-heading">
+            <a class="accordion-toggle disqus-comment-count" data-toggle="collapse" data-parent="#accordion2" 
+                href="http://justanr.github.io/decorator-day/#disqus_thread">
+                Comments
+            </a>
+        </div>
+        <div id="disqus_thread" class="accordion-body collapse">
+            <div class="accordion-inner">
+                <div class="comments">
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ballinoctobear';
+        var disqus_identifier = 'http://justanr.github.io/decorator-day';
+    var disqus_url = 'http://justanr.github.io/decorator-day';
+
+    (function() {
+         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+         dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+     })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+        </div>
+        <section>
+        <div class="span2" style="float:right;font-size:0.9em;">
+ 
+            <h4>Published</h4>
+            <time pubdate="pubdate" datetime="2014-08-21T00:00:00-04:00">Aug 21, 2014</time>
+            <h4>Category</h4>
+            <a class="category-link" href="/categories.html#tutorials-ref">tutorials</a> 
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article"> 
+                <li><a href="/tags.html#decorators-ref">decorators
+                    <span>1</span>
+</a></li>
+                <li><a href="/tags.html#functions-ref">functions
+                    <span>2</span>
+</a></li>
+                <li><a href="/tags.html#python-ref">python
+                    <span>8</span>
+</a></li>
+            </ul>
+
+        </div>
+        </section>
+    </div>
+    </article>
+                </div>
+                <div class="span1"></div>
+            </div>
+        </div>
+    </div>
+<footer>
+<div id="footer">
+    <ul class="footer-content">
+        <li class="elegant-license">Shared under the Creative Commons for content and MIT for code</li>
+        <li class="elegant-power">Powered by <a href="http://getpelican.com/" title="Pelican Home Page">Pelican</a>. Theme: <a href="http://oncrashreboot.com/pelican-elegant" title="Theme Elegant Home Page">Elegant</a> by <a href="http://oncrashreboot.com" title="Talha Mansoor Home Page">Talha Mansoor</a></li>
+    </ul>
+</div>
+</footer>            <script src="http://code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+<script type="text/javascript">
+    var disqus_shortname = 'ballinoctobear';
+
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+    </script>
+    </body>
+</html>

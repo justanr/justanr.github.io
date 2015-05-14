@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="Alec Nikolas Reiter" />
+        <meta name="copyright" content="Alec Nikolas Reiter" />
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="/theme/slicknav.css">
+        <script src="/theme/jquery.slicknav.min.js"></script>
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+        <script type="text/javascript"
+            src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+        </script>
+        <!--[if lt IE 9]>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.2/html5shiv.js"></script>
+        <![endif]-->
+
+
+<meta name="keywords" content="functions, design, tips and tricks, " />
+        <title>Self-Describing&nbsp;Functions - from alec.thoughts import *
+</title>
+        <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="http://justanr.github.io/theme/css/style.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="http://justanr.github.io/theme/css/solarizedlight.css" media="screen">
+        <link rel="shortcut icon" href="http://justanr.github.io/theme/images/favicon.ico" type="image/x-icon" />
+        <link rel="apple-touch-icon" href="http://justanr.github.io/theme/images/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" sizes="57x57" href="http://justanr.github.io/theme/images/apple-touch-icon-57x57.png" />
+        <link rel="apple-touch-icon" sizes="72x72" href="http://justanr.github.io/theme/images/apple-touch-icon-72x72.png" />
+        <link rel="apple-touch-icon" sizes="114x114" href="http://justanr.github.io/theme/images/apple-touch-icon-114x114.png" />
+        <link rel="apple-touch-icon" sizes="144x144" href="http://justanr.github.io/theme/images/apple-touch-icon-144x144.png" />
+        <link rel="icon" href="http://justanr.github.io/theme/images/apple-touch-icon-144x144.png" />
+    </head>
+    <body>
+        <div id="content-sans-footer">
+        <div class="navbar navbar-static-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="http://justanr.github.io/"><span class=site-name>from alec.thoughts import *</span></a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav pull-right top-menu">
+                            <li ><a href="http://justanr.github.io">Home</a></li>
+                            <li ><a href="http://justanr.github.io/categories.html">Categories</a></li>
+                            <li ><a href="http://justanr.github.io/tags.html">Tags</a></li>
+                            <li ><a href="http://justanr.github.io/archives.html">Archives</a></li>
+                            <li><form class="navbar-search" action="http://justanr.github.io/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span1"></div>
+                <div class="span10">
+<article>
+<div class="row-fluid">
+    <header class="page_header span10 offset2">
+    <h1><a href="http://justanr.github.io/self-describing-functions"> Self-Describing&nbsp;Functions  </a></h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+
+            <div class="section" id="self-describing-functions">
+<h2>Self-Describing&nbsp;Functions</h2>
+<p>This post isn&#8217;t about writing functions. It&#8217;s not about what
+<tt class="docutils literal">*args, **kwargs</tt> means, closures, decorators, callbacks, or <tt class="docutils literal">def</tt>.
+It&#8217;s about writing self-describing functions. That nebulous term that
+everyone knows they should be doing and has an idea of what it means,
+but no one really knows what it&nbsp;means.</p>
+<p>Before I dive into this, I will point out that <em>way</em> smarter people than
+I have written entire books about this very thing. This is more a
+distillation of what I&#8217;ve found best works for me. Your experience and
+philosophies on software design may lead you down an alternative&nbsp;path.</p>
+<p>Since functions are the most basic code block in Python, it&#8217;s easiest to
+lay out my thoughts with them. From there, they&#8217;re easily extrapolated
+to classes, modules and&nbsp;packages.</p>
+<div class="section" id="describing-self-describing">
+<h3>Describing&nbsp;Self-Describing</h3>
+<p>Since self-describing is like &quot;synergy&quot; or &quot;webscale&quot; where people have
+ideas and vague defitions of what it means to be &quot;synergistic&quot; or
+&quot;webscale&quot; but mostly it ends up sounding like a CutCo sales&nbsp;pitch.</p>
+<p>To mean, self-describing means a number of things, but the most
+important bits&nbsp;are:</p>
+<ul class="simple">
+<li>Well&nbsp;Named</li>
+<li>Avoids&nbsp;&quot;Ands&quot;</li>
+<li>Documentation</li>
+<li>Clear, Concise&nbsp;Code</li>
+</ul>
+</div>
+<div class="section" id="well-named">
+<h3>Well&nbsp;Named</h3>
+<p>There&#8217;s a joke in metal circles that the late guitarist for Mayhem &#8212;
+Euronymous &#8212; chose his name because he thought it was a Greek demon,
+but actually it&#8217;s Greek for &quot;well named.&quot; I&#8217;m unsure of the validity of
+the rumor (It&#8217;s all Greek to me), but I&#8217;ve always been amused by&nbsp;it.</p>
+<p>The importance of choosing a good name for functions can&#8217;t be
+overstated. Since functions take a snippet of code and turns it into a
+reusable piece, when you see that piece being used you <em>need</em> to know
+exactly what it&#8217;s doing. For a minute, let&#8217;s place ourselves as
+researchers in the field of Frobincated Mathematics. We spend all day
+calculating frobs. Notebooks, white boards and even our code bases are
+littered with the Frobincator&nbsp;Theorem:</p>
+<pre class="code python literal-block">
+<span class="n">frob</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span>
+</pre>
+<p>A simple, yet powerful formula in our every day work to find ever bigger
+and better frobs. However, we type it out <em>a lot</em>. One of our CompSci
+friends points out, &quot;Hey, why don&#8217;t you make that a function instead of
+typing it everywhere?&quot; To which leads a debate on the differences
+between mathematical and programmtic functions that is neither here nor
+there. Eventually, we do and we end up with&nbsp;this:</p>
+<pre class="code python literal-block">
+<span class="k">def</span> <span class="nf">calc</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span>
+</pre>
+<p>See any problems? I do. While we&#8217;ve taken a common piece of our code
+base and made it reusable, we&#8217;ve actually obfuscated our intent!
+<tt class="docutils literal">calc</tt>? <tt class="docutils literal">calc</tt> what? Pythag triples? Fibonnaci numbers? Our most
+precious frobs? If we had to get our CompSci buddy to help us debug an
+issue, he&#8217;s gonna wonder exactly that. He&#8217;ll either ask us what it means
+and does, or he&#8217;ll run <tt class="docutils literal">grep <span class="pre">-ir</span> &quot;def calc&quot; .</tt> to find it. Either way,
+we&#8217;ve done ourselves a great disservice. But instead, if we change it,
+ever so slightly, to&nbsp;this:</p>
+<pre class="code python literal-block">
+<span class="k">def</span> <span class="nf">calc_frob</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre>
+<p>Then, everyone knows that it&#8217;s calculating frobs! Sure, we may still
+need to track down the actual source code to see if it&#8217;s causing
+problems, but there&#8217;s no headscratching at what it&nbsp;does.</p>
+<p>Currently, in one of my projects&#8217; code base, there is a function that
+isn&#8217;t well named. It&#8217;s called <tt class="docutils literal">find</tt>. What does <tt class="docutils literal">find</tt> find?
+Well&#8230;actually, it&#8217;s more of a <em>filter</em> than a finder. Sure it uses
+<tt class="docutils literal">os.walk</tt> to get file names but it doesn&#8217;t really find things as it
+makes sure we only grab the correct file types (based on the fool-proof
+way of trusting the extension&#8230;). Had I named it <tt class="docutils literal">filter_file_exts</tt>
+or <tt class="docutils literal">sift_extensions</tt>, there wouldn&#8217;t be an&nbsp;issue.</p>
+<p>But sadly, I have learned the hard way, so you don&#8217;t have to. Recently,
+I had to revisit some old <span class="caps">PHP</span> I wrote between two and four years ago &#8212;
+it was a time of drunken code debauchery. Some day you&#8217;ll write code
+that you&#8217;ll need to revise two years &#8212; or even two <em>days</em> &#8212; later and
+you&#8217;ll look at a function call and go &quot;What in the world does
+<tt class="docutils literal">\manager\extractAll</tt> even do?&quot; Do yourself a favor now, and starting
+naming and renaming functions to better things. <a class="reference external" href="http://martinfowler.com/bliki/TwoHardThings.html">Even if naming things
+is&nbsp;hard</a></p>
+<p>The same logic applies to variables &#8212; inside and outside functions. In
+our <tt class="docutils literal">calc_frob</tt> function, it makes sense what a, b and x are doing.
+But if you have a thirty line function, will you remember what <tt class="docutils literal">x</tt>
+means by line fifteen? If you&#8217;re dealing with interest on a loan, try
+naming it <tt class="docutils literal">interest_percent</tt> or if that&#8217;s too long <tt class="docutils literal">percent</tt> if it&#8217;s
+still&nbsp;clear.</p>
+<p>There are short hand variables that most people will recognize, like
+<tt class="docutils literal">fh</tt> for a file handle. And if you&#8217;re opening (and closing!) a
+<em>single</em> file, then name it <tt class="docutils literal">fh</tt>. It won&#8217;t confuse me or you or anyone
+else involved. But, if you&#8217;re opening two files &#8212; maybe you&#8217;re
+shuffling data between them &#8212; then don&#8217;t name them <tt class="docutils literal">fh1</tt> and <tt class="docutils literal">fh2</tt>
+but consider <tt class="docutils literal">source_fh</tt> and <tt class="docutils literal">target_fh</tt>.</p>
+</div>
+<div class="section" id="avoids-ands">
+<h3>Avoids&nbsp;&quot;Ands&quot;</h3>
+<p>By &quot;ands&quot; I of course don&#8217;t mean things like boolean ands or
+if/elif/else blocks, rather I mean when you&#8217;re describing the function
+you don&#8217;t need to use the word &quot;and&quot; to get it&#8217;s job across. &quot;This
+functions gathers a list of file names <strong>*<span class="caps">AND</span>*</strong> filters them.&quot; Why not
+write a function that just filters the file names and pass it an
+iterable of file&nbsp;names?</p>
+<p>This ties into a later point, but in that same project code base there&#8217;s
+a function called &quot;store_directory&quot; &#8212; which I consider well-ish named,
+since it makes sense in the context of it&#8217;s module. This thing is 54
+lines long and does way more than just stuff <span class="caps">ID3</span> info into a database:
+outputs to the screen, times the operation, counts the number of files,
+massages <span class="caps">ID3</span> info into a dictionary, converts the dictionary to data
+models, figures out if genres are being tagged, what genres to tag,
+who&#8217;s tagging, <strong>*<span class="caps">AND</span>*</strong> stuffs the data into the database. To be a
+little fair to myself, some of that work (not much) is farmed out to
+other functions, but it&#8217;s a mess of try-except-finally blocks, loops,
+conditionals. The actually important part of the function is so buried,
+when I get around to refactoring it, I&#8217;ll probably write a Cliff&#8217;s Notes
+comment about it and just <tt class="docutils literal">:dG</tt>. Good bye horrible&nbsp;function!</p>
+<p>Why? Because my application isn&#8217;t a single monolothic function that does
+twelve different things. It&#8217;s a series of cooperative pieces that work
+together to do something. If your coffee grinder also had a salad mixer
+built in, would you consider it a well designed coffee grinder? Who even
+has salad and coffee together? Maybe a fruit salad for breakfast, but&nbsp;still.</p>
+<p>By contrast, there&#8217;s a function called <tt class="docutils literal">break_tag</tt> at the top of the
+file which has six lines of documentation and four examples for 1 line
+of&nbsp;code:</p>
+<pre class="code python literal-block">
+<span class="k">def</span> <span class="nf">break_tag</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">breakers</span><span class="o">=</span><span class="p">(</span><span class="s">'</span><span class="se">\\\\</span><span class="s">'</span><span class="p">,</span> <span class="s">'/'</span><span class="p">,</span> <span class="s">'&amp;'</span><span class="p">,</span> <span class="s">','</span><span class="p">,</span> <span class="s">' '</span><span class="p">,</span>  <span class="s">'</span><span class="se">\\</span><span class="s">\.'</span><span class="p">)):</span>
+    <span class="sd">'''Breaks a composite tag into smaller pieces based on certain
+    punctuation. Smaller tags are stripped for excess white space before
+    being placed into a set.
+
+    .. code-block:: python
+        break_tag('viking / folk')  # -&gt; {'viking', 'folk'}
+        break_tag('dance &amp; pop') # -&gt; {'dance', 'pop'}
+        break_tag('thrash metal') # -&gt; {'thash', 'metal'}
+        break_tag('progressive metal / black metal')
+            # -&gt; {'progressive', 'black', 'metal'}
+
+    :param tag str: The tag to be analyzed and broken.
+    :param breakers iterable: A group of characters to break larger tags with.
+    :returns set:
+    '''</span>
+    <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">'|'</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">breakers</span><span class="p">),</span> <span class="n">tag</span><span class="p">))</span>
+</pre>
+<p>Is there a technical and in there? Sure, if you want to split hairs, it
+does break a larger tag down <em>and</em> strips white space off the smaller
+bits, but if you (like me) consider stripping the white space off to be
+breaking the bigger tag down, then there&#8217;s not. Plus I didn&#8217;t have to
+make up some obtuse phrase like &quot;atomic&nbsp;tags.&quot;</p>
+<p>Rather than writing functions that are described by &quot;and,&quot; why not write
+pure functions and pass them data? Pure functions are wonderful: they
+don&#8217;t have side effects, they do one thing, you can have deterministic&nbsp;results!</p>
+<p>Think of the simple unit tests you can write! You know how I&#8217;d test
+<tt class="docutils literal">break_tag</tt>? I&#8217;d give it three inputs that should do the right thing,
+and three inputs that should do the &quot;wrong&quot; thing and verify those. How
+would I test <tt class="docutils literal">store_directory</tt>? &#8230;I didn&#8217;t, becuase by the time I
+started mocking and patching things to make it &quot;testable&quot; I&#8217;d written
+about ninety lines of code that was just setup. And then I threw it away
+and called it a&nbsp;failure.</p>
+<p>Will you always avoid &quot;ands?&quot; No, because just like your application
+isn&#8217;t a single god function, it also isn&#8217;t a set of completely
+independent operations. You can&#8217;t expect a black box with no entry point
+and no exit point to do anything. It won&#8217;t even heat up when you turn it
+on because you can&#8217;t turn it on. You&#8217;ll have &quot;ands&quot; but they should
+appear where you&#8217;re retrieving data from I/O, processing it in the pure
+functions and then spitting it back out to I/O. &quot;Ands&quot; should be used to
+wire pieces&nbsp;together.</p>
+</div>
+<div class="section" id="documentation">
+<h3>Documentation</h3>
+<p>The first thing I do after I finishing writing <tt class="docutils literal">def frob(a, b, x):</tt> is
+to immediately open a docstring. To me, docstrings <em>are</em> the function,
+they describe what a function does, what the different parameters are
+and might even provide example usage or doctests. Below the docstring is
+just a language specific implementation. <tt class="docutils literal">(a + b) * x</tt> is obvious to
+the point where you might think, &quot;Do I need a docstring?&quot; The answer is&nbsp;yes.</p>
+<pre class="code python literal-block">
+<span class="k">def</span> <span class="nf">calc_frob</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculates a frob based on the Frobincator Theorem.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span>
+</pre>
+<p>In addition to giving it a concise name, we&#8217;ve also given more
+information to those that come behind us. Maybe they&#8217;re unfamiliar with
+frobincated mathematics and don&#8217;t know the theorem. Now they&nbsp;do.</p>
+<p>Now, what I mean about language specific implementation is that even
+though we can write the same exact function with the same implementation
+in Haskell, someone <em>could</em> write it like&nbsp;this:</p>
+<pre class="code python literal-block">
+<span class="n">frob</span> <span class="n">a</span> <span class="n">b</span> <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="n">x</span> <span class="err">$</span> <span class="p">(</span><span class="o">+</span><span class="p">)</span> <span class="n">a</span> <span class="n">b</span>
+</pre>
+<p>Which looks completely different but does the exact same thing. A simple
+comment or docstring above it stating, &quot;This is the Frobincator Theorem&quot;
+makes it&#8217;s immediately clear what the function&nbsp;does.</p>
+<p>Even better, Python makes it ridiculously easy to look at docstrings
+without having to open a text&nbsp;editor!</p>
+<pre class="code python literal-block">
+<span class="k">print</span><span class="p">(</span><span class="n">calc_frob</span><span class="o">.</span><span class="n">__doc__</span><span class="p">)</span>
+</pre>
+<pre class="literal-block">
+Calculates a frob based on the Frobincator Theorem.
+</pre>
+<p>You can do that in a script or in the shell. IPython does it one better
+with the <tt class="docutils literal">?</tt> and <tt class="docutils literal"><span class="pre">??</span></tt> line magicks. <tt class="docutils literal">?</tt> displays the argument
+signature (if available) and the docstring if it&#8217;s present, along with a
+few more things. <tt class="docutils literal"><span class="pre">??</span></tt> will pull any Python source code (not
+C/Java/Whatever, just pure Python) available for the function (or class,
+object, module,&nbsp;etc).</p>
+<p>Since Python makes it easy to get to the docstrings, then I can&#8217;t think
+of a valid reason not to write them. And no, &quot;I was lazy&quot; isn&#8217;t a valid
+excuse &#8212; even if I&#8217;ve used it&nbsp;before.</p>
+<p>Another important aspect of documentation is comments. There&#8217;s people
+that will tell you if you have comments, then you&#8217;ve done something
+wrong. I completely disagree with that notion. Consider this field in a
+SQLAlchemy&nbsp;model:</p>
+<pre class="code python literal-block">
+<span class="n">_trackpositions</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span>
+    <span class="s">'TrackPosition'</span><span class="p">,</span>
+    <span class="n">backref</span><span class="o">=</span><span class="s">'tracklist'</span><span class="p">,</span>
+    <span class="n">order_by</span><span class="o">=</span><span class="s">'TrackPosition.position'</span><span class="p">,</span>
+    <span class="n">collection_class</span><span class="o">=</span><span class="n">ordering_list</span><span class="p">(</span><span class="s">'position'</span><span class="p">),</span>
+   <span class="p">)</span>
+</pre>
+<p>Are you familiar with the <tt class="docutils literal">collection_class</tt> keyword? Or
+<tt class="docutils literal">ordering_list</tt>? I wasn&#8217;t once and chances are, one day someone else
+who isn&#8217;t will stumble across that field, scratch their head and let out
+an audible &quot;<span class="caps">WTF</span>?&quot; before either giving up or looking up the meaning. But
+with the original comment in&nbsp;place&#8230;</p>
+<pre class="code python literal-block">
+<span class="n">_trackpositions</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span>
+    <span class="s">'TrackPosition'</span><span class="p">,</span>
+    <span class="n">backref</span><span class="o">=</span><span class="s">'tracklist'</span><span class="p">,</span>
+    <span class="c"># ordering_list will automatically update the position attribute</span>
+    <span class="c"># on the proxied Tracks. However, it must also be fed a correct</span>
+    <span class="c"># inital ordering.</span>
+    <span class="n">order_by</span><span class="o">=</span><span class="s">'TrackPosition.position'</span><span class="p">,</span>
+    <span class="n">collection_class</span><span class="o">=</span><span class="n">ordering_list</span><span class="p">(</span><span class="s">'position'</span><span class="p">),</span>
+   <span class="p">)</span>
+</pre>
+<p>&#8230;the basic intent is communicated. If docstrings are the definition of
+the function, then comments are just notes on the language specific
+implementation of it. When you&#8217;re using someone else&#8217;s code, you can&#8217;t
+just change the name of something, nor does your intent always get
+cleanly communicated through the code. However, comments allow you to
+clarify what <em>is</em> meant. They&#8217;re also helpful for noting what needs to
+be&nbsp;improved.</p>
+<p>Just real quick, <tt class="docutils literal">cd</tt> over to a project you have and run
+<tt class="docutils literal">grep <span class="pre">-ir</span> todo .</tt> and see what pops out. I have a todo in another
+project that reads: &quot;#<span class="caps">TODO</span>: cleanly handle multiple endpoints&quot; in the
+context of JSONPath. I didn&#8217;t want to spend two hours at the time
+writing the implementation that would muddy up an otherwise nice looking
+function and vim is ever so helpful and highlights it an really ugly
+yellow that I feel the compulsive urge to&nbsp;remove.</p>
+<p>This doesn&#8217;t mean you should place comments willy nilly all over the
+place, for example this comment isn&#8217;t helpful at&nbsp;all:</p>
+<pre class="code python literal-block">
+<span class="k">def</span> <span class="nf">frob</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="c">#multiples x by the sum of a and b</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span>
+</pre>
+<p>But when you come across a piece of code you&#8217;ve written that maybe needs
+a little clarification on <em>how</em> it works, then toss a comment on there
+for mental health&#8217;s&nbsp;sake.</p>
+<p>However, documentation and comments are no reason not to&nbsp;write&#8230;</p>
+</div>
+<div class="section" id="clean-concise-code">
+<h3>Clean, Concise&nbsp;Code</h3>
+<p>This is the final point and the least important of them to me. If you&#8217;ve
+named your function well, avoided doing &quot;And-y&quot; things and you&#8217;ve
+written a nice docstring and some comments, I can stomach poorly written
+code. I can reason about what it&#8217;s supposed to do. However, I do ask you
+to do your&nbsp;best.</p>
+<p>When you actually get around to writing code, remember Einstein&#8217;s take
+on Occam&#8217;s Razor: Everything should be made as simple as possible, but
+not simpler. I&#8217;m not actually sure if Einstein said that, but it&#8217;s
+widely attributed to him. This is the approach we should take to writing
+code and it ties in greatly with the &quot;Avoid And&quot; principle and pure&nbsp;functions.</p>
+<p>Consider building a basic Markov Chain with a dictionary and lists.
+There are three ways to ensure a list of words exists at a keyword. The
+most basic is&nbsp;this:</p>
+<pre class="code python literal-block">
+<span class="n">markov</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="k">def</span> <span class="nf">add_entry</span><span class="p">(</span><span class="n">chain</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">state</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">chain</span><span class="p">:</span>
+        <span class="n">chain</span><span class="p">[</span><span class="n">state</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">chain</span><span class="p">[</span><span class="n">state</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
+</pre>
+<p>However, Python dictionaries have a <tt class="docutils literal">setdefault</tt> method which checks
+if the key exists already and if not, creates a default entry for&nbsp;it.</p>
+<pre class="code python literal-block">
+<span class="n">markov</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="k">def</span> <span class="nf">add_entry</span><span class="p">(</span><span class="n">chain</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+    <span class="n">chain</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
+</pre>
+<p>But by and afar my favorite way to handle this is with
+<tt class="docutils literal">collections.defaultdict</tt>:</p>
+<pre class="code python literal-block">
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+
+<span class="n">markov</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">add_entry</span><span class="p">(</span><span class="n">chain</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+    <span class="n">chain</span><span class="p">[</span><span class="n">state</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
+</pre>
+<p>I&#8217;d consider all three clean and concise, and all equally appropriate.
+However, as much as I love <tt class="docutils literal">defaultdict</tt> the last version doesn&#8217;t
+communicate the full intent that we&#8217;re intending to use one. It makes
+things <em>too</em> simple, whereas the first two communicate that &quot;Hey, this
+new state might not exist in the chain yet.&quot; Though in actual practice,
+it would depend on how self-contained the actual chains were is how
+you&#8217;d decide which method to&nbsp;us.</p>
+</div>
+</div>
+<div class="section" id="parting-thoughts">
+<h2>Parting&nbsp;Thoughts</h2>
+<p>Like I said, this stuff is easily extrapolated to classes all the way up
+to whole applications. And I will also admit that the avoiding ands is
+largely inspired by the Clean Architecture and Onion Architecture design
+patterns I&#8217;ve been reading about lately, and specifically from Brandon
+Rhodes&#8217;s <a class="reference external" href="https://www.youtube.com/watch?v=DJtef410XaM">The Clean Architecture in
+Python</a> presentation at
+PyOhio&nbsp;2014.</p>
+<p>If you&#8217;ve got some poorly named, undocumented or and-y functions in your
+projects, I urge you to go and look at them and see what can be changed
+to help your project. I know not every function name can be changed
+easily, especially if it shares a name with something or is a common
+word. But if you can change it easily and it improves your project, why&nbsp;not?</p>
+</div>
+
+            <aside>
+            <nav>
+            <ul class="articles_timeline">
+ 
+                <li class="previous_article">« <a href="http://justanr.github.io/understanding-foobar" title="Previous: Understanding&nbsp;foo.bar()">Understanding&nbsp;foo.bar()</a></li>
+ 
+                <li class="next_article"><a href="http://justanr.github.io/musings-on-problem-solving" title="Next: Musings on Problem&nbsp;Solving">Musings on Problem&nbsp;Solving</a> »</li>
+            </ul>
+            </nav>
+            </aside>
+<section>
+<hr/>
+<p id="comment-message">I spilled my brains, spill some of yours. </p>
+<div class="accordion" id="accordion2">
+    <div class="accordion-group">
+        <div class="accordion-heading">
+            <a class="accordion-toggle disqus-comment-count" data-toggle="collapse" data-parent="#accordion2" 
+                href="http://justanr.github.io/self-describing-functions/#disqus_thread">
+                Comments
+            </a>
+        </div>
+        <div id="disqus_thread" class="accordion-body collapse">
+            <div class="accordion-inner">
+                <div class="comments">
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ballinoctobear';
+        var disqus_identifier = 'http://justanr.github.io/self-describing-functions';
+    var disqus_url = 'http://justanr.github.io/self-describing-functions';
+
+    (function() {
+         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+         dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+     })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+        </div>
+        <section>
+        <div class="span2" style="float:right;font-size:0.9em;">
+ 
+            <h4>Published</h4>
+            <time pubdate="pubdate" datetime="2015-01-18T00:00:00-05:00">Jan 18, 2015</time>
+            <h4>Category</h4>
+            <a class="category-link" href="/categories.html#tips-and-tricks-ref">tips and tricks</a> 
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article"> 
+                <li><a href="/tags.html#design-ref">design
+                    <span>4</span>
+</a></li>
+                <li><a href="/tags.html#functions-ref">functions
+                    <span>2</span>
+</a></li>
+            </ul>
+
+        </div>
+        </section>
+    </div>
+    </article>
+                </div>
+                <div class="span1"></div>
+            </div>
+        </div>
+    </div>
+<footer>
+<div id="footer">
+    <ul class="footer-content">
+        <li class="elegant-license">Shared under the Creative Commons for content and MIT for code</li>
+        <li class="elegant-power">Powered by <a href="http://getpelican.com/" title="Pelican Home Page">Pelican</a>. Theme: <a href="http://oncrashreboot.com/pelican-elegant" title="Theme Elegant Home Page">Elegant</a> by <a href="http://oncrashreboot.com" title="Talha Mansoor Home Page">Talha Mansoor</a></li>
+    </ul>
+</div>
+</footer>            <script src="http://code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+<script type="text/javascript">
+    var disqus_shortname = 'ballinoctobear';
+
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+    </script>
+    </body>
+</html>

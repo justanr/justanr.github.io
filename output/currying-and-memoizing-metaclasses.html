@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="Alec Nikolas Reiter" />
+        <meta name="copyright" content="Alec Nikolas Reiter" />
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="/theme/slicknav.css">
+        <script src="/theme/jquery.slicknav.min.js"></script>
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+        <script type="text/javascript"
+            src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+        </script>
+        <!--[if lt IE 9]>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.2/html5shiv.js"></script>
+        <![endif]-->
+
+
+<meta name="keywords" content="python3, metaprogramming, tutorials, " />
+        <title>Currying and Memoizing&nbsp;Metaclasses - from alec.thoughts import *
+</title>
+        <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="http://justanr.github.io/theme/css/style.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="http://justanr.github.io/theme/css/solarizedlight.css" media="screen">
+        <link rel="shortcut icon" href="http://justanr.github.io/theme/images/favicon.ico" type="image/x-icon" />
+        <link rel="apple-touch-icon" href="http://justanr.github.io/theme/images/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" sizes="57x57" href="http://justanr.github.io/theme/images/apple-touch-icon-57x57.png" />
+        <link rel="apple-touch-icon" sizes="72x72" href="http://justanr.github.io/theme/images/apple-touch-icon-72x72.png" />
+        <link rel="apple-touch-icon" sizes="114x114" href="http://justanr.github.io/theme/images/apple-touch-icon-114x114.png" />
+        <link rel="apple-touch-icon" sizes="144x144" href="http://justanr.github.io/theme/images/apple-touch-icon-144x144.png" />
+        <link rel="icon" href="http://justanr.github.io/theme/images/apple-touch-icon-144x144.png" />
+    </head>
+    <body>
+        <div id="content-sans-footer">
+        <div class="navbar navbar-static-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="http://justanr.github.io/"><span class=site-name>from alec.thoughts import *</span></a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav pull-right top-menu">
+                            <li ><a href="http://justanr.github.io">Home</a></li>
+                            <li ><a href="http://justanr.github.io/categories.html">Categories</a></li>
+                            <li ><a href="http://justanr.github.io/tags.html">Tags</a></li>
+                            <li ><a href="http://justanr.github.io/archives.html">Archives</a></li>
+                            <li><form class="navbar-search" action="http://justanr.github.io/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span1"></div>
+                <div class="span10">
+<article>
+<div class="row-fluid">
+    <header class="page_header span10 offset2">
+    <h1><a href="http://justanr.github.io/currying-and-memoizing-metaclasses"> Currying and Memoizing&nbsp;Metaclasses  </a></h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+
+            <p>I&#8217;ve been playing with the <a class="reference external" href="https://github.com/pytoolz/toolz">toolz</a>
+library recently and it&#8217;s pretty great, especially their implementation
+of the curry and memoize decorators. However, applying these to classes
+creates a problem: inheritance. A quick example before we delve into
+solving this&nbsp;problem:</p>
+<pre class="code python literal-block">
+<span class="kn">from</span> <span class="nn">toolz</span> <span class="kn">import</span> <span class="n">curry</span><span class="p">,</span> <span class="n">memoize</span>
+
+<span class="nd">&#64;curry</span>
+<span class="k">class</span> <span class="nc">Person</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">age</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">age</span> <span class="o">=</span> <span class="n">age</span>
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;Person(name={!r}, age={!r})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">age</span><span class="p">)</span>
+
+<span class="n">p</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">'alec'</span><span class="p">)</span>
+<span class="n">p</span><span class="p">(</span><span class="n">age</span><span class="o">=</span><span class="mi">26</span><span class="p">)</span>
+</pre>
+<pre class="literal-block">
+Person(name='alec', age=26)
+</pre>
+<p>Currying a class we don&#8217;t expect to inherit from is easy. However, if
+someone comes along and says, &quot;I&#8217;d like to create a subclass&quot; then
+there&#8217;s an&nbsp;issue&#8230;</p>
+<pre class="code python literal-block">
+<span class="k">class</span> <span class="nc">PersonWithHobby</span><span class="p">(</span><span class="n">Person</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">age</span><span class="p">,</span> <span class="n">hobby</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">PersonWithHobby</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">age</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hobby</span> <span class="o">=</span> <span class="n">hobby</span>
+</pre>
+<pre class="literal-block">
+---------------------------------------------------------------------------
+
+TypeError                                 Traceback (most recent call last)
+
+&lt;ipython-input-2-12f89c179297&gt; in &lt;module&gt;()
+----&gt; 1 class PersonWithHobby(Person):
+      2     def __init__(self, name, age, hobby):
+      3         super(PersonWithHobby, self).__init__(name, age)
+      4         self.hobby = hobby
+
+
+/home/justanr/contrib/toolz/toolz/functoolz.py in __init__(self, func, *args, **kwargs)
+    155     def __init__(self, func, *args, **kwargs):
+    156         if not callable(func):
+--&gt; 157             raise TypeError(&quot;Input must be callable&quot;)
+    158
+    159         # curry- or functools.partial-like object?  Unpack and merge arguments
+
+
+TypeError: Input must be callable
+</pre>
+<p>Oh&#8230;that&#8217;s a problem. Instead, we have to inherit from <tt class="docutils literal">Person.func</tt>
+in the case of this decorator. Just like if we had partialled the class&nbsp;manually:</p>
+<pre class="code python literal-block">
+<span class="k">class</span> <span class="nc">PersonWithHobby</span><span class="p">(</span><span class="n">Person</span><span class="o">.</span><span class="n">func</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">age</span><span class="p">,</span> <span class="n">hobby</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">PersonWithHobby</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">age</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hobby</span> <span class="o">=</span> <span class="n">hobby</span>
+</pre>
+<p>But if you&#8217;re anything like me that inheritance line is&#8230;bothersome.
+Because we&#8217;re locking up the original class in the curry decorator,
+there&#8217;s no clean way to get it out and just inherit from it other than
+accessing the decorator&#8217;s attributes themselves. I tried for about six
+hours and ended up roping some folks at
+<a class="reference external" href="http://www.reddit.com/r/learnpython">/r/learnpython</a> into that mess
+as&nbsp;well.</p>
+<p>Using the memoize decorator presents the same issue. Instead, what we&#8217;d
+probably like to do is not only inherit from the class, but retain its
+currying or memoizing&nbsp;characteristics.</p>
+<div class="section" id="metaclasses-are-to-classes-as-decorators-are-to-functions">
+<h2>Metaclasses are to classes as decorators are to&nbsp;functions</h2>
+<p>Ooooh, the scary &quot;M&quot; word. Tim Peters once&nbsp;said,</p>
+<pre class="literal-block">
+Metaclasses are deeper magic than 99% of users should ever worry about. If you wonder whether you need them, you don't (the people who actually need them know with certainty that they need them, and don't need an explanation about why).
+</pre>
+<p>That&#8217;s a pretty big warning to attach to something. Metaclasses are deep
+magic, but it&#8217;s relatively straight forward magic. If you&#8217;re unsure
+about <em>what</em> a metaclass is, check out <a class="reference external" href="http://eli.thegreenplace.net/2011/08/14/python-metaclasses-by-example">Eli Bendersky&#8217;s Python
+metaclasses by
+example</a>
+for an overview. But the short of it is&nbsp;this:</p>
+<ul class="simple">
+<li><em>Everything</em> in Python is an Object (including: functions, classes
+and even&nbsp;modules)</li>
+<li>Classes make&nbsp;objects.</li>
+<li>If classes are objects, too, it serves to reason that there&#8217;s a class
+that makes&nbsp;them</li>
+<li>That class-making-class is called&nbsp;type.</li>
+</ul>
+<p><tt class="docutils literal">type</tt> is our magic that takes a class body and makes it an object.
+This is the default <em>metaclass</em> for all of our classes. However, we
+don&#8217;t want vanilla Python classes. We&#8217;d like to have classes that are
+curryable or can be&nbsp;memoized.</p>
+<p>The problem with using a decorator is that it&#8217;ll happily apply to the
+immediate object, but it generally won&#8217;t apply to an entire inheritance
+chain. But a metaclass&nbsp;will.</p>
+<div class="section" id="an-aside-new-vs-a-metaclass">
+<h3>An Aside: new vs a&nbsp;Metaclass</h3>
+<p>Both of what I&#8217;m about to show <em>could</em> be achieved by overriding
+<tt class="docutils literal">__new__</tt> on a regular class. However, that&#8217;s no fun. Though, since
+metaclasses are more about creating classes than instances, I couldn&#8217;t
+blame you if you created <tt class="docutils literal">CurryableMixin</tt> and <tt class="docutils literal">MemoizedMixin</tt>
+classes and called it a&nbsp;day.</p>
+<p>However, I find cooperative multiple inheritance that uses <tt class="docutils literal">__new__</tt>
+to be difficult to manage, especially because <tt class="docutils literal">object.__new__</tt> accepts
+<em>no</em> arguments other than the class it makes the object out of. So some
+sort of sink would be needed to strip off any extra <tt class="docutils literal">kwargs</tt> passed
+along and then you have to consider if inheriting from an immutable
+object comes afterwards and if it&#8217;ll need any of the kwargs and it&#8217;ll
+quickly turn into a mess if you try to capture all the corner&nbsp;cases.</p>
+</div>
+</div>
+<div class="section" id="curryable-metaclass">
+<h2>Curryable&nbsp;Metaclass</h2>
+<p>This is actually the simpler of the two metaclasses to write,
+surprisingly. Instead of doing any magic in <tt class="docutils literal">__new__</tt> or <tt class="docutils literal">__init__</tt>
+we simply override <tt class="docutils literal">__call__</tt> instead. <tt class="docutils literal">__call__</tt> in this case is
+analogous to <tt class="docutils literal">__new__</tt> in a regular class, this handles instantiation
+of an actual object, rather than class&nbsp;creation.</p>
+<pre class="code python literal-block">
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+
+<span class="k">class</span> <span class="nc">Curryable</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="c"># one level up from classes</span>
+    <span class="c"># cls here is the actual class we've created already</span>
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c"># we'd like to preserve metadata but not migrate</span>
+        <span class="c"># the underlying dictionary</span>
+        <span class="nd">&#64;wraps</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">updated</span><span class="o">=</span><span class="p">[])</span>
+        <span class="c"># distinguish from what was passed to __call__</span>
+        <span class="c"># and what as passed to currier</span>
+        <span class="k">def</span> <span class="nf">currier</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">Curryable</span><span class="p">,</span> <span class="n">cls</span><span class="p">)</span><span class="o">.</span><span class="n">__call__</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span>
+        <span class="c"># there's sometimes odd behavior if this isn't done</span>
+        <span class="k">return</span> <span class="n">curry</span><span class="p">(</span><span class="n">currier</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre>
+<pre class="code python literal-block">
+<span class="k">class</span> <span class="nc">Person</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">Curryable</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">age</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">age</span> <span class="o">=</span> <span class="n">age</span>
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;Person(name={!r}, age={!r})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">age</span><span class="p">)</span>
+</pre>
+<pre class="code python literal-block">
+<span class="n">p</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">'alec'</span><span class="p">)</span>
+</pre>
+<pre class="code python literal-block">
+<span class="n">p</span><span class="p">(</span><span class="n">age</span><span class="o">=</span><span class="mi">26</span><span class="p">)</span>
+</pre>
+<pre class="literal-block">
+Person(name='alec', age=26)
+</pre>
+<p><tt class="docutils literal">curry</tt> guards against type errors, allowing us to repeatedly apply
+arguments until we get something that doesn&#8217;t throw a TypeError. This
+<em>also</em> allows us to build inheritance chains where we simply pass up
+<tt class="docutils literal">kwargs</tt> to the next&nbsp;class:</p>
+<pre class="code python literal-block">
+<span class="k">class</span> <span class="nc">PersonWithHobby</span><span class="p">(</span><span class="n">Person</span><span class="p">):</span>
+    <span class="c"># as an example only; it's still best practice to declare required parameters</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hobby</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">PersonWithHobby</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hobby</span> <span class="o">=</span> <span class="n">hobby</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;Person(name={!r}, age={!r}, hobby={!r})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">age</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hobby</span><span class="p">)</span>
+
+<span class="n">p</span> <span class="o">=</span> <span class="n">PersonWithHobby</span><span class="p">(</span><span class="n">hobby</span><span class="o">=</span><span class="s">'coding'</span><span class="p">)</span>
+</pre>
+<pre class="code python literal-block">
+<span class="n">p</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">'alec'</span><span class="p">,</span> <span class="n">age</span><span class="o">=</span><span class="mi">26</span><span class="p">)</span>
+</pre>
+<pre class="literal-block">
+Person(name='alec', age=26, hobby='coding')
+</pre>
+</div>
+<div class="section" id="memoizing-metaclass">
+<h2>Memoizing&nbsp;Metaclass</h2>
+<p>This one is quite a bit more difficult to write. Instead of just
+overriding <tt class="docutils literal">__call__</tt>, we need to override <tt class="docutils literal">__init__</tt> as well <em>and</em>
+provide a key-value store. Instead of throwing a bunch of code all at
+once, I&#8217;d rather disect it bit by&nbsp;bit:</p>
+<div class="section" id="default-cache-key">
+<h3>default_cache_key</h3>
+<p>By default, <tt class="docutils literal">memoize</tt> will attempt to do the right thing. However, it
+uses the inspect module to determine if there&#8217;s keyword arguments. This
+can act oddly sometimes and if memoize doesn&#8217;t detect keyword arguments,
+it&#8217;ll only memoize positional arguments. Instead, we&#8217;d like to <em>always</em>
+memoize both. We could go further and attempt to bind positional keyword
+arguments with their actual names, but for now, this will&nbsp;suffice.</p>
+<pre class="code python literal-block">
+<span class="k">def</span> <span class="nf">default_cache_key</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">args</span> <span class="ow">or</span> <span class="bp">None</span><span class="p">,</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">())</span> <span class="ow">or</span> <span class="bp">None</span><span class="p">)</span>
+</pre>
+</div>
+<div class="section" id="hybridvaluestore">
+<h3>HybridValueStore</h3>
+<p>If you&#8217;re not familiar with descriptors, I recommend <a class="reference external" href="http://nbviewer.ipython.org/urls/gist.github.com/ChrisBeaumont/5758381/raw/descriptor_writeup.ipynb">Chris Beaumont&#8217;s
+Python Descriptors
+Demystified</a>
+and <a class="reference external" href="https://www.youtube.com/watch?v=ZdvpNaWwx24">Simeon Franklin&#8217;s Descriptor&nbsp;talk</a></p>
+<p>We&#8217;ll also have to centralize our cache so we can control it. However,
+this presents a problem. If we have two memoized classes, they shouldn&#8217;t
+be able to poke at each other&#8217;s caches. So simply setting a dictionary
+on the metaclass won&#8217;t work. Rather we need to allow each class to only
+access it&#8217;s particular cache and actual instances of the class probably
+shouldn&#8217;t have access to the cache directly either since their only
+business with it is existing in&nbsp;it.</p>
+<p>And overriding a class&#8217;s cache should also affect the master cache as
+well so the two remain consistent. And deleting a class&#8217;s cache simply
+pops it from the master&nbsp;cache.</p>
+<p>With that in mind, we can write a descriptor that wraps any key-value
+store and either return the whole store if it&#8217;s the metaclass accessing
+it or, if it&#8217;s a memoized class accessing it, the descriptor will return
+just the class&#8217;s cache. Since we&#8217;re one level up from classes and
+instances, I&#8217;ve commented which parameters correspond to the class and&nbsp;metaclass.</p>
+<pre class="code python literal-block">
+<span class="k">class</span> <span class="nc">HybridValueStore</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">valuestore</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">valuestore</span> <span class="o">=</span> <span class="n">valuestore</span>
+
+            <span class="c">#   |+------------------&gt; The Descriptor Instance</span>
+            <span class="c">#   |     |+------------&gt; The Memoized Class</span>
+            <span class="c">#   |     |     |+------&gt; The Metaclass</span>
+    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inst</span><span class="p">,</span> <span class="n">cls</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">inst</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">valuestore</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">valuestore</span><span class="p">[</span><span class="n">inst</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inst</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">valuestore</span><span class="p">[</span><span class="n">inst</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">__delete__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inst</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">valuestore</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+</pre>
+</div>
+<div class="section" id="actual-metaclass">
+<h3>Actual&nbsp;Metaclass</h3>
+<p>Now, with those two out of the way, we can actually put the pieces&nbsp;together.</p>
+<pre class="code python literal-block">
+<span class="kn">from</span> <span class="nn">toolz</span> <span class="kn">import</span> <span class="n">memoize</span>
+
+<span class="k">class</span> <span class="nc">Memoized</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="n">cache</span> <span class="o">=</span> <span class="n">HybridValueStore</span><span class="p">({})</span>
+    <span class="n">cache_key</span> <span class="o">=</span> <span class="n">HybridValueStore</span><span class="p">({})</span>
+
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="n">mcls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">Memoized</span><span class="p">,</span> <span class="n">mcls</span><span class="p">)</span><span class="o">.</span><span class="n">__new__</span><span class="p">(</span><span class="n">mcls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">default_cache_key</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">cache</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">cache</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">cache</span> <span class="o">=</span> <span class="n">cache</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">cache_key</span> <span class="o">=</span> <span class="n">key</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Memoized</span><span class="p">,</span> <span class="n">cls</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nd">&#64;memoize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="n">cls</span><span class="o">.</span><span class="n">cache</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">cls</span><span class="o">.</span><span class="n">cache_key</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">memoizer</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">Memoized</span><span class="p">,</span> <span class="n">cls</span><span class="p">)</span><span class="o">.</span><span class="n">__call__</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">memoizer</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre>
+<p>The master cache is implemented with HybridValueStore using a regular
+dictionary that we add further mappings. Since we&#8217;ve provided a
+<tt class="docutils literal">__set__</tt> method, we can use a normal dictionary rather than something
+like <tt class="docutils literal">defaultdict</tt> which provides just-in-time access to&nbsp;keys.</p>
+<p>We also use the same thing with the cache_keys as well. Originally, I
+had planned on storing the key <em>on</em> the class&#8217;s cache, but seeing as
+<tt class="docutils literal">dict</tt> can&#8217;t host arbitrary attributes, that plan fell through.
+Rather, storing the key alongside the cache as a seperate attribute
+seems to function just&nbsp;fine.</p>
+<p><tt class="docutils literal">__new__</tt> is where things start to get strange. In addition to the
+normal parameters it accepts, there&#8217;s also <tt class="docutils literal">**kwargs</tt>. This is to
+allow passing keyword arguments to the metaclass, which we&#8217;ll see in a
+moment. In <tt class="docutils literal">__init__</tt> is where the extra keywords come into&nbsp;play:</p>
+<ul class="simple">
+<li><tt class="docutils literal">key</tt> is the function we&#8217;ll use to create cache keys and defaults
+to the function described&nbsp;above,</li>
+<li><tt class="docutils literal">cache</tt> is the mapping for storing instances. If it&#8217;s not provided,
+it simply defaults to a regular dictionary. However, this allows
+using things like <tt class="docutils literal">weakref.WeakValueDictionary</tt> or another
+specialized mapping as the container rather than a regular&nbsp;dictionary.</li>
+</ul>
+<p>Both of these are simple stored on the instance of the metaclass (which
+is the created class) but, interestingly, these <em>aren&#8217;t</em> available to
+the instances created from the&nbsp;class.</p>
+<p>And finally, <tt class="docutils literal">__call__</tt> is where the memoization actually happens. A
+wrapper is created to memoize and provided with the class&#8217;s cache and
+cache key function and the actual object instantiation is delegated to
+the next metaclass in the <span class="caps">MRO</span> (typically <tt class="docutils literal">type</tt>).</p>
+</div>
+<div class="section" id="in-action">
+<h3>In&nbsp;Action</h3>
+<p>After all that, let&#8217;s see this bad boy do its work, just two simple
+classes will&nbsp;work.</p>
+<pre class="code python literal-block">
+<span class="k">class</span> <span class="nc">Frob</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">Memoized</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frob</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frob</span> <span class="o">=</span> <span class="n">frob</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;Frob({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frob</span><span class="p">)</span>
+
+<span class="c"># simply here to show HybridValueStore's fine grained access</span>
+<span class="k">class</span> <span class="nc">Dummy</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">Memoized</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;Dummy&quot;</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">Frob</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">Dummy</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">f</span> <span class="ow">is</span> <span class="n">Frob</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="s">&quot;guess it didn't work&quot;</span>
+</pre>
+<p>That went well. Let&#8217;s see some other parts in&nbsp;action:</p>
+<pre class="code python literal-block">
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;Master Cache: &quot;</span><span class="p">,</span> <span class="n">Memoized</span><span class="o">.</span><span class="n">cache</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;Frob   Cache: &quot;</span><span class="p">,</span> <span class="n">Frob</span><span class="o">.</span><span class="n">cache</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;Dummy  Cache: &quot;</span><span class="p">,</span> <span class="n">Dummy</span><span class="o">.</span><span class="n">cache</span><span class="p">)</span>
+</pre>
+<pre class="literal-block">
+Master Cache:  {&lt;class '__main__.Dummy'&gt;: {(None, None): Dummy}, &lt;class '__main__.Frob'&gt;: {((1,), None): Frob(1)}}
+Frob   Cache:  {((1,), None): Frob(1)}
+Dummy  Cache:  {(None, None): Dummy}
+</pre>
+<p>Good to see the fine-grained access to the cache attribute is working.
+How about if we reset the cache for&nbsp;Frob?</p>
+<pre class="code python literal-block">
+<span class="n">Frob</span><span class="o">.</span><span class="n">cache</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;Master Cache: &quot;</span><span class="p">,</span> <span class="n">Memoized</span><span class="o">.</span><span class="n">cache</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;Frob   Cache: &quot;</span><span class="p">,</span> <span class="n">Frob</span><span class="o">.</span><span class="n">cache</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;Dummy  Cache: &quot;</span><span class="p">,</span> <span class="n">Dummy</span><span class="o">.</span><span class="n">cache</span><span class="p">)</span>
+</pre>
+<pre class="literal-block">
+Master Cache:  {&lt;class '__main__.Dummy'&gt;: {(None, None): Dummy}, &lt;class '__main__.Frob'&gt;: {}}
+Frob   Cache:  {}
+Dummy  Cache:  {(None, None): Dummy}
+</pre>
+<p>Awesome. Now, there was the curious keyword arguments that we can pass
+to the metaclass&#8230;but <em>how</em>? It&#8217;s simple, we pass them the same way
+metaclasses are declared (at least in Python&nbsp;3):</p>
+<pre class="code python literal-block">
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+
+<span class="k">def</span> <span class="nf">make_string_key</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">KeywordTest</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">Memoized</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">make_string_key</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="n">OrderedDict</span><span class="p">()):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<span class="n">kwt1</span> <span class="o">=</span> <span class="n">KeywordTest</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">kwt2</span> <span class="o">=</span> <span class="n">KeywordTest</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+</pre>
+<pre class="code python literal-block">
+<span class="k">print</span><span class="p">(</span><span class="n">KeywordTest</span><span class="o">.</span><span class="n">cache</span><span class="p">)</span>
+</pre>
+<pre class="literal-block">
+OrderedDict([('(1, 2, 3){}', &lt;__main__.KeywordTest object at 0x7fcdb018f358&gt;), ('(4, 5, 6){}', &lt;__main__.KeywordTest object at 0x7fcdb018f908&gt;)])
+</pre>
+<p>Now we have a cache that keeps order of when it&#8217;s values were&nbsp;created.</p>
+<p>Something curious about this setup is that instances of the memoized
+class <em>can&#8217;t</em> access the&nbsp;cache.</p>
+<pre class="code python literal-block">
+<span class="n">f</span><span class="o">.</span><span class="n">cache</span>
+</pre>
+<pre class="literal-block">
+---------------------------------------------------------------------------
+
+AttributeError                            Traceback (most recent call last)
+
+&lt;ipython-input-18-e5f688beb613&gt; in &lt;module&gt;()
+----&gt; 1 f.cache
+
+
+AttributeError: 'Frob' object has no attribute 'cache'
+</pre>
+<p>Which is very handy considering we probably don&#8217;t want instances
+accidentally mucking about and overwriting the&nbsp;cache.</p>
+</div>
+</div>
+<div class="section" id="currying-and-memoization-metaclass">
+<h2>Currying <span class="caps">AND</span> Memoization&nbsp;Metaclass</h2>
+<p>What if we wanted currying and memoization on the same class? Seems
+impossible since Python imposes a restriction of one metaclass per
+inheritance chain. However, since metaclasses are just regular classes,
+we can compose them together to form much more complex&nbsp;metaclasses.</p>
+<p>Notice how I was using <tt class="docutils literal">super</tt> to call to things like <tt class="docutils literal">__new__</tt>,
+<tt class="docutils literal">__init__</tt> and <tt class="docutils literal">__call__</tt> above rather than explicitly saying,
+<tt class="docutils literal">type.__new__</tt>? This was to allow for this exact thing. With that
+already in place, all we need to do to create a curried and memoized
+class is to just place those two metaclasses&nbsp;together.</p>
+<p>However, there is one thing that needs to be noted: order matters. See
+Raymond Hettinger&#8217;s PyCon 2015 talk <a class="reference external" href="https://www.youtube.com/watch?v=EiOglTERPEo">Super Considered
+Super</a> to see why. If we
+want to curry <em>then</em> memoize, we simply do&nbsp;this:</p>
+<pre class="code python literal-block">
+<span class="k">class</span> <span class="nc">CurriedMemoized</span><span class="p">(</span><span class="n">Curryable</span><span class="p">,</span> <span class="n">Memoized</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">CMTester</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">CurriedMemoized</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">pass</span>
+</pre>
+<p>So far so good. Let&#8217;s test it&nbsp;out&#8230;</p>
+<pre class="code python literal-block">
+<span class="n">CMTester</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">CMTester</span><span class="o">.</span><span class="n">cache</span><span class="p">)</span>
+</pre>
+<pre class="literal-block">
+{((1, 2, 3), None): &lt;__main__.CMTester object at 0x7fcdb011c438&gt;}
+</pre>
+<p>What about taking advantage of Memoized keyword&nbsp;arguments?</p>
+<pre class="code python literal-block">
+<span class="k">class</span> <span class="nc">CMKeywordTest</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">CurriedMemoized</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">make_string_key</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="n">OrderedDict</span><span class="p">()):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<span class="n">CMKeywordTest</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">CMKeywordTest</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">CMKeywordTest</span><span class="o">.</span><span class="n">cache</span><span class="p">)</span>
+</pre>
+<pre class="literal-block">
+OrderedDict([('(1, 2, 3){}', &lt;__main__.CMKeywordTest object at 0x7fcdb018fdd8&gt;), ('(4, 5, 6){}', &lt;__main__.CMKeywordTest object at 0x7fcdb018fd68&gt;)])
+</pre>
+<p>Now, if we had swapped Memoized and Curryable around in the <span class="caps">MRO</span>, we&#8217;d
+get compeletly different&nbsp;behavior:</p>
+<pre class="code python literal-block">
+<span class="k">class</span> <span class="nc">MemoizedCurry</span><span class="p">(</span><span class="n">Memoized</span><span class="p">,</span> <span class="n">Curryable</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">MCTest</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">MemoizedCurry</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">frob</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<span class="n">m</span> <span class="o">=</span> <span class="n">MCTest</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">'default frob'</span><span class="p">)</span>
+<span class="n">m</span><span class="p">(</span><span class="n">frob</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">MCTest</span><span class="o">.</span><span class="n">cache</span><span class="p">)</span>
+</pre>
+<pre class="literal-block">
+{(None, frozenset({('name', 'default frob')})): &lt;function MCTest at 0x7fcdb01836a8&gt;}
+</pre>
+<p>In this case, we&#8217;re memoizing just what&#8217;s partially applied rather than
+the actual instance. In this particular case, it&#8217;s probably undesired
+behavior, but with other metaclasses, this might be the intended order
+of&nbsp;operations.</p>
+</div>
+<div class="section" id="parting-thoughts">
+<h2>Parting&nbsp;Thoughts</h2>
+<p>Hopefully this has been a nice introduction to metaclasses and has shown
+some pratical applications of them rather than some silly examples. If
+you&#8217;re still curious about writing your own metaclasses or learning more
+about them, here&#8217;s some resources I&nbsp;recommend:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://pyvideo.org/video/3508/descriptors-and-metaclasses">Mike Mueller - Descriptors and&nbsp;Metaclasses</a></li>
+<li><a class="reference external" href="http://pyvideo.org/video/1716/python-3-metaprogramming">Dave Beazley - Python 3&nbsp;Metaprogramming</a></li>
+<li><a class="reference external" href="http://pyvideo.org/video/2445/intro-to-metaclasses">Craig de Stigter - Intro to&nbsp;Metaclasses</a></li>
+</ul>
+</div>
+
+            <aside>
+            <nav>
+            <ul class="articles_timeline">
+ 
+                <li class="previous_article">« <a href="http://justanr.github.io/quotly-building-a-simple-json-api-with-flask-marshmallow-and-sqlalchemy" title="Previous: Quotly: Building a simple <span class="caps">JSON</span> <span class="caps">API</span> with Flask, Marshmallow and&nbsp;SQLAlchemy">Quotly: Building a simple <span class="caps">JSON</span> <span class="caps">API</span> with Flask, Marshmallow and&nbsp;SQLAlchemy</a></li>
+            </ul>
+            </nav>
+            </aside>
+<section>
+<hr/>
+<p id="comment-message">I spilled my brains, spill some of yours. </p>
+<div class="accordion" id="accordion2">
+    <div class="accordion-group">
+        <div class="accordion-heading">
+            <a class="accordion-toggle disqus-comment-count" data-toggle="collapse" data-parent="#accordion2" 
+                href="http://justanr.github.io/currying-and-memoizing-metaclasses/#disqus_thread">
+                Comments
+            </a>
+        </div>
+        <div id="disqus_thread" class="accordion-body collapse">
+            <div class="accordion-inner">
+                <div class="comments">
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ballinoctobear';
+        var disqus_identifier = 'http://justanr.github.io/currying-and-memoizing-metaclasses';
+    var disqus_url = 'http://justanr.github.io/currying-and-memoizing-metaclasses';
+
+    (function() {
+         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+         dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+     })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+        </div>
+        <section>
+        <div class="span2" style="float:right;font-size:0.9em;">
+ 
+            <h4>Published</h4>
+            <time pubdate="pubdate" datetime="2015-05-13T00:00:00-04:00">May 13, 2015</time>
+            <h4>Category</h4>
+            <a class="category-link" href="/categories.html#tutorials-ref">tutorials</a> 
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article"> 
+                <li><a href="/tags.html#metaprogramming-ref">metaprogramming
+                    <span>1</span>
+</a></li>
+                <li><a href="/tags.html#python3-ref">python3
+                    <span>4</span>
+</a></li>
+            </ul>
+
+        </div>
+        </section>
+    </div>
+    </article>
+                </div>
+                <div class="span1"></div>
+            </div>
+        </div>
+    </div>
+<footer>
+<div id="footer">
+    <ul class="footer-content">
+        <li class="elegant-license">Shared under the Creative Commons for content and MIT for code</li>
+        <li class="elegant-power">Powered by <a href="http://getpelican.com/" title="Pelican Home Page">Pelican</a>. Theme: <a href="http://oncrashreboot.com/pelican-elegant" title="Theme Elegant Home Page">Elegant</a> by <a href="http://oncrashreboot.com" title="Talha Mansoor Home Page">Talha Mansoor</a></li>
+    </ul>
+</div>
+</footer>            <script src="http://code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+<script type="text/javascript">
+    var disqus_shortname = 'ballinoctobear';
+
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+    </script>
+    </body>
+</html>
