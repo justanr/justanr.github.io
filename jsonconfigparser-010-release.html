@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="Alec Nikolas Reiter" />
+        <meta name="copyright" content="Alec Nikolas Reiter" />
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="/theme/slicknav.css">
+        <script src="/theme/jquery.slicknav.min.js"></script>
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+        <script type="text/javascript"
+            src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+        </script>
+        <!--[if lt IE 9]>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.2/html5shiv.js"></script>
+        <![endif]-->
+
+
+<meta name="keywords" content="python, cli, json, releases, " />
+        <title>JSONConfigParser 0.1.0&nbsp;Release - from alec.thoughts import *
+</title>
+        <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="http://justanr.github.io/theme/css/style.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="http://justanr.github.io/theme/css/solarizedlight.css" media="screen">
+        <link rel="shortcut icon" href="http://justanr.github.io/theme/images/favicon.ico" type="image/x-icon" />
+        <link rel="apple-touch-icon" href="http://justanr.github.io/theme/images/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" sizes="57x57" href="http://justanr.github.io/theme/images/apple-touch-icon-57x57.png" />
+        <link rel="apple-touch-icon" sizes="72x72" href="http://justanr.github.io/theme/images/apple-touch-icon-72x72.png" />
+        <link rel="apple-touch-icon" sizes="114x114" href="http://justanr.github.io/theme/images/apple-touch-icon-114x114.png" />
+        <link rel="apple-touch-icon" sizes="144x144" href="http://justanr.github.io/theme/images/apple-touch-icon-144x144.png" />
+        <link rel="icon" href="http://justanr.github.io/theme/images/apple-touch-icon-144x144.png" />
+    </head>
+    <body>
+        <div id="content-sans-footer">
+        <div class="navbar navbar-static-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="http://justanr.github.io/"><span class=site-name>from alec.thoughts import *</span></a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav pull-right top-menu">
+                            <li ><a href="http://justanr.github.io">Home</a></li>
+                            <li ><a href="http://justanr.github.io/categories.html">Categories</a></li>
+                            <li ><a href="http://justanr.github.io/tags.html">Tags</a></li>
+                            <li ><a href="http://justanr.github.io/archives.html">Archives</a></li>
+                            <li><form class="navbar-search" action="http://justanr.github.io/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span1"></div>
+                <div class="span10">
+<article>
+<div class="row-fluid">
+    <header class="page_header span10 offset2">
+    <h1><a href="http://justanr.github.io/jsonconfigparser-010-release"> JSONConfigParser 0.1.0&nbsp;Release  </a></h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+
+            <p>It only took about two hours of fiddle faddling and there&#8217;s probably
+more commits from trying to get it to do the thing than anything else,
+but I finally pushed my first package to PyPi. :) I still need to&nbsp;add</p>
+<div class="section" id="jsonconfigparser-0-1-0-pypi-github">
+<h2>jsonconfigparser 0.1.0 [<a class="reference external" href="https://pypi.python.org/pypi/jsonconfigparser">pypi</a>] [<a class="reference external" href="https://github.com/justanr/JSONConfigParser">github</a>]</h2>
+<p>Pull requests, patches and feature requests are all more than&nbsp;welcome!</p>
+<p>I suppose I should take the time to describe it a little. The tag line
+is &quot;Quick and easy editting of <span class="caps">JSON</span> files.&quot; which is probably a bit of a
+misnomer but it beats editting files by hand, in my opinion. There&#8217;s
+three ways of interacting with&nbsp;it:</p>
+<ul class="simple">
+<li><span class="caps">CLI</span> through your&nbsp;shell</li>
+<li>An interactive&nbsp;prompt</li>
+<li>Through Python&nbsp;itself</li>
+</ul>
+<div class="section" id="cli-implementation">
+<h3><span class="caps">CLI</span>&nbsp;Implementation</h3>
+<p>Getting here is as simple as typing <tt class="docutils literal">jsonconf</tt>. It expects two
+positional&nbsp;arguments:</p>
+<ul class="simple">
+<li>The first is a path to a json&nbsp;file.</li>
+<li>The second is the action you want to take on the file. They&#8217;re
+detailed on the github and pypi pages but I&#8217;ll go over the actions
+and flags a&nbsp;little.</li>
+</ul>
+<div class="section" id="actions">
+<h4>Actions</h4>
+<p>These are the main actions used by the command line&nbsp;interface</p>
+<ul class="simple">
+<li>addfile:<ul>
+<li>Uses the -o/&#8212;other flag to update the specified json file with
+another. Using this command will overwrite existing keys with the
+values in the appended file if there are shared&nbsp;keys.</li>
+<li>Ex: <tt class="docutils literal">jsonconf path/to/conf.json addfile <span class="pre">-o</span> path/to/other.json</tt></li>
+</ul>
+</li>
+<li>addfield:<ul>
+<li>Adds a field to the specified json file at a specified end point,
+optionally converts the value to a non-string&nbsp;type</li>
+<li>Ex: <tt class="docutils literal">jsonconf path/to/conf.json addfield <span class="pre">-p</span> $.age <span class="pre">-v</span> 25 <span class="pre">-c</span> int</tt></li>
+</ul>
+</li>
+<li>append:<ul>
+<li>Adds a value to a <span class="caps">JSON</span> collection at the specified endpoint,
+optionally converts the value to a non-string type, optionally
+affects every found path&nbsp;found.</li>
+<li>Ex:
+<tt class="docutils literal">jsonconf path/to/conf.json append <span class="pre">-p</span> $.packages <span class="pre">-v</span> jsonconfigparser</tt></li>
+<li>Ex:
+<tt class="docutils literal">jsonconf path/to/conf.json append <span class="pre">-p</span> <span class="pre">$.authors.[*].name</span> <span class="pre">-v</span> &quot;Fred Arminsen&quot; <span class="pre">-m</span></tt></li>
+<li>Ex: <tt class="docutils literal">jsonconf path/to/conf.json append <span class="pre">-p</span> $.ids <span class="pre">-v</span> 113 <span class="pre">-c</span> int</tt></li>
+</ul>
+</li>
+<li>delete:<ul>
+<li>Deletes the specified endpoint, the path is optional here but if
+it&#8217;s not passed, it deletes the whole&nbsp;document</li>
+<li>Ex: <tt class="docutils literal">jsonconf path/to/conf.json delete</tt></li>
+<li>Ex: <tt class="docutils literal">jsonconf path/to/conf.json delete $.age</tt></li>
+</ul>
+</li>
+<li>edit:<ul>
+<li>Changes the value at the specified endpoint. Optionally convert
+the value to a nonstring&nbsp;type</li>
+<li>Ex: <tt class="docutils literal">jsonconf path/to/conf.json edit <span class="pre">-p</span> $.age <span class="pre">-v</span> 22 <span class="pre">-c</span> int</tt></li>
+</ul>
+</li>
+<li>shell:<ul>
+<li>Drops you into an interactive prompt working on the specified <span class="caps">JSON</span>&nbsp;file</li>
+<li>Ex: <tt class="docutils literal">jsonconf path/to/conf.json shell</tt></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="flags">
+<h4>Flags</h4>
+<p>These are the flags used by the command line&nbsp;interface</p>
+<ul class="simple">
+<li>-p/&#8212;path: The path flag, this is a JSONpath path that the script
+will use to walk the <span class="caps">JSON</span>&nbsp;representation.</li>
+<li>-o/&#8212;other: Used with the addfile command to specify a second <span class="caps">JSON</span>
+file to update the current on&nbsp;with.</li>
+<li>-v/&#8212;value: Used to denote the value or values being passed to the
+underlying&nbsp;command.</li>
+<li>-m/&#8212;multi: Used with the append command to specify that multiple
+paths should be written to, defaults to&nbsp;False.</li>
+<li>-c/&#8212;convert: A string used to denote how to convert the passed in
+value to it&#8217;s final form. Acceptable values to pass to -c are any of
+<tt class="docutils literal">str</tt>, <tt class="docutils literal">bool</tt>, <tt class="docutils literal">int</tt>, <tt class="docutils literal">float</tt>, <tt class="docutils literal">list</tt>, <tt class="docutils literal">dict</tt>. You can
+also compose these values into a composite type as simple or complex
+as&nbsp;needed.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="interactive-prompt">
+<h3>Interactive&nbsp;Prompt</h3>
+<p>Using the prompt is largely the same as the <span class="caps">CLI</span>. All the commands and
+flags are the same, however, all actions are applied to the file
+specified when the prompt was launched. There is also the <tt class="docutils literal">write</tt>
+command avaliable (which is also technically available on the <span class="caps">CLI</span>, too,
+but the <span class="caps">CLI</span> autosaves) to save the current status of the&nbsp;document.</p>
+</div>
+<div class="section" id="about-c-convert-and-v-value">
+<h3>About -c/&#8212;convert and&nbsp;-v/&#8212;value</h3>
+<p><tt class="docutils literal"><span class="pre">-c</span></tt> takes a space delimited string and uses it to build a converter
+out of it. This converter can be as simple as just <tt class="docutils literal">int</tt> or as complex
+as <tt class="docutils literal">dict int dict int list</tt> which would be a dictionary with integer
+keys and values that are sub dictionaries with integer keys and lists
+for values. Of course with increasingly complex datatypes comes
+increasing complicated input. For that last example, the input might
+look like: <tt class="docutils literal">4=4=value</tt> Which is confusing to look at until you break
+it&nbsp;down.</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">-c</span> list</tt> will convert a space delimited string into a list of
+values using Python&#8217;s <tt class="docutils literal">shlex.split</tt> function. This is smart enough
+to know that values encased in subquotes are to be considered one
+value. <tt class="docutils literal"><span class="pre">-c</span> list <span class="pre">-v</span> &quot;1 2 '3 4'&quot;</tt> would output <tt class="docutils literal">['1', '2', '3 4']</tt>
+in&nbsp;Python.</li>
+<li><tt class="docutils literal"><span class="pre">-c</span> dict</tt> will convert a space delimited string into sub strings
+delimited by <tt class="docutils literal">=</tt> and then into dictionaries.
+<tt class="docutils literal"><span class="pre">-c</span> dict <span class="pre">-v</span> &quot;key=value other=something&quot;</tt> creates
+<tt class="docutils literal"><span class="pre">{&quot;key&quot;:&quot;value&quot;,</span> <span class="pre">&quot;other&quot;:&quot;something&quot;}</span></tt> inside&nbsp;Python.</li>
+<li>There is also <tt class="docutils literal"><span class="pre">-c</span> bool</tt> which will return True for everything other
+than <tt class="docutils literal">False</tt> (regardless of case), <tt class="docutils literal">0</tt> and <tt class="docutils literal">0.0</tt></li>
+</ul>
+<p>The real power lies in stringing together the data types. If you need a
+list of integers, you&#8217;d specify <tt class="docutils literal"><span class="pre">-c</span> &quot;list int&quot;</tt>. If you need a
+dictionary with integer keys and list values, you&#8217;d specify
+<tt class="docutils literal"><span class="pre">-c</span> &quot;dict int list&quot;</tt>. But <tt class="docutils literal"><span class="pre">-c</span></tt> is also pretty smart, if you need a
+dictionary with sub dictionary values, you might think,
+<tt class="docutils literal"><span class="pre">-c</span> &quot;dict str dict&quot;</tt> which would work, but you can simply use
+<tt class="docutils literal"><span class="pre">-c</span> &quot;dict dict&quot;</tt> because <tt class="docutils literal"><span class="pre">-c</span></tt> knows that lists and dictionaries
+can&#8217;t be used as keys, it doesn&#8217;t even bother. It&#8217;s also smart enough to
+know what <tt class="docutils literal"><span class="pre">-c</span> wut</tt> means so it returns strings and that
+<tt class="docutils literal"><span class="pre">-c</span> int float</tt> doesn&#8217;t make sense so it just returns strings.
+Actually, I might alias <tt class="docutils literal"><span class="pre">-c</span></tt> to <tt class="docutils literal"><span class="pre">--<span class="caps">PHP</span></span></tt> in the next release because
+when faced with something that maybe throwing an error is a good idea,
+it&#8217;ll return&nbsp;strings.</p>
+<p>The basic grammar of <tt class="docutils literal"><span class="pre">-c</span></tt> is&nbsp;this:</p>
+<ul class="simple">
+<li>Do I know what all the types are? If no, return string handler.&nbsp;Else:</li>
+<li>If there&#8217;s just one type, return it.&nbsp;Else:</li>
+<li>If the first type isn&#8217;t a list or dict, return a string handler
+because <tt class="docutils literal"><span class="pre">-c</span></tt> doesn&#8217;t know what to do. Else:<ul>
+<li>If the first type is a list, build a secondary converter from the
+remaining parts of the original converter.&nbsp;Else:</li>
+<li>If the frist type is a dict and there&#8217;s only one following type or
+the next type is a list or dict, build a converter that will only
+manipulate the values of the dictionary from the rest of the
+original converter.&nbsp;Else:</li>
+<li>If the first type is a dict and there&#8217;s multiple remaining types
+and the next one is not a list or dict, build a converter that
+will manipulate <em>both</em> the key and the value from the remaining
+types. The next immediate type becomes the key type and the
+remaining types become the value&nbsp;type.</li>
+</ul>
+</li>
+</ul>
+<p>As you can imagine, this is recursive so something like
+<tt class="docutils literal">dict int list float</tt> is easily constructed and the value can be
+passed as <tt class="docutils literal"><span class="pre">-v</span> <span class="pre">&quot;0='1</span> 2 3'&quot;</tt> since Python&#8217;s <tt class="docutils literal">sh.lex</tt> intelligently
+groups matching quotes from the outside&nbsp;in.</p>
+<div class="section" id="bugs-and-explosions">
+<h4>Bugs and&nbsp;explosions</h4>
+<p>Due to the way <tt class="docutils literal"><span class="pre">-c</span></tt> is parsed it can be buggy at times, if you see
+something, say something. A copy of your conversion list and your value
+entry would be extremely helpful as I can&#8217;t cover all possible
+permutations someone might&nbsp;use.</p>
+<p><tt class="docutils literal"><span class="pre">-c</span></tt> also currently makes no qualms about blowing up if you try to
+feed <tt class="docutils literal">3 4</tt> through <tt class="docutils literal">int</tt> either.</p>
+</div>
+</div>
+<div class="section" id="interacting-through-python">
+<h3>Interacting through&nbsp;Python</h3>
+<p>You can also import the module into your script to interact with it. The
+conversion sequences aren&#8217;t really needed here since you can specify the
+exact type you&#8217;d like use instead of having to bend your mind around
+converting a flat value into nested dictionaries. The biggest tools here
+are <tt class="docutils literal">JSONConfigParser</tt> and the <tt class="docutils literal">commands</tt> module. The commands are
+largely the same, although in the Python <span class="caps">API</span> <tt class="docutils literal">addfile</tt> and
+<tt class="docutils literal">addfield</tt> become <tt class="docutils literal">add_file</tt> and <tt class="docutils literal">add_field</tt> respectively.</p>
+<div class="section" id="adding-custom-types">
+<h4>Adding custom&nbsp;types</h4>
+<p>Add custom scalar types (most likely scalar type transformations) is as
+easy as importing <tt class="docutils literal">jsonconfigparser.utils.fieldtypes</tt> and updating the
+dictionary with your own mapping. For example, if you needed to have
+every value in a list upper case, you might add
+<tt class="docutils literal">{'upper' : str.upper}</tt>. You can also override any existing converters
+as well as long as you support the expected input (or don&#8217;t, that&#8217;s your
+call). Of course, you&#8217;ll need to ensure that your type modifications get
+added to the runtime of the shell&nbsp;prompt.</p>
+</div>
+<div class="section" id="adding-custom-commands">
+<h4>Adding custom&nbsp;commands</h4>
+<p>Adding custom commands is as simple as decoratoring a function with
+<tt class="docutils literal">jsonconfigparser.command</tt>. Currently, there&#8217;s not an easy way to add
+arguments to the command line and shell prompt and the decorator scans
+the function argument signature for named arguments (i.e. everything
+that&#8217;s not <tt class="docutils literal"><span class="pre">*args/**kwargs</span></tt>) and the calling function attempts to pull
+them from the <tt class="docutils literal">argparser</tt> object (or simple storage object for the
+prompt). Both of these need to be extended and possibly combined so
+adding arguments is easy as&nbsp;well.</p>
+</div>
+</div>
+</div>
+<div class="section" id="questions-comments-and-criticisms">
+<h2>Questions, Comments and&nbsp;Criticisms</h2>
+<p>Are always welcome. My email is available here. There&#8217;s the github issue
+tracker. I&#8217;m not hard to track down, despite what some may lead you to
+believe. Let me know what you think about it&nbsp;all.</p>
+</div>
+
+            <aside>
+            <nav>
+            <ul class="articles_timeline">
+ 
+                <li class="previous_article">« <a href="http://justanr.github.io/currying-and-memoizing-metaclasses" title="Previous: Currying and Memoizing&nbsp;Metaclasses">Currying and Memoizing&nbsp;Metaclasses</a></li>
+            </ul>
+            </nav>
+            </aside>
+<section>
+<hr/>
+<p id="comment-message">I spilled my brains, spill some of yours. </p>
+<div class="accordion" id="accordion2">
+    <div class="accordion-group">
+        <div class="accordion-heading">
+            <a class="accordion-toggle disqus-comment-count" data-toggle="collapse" data-parent="#accordion2" 
+                href="http://justanr.github.io/jsonconfigparser-010-release/#disqus_thread">
+                Comments
+            </a>
+        </div>
+        <div id="disqus_thread" class="accordion-body collapse">
+            <div class="accordion-inner">
+                <div class="comments">
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ballinoctobear';
+        var disqus_identifier = 'http://justanr.github.io/jsonconfigparser-010-release';
+    var disqus_url = 'http://justanr.github.io/jsonconfigparser-010-release';
+
+    (function() {
+         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+         dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+     })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+        </div>
+        <section>
+        <div class="span2" style="float:right;font-size:0.9em;">
+ 
+            <h4>Published</h4>
+            <time pubdate="pubdate" datetime="2015-10-12T00:00:00-04:00">Oct 12, 2015</time>
+            <h4>Category</h4>
+            <a class="category-link" href="/categories.html#releases-ref">releases</a> 
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article"> 
+                <li><a href="/tags.html#cli-ref">cli
+                    <span>1</span>
+</a></li>
+                <li><a href="/tags.html#json-ref">json
+                    <span>1</span>
+</a></li>
+                <li><a href="/tags.html#python-ref">python
+                    <span>9</span>
+</a></li>
+            </ul>
+
+        </div>
+        </section>
+    </div>
+    </article>
+                </div>
+                <div class="span1"></div>
+            </div>
+        </div>
+    </div>
+<footer>
+<div id="footer">
+    <ul class="footer-content">
+        <li class="elegant-license">Shared under the Creative Commons for content and MIT for code</li>
+        <li class="elegant-power">Powered by <a href="http://getpelican.com/" title="Pelican Home Page">Pelican</a>. Theme: <a href="http://oncrashreboot.com/pelican-elegant" title="Theme Elegant Home Page">Elegant</a> by <a href="http://oncrashreboot.com" title="Talha Mansoor Home Page">Talha Mansoor</a></li>
+    </ul>
+</div>
+</footer>            <script src="http://code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+<script type="text/javascript">
+    var disqus_shortname = 'ballinoctobear';
+
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+    </script>
+    </body>
+</html>
