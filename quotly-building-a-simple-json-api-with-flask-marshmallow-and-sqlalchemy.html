@@ -474,7 +474,8 @@ changes are&nbsp;trivial:</p>
 <span class="k">class</span> <span class="nc">SingleQuote</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">idx</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">Quote</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{</span><span class="s">'error'</span><span class="p">:</span> <span class="s">'quote does not exist'</span><span class="p">}</span>
+            <span class="n">quote</span> <span class="o">=</span> <span class="n">Quote</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">QuoteSerializer</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">quote</span><span class="p">)</span><span class="o">.</span><span class="n">data</span> <span class="k">if</span> <span class="n">quote</span> <span class="k">else</span> <span class="p">{</span><span class="s">&quot;error&quot;</span><span class="p">:</span> <span class="s">&quot;quote does not exist&quot;</span><span class="p">}</span>
         <span class="k">return</span> <span class="p">{</span><span class="s">'error'</span><span class="p">:</span> <span class="s">'must specify quote id'</span><span class="p">}</span>
 
 <span class="k">class</span> <span class="nc">ListQuote</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
@@ -510,9 +511,9 @@ for&nbsp;everyone.</p>
 simple <span class="caps">REST</span> <span class="caps">API</span> with Flask and its little ecosystem, I hope it&#8217;s been
 enlightening. I&#8217;ve included the whole application in <a class="reference external" href="https://gist.github.com/justanr/60f34a300ff4535c95fc">this
 gist</a> for
-reference. If you see a bug or have questions, hit me up on twitter
-([&#64;just_anr](<a class="reference external" href="https://twitter.com/just_anr">https://twitter.com/just_anr</a>)) or on github
-(<a class="reference external" href="https://github.com/justanr">justanr</a>).</p>
+reference. If you see a bug or have questions, hit me up on
+<a class="reference external" href="https://twitter.com/just_anr">twitter</a> or on
+<a class="reference external" href="https://github.com/justanr">github</a>.</p>
 </div>
 </div>
 
