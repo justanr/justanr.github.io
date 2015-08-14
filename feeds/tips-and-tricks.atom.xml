@@ -1,0 +1,531 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>from alec.thoughts import *</title><link href="http://justanr.github.io/" rel="alternate"></link><link href="http://justanr.github.io/feeds/tips-and-tricks.atom.xml" rel="self"></link><id>http://justanr.github.io/</id><updated>2015-02-08T00:00:00-05:00</updated><entry><title>Musings on Problem Solving</title><link href="http://justanr.github.io/musings-on-problem-solving" rel="alternate"></link><updated>2015-02-08T00:00:00-05:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2015-02-08:musings-on-problem-solving</id><summary type="html">&lt;p&gt;I just started reading a book on algorithms and data structures in
+Python. I&amp;#8217;ve also commited myself to reading every chapter, taking notes
+and doing every exercise at the end of each chapter (okay, Chapter 1 is
+all &amp;quot;This is Python, this is the syntax, here&amp;#8217;s how you loop&amp;#8230;&amp;quot; so I
+skimmed it) except for the ones I can&amp;#8217;t reasonably fit in a single
+IPython Notebook cell (I&amp;#8217;m not trying shove a calculator into a
+notebook) or are just plain boring (&amp;quot;Print a statement 100 times!&amp;quot; &amp;#8212;
+seriously, this is an&amp;nbsp;exercise).&lt;/p&gt;
+&lt;p&gt;Most of the problems are okay, made me think some. Some are ones I&amp;#8217;ve
+done before. Others made me think about how to decompose the problem
+into smaller, more managable bits. And I&amp;#8217;d like to share my process on
+one in&amp;nbsp;particular.&lt;/p&gt;
+&lt;div class="section" id="our-task"&gt;
+&lt;h2&gt;Our&amp;nbsp;Task&lt;/h2&gt;
+&lt;p&gt;To paraphrase the exercise: We want to accept three integer inputs and
+determine if either &lt;tt class="docutils literal"&gt;a = f(b,c)&lt;/tt&gt; or &lt;tt class="docutils literal"&gt;f(a,b) = c&lt;/tt&gt;, where f is some
+mathematical function (maybe addition, modulo but log and pow are
+candidates as well). Right now, if you feel this is a complex challenge,
+I want you attempt to code it and come back and see how your code and my
+code differs. If you get stuck, don&amp;#8217;t feel bad and come along for the&amp;nbsp;ride.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="the-steps"&gt;
+&lt;h2&gt;The&amp;nbsp;Steps&lt;/h2&gt;
+&lt;p&gt;The first thing I like to try to do is break a problem down into steps.
+If a step is ambigous, I try to decompose the step into smaller bits.
+Eventually, I have kinda procedural&amp;nbsp;pseudo-code.&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;Collect&amp;nbsp;Operations&lt;/li&gt;
+&lt;li&gt;Collect&amp;nbsp;Integers&lt;/li&gt;
+&lt;li&gt;Map inputs to&amp;nbsp;operations&lt;/li&gt;
+&lt;li&gt;Check if at least one operation returned&amp;nbsp;true&lt;/li&gt;
+&lt;li&gt;Put the whole thing&amp;nbsp;together.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;To me, those are pretty clear cut, atomic steps. Sure, they&amp;#8217;re composed
+of smaller steps internally, but they represent a single unit of work
+each function of the program needs to do. Step 5 is usually implied, but
+I find it&amp;#8217;s nice to list&amp;nbsp;anyways.&lt;/p&gt;
+&lt;div class="section" id="step-1-collect-operations"&gt;
+&lt;h3&gt;Step 1: Collect&amp;nbsp;Operations&lt;/h3&gt;
+&lt;p&gt;We&amp;#8217;ll just make a list of all the operations we want to check against.
+Since Python has first class functions (meaning functions can be treated
+like data), this is &lt;em&gt;really&lt;/em&gt; easy. We&amp;#8217;ll also make a simple root
+function for calculating things like cubic roots as&amp;nbsp;well.&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;operator&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;add&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;sub&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mul&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mod&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;truediv&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;math&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;log&lt;/span&gt;
+
+&lt;span class="c"&gt;# roots are just fractional exponentials when you get down to it&lt;/span&gt;
+&lt;span class="c"&gt;# ...or maybe exponentials are fractional roots...&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;root&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;base&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;power&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;base&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;power&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;operations&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;add&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;sub&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mul&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mod&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;truediv&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;log&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;pow&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;Super simple. Now, let&amp;#8217;s move&amp;nbsp;on.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="step-3-map-inputs-to-operations"&gt;
+&lt;h3&gt;Step 3: Map Inputs To&amp;nbsp;Operations&lt;/h3&gt;
+&lt;p&gt;&amp;quot;Alec,&amp;quot; you say, &amp;quot;You skipped a step!&amp;quot; And I did. Because I/O is nasty
+and I&amp;#8217;d like to do it last. For now, let&amp;#8217;s assume the integers we
+collected are 1, 2 and&amp;nbsp;3.&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="n"&gt;integers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;For this step we need to make our operation to a potential output.
+Basically: &lt;tt class="docutils literal"&gt;f(a, b) == c&lt;/tt&gt;. Again, this is easy. Even if we decide to
+check if &lt;tt class="docutils literal"&gt;a == f(b,c)&lt;/tt&gt; in the same step. Like I said before, Python&amp;#8217;s
+functions can be treated just like data and this includes passing them
+as arguments to other&amp;nbsp;functions.&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;either_side_true&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;op&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;op&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="ow"&gt;or&lt;/span&gt; &lt;span class="n"&gt;op&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;
+&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div class="section" id="step-4-determine-if-any-check-returned-true"&gt;
+&lt;h3&gt;Step 4: Determine if any check returned&amp;nbsp;True&lt;/h3&gt;
+&lt;p&gt;There&amp;#8217;s many ways we could do this. But the key here is the word &lt;tt class="docutils literal"&gt;any&lt;/tt&gt;
+&amp;#8212; which happens to be a Python built-in function. What &lt;tt class="docutils literal"&gt;any&lt;/tt&gt; does is
+accept an iterable of values and checks if at least one of them is True.
+There&amp;#8217;s also its sibling &lt;tt class="docutils literal"&gt;all&lt;/tt&gt; which checks that none of the values
+are False. What&amp;#8217;s really nice about &lt;tt class="docutils literal"&gt;any&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;all&lt;/tt&gt; is they allow
+collapsing a bunch of &lt;tt class="docutils literal"&gt;and&lt;/tt&gt;/&lt;tt class="docutils literal"&gt;or&lt;/tt&gt; groupings in an &lt;tt class="docutils literal"&gt;if&lt;/tt&gt; statement
+into a single&amp;nbsp;expression.&lt;/p&gt;
+&lt;p&gt;Say you wanted to check if any variable in a given group was equal to
+something. You might do (ignoring that you&amp;#8217;d actually have a list and do
+&lt;tt class="docutils literal"&gt;if 1 in list_of_vars:&lt;/tt&gt;)&amp;#8230;&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;
+&lt;span class="n"&gt;b&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+&lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="ow"&gt;or&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="ow"&gt;or&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;We've got a winner!&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
+We've got a winner!
+&lt;/pre&gt;
+&lt;p&gt;&amp;#8230;but with &lt;tt class="docutils literal"&gt;any&lt;/tt&gt; we can simply do&amp;nbsp;this&amp;#8230;&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nb"&gt;any&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;v&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;v&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;]):&lt;/span&gt;
+    &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;I said We've got a winner!&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
+I said We've got a winner!
+&lt;/pre&gt;
+&lt;p&gt;Of course, the true power of &lt;tt class="docutils literal"&gt;any&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;all&lt;/tt&gt; comes when you combine
+them with generators, which will allow you to lazily compute your check.
+These aren&amp;#8217;t a catch all, sometimes you want to store the output of a
+check or you already have a list built, in which case &lt;tt class="docutils literal"&gt;x in my_list&lt;/tt&gt;
+&lt;em&gt;is&lt;/em&gt; superior, but these should be tools you consider from time to&amp;nbsp;time.&lt;/p&gt;
+&lt;p&gt;Now, we want to check if &lt;tt class="docutils literal"&gt;any&lt;/tt&gt; of our operations returns True if
+&lt;tt class="docutils literal"&gt;a == f(c,b)&lt;/tt&gt; or &lt;tt class="docutils literal"&gt;c == f(a,b)&lt;/tt&gt;.&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nb"&gt;any&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;either_side_true&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;op&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;integers&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;op&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;operations&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Heck yeah at least one did.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
+Heck yeah at least one did.
+&lt;/pre&gt;
+&lt;p&gt;Alternatively, we could store that as a separate function if we needed
+to fiddle with it more, but for this case, I feel that&amp;#8217;s&amp;nbsp;overkill.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="step-2-collect-integers"&gt;
+&lt;h3&gt;Step 2: Collect&amp;nbsp;Integers&lt;/h3&gt;
+&lt;p&gt;Okay, now we&amp;#8217;ll worry about actually grabbing some input from the user.
+We need to collect three integers, probably using &lt;span class="caps"&gt;STDIN&lt;/span&gt;. But they could
+come from a file, a database or anywhere. But let&amp;#8217;s focus on just
+grabbing them from &lt;span class="caps"&gt;STDIN&lt;/span&gt;.&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;collect_ints_from_stdin&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;ints&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+
+    &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ints&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="n"&gt;v&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;input&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Please type an integer: &amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+        &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="ne"&gt;ValueError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="k"&gt;continue&lt;/span&gt;
+        &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="n"&gt;ints&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;append&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;v&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;ints&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;Normally, I&amp;#8217;d wince at a while loop used to build a fixed length list,
+but we have to trouble with users doing something like trying to enter
+the number &lt;tt class="docutils literal"&gt;a&lt;/tt&gt; (well&amp;#8230;you &lt;em&gt;could&lt;/em&gt; use hex&amp;#8230;but who does that?).
+Since we&amp;#8217;re just passing on the error, our list of integers could end up&amp;nbsp;short!&lt;/p&gt;
+&lt;p&gt;You might also notice that I&amp;#8217;ve used &lt;tt class="docutils literal"&gt;try/else&lt;/tt&gt;. I am of the opinion
+that a &lt;tt class="docutils literal"&gt;try&lt;/tt&gt; block should be isolated to &lt;em&gt;just&lt;/em&gt; the code that could
+raise an exception. &lt;tt class="docutils literal"&gt;except&lt;/tt&gt; handles cleaning up the exception. And
+then there&amp;#8217;s &lt;tt class="docutils literal"&gt;else&lt;/tt&gt; which allows us to run code on the condition we
+didn&amp;#8217;t encounter a problem. Mentally, if you replace
+&lt;tt class="docutils literal"&gt;except ValueError&lt;/tt&gt; with &lt;tt class="docutils literal"&gt;if catch(ValueError)&lt;/tt&gt; where &lt;tt class="docutils literal"&gt;catch&lt;/tt&gt; is
+some magic framehack or something, it begins to make sense. I&amp;#8217;ll also
+note, for completion&amp;#8217;s sake that there&amp;#8217;s also an optional &lt;tt class="docutils literal"&gt;finally&lt;/tt&gt;
+clause which lets us run code regardless of an exception occuring. But
+the full &lt;tt class="docutils literal"&gt;try/except/else/finally&lt;/tt&gt; concept is for another&amp;nbsp;time.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="step-5-put-it-altogther"&gt;
+&lt;h3&gt;Step 5: Put it&amp;nbsp;altogther&lt;/h3&gt;
+&lt;p&gt;Finally, we&amp;#8217;ll take these individual components and piece them together
+into a cohesive&amp;nbsp;answer.&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;answer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;operations&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;num_ints&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;collector&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;collect_ints_from_stdin&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;ints&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;collector&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;num_ints&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nb"&gt;any&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;either_side_true&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;op&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;ints&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;op&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;operations&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Heck yeah at least one did!&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;D: Nope!&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;If you add &lt;tt class="docutils literal"&gt;if __name__ == &amp;quot;__main__&amp;quot;: answer(operations)&lt;/tt&gt; and count
+spacing and imports, the whole thing&amp;#8217;s less than forty&amp;nbsp;lines!&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="the-take-away"&gt;
+&lt;h2&gt;The Take&amp;nbsp;Away&lt;/h2&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;Break a problem down into steps as small as&amp;nbsp;possible&lt;/li&gt;
+&lt;li&gt;Small, functional pieces are more&amp;nbsp;manageable&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Breaking down a problem is something that seems &lt;em&gt;so obvious&lt;/em&gt; but it&amp;#8217;s a
+skill that needs to be practiced and honed just like any other. After
+all, programming isn&amp;#8217;t so much about code as solving problems. And part
+of solving problems is finding the smaller problems hidden inside&amp;nbsp;them.&lt;/p&gt;
+&lt;p&gt;What looked liked a complicated task on the surface, ended up being just
+five simple tasks on the inside. That&amp;#8217;s not to say that every problem
+will immediately break down to simple tasks. Sometimes you&amp;#8217;ll end up
+with a list of steps that&amp;#8217;s nested five levels deep! But if you tackle
+each step one at a time, sprinkle in some Python idioms and a touch of
+abstraction, your application will come&amp;nbsp;together.&lt;/p&gt;
+&lt;p&gt;The other, writing smaller more functional code pieces allows your code
+to be modular. What if tomorrow, we want to grab the integers from a
+database? Well, since &lt;tt class="docutils literal"&gt;collect_ints_from_stdin&lt;/tt&gt; is separated from the
+main function, we can easily. Just build a callable that queries the
+database for integers and feeds them into the operations. Or if we need
+to change from integers to strings, we just swap out the collector and
+the operations and move on with our day &amp;#8212; or better, pass a callback to
+coerce the type for&amp;nbsp;us!&lt;/p&gt;
+&lt;p&gt;But consider if we had just written a thirty line function that did all
+this? Ugh, it&amp;#8217;d be a nightmare to untangle the pieces. Honestly, we&amp;#8217;d
+probably have &lt;em&gt;two functions&lt;/em&gt; that did the same thing, but just grabbed
+data from other locations. And then &lt;em&gt;two more&lt;/em&gt; functions because maybe
+we need to work on strings. Quickly, this spirals out of control as the
+number of functions grows at (Data Types) * (Sources). We have four
+sources and four data types? That&amp;#8217;s &lt;em&gt;16&lt;/em&gt; functions! I don&amp;#8217;t want to
+write the same function 16 times and I doubt you do&amp;nbsp;either.&lt;/p&gt;
+&lt;p&gt;Instead we can write four functions to grab the data, pass our coercion
+callback and maintain the lists of&amp;nbsp;operations.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="going-further"&gt;
+&lt;h2&gt;Going&amp;nbsp;Further&lt;/h2&gt;
+&lt;p&gt;There are problems. What happens when we input &lt;tt class="docutils literal"&gt;0&lt;/tt&gt; and our checks make
+it to the division, modulo, log or root operations? We get a nasty
+exception. :( But handling it is easy (hint: ZeroDivisionError and
+ValueError would needed to be caught). Also, we should be able to tell
+the user &lt;em&gt;which&lt;/em&gt; operations returned&amp;nbsp;true.&lt;/p&gt;
+&lt;p&gt;Of course, I&amp;#8217;m not going to play my full hand. I&amp;#8217;ll leave these as an
+exercise to you to figure&amp;nbsp;out.&lt;/p&gt;
+&lt;/div&gt;
+</summary><category term="python"></category><category term="design"></category></entry><entry><title>Code Reuse in Multiple Forms</title><link href="http://justanr.github.io/code-reuse-in-multiple-forms" rel="alternate"></link><updated>2014-10-09T00:00:00-04:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2014-10-09:code-reuse-in-multiple-forms</id><summary type="html">&lt;div class="section" id="reusing-code-or-how-i-learned-to-stop-repeating-myself"&gt;
+&lt;h2&gt;Reusing Code, or: How I Learned to Stop Repeating&amp;nbsp;Myself&lt;/h2&gt;
+&lt;p&gt;One of the best things about coding is not having to do the same thing
+over and over again. You automate. You work things into functions and
+objects and have &lt;em&gt;them&lt;/em&gt; worry about completing a series of actions for
+you. Why wouldn&amp;#8217;t you do the same thing when &lt;em&gt;actually writing&amp;nbsp;code?&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;There are times where you find yourself repeating code; when this
+happens, you should consider if it&amp;#8217;s possible to refactor and break the
+issue into a reuable piece of code. Generally, the rule of three comes
+in&amp;nbsp;play:&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+There are two &amp;quot;rules of three&amp;quot; in [software] reuse:
+
+* It is three times as difficult to build reusable components as single use components, and
+* a reusable component should be tried out in three different applications before it will be sufficiently general to accept into a reuse library.
+&lt;/pre&gt;
+&lt;p&gt;&lt;a class="reference external" href="http://www.amazon.com/exec/obidos/ASIN/0321117425/"&gt;Facts and Fallacies of Software
+Engineering&lt;/a&gt; #18
+Credit to Jeff Atwood&amp;#8217;s Coding Horror post about the &lt;a class="reference external" href="http://blog.codinghorror.com/rule-of-three/"&gt;Rule of
+Three&lt;/a&gt; for bringing it
+to my&amp;nbsp;attention.&lt;/p&gt;
+&lt;div class="section" id="about-this-post"&gt;
+&lt;h3&gt;About This&amp;nbsp;Post&lt;/h3&gt;
+&lt;p&gt;This post is just going to be a &lt;em&gt;brief&lt;/em&gt; overview of common techniques
+and patterns to avoid writing the same thing &lt;em&gt;over and over&lt;/em&gt; again.
+Starting with functions and moving into objects, inheritance, mixins,
+composition, decorators and context managers. There&amp;#8217;s plenty of other
+techniques, patterns and idioms that I don&amp;#8217;t touch on either but this
+post isn&amp;#8217;t meant to be an exhaustive list&amp;nbsp;either.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="functions"&gt;
+&lt;h2&gt;Functions&lt;/h2&gt;
+&lt;p&gt;Functions are a great way to ensure that a piece of code is always
+executed the same way. This could be as simple a small expression like
+&lt;tt class="docutils literal"&gt;(a + b) * x&lt;/tt&gt; or something that performs a complicated piece of logic.
+Functions are the most basic form of code reuse in&amp;nbsp;Python.&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;calc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;Our business crucial algorithm&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;
+
+&lt;span class="n"&gt;calc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
+9
+&lt;/pre&gt;
+&lt;p&gt;Python also offers a limited form of anonymous functions called
+&lt;tt class="docutils literal"&gt;lambda&lt;/tt&gt;. They&amp;#8217;re limited to just a single expression with no
+statements in them. A lot of them time, they serve as basic callbacks or
+as key functions for a sort or group method. The syntax is simple and
+the return value is the outcome of the&amp;nbsp;expression.&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="nb"&gt;sorted&lt;/span&gt;&lt;span class="p"&gt;([(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)],&lt;/span&gt; &lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;lambda&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
+[(3, -1), (0, 0), (1, 2)]
+&lt;/pre&gt;
+&lt;p&gt;While lambdas are incredibly useful in many instances, it&amp;#8217;s generally
+considered bad form to assign them to variables (since they&amp;#8217;re supposed
+to be anonymous functions), not that I&amp;#8217;ve never done that when it suited
+my needs.&amp;nbsp;;)&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="objects"&gt;
+&lt;h2&gt;Objects&lt;/h2&gt;
+&lt;p&gt;Objects are really the poster child for code reuse. Essentially, an
+object is a collection of data and functions that inter relate. Many in
+the Python community are fond of calling them a pile of dictionaries &amp;#8212;
+because that&amp;#8217;s what they essentially are in&amp;nbsp;Python.&lt;/p&gt;
+&lt;p&gt;Objects offer all sorts of possibilities such as inheritance and
+composition, which I&amp;#8217;ll briefly touch upon here. For now, a simple
+example will suffice: take our business critical algorithm and turn it
+into a spreadsheet&amp;nbsp;row&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;SpreadsheetRow&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;calc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;calc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;row&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;SpreadsheetRow&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;row&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;calc&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
+9
+&lt;/pre&gt;
+&lt;p&gt;Notice how we&amp;#8217;re already reusing code to find our business critical
+total of 9! If later, someone in accounting realizes that we should
+actually be doing &lt;tt class="docutils literal"&gt;a * (b + x)&lt;/tt&gt;, we simply change the original
+calculation&amp;nbsp;function.&lt;/p&gt;
+&lt;div class="section" id="inheritance"&gt;
+&lt;h3&gt;Inheritance&lt;/h3&gt;
+&lt;p&gt;Inheritance is simply a way of giving access of all the data and methods
+of a class to another class. It&amp;#8217;s commonly called &amp;quot;specialization,&amp;quot;
+though Raymond Hettinger aptly describes it as &amp;quot;delegating work.&amp;quot; If
+later, accounting wants to be able to label all of our spreadsheet rows,
+we could go back and modify the original class or we could design a new
+one that does this for&amp;nbsp;us.&lt;/p&gt;
+&lt;p&gt;Accessing information in the inherited class is done through
+&lt;tt class="docutils literal"&gt;super()&lt;/tt&gt;, I won&amp;#8217;t delve into it&amp;#8217;s details here but it is &lt;a class="reference external" href="http://rhettinger.wordpress.com/2011/05/26/super-considered-super/"&gt;quite
+super&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;LabeledSpreadsheetRow&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;SpreadsheetRow&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;label&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="nb"&gt;super&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;label&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;label&lt;/span&gt;
+
+&lt;span class="n"&gt;row&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;LabeledSpreadsheetRow&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;label&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;'1'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;The total for {} is {}&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;row&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;label&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;row&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;calc&lt;/span&gt;&lt;span class="p"&gt;()))&lt;/span&gt;
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
+The total for 1 is 9
+&lt;/pre&gt;
+&lt;div class="section" id="mixins"&gt;
+&lt;h4&gt;Mixins&lt;/h4&gt;
+&lt;p&gt;Mixins are a type of multiple inheritance, which I won&amp;#8217;t fully delve
+into here because it&amp;#8217;s a complicated and touchy subject. However, Python
+supports it. Because of this and it&amp;#8217;s support for duck typing, we can
+completely forego the use of Interfaces and Traits which are common in
+single inheritance&amp;nbsp;languages.&lt;/p&gt;
+&lt;p&gt;Mixins are a way of writing logic that is common to many objects and
+placing it in a single location. Mixins are also classes that aren&amp;#8217;t
+meant to be instantiated on their own either, since they represent a
+small piece of a puzzle rather than the whole picture. A common problem
+I use mixins for is creating a generic &lt;tt class="docutils literal"&gt;__repr__&lt;/tt&gt; method for&amp;nbsp;objects.&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;ReprMixin&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__repr__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;__class__&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;__name__&lt;/span&gt;
+        &lt;span class="n"&gt;attrs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;', '&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;{}={}&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;v&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;v&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;vars&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;items&lt;/span&gt;&lt;span class="p"&gt;()])&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;&amp;lt;{} {}&amp;gt;&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;attrs&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Row&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;LabeledSpreadsheetRow&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ReprMixin&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;pass&lt;/span&gt;
+
+&lt;span class="n"&gt;row&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Row&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;label&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;'1'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nb"&gt;repr&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;row&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
+'&amp;lt;Row b=2, x=3, a=1, label=1&amp;gt;'
+&lt;/pre&gt;
+&lt;p&gt;This showcases the power of inheritance and mixins: composing complex
+objects from smaller parts into what you&amp;#8217;re wanting. The actual class
+we&amp;#8217;re using implements no logic of it&amp;#8217;s own but we&amp;#8217;re now provided&amp;nbsp;with:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;A repr&amp;nbsp;method&lt;/li&gt;
+&lt;li&gt;A calculation&amp;nbsp;method&lt;/li&gt;
+&lt;li&gt;A label&amp;nbsp;attribute&lt;/li&gt;
+&lt;li&gt;Data points to&amp;nbsp;calculate&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="composition"&gt;
+&lt;h3&gt;Composition&lt;/h3&gt;
+&lt;p&gt;Composition is a fancy way of saying we&amp;#8217;re going to build an object
+using other objects, in other words: composing them from parts. It&amp;#8217;s a
+similar idea to inheritance, but instead the objects we&amp;#8217;re using are
+stored as attributes on the main object. We have spreadsheet rows, why
+not a spreadsheet to hold&amp;nbsp;them?&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Spreadsheet&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ReprMixin&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;rows&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;show_all&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;row&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;rows&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;The total for {} is {}&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;row&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;label&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;row&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;calc&lt;/span&gt;&lt;span class="p"&gt;()))&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;total&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nb"&gt;sum&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;calc&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;r&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;rows&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;sheet&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Spreadsheet&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;alec's totals&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;sheet&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;rows&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;extend&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="n"&gt;Row&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;label&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;Row&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;label&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="p"&gt;)])&lt;/span&gt;
+&lt;span class="n"&gt;sheet&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;show_all&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sheet&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;total&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+&lt;span class="nb"&gt;repr&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sheet&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
+The total for 1 is 9
+The total for 2 is 64
+73
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
+&amp;quot;&amp;lt;Spreadsheet name=alec's totals, rows=[&amp;lt;Row b=2, x=3, a=1, label=1&amp;gt;, &amp;lt;Row b=5, x=8, a=3, label=2&amp;gt;]&amp;gt;&amp;quot;
+&lt;/pre&gt;
+&lt;p&gt;Here we&amp;#8217;re not only reusing the ReprMixin so we can have accurate
+information about our Spreadsheet object, we&amp;#8217;re also reusing the Row
+objects to provide that logic for free, leaving us to just implement the
+&lt;tt class="docutils literal"&gt;show_all&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;total&lt;/tt&gt; methods.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="decorators"&gt;
+&lt;h2&gt;Decorators&lt;/h2&gt;
+&lt;p&gt;Decorators are a way factoring logic out of a class or function and into
+another class or function. Or to add extra logic to it. That sounds
+confusing, but it&amp;#8217;s really not. I&amp;#8217;ve written about them
+&lt;a class="reference external" href="http://justanr.blogspot.com/2014/08/decorator-day-exploration-of-decorators.html"&gt;elsewhere&lt;/a&gt;,
+so if you&amp;#8217;re unfamiliar with them I recommend reading that first. Here,
+we&amp;#8217;re going to use two decorators Python provides in the standard
+library called &lt;tt class="docutils literal"&gt;total_ordering&lt;/tt&gt; so we can sort our Row objects and the
+other is the &lt;tt class="docutils literal"&gt;property&lt;/tt&gt; decorator which allows us to retreat a
+function as if it were an attribute (via the &lt;a class="reference external" href="http://justanr.blogspot.com/2014/09/descriptor-day.html"&gt;descriptor
+protocol&lt;/a&gt;
+which is a fantastic code reuse ability that I won&amp;#8217;t explore&amp;nbsp;here).&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;functools&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;total_ordering&lt;/span&gt;
+
+&lt;span class="nd"&gt;&amp;#64;total_ordering&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;ComparableRow&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Row&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+
+    &lt;span class="nd"&gt;&amp;#64;property&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__key&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__eq__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;other&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;__key&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;other&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;__key&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__lt__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;other&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;__key&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;other&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;__key&lt;/span&gt;
+
+&lt;span class="n"&gt;rows&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;sorted&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="n"&gt;ComparableRow&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;label&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;ComparableRow&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;label&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)])&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;rows&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
+[&amp;lt;ComparableRow b=2, x=3, a=1, label=2&amp;gt;, &amp;lt;ComparableRow b=5, x=8, a=3, label=1&amp;gt;]
+&lt;/pre&gt;
+&lt;p&gt;What &lt;tt class="docutils literal"&gt;total_ordering&lt;/tt&gt; does is provide &lt;em&gt;all&lt;/em&gt; the missing rich
+comparison operators for us. Meaning even though we only defined
+&lt;tt class="docutils literal"&gt;__lt__&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;__eq__&lt;/tt&gt; here, we also have &lt;tt class="docutils literal"&gt;__le__&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;__gt__&lt;/tt&gt;,
+&lt;tt class="docutils literal"&gt;__ge__&lt;/tt&gt;, and &lt;tt class="docutils literal"&gt;__ne__&lt;/tt&gt; available to&amp;nbsp;us.&lt;/p&gt;
+&lt;p&gt;Decorators are an incredibly powerful to modify your regular Python
+functions and&amp;nbsp;objects.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="context-managers"&gt;
+&lt;h2&gt;Context&amp;nbsp;Managers&lt;/h2&gt;
+&lt;p&gt;Context managers are a way of handling operations you typically do in
+pairs: open a file, close a file; start a timer, end a timer; acquire a
+lock, release a lock; start a transactio, end a transaction. Really,
+anything you do in pairs should be a candidate for context&amp;nbsp;managers.&lt;/p&gt;
+&lt;p&gt;Writing context managers is pretty easy, depending on which method you
+go about. I&amp;#8217;ll likely explore them in a future post. For now, I&amp;#8217;m going
+to stick to using the generator context manager form as an&amp;nbsp;example:&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;contextlib&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;contextmanager&lt;/span&gt;
+
+&lt;span class="nd"&gt;&amp;#64;contextmanager&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;greeting&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;None&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Before the greeting.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;yield&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Hello {!s}&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;After the greeting.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;greeting&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Alec&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;greet&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;greet&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
+Before the greeting.
+Hello Alec
+After the greeting.
+&lt;/pre&gt;
+&lt;p&gt;We won&amp;#8217;t be writing a context manager here, but rather using one to
+implement an &amp;quot;alternate constructor&amp;quot; for our &lt;tt class="docutils literal"&gt;Spreadsheet&lt;/tt&gt; class.
+Alternate constructors are a way of initializing an object in a specific
+way. These are especially handy if you find yourself occasionally
+creating an object under certain conditions. Consider &lt;tt class="docutils literal"&gt;dict.fromkeys&lt;/tt&gt;
+which lets you fill a dictionary with keys from an iterable that all
+have the same&amp;nbsp;value:&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;dict&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;fromkeys&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
+{0: None, 1: None, 2: None, 3: None, 4: None}
+&lt;/pre&gt;
+&lt;p&gt;In our case, we&amp;#8217;ll probably want to draw our information from a &lt;span class="caps"&gt;CSV&lt;/span&gt; file
+occasionally. If we do it often enough, writing the setup logic could
+become tedious to rewrite all over the&amp;nbsp;place.&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;csv&lt;/span&gt;
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;CSVSpreadsheet&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Spreadsheet&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+
+    &lt;span class="nd"&gt;&amp;#64;classmethod&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;from_csv&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;sheetname&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;filename&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;sheet&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sheetname&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="nb"&gt;open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;filename&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;fh&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="n"&gt;reader&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;csv&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;reader&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fh&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;readlines&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+            &lt;span class="n"&gt;sheet&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;rows&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;ComparableRow&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="nb"&gt;map&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;row&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;row&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;reader&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;sheet&lt;/span&gt;
+
+&lt;span class="n"&gt;sheet&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;CSVSpreadsheet&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;from_csv&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'awesome'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'row.csv'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;sheet&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;show_all&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
+The total for 1 is 9
+The total for 2 is 64
+The total for 3 is 16
+&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div class="section" id="fin"&gt;
+&lt;h2&gt;Fin&lt;/h2&gt;
+&lt;p&gt;Hopefully this gives you an idea for reusing code in your own projects.
+Maybe you&amp;#8217;ll write your own crappy spreadsheet object as&amp;nbsp;well.&lt;/p&gt;
+&lt;/div&gt;
+</summary><category term="python"></category><category term="design"></category></entry></feed>

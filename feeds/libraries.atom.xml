@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>from alec.thoughts import *</title><link href="http://justanr.github.io/" rel="alternate"></link><link href="http://justanr.github.io/feeds/libraries.atom.xml" rel="self"></link><id>http://justanr.github.io/</id><updated>2015-04-06T00:00:00-04:00</updated><entry><title>Fizzbuzz With Pynads!</title><link href="http://justanr.github.io/fizzbuzz-with-pynads" rel="alternate"></link><updated>2015-04-06T00:00:00-04:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2015-04-06:fizzbuzz-with-pynads</id><summary type="html">&lt;pre class="code python literal-block"&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pynads&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Writer&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pynads.funcs&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;multibind&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;itertools&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;repeat&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;functools&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;partial&lt;/span&gt;
+
+&lt;span class="n"&gt;pairs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'fizz'&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'buzz'&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;fizzer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;pairs&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;fizzed&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;''&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="n"&gt;buzz&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;fizz&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;buzz&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;pairs&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;n&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;fizz&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt; &lt;span class="ow"&gt;or&lt;/span&gt; &lt;span class="n"&gt;n&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;Writer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;fizzed&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;
+
+&lt;span class="n"&gt;res&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;multibind&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Writer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;{}),&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;repeat&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;partial&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fizzer&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;pairs&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;pairs&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="mi"&gt;15&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;res&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
+Writer(16, {1: 1, 2: 2, 3: 'buzz', 4: 4, 5: 'fizz', 6: 'buzz', 7: 7, 8: 8, 9: 'buzz', 10: 'fizz', 11: 11, 12: 'buzz', 13: 13, 14: 14, 15: 'fizzbuzz'})
+&lt;/pre&gt;
+&lt;p&gt;Truly an 11x Developer solution to the [&lt;span class="caps"&gt;STRIKEOUT&lt;/span&gt;:world&amp;#8217;s] universe&amp;#8217;s
+premier code interview&amp;nbsp;question!&lt;/p&gt;
+&lt;div class="section" id="what-is-pynads"&gt;
+&lt;h2&gt;What is&amp;nbsp;&amp;quot;pynads&amp;quot;&lt;/h2&gt;
+&lt;p&gt;All joking aside, I&amp;#8217;ve been hacking together a collection of
+Haskell-esque tools for Python over the last few weeks. It started as a
+&amp;quot;Well, I&amp;#8217;ll learn Haskell better this way.&amp;quot; and has become&amp;#8230;well,
+honestly a tool for me learning Haskell&amp;nbsp;still.&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference external" href="https://github.com/justanr/pynads"&gt;Check it out&lt;/a&gt;, I think it&amp;#8217;s&amp;nbsp;nifty.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="a-quick-tour-of-pynads"&gt;
+&lt;h2&gt;A Quick Tour of&amp;nbsp;Pynads&lt;/h2&gt;
+&lt;p&gt;pynads strives to be a pythonic form of Haskell. Which is buzzword for I
+did some stuff.&amp;nbsp;There&amp;#8217;s:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Functors&lt;/li&gt;
+&lt;li&gt;Applicatives&lt;/li&gt;
+&lt;li&gt;Monads&lt;/li&gt;
+&lt;li&gt;Monoids&lt;/li&gt;
+&lt;li&gt;Helpers&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;All of the base classes are implemented as Abstract Base Classes which
+makes inheritance easy. Well, that&amp;#8217;s a lie, the root object of pynads is
+a concrete class that just serves as an endpoint for &lt;tt class="docutils literal"&gt;__new__&lt;/tt&gt; and
+&lt;tt class="docutils literal"&gt;__init__&lt;/tt&gt;.&lt;/p&gt;
+&lt;div class="section" id="container"&gt;
+&lt;h3&gt;Container&lt;/h3&gt;
+&lt;p&gt;&lt;tt class="docutils literal"&gt;pynads.Container&lt;/tt&gt; is the root object of every &lt;tt class="docutils literal"&gt;pynads&lt;/tt&gt; class. It
+serves as a final endpoint for &lt;tt class="docutils literal"&gt;__new__&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;__init__&lt;/tt&gt; as well as
+providing a consistent name for accessing the values held by objects in
+&lt;tt class="docutils literal"&gt;pynads&lt;/tt&gt;. Some would say that it&amp;#8217;s a silly idea, but it works! Every
+class in &lt;tt class="docutils literal"&gt;pynads&lt;/tt&gt; is also slotted for memory reasons since it&amp;#8217;s built
+around the idea of not manipulating a container but creating a new&amp;nbsp;one.&lt;/p&gt;
+&lt;p&gt;The only important thing to know about Container is that it defines
+&lt;tt class="docutils literal"&gt;v&lt;/tt&gt; as a property which actually delagates to the &lt;tt class="docutils literal"&gt;_get_val&lt;/tt&gt; method.
+Meaning that&amp;#8217;s all that needs to be overriden to get multiple values out
+of a&amp;nbsp;container.&lt;/p&gt;
+&lt;p&gt;For most subclasses of Container, the provided &lt;tt class="docutils literal"&gt;__init__&lt;/tt&gt; is fine, but
+it&amp;#8217;s a-ok to override it as well as the only setup that happens is
+setting a single attribute &lt;tt class="docutils literal"&gt;_v&lt;/tt&gt;.&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pynads&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Container&lt;/span&gt;
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Person&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Container&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;__slots__&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'name'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'age'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;age&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;age&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;age&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;_get_val&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s"&gt;'name'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'age'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;age&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__repr__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Person(name={!s}, age={!s})&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;age&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Person&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Alec&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;age&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;26&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;v&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
+{'age': 26, 'name': 'Alec'}
+&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div class="section" id="functors"&gt;
+&lt;h3&gt;Functors&lt;/h3&gt;
+&lt;p&gt;Functors are data types that can be mapped over with the &lt;tt class="docutils literal"&gt;fmap&lt;/tt&gt;
+method. But calling methods isn&amp;#8217;t very Haskell like, so there&amp;#8217;s an
+operator that does the same thing: &lt;tt class="docutils literal"&gt;%&lt;/tt&gt;.&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pynads&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Functor&lt;/span&gt;
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;FmapPerson&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Person&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Functor&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;__slots__&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;fmap&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;__class__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;age&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;upper&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;FmapPerson&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Alec&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;age&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;26&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
+Person(name=ALEC, age=26)
+&lt;/pre&gt;
+&lt;p&gt;Of course, you &lt;em&gt;could&lt;/em&gt; just use &lt;tt class="docutils literal"&gt;FmapPerson.fmap&lt;/tt&gt; but that&amp;#8217;s not very
+Haskellic. &lt;tt class="docutils literal"&gt;pynads&lt;/tt&gt; also exports a &lt;tt class="docutils literal"&gt;funcs&lt;/tt&gt; name space that contains
+functional shortcuts to some of these (though &lt;tt class="docutils literal"&gt;f % functor&lt;/tt&gt; doesn&amp;#8217;t
+get much shorter). In this case, there&amp;#8217;s&amp;nbsp;also:&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pynads&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;funcs&lt;/span&gt;
+
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;funcs&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;fmap&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;upper&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;FmapPerson&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Alec&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;age&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;26&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
+Person(name=ALEC, age=26)
+&lt;/pre&gt;
+&lt;p&gt;Every class in the &lt;tt class="docutils literal"&gt;pynads.concrete&lt;/tt&gt; namespace is a functor except for
+&lt;tt class="docutils literal"&gt;Mempty&lt;/tt&gt; (we&amp;#8217;ll get&amp;nbsp;there!).&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="applicatives"&gt;
+&lt;h3&gt;Applicatives&lt;/h3&gt;
+&lt;p&gt;Applicative Functors are functors that hold functions and can then be
+applied to other Applicatives/Functors. Every class (except for
+&lt;tt class="docutils literal"&gt;Mempty&lt;/tt&gt;) in &lt;tt class="docutils literal"&gt;pynads.concrete&lt;/tt&gt; is also an&amp;nbsp;Applicative!&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pynads&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Just&lt;/span&gt;
+
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Just&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;lambda&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;Just&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
+Just 4
+&lt;/pre&gt;
+&lt;p&gt;Yeah, like Haskell there&amp;#8217;s an infix operator. Except of &lt;tt class="docutils literal"&gt;&amp;lt;*&amp;gt;&lt;/tt&gt; I just
+dropped the angle brackets because Python doesn&amp;#8217;t let you define custom
+operators (easily). It also combines nicely with &lt;tt class="docutils literal"&gt;%&lt;/tt&gt; because they have
+the same precedence&amp;nbsp;level!&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="k"&gt;lambda&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="k"&gt;lambda&lt;/span&gt; &lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;Just&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;Just&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
+Just 10
+&lt;/pre&gt;
+&lt;p&gt;&lt;span class="caps"&gt;BOOM&lt;/span&gt;! Mind blown! Whaaaaaat. Applicative uses the abstract method
+&lt;tt class="docutils literal"&gt;apply&lt;/tt&gt; to determine how &lt;tt class="docutils literal"&gt;*&lt;/tt&gt; operates. Just inherit from
+Applicative, define &lt;tt class="docutils literal"&gt;fmap&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;apply&lt;/tt&gt; and boom, you&amp;#8217;re on your way.
+Well, you also need the &lt;tt class="docutils literal"&gt;unit&lt;/tt&gt; method &amp;#8212; which is a class method for
+all &lt;tt class="docutils literal"&gt;pynad&lt;/tt&gt; types, but that&amp;#8217;s not a requirement &amp;#8212; which knows how to
+put a value in a minimal&amp;nbsp;context.&lt;/p&gt;
+&lt;p&gt;But wait, what if you have a curried function and you stuffed it into a
+Just and now you don&amp;#8217;t want to write out
+&lt;tt class="docutils literal"&gt;just_f * just_v1 * just_v2 ...&lt;/tt&gt;. Sure, you could think &amp;quot;Well, what if
+I used &lt;tt class="docutils literal"&gt;reduce(operator.mul, *justs)&lt;/tt&gt;&amp;quot; But I thought of that&amp;nbsp;already.&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="n"&gt;add_three_together&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;lambda&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="k"&gt;lambda&lt;/span&gt; &lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="k"&gt;lambda&lt;/span&gt; &lt;span class="n"&gt;z&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="n"&gt;z&lt;/span&gt;
+
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;funcs&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;multiapply&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Just&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;add_three_together&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;Just&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;)]))&lt;/span&gt;
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
+Just 6
+&lt;/pre&gt;
+&lt;p&gt;If you&amp;#8217;re mind isn&amp;#8217;t blown yet, it&amp;#8217;s because I haven&amp;#8217;t&amp;nbsp;revealed&amp;#8230;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="mooooooooonaaaaaaaads"&gt;
+&lt;h3&gt;&lt;span class="caps"&gt;MOOOOOOOOONAAAAAAAADS&lt;/span&gt;!!!!!&lt;/h3&gt;
+&lt;p&gt;Monads get a bad rap because they get all sorts of overblown
+explainations. You want to know a what a monad is? It&amp;#8217;s another way to
+compute things. It&amp;#8217;s a glorified container with a special method. You
+have a value in a monad, a function that takes a regular value and
+returns a monad and you bind them together. That&amp;#8217;s it. Literally all
+there is to&amp;nbsp;it.&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pynads&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Nothing&lt;/span&gt;
+
+&lt;span class="n"&gt;inc_if_odd_else_nothing&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;lambda&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Just&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="n"&gt;Nothing&lt;/span&gt;
+
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Just&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;inc_if_odd_else_nothing&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
+Just 3
+&lt;/pre&gt;
+&lt;p&gt;The Maybe monad (which consists of the Just and Nothing data types) is
+basically a glorified if expression. That&amp;#8217;s it! The bind operation will
+detect if you have a failure in your computation and short circuit it.
+It&amp;#8217;s essentially an abstraction over&amp;nbsp;this:&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;safe_func&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="ow"&gt;is&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;
+    &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;
+
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;safe_func&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;safe_func&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;None&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
+2 None
+&lt;/pre&gt;
+&lt;p&gt;Notice how that didn&amp;#8217;t cause a nasty AttributeError, because None
+doesn&amp;#8217;t have attributes? That&amp;#8217;s all Maybe lets you do (this behavior is
+mimicked in its fmap and apply: &lt;tt class="docutils literal"&gt;fmap(f, Nothing)&lt;/tt&gt; and
+&lt;tt class="docutils literal"&gt;apply(ap_f, Nothing)&lt;/tt&gt; both return you a Nothing). Nothing is
+extraspecialsauce because it&amp;#8217;s a singleton. It&amp;#8217;s basically a monadic
+None. Actually, it &lt;em&gt;is&lt;/em&gt; a monadic None because it represents&amp;#8230;well,&amp;nbsp;Nothing.&lt;/p&gt;
+&lt;p&gt;If you&amp;#8217;ve got more binds than editor columns, then there&amp;#8217;s something for
+you as&amp;nbsp;well!&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;multibind&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Just&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;repeat&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;lambda&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Just&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
+Just 6
+&lt;/pre&gt;
+&lt;p&gt;Before you start thinking, &amp;quot;Well, monads are just glorified if
+expressions&amp;quot; becuase that&amp;#8217;s missing the point, Monads are the
+abstraction abstraction. They represent a way to compute something by
+abstracting away &lt;em&gt;how&lt;/em&gt; it&amp;#8217;s&amp;nbsp;computated.&lt;/p&gt;
+&lt;p&gt;There&amp;#8217;s the Writer monad above which is a value in a monadic context but
+it also keeps some extra side-output as well. Instead of us trying to
+track this extra information ourselves, Writer says, &amp;quot;Hey, I&amp;#8217;ll handle
+it for you!&amp;quot; It just wants a function that accepts a value and returns a
+Writer. But here&amp;#8217;s the really cool thing, I &lt;em&gt;didn&amp;#8217;t&lt;/em&gt; have to use a
+dictionary. It could have a list, or a string or an integer, or a custom
+class! I hear, &amp;quot;But how!&amp;quot; Through the power&amp;nbsp;of&amp;#8230;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="monoids"&gt;
+&lt;h3&gt;Monoids!&lt;/h3&gt;
+&lt;p&gt;So monoids are pretty cool. They&amp;#8217;re a set of something, a &amp;quot;zero&amp;quot; and a
+binary operator that&amp;#8217;s transative. Lots of things form monoids. Numbers
+are monoids! There&amp;#8217;s &lt;em&gt;two&lt;/em&gt; ways to make numbers monoids: with &lt;tt class="docutils literal"&gt;0&lt;/tt&gt; and
+&lt;tt class="docutils literal"&gt;+&lt;/tt&gt;, with &lt;tt class="docutils literal"&gt;1&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;*&lt;/tt&gt;. However, &lt;tt class="docutils literal"&gt;pynads&lt;/tt&gt; is lazy and only
+defines the first&amp;#8230;sorry, hard choices were&amp;nbsp;made.&lt;/p&gt;
+&lt;p&gt;Wait, &amp;quot;a zero value&amp;quot; but &lt;tt class="docutils literal"&gt;1 != 0&lt;/tt&gt;. That&amp;#8217;s missing the point, a zero
+value is a value that doesn&amp;#8217;t change the input when combined with the
+binary operator. &lt;tt class="docutils literal"&gt;x * 1 == x&lt;/tt&gt;.&lt;/p&gt;
+&lt;p&gt;But Python&amp;#8217;s &amp;quot;primitive&amp;quot; types all form&amp;nbsp;monads!&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;list&lt;/tt&gt; is a monoid. That&amp;#8217;s the zero value right there and it&amp;#8217;s
+binary operator would be &lt;tt class="docutils literal"&gt;list.extend&lt;/tt&gt; if it was actually a&amp;nbsp;binop.&lt;/li&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;dict&lt;/tt&gt; is a monoid with &lt;tt class="docutils literal"&gt;{}&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;dict.update&lt;/tt&gt;&lt;/li&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;bool&lt;/tt&gt; is a monoid with &lt;tt class="docutils literal"&gt;False&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;|&lt;/tt&gt;\&lt;tt class="docutils literal"&gt;or&lt;/tt&gt;&lt;/li&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;set&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;frozenset&lt;/tt&gt; are also monoids with their empty instances
+and &lt;tt class="docutils literal"&gt;|&lt;/tt&gt;&lt;/li&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;str&lt;/tt&gt; is a monoid with &lt;tt class="docutils literal"&gt;''&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;+&lt;/tt&gt; (boooo using &lt;tt class="docutils literal"&gt;+&lt;/tt&gt; to
+combine strings! but&amp;nbsp;whatever)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Tuple, Complex and Float are also monoids in exactly the ways you
+expect. There&amp;#8217;s a catch though: When combining tuples, you actually get
+a list back. I&amp;#8217;ll probably rectify this at a later point, but it&amp;#8217;s just
+something to live with right&amp;nbsp;now.&lt;/p&gt;
+&lt;p&gt;&lt;tt class="docutils literal"&gt;pynads&lt;/tt&gt; also defines [&lt;span class="caps"&gt;STRIKEOUT&lt;/span&gt;:two] three monoids of its own:
+&lt;tt class="docutils literal"&gt;List&lt;/tt&gt; (the monadic form of &lt;tt class="docutils literal"&gt;tuple&lt;/tt&gt;), &lt;tt class="docutils literal"&gt;Map&lt;/tt&gt; (the applicative form
+of &lt;tt class="docutils literal"&gt;dict&lt;/tt&gt;) and &lt;tt class="docutils literal"&gt;Mempty&lt;/tt&gt; (which we&amp;#8217;re getting&amp;nbsp;to!).&lt;/p&gt;
+&lt;p&gt;Making your own monoid is easy, and you&amp;#8217;ve probably done it before (just
+not in this fashion). Just inherit from &lt;tt class="docutils literal"&gt;pynads.Monoid&lt;/tt&gt; create a
+&lt;tt class="docutils literal"&gt;mempty&lt;/tt&gt; attribute (it won&amp;#8217;t let you without it through &lt;tt class="docutils literal"&gt;__new__&lt;/tt&gt;
+hackery) and the &lt;tt class="docutils literal"&gt;mappend&lt;/tt&gt; method for combining two instances of your
+monoid. Let&amp;#8217;s assume we want a &lt;em&gt;real&lt;/em&gt; tuple Monoid. We&amp;#8217;d do it like&amp;nbsp;this:&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pynads&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Monoid&lt;/span&gt;
+
+&lt;span class="c"&gt;# also inherits from Container&lt;/span&gt;
+&lt;span class="c"&gt;# so we get all the Container goodness for free&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;MTuple&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Monoid&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;mempty&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;()&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;vs&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="nb"&gt;super&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;MTuple&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vs&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;mappend&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;other&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="c"&gt;# type checking optional&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="nb"&gt;isinstance&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;other&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;MTuple&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+            &lt;span class="k"&gt;raise&lt;/span&gt; &lt;span class="ne"&gt;TypeError&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Can only mappend MTuple with MTuple&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;MTuple&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;v&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;other&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;v&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__repr__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;MTuple{!r}&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;v&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;MTuple&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;MTuple&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;7&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
+MTuple(4, 5, 6, 7)
+&lt;/pre&gt;
+&lt;p&gt;&lt;tt class="docutils literal"&gt;pynads.Monoid&lt;/tt&gt; overrides &lt;tt class="docutils literal"&gt;+&lt;/tt&gt; to be a shortcut to &lt;tt class="docutils literal"&gt;mappend&lt;/tt&gt;.
+That&amp;#8217;s all well and good, but &lt;em&gt;why&lt;/em&gt; other than have a unified way of
+combining values?! Because we get a way to reduce a list of monoids into
+a single value for&amp;nbsp;free!&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;MTuple&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mconcat&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;MTuple&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;MTuple&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;MTuple&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
+MTuple(1, 2, 3)
+&lt;/pre&gt;
+&lt;p&gt;&lt;tt class="docutils literal"&gt;Monoid.mconcat&lt;/tt&gt; actually delegates to the &lt;tt class="docutils literal"&gt;mappend&lt;/tt&gt; method and
+essentially looks like &lt;tt class="docutils literal"&gt;reduce(cls.mappend, monoids)&lt;/tt&gt;. That&amp;#8217;s it.
+That&amp;#8217;s all there is. But you can define your own &lt;tt class="docutils literal"&gt;mconcat&lt;/tt&gt; to get
+performace bonuses if you need&amp;nbsp;to.&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;itertools&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;chain&lt;/span&gt;
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;CMTuple&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;MTuple&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__iter__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nb"&gt;iter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;v&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="nd"&gt;&amp;#64;classmethod&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;mconcat&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;MTuples&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;CMTuple&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;chain&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;from_iterable&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;MTuples&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;/pre&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;CMTuple&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mconcat&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;CMTuple&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;CMTuple&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;CMTuple&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
+MTuple(1, 2, 3)
+&lt;/pre&gt;
+&lt;p&gt;&lt;tt class="docutils literal"&gt;pynads.List&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;pynads.Map&lt;/tt&gt; take advantage of this to create only
+one intermediate object rather than a bunch. &lt;tt class="docutils literal"&gt;pynads&lt;/tt&gt; will also let
+you treat the builtin types as monoids as well through
+&lt;tt class="docutils literal"&gt;pynads.funcs.monoid&lt;/tt&gt; namespace which has four functions we&amp;#8217;re
+interested in: &lt;tt class="docutils literal"&gt;mempty&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;mappend&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;mconcat&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;is_monoid&lt;/tt&gt;.
+&lt;tt class="docutils literal"&gt;mempty&lt;/tt&gt; returns the &amp;quot;zero&amp;quot; value for a type, &lt;tt class="docutils literal"&gt;mappend&lt;/tt&gt; knows how to
+combine types, &lt;tt class="docutils literal"&gt;mconcat&lt;/tt&gt; knows how to combine an iter of types into a
+single one and &lt;tt class="docutils literal"&gt;is_monoid&lt;/tt&gt; knows if something is monoidal or not
+(generally, it doesn&amp;#8217;t declare &lt;tt class="docutils literal"&gt;decimal.Decimal&lt;/tt&gt; to be a monoid but
+this is because I didn&amp;#8217;t want to add a special case &amp;#8212; special cases
+beget special&amp;nbsp;cases).&lt;/p&gt;
+&lt;p&gt;This is done through introspection of types and abstract base classes
+(to make the type introspection [&lt;span class="caps"&gt;STRIKEOUT&lt;/span&gt;:more acceptable] less&amp;nbsp;painful).&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pynads.funcs&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;monoid&lt;/span&gt;
+
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;monoid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mempty&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;list&lt;/span&gt;&lt;span class="p"&gt;()))&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;monoid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mappend&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="s"&gt;'a'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s"&gt;'b'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;7&lt;/span&gt;&lt;span class="p"&gt;}))&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;monoid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mconcat&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;hello&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot; &amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;world&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;monoid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;is_monoid&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;set&lt;/span&gt;&lt;span class="p"&gt;()))&lt;/span&gt;
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
+[]
+{'a': 10, 'b': 7}
+hello world
+True
+&lt;/pre&gt;
+&lt;p&gt;The monoid namespace is just a nice interface to the nasty plumbing that
+lives in &lt;tt class="docutils literal"&gt;pynads.utils.monoidal&lt;/tt&gt;. It&amp;#8217;s pretty gross and actually
+probably pretty fragile, but it works! &lt;span class="caps"&gt;IT&lt;/span&gt; &lt;span class="caps"&gt;WORKS&lt;/span&gt;!!!&lt;/p&gt;
+&lt;div class="section" id="mempty"&gt;
+&lt;h4&gt;Mempty&lt;/h4&gt;
+&lt;p&gt;So here&amp;#8217;s the thing that lets &lt;tt class="docutils literal"&gt;Writer&lt;/tt&gt; do its little trick by accept
+any monoid as a potential log. I can&amp;#8217;t know ahead of time what you&amp;#8217;re
+going to use to keep track of stuff with &lt;tt class="docutils literal"&gt;Writer&lt;/tt&gt; &amp;#8212; I&amp;#8217;ve drank plenty
+of spice water, but I&amp;#8217;ve yet to develop prescient abilities. And rather
+than making a bunch of subclasses specialized to handle a dictionary and
+a list and a string and a blah blah blah and forcing you to make your
+own for &lt;tt class="docutils literal"&gt;WriterLogWithMyFirstMonoid&lt;/tt&gt; I decided to create a mempty
+monoid &amp;#8212; &lt;tt class="docutils literal"&gt;Mempty&lt;/tt&gt;. It&amp;#8217;s not an original idea. Really, it&amp;#8217;s kind of a
+dumb&amp;nbsp;object.&lt;/p&gt;
+&lt;p&gt;It&amp;#8217;s a singleton, so that&amp;#8217;s a strike against it (two singletons in my
+library, my god!). It doesn&amp;#8217;t actually &lt;em&gt;do&lt;/em&gt; anything. It just sits
+around, taking up space until a real monoid comes along and scares it
+off. It&amp;#8217;s mempty value is actually itself! It&amp;#8217;s mappend just returns
+whatever its mappended with. And it&amp;#8217;s mconcat filters out any Mempty
+values before trying to mconcat the remaining values (you get a Mempty
+if mconcat an iter of Mempties). There&amp;#8217;s even an &lt;tt class="docutils literal"&gt;__iter__&lt;/tt&gt; method
+that yields from an empty tuple! What&amp;#8217;s going&amp;nbsp;on!&lt;/p&gt;
+&lt;p&gt;In Haskell, &lt;tt class="docutils literal"&gt;mempty&lt;/tt&gt; can be used a place holder and Haskell knows to
+do the right thing already. However, we have to teach Python how to use
+a placeholder and silently step it out of the way when a real value
+comes along. I suspect that this is similar, maybe, to how Haskell
+handles it, but I&amp;#8217;ve not dug at&amp;nbsp;all.&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pynads&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Mempty&lt;/span&gt;
+
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;monoid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mempty&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Mempty&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Mempty&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;monoid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mconcat&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Mempty&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt; &lt;span class="n"&gt;Mempty&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
+Mempty
+4
+{4, 5}
+&lt;/pre&gt;
+&lt;p&gt;So Writer&amp;#8217;s little trick of allowing any Monoid be the log is really
+just, &amp;quot;I have this dumb thing that pretends to be a Monoid as a default&amp;nbsp;log.&amp;quot;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="helpers"&gt;
+&lt;h3&gt;Helpers&lt;/h3&gt;
+&lt;p&gt;I won&amp;#8217;t explore this section indepth because &lt;tt class="docutils literal"&gt;pynads.funcs&lt;/tt&gt; has a
+whole host of helpers, with more being added as needed. There&amp;#8217;s helpers
+for making constants, composing functions, an identity function (as in
+&lt;tt class="docutils literal"&gt;lambda x: x&lt;/tt&gt; not &lt;tt class="docutils literal"&gt;id(x)&lt;/tt&gt;), turning values into Monads. There&amp;#8217;s also
+&lt;tt class="docutils literal"&gt;pynads.utils&lt;/tt&gt; if you need to plumb some of the internal workings like
+compatibility (did I mention all the tests pass 3.4 and 2.7?!) or how
+monoids are determined on things that aren&amp;#8217;t explicitly&amp;nbsp;monoids.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="that-s-it"&gt;
+&lt;h3&gt;That&amp;#8217;s&amp;nbsp;it!&lt;/h3&gt;
+&lt;p&gt;Well, not really. There&amp;#8217;s about five other monads implemented that I
+didn&amp;#8217;t cover (like Reader, which was a pain but also a lot of fun to
+implement). There&amp;#8217;s more coming as well. Not just monads, but other
+things. A proof of concept for do notation via abusing coroutines exists
+in the repo (lifted from a blog called &lt;a class="reference external" href="http://www.valuedlessons.com/2008/01/monads-in-python-with-nice-syntax.html"&gt;Valued
+Lessons&lt;/a&gt;
+which served as partial inspiration for this project). And maybe Monad
+Transformers if I work the gumption up for it (probably yes). And who
+knows what&amp;nbsp;else.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</summary><category term="design"></category><category term="haskell"></category><category term="monad"></category><category term="python3"></category></entry></feed>

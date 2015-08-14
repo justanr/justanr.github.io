@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>from alec.thoughts import *</title><link href="http://justanr.github.io/" rel="alternate"></link><link href="http://justanr.github.io/feeds/miscellaneous.atom.xml" rel="self"></link><id>http://justanr.github.io/</id><updated>2015-04-14T00:00:00-04:00</updated><entry><title>Crazy Ideas and I</title><link href="http://justanr.github.io/crazy-ideas-and-i" rel="alternate"></link><updated>2015-04-14T00:00:00-04:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2015-04-14:crazy-ideas-and-i</id><summary type="html">&lt;p&gt;Occasionally, absolutely crazy ideas crop up into my noggin. Recently,
+I&amp;#8217;ve had two take up residence almost simultaneously, both related to
+&lt;a class="reference external" href="https://github.com/justanr/pynads"&gt;pynads&lt;/a&gt;.&lt;/p&gt;
+&lt;div class="section" id="haskell-type-signatures"&gt;
+&lt;h2&gt;Haskell Type&amp;nbsp;Signatures&lt;/h2&gt;
+&lt;p&gt;Since Pynads is, nominally, a learning exercise for me to understand
+some concepts in functional programming &amp;#8212; specifically in terms of
+Haskell &amp;#8212; a little more deeply. I found myself wanting to using Haskell
+type signatures with some of my functions. The reason why is because I
+&lt;em&gt;like&lt;/em&gt; Haskell&amp;#8217;s type signatures. They stay out of the way of my actual
+function&amp;nbsp;signatures.&lt;/p&gt;
+&lt;p&gt;Here&amp;#8217;s the current way Python 3 annotates&amp;nbsp;functions:&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;my_func&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;'hello'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="nb"&gt;tuple&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;my_func&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'wut'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
+(1, 'wut')
+&lt;/pre&gt;
+&lt;p&gt;That&amp;#8217;s &lt;em&gt;so much line noise&lt;/em&gt;. Like what. Look at that default assignment.
+Like, I get why the annotations are inlined with the signature. But
+they&amp;#8217;re just ugly. Meanwhile, here&amp;#8217;s a similar Haskell function with the
+type&amp;nbsp;signature:&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+myFunc :: Int -&amp;gt; String -&amp;gt; (Int, String)
+myFunc a b = (a, b)
+&lt;/pre&gt;
+&lt;p&gt;That type signature is both helpful &lt;span class="caps"&gt;AND&lt;/span&gt; out of the way. However, there&amp;#8217;s
+one really nice thing that Python does with these&amp;nbsp;annotations:&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="n"&gt;my_func&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;__annotations__&lt;/span&gt;
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
+{'a': int, 'b': str, 'return': tuple}
+&lt;/pre&gt;
+&lt;p&gt;Nice. We retain that information in a dictionary out of the way. What if
+we could combine these two&amp;nbsp;things?&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pynads.utils.decorators&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;annotate&lt;/span&gt;
+
+&lt;span class="nd"&gt;&amp;#64;annotate&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Int -&amp;gt; String -&amp;gt; (Int, String)&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;my_func&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;'hello'&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;I like this. It stays out of the way, it uses a decorator (never enough
+decorators). Let&amp;#8217;s checkout the &lt;tt class="docutils literal"&gt;__annotations__&lt;/tt&gt; dict:&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="n"&gt;my_func&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;__annotations__&lt;/span&gt;
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
+{}
+&lt;/pre&gt;
+&lt;p&gt;Uh&amp;#8230;.Well, it didn&amp;#8217;t fill anything in. What did it do? Well, it
+attaches the signature to the&amp;nbsp;docstring&amp;#8230;&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;my_func&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;__doc__&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
+my_func :: Int -&amp;gt; String -&amp;gt; (Int, String)
+&lt;/pre&gt;
+&lt;p&gt;That&amp;#8217;s&amp;#8230;nice. I&amp;#8217;m actually perfectly content with this solution
+currently. But wouldn&amp;#8217;t it be cool? (this is a phrase that only preceeds
+michief and trouble). Wouldn&amp;#8217;t it be cool if that Haskell type was
+somehow transformed into a Python annotations dictionary and on the
+other end we&amp;#8217;d be able to inspect the annotation and get&amp;nbsp;this:&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s"&gt;'a'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;'Int'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+ &lt;span class="s"&gt;'b'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;'String'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+ &lt;span class="s"&gt;'returns'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;'(Int, String)'&lt;/span&gt;
+ &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
+{'a': 'Int', 'b': 'String', 'returns': '(Int, String)'}
+&lt;/pre&gt;
+&lt;p&gt;However, this is complicated because what if we had a higher order
+function? The Haskell type signature looks like&amp;nbsp;this:&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+map :: (a -&amp;gt; b) -&amp;gt; [a] -&amp;gt; [b]
+&lt;/pre&gt;
+&lt;p&gt;&amp;quot;Take a function of type a to type b, a list of as and return a list of
+bs.&amp;quot; Simple. How is this parsed? What if we put type class restrictions
+on the&amp;nbsp;type:&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+(Monad m) =&amp;gt; m a -&amp;gt; (a -&amp;gt; b) -&amp;gt; m b
+&lt;/pre&gt;
+&lt;p&gt;Where m is an instance of Monad, take a &lt;tt class="docutils literal"&gt;m a&lt;/tt&gt; and a function of type a
+to b and return a &lt;tt class="docutils literal"&gt;m b&lt;/tt&gt;.&lt;/p&gt;
+&lt;p&gt;What if we have multiple typeclass&amp;nbsp;restrictions:&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+(Monad m, Monoid s) =&amp;gt; m s -&amp;gt; m s -&amp;gt; (s -&amp;gt; s -&amp;gt; m s) -&amp;gt; m s
+&lt;/pre&gt;
+&lt;p&gt;Maybe we&amp;#8217;re lifting &lt;tt class="docutils literal"&gt;mappend&lt;/tt&gt; into a monad? Let&amp;#8217;s also pretend that
+this isn&amp;#8217;t a bad way of doing it as well. How do we parse&amp;nbsp;this?&lt;/p&gt;
+&lt;p&gt;What about &amp;quot;existentially types&amp;quot;, aka. &lt;tt class="docutils literal"&gt;forall a b.&lt;/tt&gt; (which is
+something I&amp;#8217;ve not used, nor understand, but apparently it&amp;#8217;s useful
+because&amp;nbsp;reasons).&lt;/p&gt;
+&lt;p&gt;Of course, there are cons with&amp;nbsp;this:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Haskell type signatures are too complex to be matched with regular
+expressions. How do you write a regex for
+&lt;tt class="docutils literal"&gt;forall a b. ((a, b) &lt;span class="pre"&gt;-&amp;gt;&lt;/span&gt; (Char, Bool))&lt;/tt&gt;?&lt;/li&gt;
+&lt;li&gt;Parsers can be slow. They &lt;em&gt;can&lt;/em&gt; be fast. But since this is a library
+built on understand functional things like applicatives and monads,
+of course I&amp;#8217;d use an applicative/monadic combinatorial parser, which
+in Python &lt;em&gt;will&lt;/em&gt; be&amp;nbsp;slow.&lt;/li&gt;
+&lt;li&gt;So many competing Python typing libraries. &lt;tt class="docutils literal"&gt;mypy&lt;/tt&gt; seems to have
+gotten the &lt;span class="caps"&gt;BDFL&lt;/span&gt; nod and in fact, seems to be on track for inclusion
+to Python 3.5. Is it worth taking a second step and translating the
+parsed type signature to a type&amp;nbsp;system?&lt;/li&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;__annotations__&lt;/tt&gt; are use for things that aren&amp;#8217;t type annotations.
+Is this good? Is this bad? I don&amp;#8217;t know. Well, I think they &lt;em&gt;should&lt;/em&gt;
+be for type signatures, but there&amp;#8217;s some cool stuff that is done with&amp;nbsp;them.&lt;/li&gt;
+&lt;li&gt;What about typeclass restrictions? Do we create a special entry? How
+do we handle collisions?&amp;nbsp;Etc.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Things to think&amp;nbsp;about.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="my-broken-do-notation"&gt;
+&lt;h2&gt;My Broken Do&amp;nbsp;Notation&lt;/h2&gt;
+&lt;p&gt;I implemented a &lt;a class="reference external" href="https://github.com/justanr/pynads/tree/master/pynads/do"&gt;rudimentary do-notation esque
+syntax&lt;/a&gt;
+sourced from Peter Thatcher&amp;#8217;s post on &lt;a class="reference external" href="http://www.valuedlessons.com/2008/01/monads-in-python-with-nice-syntax.html"&gt;monads in
+Python&lt;/a&gt;.
+Here&amp;#8217;s the thing, it works&amp;#8230;except with the &lt;tt class="docutils literal"&gt;List&lt;/tt&gt; monad, because we
+need to repeatedly call the bound function and then flatten the list
+out. Except with this implementation, it hits &lt;tt class="docutils literal"&gt;mreturn&lt;/tt&gt; and the whole
+thing blows up. Wah wah wah. But I like this&amp;nbsp;style:&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pynads.do&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;do&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mreturn&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pynads&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;List&lt;/span&gt;
+
+&lt;span class="nd"&gt;&amp;#64;do&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;monad&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;List&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;chessboard&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ranks&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;files&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;r&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;yield&lt;/span&gt; &lt;span class="n"&gt;List&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;ranks&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;yield&lt;/span&gt; &lt;span class="n"&gt;List&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;files&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;mreturn&lt;/span&gt;&lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+
+&lt;span class="c"&gt;#chessboard('abcdefgh', range(1,9))&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;Oops. But this&amp;nbsp;works:&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;chessboard&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ranks&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;files&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;List&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;ranks&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;lambda&lt;/span&gt; &lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+           &lt;span class="n"&gt;List&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;files&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;lambda&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+           &lt;span class="n"&gt;List&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;unit&lt;/span&gt;&lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;        &lt;span class="p"&gt;))&lt;/span&gt;
+
+&lt;span class="n"&gt;chessboard&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'abcdefgh'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;9&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
+List(('a', 1), ('a', 2), ('a', 3), ('a', 4), ('a', 5), '...54 more...', ('h', 4), ('h', 5), ('h', 6), ('h', 7), ('h', 8))
+&lt;/pre&gt;
+&lt;p&gt;But compare to&amp;nbsp;Haskell:&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+ranks = ['a'..'h']
+files = [1..8]
+
+chessboard :: [(Char, Integer)]
+chessboard = do
+             r &amp;lt;- ranks
+             f &amp;lt;- files
+             return (r,f)
+&lt;/pre&gt;
+&lt;p&gt;It just works. Obviously, something in Pynads is implemented poorly. Wah
+wah wah. But what if &lt;tt class="docutils literal"&gt;do&lt;/tt&gt; did something different? What if it took a
+look at that function and said, &amp;quot;No no no, this is &lt;em&gt;all&lt;/em&gt; wrong&amp;#8230;let
+me&amp;#8230;let me just rewrite it for you.&amp;quot; And instead of actually&amp;nbsp;using:&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+def chessboard(ranks, files):
+    r = yield List(*ranks)
+    f = yield List(*files)
+    mreturn((r,f))
+&lt;/pre&gt;
+&lt;p&gt;We actually end up&amp;nbsp;using:&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+def chesboard(ranks, files):
+    return List(*ranks) &amp;gt;&amp;gt; (lambda r:
+           List(*files) &amp;gt;&amp;gt; (lambda f:
+           List.unit((r,f))        ))
+&lt;/pre&gt;
+&lt;p&gt;And just rewrite the function with &lt;span class="caps"&gt;AST&lt;/span&gt; and compile it and use the new
+function instead. I mean if Lisp can be implemented in Python by parsing
+Lisp into Python &lt;span class="caps"&gt;AST&lt;/span&gt;, surely it&amp;#8217;s (relatively, being the keyword) simple
+to take a function with a bunch of yields and rewrite it into a function
+with a bunch of&amp;nbsp;lambdas.&lt;/p&gt;
+&lt;p&gt;Besides, wouldn&amp;#8217;t it be cool?&amp;nbsp;;)&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="thoughts"&gt;
+&lt;h2&gt;Thoughts&lt;/h2&gt;
+&lt;p&gt;Of course both of these are nuclear options. Well, the parser less so
+than rewriting &lt;span class="caps"&gt;AST&lt;/span&gt;. But, I know if I become a professional developer, at
+some point I&amp;#8217;ll need to have a passable understanding of parsers and
+ASTs (they&amp;#8217;re not even that unrelated) so instead of breaking something
+someone&amp;#8217;s using, why not break something I&amp;#8217;ll be the only one&amp;nbsp;cursing?&lt;/p&gt;
+&lt;/div&gt;
+</summary><category term="don't do this at home"></category><category term="pynads"></category><category term="python"></category></entry></feed>
