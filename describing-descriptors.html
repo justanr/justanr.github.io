@@ -81,8 +81,8 @@
         <div class="span8 offset2 article-content">
 
             <p><strong>An Aside:</strong> Just like my post on decorators, I&#8217;ve decided to rewrite
-this post as well because it suffered from the same issue: &quot;Look at all
-this code&#8230;and hey, there&#8217;s explainations as well.&quot; Instead of
+this post as well because it suffered from the same issue: &#8220;Look at all
+this code&#8230;and hey, there&#8217;s explainations as well.&#8221; Instead of
 exploring patterns, like I did in the decorator post, I&#8217;m going to focus
 in on one example use that explores several aspects of descriptors all
 at once. Of course, I&#8217;ll step through it piece by piece. There&#8217;s
@@ -357,8 +357,8 @@ confusing to&nbsp;me.</li>
 <p>Above, when we request <tt class="docutils literal">t.frob</tt> what&#8217;s actually happening behind the
 scenes is Python is calling <tt class="docutils literal">Thing.frob.__get__(t, Thing)</tt> instead of
 passing <tt class="docutils literal">Thing.frob.__get__</tt> directly to the print function. The
-reason the actual class is passed as well is &quot;to give you information
-about what object the descriptor is part of&quot;, to quote <a class="reference external" href="http://nbviewer.ipython.org/gist/ChrisBeaumont/5758381/descriptor_writeup.ipynb">Chris
+reason the actual class is passed as well is &#8220;to give you information
+about what object the descriptor is part of&#8221;, to quote <a class="reference external" href="http://nbviewer.ipython.org/gist/ChrisBeaumont/5758381/descriptor_writeup.ipynb">Chris
 Beaumont</a>.
 While I&#8217;ve not made use of inspecting which class the descriptor is part
 of, this could be valuable&nbsp;information.</p>
@@ -603,7 +603,7 @@ If we examine our current implementation, we&#8217;ll notice something else as&n
 {'email': <a class="reference external" href="mailto:'seventh&#64;montypython.com">'seventh&#64;montypython.com</a>', 'f_name': 'carol', 'l_name': 'cleaveland'}
 </pre>
 <p>There&#8217;s now the descriptors living at the class level and the values
-living at the instance level. Let&#8217;s add some &quot;debugging&quot; print calls to
+living at the instance level. Let&#8217;s add some &#8220;debugging&#8221; print calls to
 see what&#8217;s happening on the&nbsp;inside.</p>
 <pre class="code python literal-block">
 <span class="k">class</span> <span class="nc">LowerString</span><span class="p">(</span><span class="n">Descriptor</span><span class="p">):</span>
@@ -787,7 +787,7 @@ work?](<a class="reference external" href="http://stackoverflow.com/questions/17
                     <span>3</span>
 </a></li>
                 <li><a href="/tags.html#python-ref">python
-                    <span>9</span>
+                    <span>10</span>
 </a></li>
             </ul>
 

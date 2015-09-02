@@ -22,7 +22,7 @@ solving this&amp;nbsp;problem:&lt;/p&gt;
 Person(name='alec', age=26)
 &lt;/pre&gt;
 &lt;p&gt;Currying a class we don&amp;#8217;t expect to inherit from is easy. However, if
-someone comes along and says, &amp;quot;I&amp;#8217;d like to create a subclass&amp;quot; then
+someone comes along and says, &amp;#8220;I&amp;#8217;d like to create a subclass&amp;#8221; then
 there&amp;#8217;s an&amp;nbsp;issue&amp;#8230;&lt;/p&gt;
 &lt;pre class="code python literal-block"&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;PersonWithHobby&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Person&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
@@ -72,7 +72,7 @@ probably like to do is not only inherit from the class, but retain its
 currying or memoizing&amp;nbsp;characteristics.&lt;/p&gt;
 &lt;div class="section" id="metaclasses-are-to-classes-as-decorators-are-to-functions"&gt;
 &lt;h2&gt;Metaclasses are to classes as decorators are to&amp;nbsp;functions&lt;/h2&gt;
-&lt;p&gt;Ooooh, the scary &amp;quot;M&amp;quot; word. Tim Peters once&amp;nbsp;said,&lt;/p&gt;
+&lt;p&gt;Ooooh, the scary &amp;#8220;M&amp;#8221; word. Tim Peters once&amp;nbsp;said,&lt;/p&gt;
 &lt;pre class="literal-block"&gt;
 Metaclasses are deeper magic than 99% of users should ever worry about. If you wonder whether you need them, you don't (the people who actually need them know with certainty that they need them, and don't need an explanation about why).
 &lt;/pre&gt;
@@ -470,7 +470,7 @@ inheriting from &lt;tt class="docutils literal"&gt;flask.views.View&lt;/tt&gt; o
 depending on your&amp;nbsp;needs.&lt;/p&gt;
 &lt;p&gt;Something I&amp;#8217;ve explored in the past is building a simple RESTful service
 using Flask and SQLAlchemy. However, that blog post fell into the trap
-of &amp;quot;Look at all this code!&amp;quot; that happens to me regretfully often. D:
+of &amp;#8220;Look at all this code!&amp;#8221; that happens to me regretfully often. D:
 However, I&amp;#8217;d like revisit the idea and explore the topic a little more
 in&amp;nbsp;depth.&lt;/p&gt;
 &lt;p&gt;I will forewarn, that this post is still pretty code heavy. If that&amp;#8217;s
@@ -620,7 +620,7 @@ seems like it shouldn&amp;#8217;t be, but it is. Actually it can even be&amp;nbs
           &amp;quot;the mail.'&amp;quot;}
 &lt;/pre&gt;
 &lt;p&gt;Marshmallow is smart enough to know how to serialize built-in types
-without us saying, &amp;quot;This is a string.&amp;quot; Which is fantastic. We can take
+without us saying, &amp;#8220;This is a string.&amp;#8221; Which is fantastic. We can take
 that schema and &lt;tt class="docutils literal"&gt;json.dumps&lt;/tt&gt; and produce what we actually&amp;nbsp;wanted:&lt;/p&gt;
 &lt;pre class="code python literal-block"&gt;
 &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;json&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dumps&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;QuoteSchema&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dump&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;quotes&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;indent&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
@@ -768,7 +768,7 @@ can also deserialize a collection as&amp;nbsp;well:&lt;/p&gt;
 receiving simple &lt;span class="caps"&gt;JSON&lt;/span&gt; objects is apparent. With 11 lines we can take an
 object and cast it to a dictionary and we can take a dictionary with
 certain keys and build an object with it. Sure, we&amp;#8217;re just serializing
-and deserializing a namedtuple&amp;#8230;&amp;quot;But that&amp;#8217;s how it always begins. Very&amp;nbsp;small.&amp;quot;&lt;/p&gt;
+and deserializing a namedtuple&amp;#8230;&amp;#8221;But that&amp;#8217;s how it always begins. Very&amp;nbsp;small.&amp;#8221;&lt;/p&gt;
 &lt;pre class="code python literal-block"&gt;
 &lt;span class="n"&gt;Image&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;http://i.imgur.com/zvv3ymL.gif&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;
@@ -899,7 +899,7 @@ for&amp;nbsp;everyone.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="parting-thoughts"&gt;
 &lt;h3&gt;Parting&amp;nbsp;Thoughts&lt;/h3&gt;
-&lt;p&gt;While this was more of a &amp;quot;hit the ground running&amp;quot; guide to building a
+&lt;p&gt;While this was more of a &amp;#8220;hit the ground running&amp;#8221; guide to building a
 simple &lt;span class="caps"&gt;REST&lt;/span&gt; &lt;span class="caps"&gt;API&lt;/span&gt; with Flask and its little ecosystem, I hope it&amp;#8217;s been
 enlightening. I&amp;#8217;ve included the whole application in &lt;a class="reference external" href="https://gist.github.com/justanr/60f34a300ff4535c95fc"&gt;this
 gist&lt;/a&gt; for
@@ -911,17 +911,17 @@ reference. If you see a bug or have questions, hit me up on
 </summary><category term="flask"></category><category term="sqlalchemy"></category><category term="marshmallow"></category><category term="api"></category></entry><entry><title>I wrote a monad tutorial for some reason…</title><link href="http://justanr.github.io/i-wrote-a-monad-tutorial-for-some-reason" rel="alternate"></link><updated>2015-04-29T00:00:00-04:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2015-04-29:i-wrote-a-monad-tutorial-for-some-reason</id><summary type="html">&lt;p&gt;I swore to myself up and down that I wouldn&amp;#8217;t write one of these. But
 then I went and hacked up Pynads. And then I wrote a post on Pynads. And
 then I posted explainations about Monads on reddit. So what the hell. I
-already fulfilled my &amp;quot;Write about decorators when I understand them&amp;quot;
+already fulfilled my &amp;#8220;Write about decorators when I understand them&amp;#8221;
 obligation and ditto for descriptors. So Monads, why&amp;nbsp;not&amp;#8230;&lt;/p&gt;
 &lt;div class="section" id="it-s-simple-a-monad-is-like-a"&gt;
 &lt;h2&gt;It&amp;#8217;s simple, a monad is like&amp;nbsp;a&amp;#8230;&lt;/h2&gt;
 &lt;p&gt;No. Stooooooop. :( Burritos. Bucket brigades. Semicolons. All these
-analogies just confused me for a long time. And then I &amp;quot;got them&amp;quot; and by
-&amp;quot;got them&amp;quot; I mean &amp;quot;Even more hopelessly confused but I didn&amp;#8217;t know
-that.&amp;quot; Like what does &amp;quot;programmable semicolon&amp;quot; even mean? Every language
-I&amp;#8217;ve used (which isn&amp;#8217;t many) a semicolon means &amp;quot;This bit of code ends
-here, kthxbai&amp;quot;. The burrito analogy was meant as a critique of this
-phenomenon &amp;#8212; and I&amp;#8217;ll likely fall victim of the &amp;quot;Monad Tutorial Curse&amp;quot;.
+analogies just confused me for a long time. And then I &amp;#8220;got them&amp;#8221; and by
+&amp;#8220;got them&amp;#8221; I mean &amp;#8220;Even more hopelessly confused but I didn&amp;#8217;t know
+that.&amp;#8221; Like what does &amp;#8220;programmable semicolon&amp;#8221; even mean? Every language
+I&amp;#8217;ve used (which isn&amp;#8217;t many) a semicolon means &amp;#8220;This bit of code ends
+here, kthxbai&amp;#8221;. The burrito analogy was meant as a critique of this
+phenomenon &amp;#8212; and I&amp;#8217;ll likely fall victim of the &amp;#8220;Monad Tutorial Curse&amp;#8221;.
 And the bucket brigade was a valiant effort by a &lt;span class="caps"&gt;SO&lt;/span&gt; user to explain&amp;nbsp;them.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="it-s-simple-a-monad-is-like-a-unix-pipe"&gt;
@@ -936,13 +936,13 @@ directory and print them&amp;nbsp;out:&lt;/p&gt;
 ls -lh ~/Downloads | grep -i &amp;quot;*mp4&amp;quot; | less
 &lt;/pre&gt;
 &lt;p&gt;Super simple. We take the first command &lt;tt class="docutils literal"&gt;ls&lt;/tt&gt; feed it some options and
-a directory to list out. Then &lt;tt class="docutils literal"&gt;|&lt;/tt&gt; goes &amp;quot;Oh, you have output and I have
-this thing that needs input, here grep!&amp;quot; And then grep does its business
-and &lt;tt class="docutils literal"&gt;|&lt;/tt&gt; steps back in and goes &amp;quot;Oh, you have output and I have this
-thing that needs input, here&amp;nbsp;less!&amp;quot;&lt;/p&gt;
+a directory to list out. Then &lt;tt class="docutils literal"&gt;|&lt;/tt&gt; goes &amp;#8220;Oh, you have output and I have
+this thing that needs input, here grep!&amp;#8221; And then grep does its business
+and &lt;tt class="docutils literal"&gt;|&lt;/tt&gt; steps back in and goes &amp;#8220;Oh, you have output and I have this
+thing that needs input, here&amp;nbsp;less!&amp;#8221;&lt;/p&gt;
 &lt;p&gt;Of course it isn&amp;#8217;t a perfect analogy. But all analogies break down under
-scrutiny. But this is essentially what Haskell&amp;#8217;s &lt;tt class="docutils literal"&gt;&amp;gt;&amp;gt;=&lt;/tt&gt; does. &amp;quot;Oh, you
-have output, let me feed it to this function that wants input!&amp;quot; That&amp;#8217;s
+scrutiny. But this is essentially what Haskell&amp;#8217;s &lt;tt class="docutils literal"&gt;&amp;gt;&amp;gt;=&lt;/tt&gt; does. &amp;#8220;Oh, you
+have output, let me feed it to this function that wants input!&amp;#8221; That&amp;#8217;s
 it. Monads are about chaining together a series of actions of functions
 (depending on how you want to look at it) in a way that each
 action/function returns something that can carry the chain forward&amp;nbsp;somehow.&lt;/p&gt;
@@ -1168,7 +1168,7 @@ q = session.query(Person).filter(Person.name.startswith('A')).first()
 further, allowing us to craft complicated queries in a relatively simple&amp;nbsp;manner.&lt;/p&gt;
 &lt;p&gt;I found a more clever example in a thread on /r/learnpython about what
 features would you implement in Python given that chance. Below the
-&amp;quot;Everything not nailed down in Haskell&amp;quot; comment, there was one about
+&amp;#8220;Everything not nailed down in Haskell&amp;#8221; comment, there was one about
 universal function call syntax from D.
 &lt;a class="reference external" href="http://www.reddit.com/r/Python/comments/33qzzf/what_features_should_python_steal_from_other/cqo1ic6"&gt;/u/AMorpork&lt;/a&gt;
 proposed simply creating a monad where &lt;tt class="docutils literal"&gt;__getattr__&lt;/tt&gt; is the sequencing
@@ -1241,7 +1241,7 @@ of programming. Maybe I fell upon the Monad Tutorial Fallacy. However,
 in the event that I&amp;#8217;ve hopeless confused someone more, drop me a line
 and I&amp;#8217;ll be happy to go into further&amp;nbsp;detail.&lt;/p&gt;
 &lt;/div&gt;
-</summary><category term="design"></category><category term="haskell"></category><category term="python"></category><category term="monads"></category></entry><entry><title>Understanding foo.bar()</title><link href="http://justanr.github.io/understanding-foobar" rel="alternate"></link><updated>2014-11-16T00:00:00-05:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2014-11-16:understanding-foobar</id><summary type="html">&lt;p&gt;One of my favorite shows is &amp;quot;How It&amp;#8217;s Made&amp;quot; &amp;#8212; my enjoyment mostly stems
+</summary><category term="design"></category><category term="haskell"></category><category term="python"></category><category term="monads"></category></entry><entry><title>Understanding foo.bar()</title><link href="http://justanr.github.io/understanding-foobar" rel="alternate"></link><updated>2014-11-16T00:00:00-05:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2014-11-16:understanding-foobar</id><summary type="html">&lt;p&gt;One of my favorite shows is &amp;#8220;How It&amp;#8217;s Made&amp;#8221; &amp;#8212; my enjoyment mostly stems
 from learning how stuff is made, but the narrator&amp;#8217;s cheeky puns and
 jokes certainly add to it. But something I enjoy more than knowing how
 stuff is put together, is knowing how things work. I don&amp;#8217;t know what it
@@ -1304,7 +1304,7 @@ when we call &lt;tt class="docutils literal"&gt;foo.bar()&lt;/tt&gt;&lt;/p&gt;
 &lt;p&gt;You&amp;#8217;ll often hear that objects and classes in Python are simply nothing
 more than a pile of dictionaries with dotted access. This obtuse
 phrasing confused me for a long time and it wasn&amp;#8217;t until I began asking,
-&amp;quot;How the heck does &lt;tt class="docutils literal"&gt;self&lt;/tt&gt; actually get passed?&amp;quot; that I began to
+&amp;#8220;How the heck does &lt;tt class="docutils literal"&gt;self&lt;/tt&gt; actually get passed?&amp;#8221; that I began to
 understand. Asking this began me down a rabbit hole that lead me to
 descriptors and &lt;tt class="docutils literal"&gt;__getattribute__&lt;/tt&gt; and what they&amp;nbsp;do.&lt;/p&gt;
 &lt;div class="section" id="the-dict"&gt;
@@ -1806,10 +1806,10 @@ are. And &lt;a class="reference external" href="http://pymotw.com/2/weakref/"&gt
 &lt;tt class="docutils literal"&gt;WeakValueDictionary&lt;/tt&gt; or &lt;tt class="docutils literal"&gt;WeakSet&lt;/tt&gt; will prevent this. Most things
 &lt;em&gt;can&lt;/em&gt; be weak referenced &amp;#8212; &lt;a class="reference external" href="https://docs.python.org/3/library/weakref.html"&gt;the
 documentation&lt;/a&gt; goes
-into detail about what can be: &amp;quot;class instances, functions written in
+into detail about what can be: &amp;#8220;class instances, functions written in
 Python (but not in C), instance methods, sets, frozensets, some file
 objects, generators, type objects, sockets, arrays, deques, regular
-expression pattern objects, and code&amp;nbsp;objects.&amp;quot;&lt;/p&gt;
+expression pattern objects, and code&amp;nbsp;objects.&amp;#8221;&lt;/p&gt;
 &lt;p&gt;When you&amp;#8217;re attempting to use &lt;tt class="docutils literal"&gt;WeakKeyDictionary&lt;/tt&gt; or &lt;tt class="docutils literal"&gt;WeakSet&lt;/tt&gt;, the
 object must meet one more requirement: hashable. So objects like
 &lt;tt class="docutils literal"&gt;list&lt;/tt&gt; or &lt;tt class="docutils literal"&gt;dict&lt;/tt&gt;, even if they were implemented in Python, can&amp;#8217;t
@@ -1856,7 +1856,7 @@ descriptor, it no longer needs to worry about what name it&amp;#8217;s being hel
 object. The main reason for this would be to notify only certain
 subscribers when an attribute changes but not all of them. This explores
 what happens when access a descriptor through the class and not an
-instance. Meaning answering, &amp;quot;What does cls (or type) do on &lt;tt class="docutils literal"&gt;__get__&lt;/tt&gt;?&lt;/p&gt;
+instance. Meaning answering, &amp;#8220;What does cls (or type) do on &lt;tt class="docutils literal"&gt;__get__&lt;/tt&gt;?&lt;/p&gt;
 &lt;div class="section" id="accessing-the-descriptor"&gt;
 &lt;h3&gt;Accessing the&amp;nbsp;Descriptor&lt;/h3&gt;
 &lt;p&gt;Since descriptors are objects that just happen to follow a certain
@@ -1946,7 +1946,7 @@ so it&amp;#8217;s not a complete drop in&amp;nbsp;replacement.&lt;/p&gt;
 regular &lt;tt class="docutils literal"&gt;set&lt;/tt&gt;. Mostly because if we remove all other references from
 an observer, do we intend to still have the observer still process
 requests? My thoughts on the matter is no, the observer should be
-considered dead. In other cases, the goal could be to have &amp;quot;anonymous&amp;quot;
+considered dead. In other cases, the goal could be to have &amp;#8220;anonymous&amp;#8221;
 observers &amp;#8212; objects that are created and immediately injected into the
 framework rather than assigned to a name and passed in. If this is the
 desire, than &lt;tt class="docutils literal"&gt;WeakSet&lt;/tt&gt; wouldn&amp;#8217;t keep the object from being immediately
@@ -2001,7 +2001,7 @@ onto observers for us that are local to a particular&amp;nbsp;instance.&lt;/p&gt
         &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;value&lt;/span&gt;
 &lt;/pre&gt;
 &lt;p&gt;With that built, we can reconstruct &lt;tt class="docutils literal"&gt;WatchedAttribute&lt;/tt&gt; to hold both
-&amp;quot;global&amp;quot; and &amp;quot;local&amp;quot;&amp;nbsp;observers.&lt;/p&gt;
+&amp;#8220;global&amp;#8221; and &amp;#8220;local&amp;#8221;&amp;nbsp;observers.&lt;/p&gt;
 &lt;pre class="code python literal-block"&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;WatchedAttribute&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;CachingDescriptor&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;SubjectMixin&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
@@ -2083,8 +2083,8 @@ upper case is bound only to the first instance of Person, where as the
 one that strips out the vowels and prints that result is bound to all of
 instances. It&amp;#8217;s also possible to create an &lt;tt class="docutils literal"&gt;ignore&lt;/tt&gt; method that would
 allow specific instances to ignore certain observers as well. Or even
-better, create a set of rules that can be followed: &amp;quot;Only invoke this
-observer if the value doesn&amp;#8217;t&amp;nbsp;change.&amp;quot;&lt;/p&gt;
+better, create a set of rules that can be followed: &amp;#8220;Only invoke this
+observer if the value doesn&amp;#8217;t&amp;nbsp;change.&amp;#8221;&lt;/p&gt;
 &lt;p&gt;Something I&amp;#8217;ve curiously ignored is pre-subscribing observers. That is
 to say, when we create the class we attach a predetermined list of
 observers to the attribute. This is a feature of the original
@@ -2144,8 +2144,8 @@ filled with data on the instance level? Descriptors and that
 &lt;/div&gt;
 &lt;/div&gt;
 </summary><category term="python"></category><category term="descriptors"></category></entry><entry><title>Describing Descriptors</title><link href="http://justanr.github.io/describing-descriptors" rel="alternate"></link><updated>2014-09-29T00:00:00-04:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2014-09-29:describing-descriptors</id><summary type="html">&lt;p&gt;&lt;strong&gt;An Aside:&lt;/strong&gt; Just like my post on decorators, I&amp;#8217;ve decided to rewrite
-this post as well because it suffered from the same issue: &amp;quot;Look at all
-this code&amp;#8230;and hey, there&amp;#8217;s explainations as well.&amp;quot; Instead of
+this post as well because it suffered from the same issue: &amp;#8220;Look at all
+this code&amp;#8230;and hey, there&amp;#8217;s explainations as well.&amp;#8221; Instead of
 exploring patterns, like I did in the decorator post, I&amp;#8217;m going to focus
 in on one example use that explores several aspects of descriptors all
 at once. Of course, I&amp;#8217;ll step through it piece by piece. There&amp;#8217;s
@@ -2420,8 +2420,8 @@ confusing to&amp;nbsp;me.&lt;/li&gt;
 &lt;p&gt;Above, when we request &lt;tt class="docutils literal"&gt;t.frob&lt;/tt&gt; what&amp;#8217;s actually happening behind the
 scenes is Python is calling &lt;tt class="docutils literal"&gt;Thing.frob.__get__(t, Thing)&lt;/tt&gt; instead of
 passing &lt;tt class="docutils literal"&gt;Thing.frob.__get__&lt;/tt&gt; directly to the print function. The
-reason the actual class is passed as well is &amp;quot;to give you information
-about what object the descriptor is part of&amp;quot;, to quote &lt;a class="reference external" href="http://nbviewer.ipython.org/gist/ChrisBeaumont/5758381/descriptor_writeup.ipynb"&gt;Chris
+reason the actual class is passed as well is &amp;#8220;to give you information
+about what object the descriptor is part of&amp;#8221;, to quote &lt;a class="reference external" href="http://nbviewer.ipython.org/gist/ChrisBeaumont/5758381/descriptor_writeup.ipynb"&gt;Chris
 Beaumont&lt;/a&gt;.
 While I&amp;#8217;ve not made use of inspecting which class the descriptor is part
 of, this could be valuable&amp;nbsp;information.&lt;/p&gt;
@@ -2666,7 +2666,7 @@ If we examine our current implementation, we&amp;#8217;ll notice something else 
 {'email': &lt;a class="reference external" href="mailto:'seventh&amp;#64;montypython.com"&gt;'seventh&amp;#64;montypython.com&lt;/a&gt;', 'f_name': 'carol', 'l_name': 'cleaveland'}
 &lt;/pre&gt;
 &lt;p&gt;There&amp;#8217;s now the descriptors living at the class level and the values
-living at the instance level. Let&amp;#8217;s add some &amp;quot;debugging&amp;quot; print calls to
+living at the instance level. Let&amp;#8217;s add some &amp;#8220;debugging&amp;#8221; print calls to
 see what&amp;#8217;s happening on the&amp;nbsp;inside.&lt;/p&gt;
 &lt;pre class="code python literal-block"&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;LowerString&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Descriptor&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
@@ -2799,14 +2799,14 @@ informative and less example heavy. The original post was essentially
 just a series of examples of &lt;em&gt;how&lt;/em&gt; you&amp;#8217;d use decorators or &lt;em&gt;what&lt;/em&gt; you&amp;#8217;d
 use them for rather than &lt;em&gt;why&lt;/em&gt; you&amp;#8217;d use decorators and addressing
 patterns. I&amp;#8217;m hoping this rewrite clarifies that instead of being a
-&amp;quot;Look at all this code you probably don&amp;#8217;t&amp;nbsp;understand!&amp;quot;&lt;/p&gt;
+&amp;#8220;Look at all this code you probably don&amp;#8217;t&amp;nbsp;understand!&amp;#8221;&lt;/p&gt;
 &lt;p&gt;Decorators are well championed but most posts I&amp;#8217;ve seen about them don&amp;#8217;t
 address many of the issues here. I wouldn&amp;#8217;t say they&amp;#8217;re something
 beginner or novice friendly since it delves into concepts like
-functional programming and &amp;quot;higher order functions&amp;quot; which is just scary
-talk for &amp;quot;functions that accept functions as arguments&amp;quot; and even
-currying, which basically boils down to &amp;quot;reducing the number of inputs a
-function takes.&amp;quot; I&amp;#8217;m grossly over simplifying here for the sake of
+functional programming and &amp;#8220;higher order functions&amp;#8221; which is just scary
+talk for &amp;#8220;functions that accept functions as arguments&amp;#8221; and even
+currying, which basically boils down to &amp;#8220;reducing the number of inputs a
+function takes.&amp;#8221; I&amp;#8217;m grossly over simplifying here for the sake of
 explaination, but I stand by these&amp;nbsp;simplifications.&lt;/p&gt;
 &lt;p&gt;Another note, apparently there was a lot of hemming and hawing in the
 Python mailing list when this construct (for lack of a better word) was
@@ -2824,7 +2824,7 @@ makes it sound very confusing, but hopefully that will become clear
 through examples and&amp;nbsp;explaination.&lt;/p&gt;
 &lt;div class="section" id="decorator-day"&gt;
 &lt;h2&gt;Decorator&amp;nbsp;Day&lt;/h2&gt;
-&lt;p&gt;This is meant to be a &amp;quot;hit the ground running&amp;quot; sort of thing decorators.
+&lt;p&gt;This is meant to be a &amp;#8220;hit the ground running&amp;#8221; sort of thing decorators.
 Just enough information to make you feel confident but not enough that
 you know all there is to them. Though, honestly, once they click,
 they&amp;#8217;re not so&amp;nbsp;complicated.&lt;/p&gt;
@@ -2965,8 +2965,8 @@ oriented, except for two which will be&amp;nbsp;obvious.&lt;/p&gt;
 &lt;div class="section" id="flexible-decorators"&gt;
 &lt;h3&gt;Flexible&amp;nbsp;Decorators&lt;/h3&gt;
 &lt;p&gt;You&amp;#8217;re going to want your decorators to work with as many functions as
-possible. Not just the one you initially noticed and thought, &amp;quot;I can
-factor this other code out into a decorator.&amp;quot; But what does a flexible
+possible. Not just the one you initially noticed and thought, &amp;#8220;I can
+factor this other code out into a decorator.&amp;#8221; But what does a flexible
 decorator look like? It&amp;#8217;s best to compare it to a brittle decorator to
 understand&amp;nbsp;fully.&lt;/p&gt;
 &lt;pre class="code python literal-block"&gt;
@@ -3005,7 +3005,7 @@ the Flying Saucer downtown.&amp;nbsp;Anyways&amp;#8230;&lt;/p&gt;
 original metadata: &lt;tt class="docutils literal"&gt;__name__&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;__doc__&lt;/tt&gt;, etc. There&amp;#8217;s a few ways to
 retain it. Instead of hopping to the correct way, I&amp;#8217;ll show you why
 you&amp;#8217;ll want to do that instead. Just like ensuring defaults are set in a
-dictionary, there&amp;#8217;s an increasing level of &amp;quot;correctness&amp;quot; or &amp;quot;Pythonness&amp;quot;
+dictionary, there&amp;#8217;s an increasing level of &amp;#8220;correctness&amp;#8221; or &amp;#8220;Pythonness&amp;#8221;
 from what you should start with and what you should end&amp;nbsp;with.&lt;/p&gt;
 &lt;p&gt;The first thing you might try is manually transfering these attributes
 inside the&amp;nbsp;decorator.&lt;/p&gt;
@@ -3317,7 +3317,7 @@ helpful to also use some sort of data structure to organize them if
 you&amp;#8217;re doing more than simply wrapping them. In most cases the
 &lt;tt class="docutils literal"&gt;weakref&lt;/tt&gt; module will either provide the answer you need or set you on
 the right path; though, there are objects that can&amp;#8217;t be weak referenced
-&amp;#8212; including most of the built in or &amp;quot;primitive&amp;quot; types in Python (str,
+&amp;#8212; including most of the built in or &amp;#8220;primitive&amp;#8221; types in Python (str,
 int, float, list, dict and tuple). However, for more complex objects,
 weakrefs are a powerful tool that let you conserve memory among other
 things. It&amp;#8217;s worth balancing using something like &lt;tt class="docutils literal"&gt;WeakKeyDictionary&lt;/tt&gt;
@@ -3439,8 +3439,8 @@ enough to solve this&amp;nbsp;problem.&lt;/p&gt;
 &lt;li&gt;Ability to pull source&amp;nbsp;code&lt;/li&gt;
 &lt;li&gt;type and isinstance stop&amp;nbsp;working&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;I&amp;#8217;ll admit blowing up code is one of the ways I learn the best. &amp;quot;What
-did I do that I shouldn&amp;#8217;t have done and how do I fix it?&amp;quot; Though,
+&lt;p&gt;I&amp;#8217;ll admit blowing up code is one of the ways I learn the best. &amp;#8220;What
+did I do that I shouldn&amp;#8217;t have done and how do I fix it?&amp;#8221; Though,
 sometimes the errors are hard to track&amp;nbsp;down.&lt;/p&gt;
 &lt;p&gt;Python 2&amp;#8217;s &lt;tt class="docutils literal"&gt;inspect.getargspec&lt;/tt&gt; doesn&amp;#8217;t like being passed an object
 and complains loudly about it. Python 3&amp;#8217;s version doesn&amp;#8217;t seem to mind,
@@ -3462,7 +3462,7 @@ and 3. The same fixes should apply&amp;nbsp;here.&lt;/p&gt;
 identify explicitly what an object is. Descriptors seems like they
 should work and rudimentary testing with it seems to cause &lt;tt class="docutils literal"&gt;type&lt;/tt&gt; to
 behave as expected, but I&amp;#8217;ve not battle tested this &amp;#8212; and the real
-question is, &amp;quot;Why are you using &lt;tt class="docutils literal"&gt;type&lt;/tt&gt; anyways?&amp;quot;&lt;/p&gt;
+question is, &amp;#8220;Why are you using &lt;tt class="docutils literal"&gt;type&lt;/tt&gt; anyways?&amp;#8221;&lt;/p&gt;
 &lt;div class="section" id="actually-fixing-these"&gt;
 &lt;h4&gt;Actually fixing&amp;nbsp;these&lt;/h4&gt;
 &lt;p&gt;If you&amp;#8217;re much more curious about the proper way to fix these issues, I
@@ -3493,8 +3493,8 @@ clarifications on &lt;em&gt;many&lt;/em&gt; things I glossed over initially, thi
 people think the same way I do (which is probably a lot more twisted and
 convoluted than&amp;nbsp;most).&lt;/p&gt;
 &lt;p&gt;I&amp;#8217;m probably going to rewrite several other posts as well in a more
-frank &amp;quot;This is what&amp;#8217;s happening&amp;quot; manner instead of the usual &amp;quot;Here&amp;#8217;s a
-bunch of code, I hope you get it!&amp;quot; that makes sense to me more than
+frank &amp;#8220;This is what&amp;#8217;s happening&amp;#8221; manner instead of the usual &amp;#8220;Here&amp;#8217;s a
+bunch of code, I hope you get it!&amp;#8221; that makes sense to me more than
 anyone&amp;nbsp;else.&lt;/p&gt;
 &lt;/div&gt;
 </summary><category term="python"></category><category term="decorators"></category><category term="functions"></category></entry></feed>

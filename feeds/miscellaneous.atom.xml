@@ -80,8 +80,8 @@ function? The Haskell type signature looks like&amp;nbsp;this:&lt;/p&gt;
 &lt;pre class="literal-block"&gt;
 map :: (a -&amp;gt; b) -&amp;gt; [a] -&amp;gt; [b]
 &lt;/pre&gt;
-&lt;p&gt;&amp;quot;Take a function of type a to type b, a list of as and return a list of
-bs.&amp;quot; Simple. How is this parsed? What if we put type class restrictions
+&lt;p&gt;&lt;span class="dquo"&gt;&amp;#8220;&lt;/span&gt;Take a function of type a to type b, a list of as and return a list of
+bs.&amp;#8221; Simple. How is this parsed? What if we put type class restrictions
 on the&amp;nbsp;type:&lt;/p&gt;
 &lt;pre class="literal-block"&gt;
 (Monad m) =&amp;gt; m a -&amp;gt; (a -&amp;gt; b) -&amp;gt; m b
@@ -94,7 +94,7 @@ to b and return a &lt;tt class="docutils literal"&gt;m b&lt;/tt&gt;.&lt;/p&gt;
 &lt;/pre&gt;
 &lt;p&gt;Maybe we&amp;#8217;re lifting &lt;tt class="docutils literal"&gt;mappend&lt;/tt&gt; into a monad? Let&amp;#8217;s also pretend that
 this isn&amp;#8217;t a bad way of doing it as well. How do we parse&amp;nbsp;this?&lt;/p&gt;
-&lt;p&gt;What about &amp;quot;existentially types&amp;quot;, aka. &lt;tt class="docutils literal"&gt;forall a b.&lt;/tt&gt; (which is
+&lt;p&gt;What about &amp;#8220;existentially types&amp;#8221;, aka. &lt;tt class="docutils literal"&gt;forall a b.&lt;/tt&gt; (which is
 something I&amp;#8217;ve not used, nor understand, but apparently it&amp;#8217;s useful
 because&amp;nbsp;reasons).&lt;/p&gt;
 &lt;p&gt;Of course, there are cons with&amp;nbsp;this:&lt;/p&gt;
@@ -165,8 +165,8 @@ chessboard = do
 &lt;/pre&gt;
 &lt;p&gt;It just works. Obviously, something in Pynads is implemented poorly. Wah
 wah wah. But what if &lt;tt class="docutils literal"&gt;do&lt;/tt&gt; did something different? What if it took a
-look at that function and said, &amp;quot;No no no, this is &lt;em&gt;all&lt;/em&gt; wrong&amp;#8230;let
-me&amp;#8230;let me just rewrite it for you.&amp;quot; And instead of actually&amp;nbsp;using:&lt;/p&gt;
+look at that function and said, &amp;#8220;No no no, this is &lt;em&gt;all&lt;/em&gt; wrong&amp;#8230;let
+me&amp;#8230;let me just rewrite it for you.&amp;#8221; And instead of actually&amp;nbsp;using:&lt;/p&gt;
 &lt;pre class="literal-block"&gt;
 def chessboard(ranks, files):
     r = yield List(*ranks)

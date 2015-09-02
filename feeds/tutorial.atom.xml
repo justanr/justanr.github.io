@@ -201,7 +201,7 @@ of albums and tracks on relevant models, and for good measure: total&amp;nbsp;or
 allow an object to be garbage collected when it&amp;#8217;s the only remaining
 reference left. Meaning if we created a bunch of Artist objects, stuffed
 them into permanent storage somewhere and then deleted the objects (and
-all their &amp;quot;strong&amp;quot; references), Python can come clean up some memory for
+all their &amp;#8220;strong&amp;#8221; references), Python can come clean up some memory for
 us. Which is incredibly useful when dealing with a lot of data at&amp;nbsp;once.&lt;/p&gt;
 &lt;pre class="code python literal-block"&gt;
 &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;itertools&lt;/span&gt; &lt;span class="kn"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;it&lt;/span&gt;
@@ -433,7 +433,7 @@ AttributeError                            Traceback (most recent call last)
 
 AttributeError: 'Track' object has no attribute 'title'
 &lt;/pre&gt;
-&lt;p&gt;Of course to avoid dealing with &amp;quot;hanger on&amp;quot; variables as I like to call
+&lt;p&gt;Of course to avoid dealing with &amp;#8220;hanger on&amp;#8221; variables as I like to call
 them, this logic (as well as the logic to take a directory and extract
 it&amp;#8217;s subdirectories and finally the music files in it) could be stored
 in a function that&amp;#8217;d be callable again and again. Something like&amp;nbsp;this:&lt;/p&gt;
@@ -608,8 +608,8 @@ the database (did I give away my plan?) and throw the immediate result&amp;nbsp;
 &lt;p&gt;You know what&amp;#8217;s really good at doing something and then throwing results
 away? Generators. Adapting &lt;tt class="docutils literal"&gt;r_get_music_files&lt;/tt&gt; to a general file
 walker is trivial but I&amp;#8217;m slightly vain and overly happy with my end
-generator. Before anyone jumps on me and says, &amp;quot;&lt;span class="caps"&gt;ALEC&lt;/span&gt;! There&amp;#8217;s os.walk!
-You&amp;#8217;ve got os imported&amp;nbsp;already!&amp;quot;&lt;/p&gt;
+generator. Before anyone jumps on me and says, &amp;#8220;&lt;span class="caps"&gt;ALEC&lt;/span&gt;! There&amp;#8217;s os.walk!
+You&amp;#8217;ve got os imported&amp;nbsp;already!&amp;#8221;&lt;/p&gt;
 &lt;p&gt;I know. &lt;tt class="docutils literal"&gt;os.walk&lt;/tt&gt; almost does what we want: start with a folder, find
 the subfolders, yield a list of things. Except in this case it&amp;#8217;s three
 tuples: &lt;tt class="docutils literal"&gt;(dirpath, dirnames, filenames)&lt;/tt&gt;. Which means we need to then

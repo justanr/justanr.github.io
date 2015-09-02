@@ -88,7 +88,7 @@ inheriting from <tt class="docutils literal">flask.views.View</tt> or <tt class=
 depending on your&nbsp;needs.</p>
 <p>Something I&#8217;ve explored in the past is building a simple RESTful service
 using Flask and SQLAlchemy. However, that blog post fell into the trap
-of &quot;Look at all this code!&quot; that happens to me regretfully often. D:
+of &#8220;Look at all this code!&#8221; that happens to me regretfully often. D:
 However, I&#8217;d like revisit the idea and explore the topic a little more
 in&nbsp;depth.</p>
 <p>I will forewarn, that this post is still pretty code heavy. If that&#8217;s
@@ -238,7 +238,7 @@ seems like it shouldn&#8217;t be, but it is. Actually it can even be&nbsp;easier
           &quot;the mail.'&quot;}
 </pre>
 <p>Marshmallow is smart enough to know how to serialize built-in types
-without us saying, &quot;This is a string.&quot; Which is fantastic. We can take
+without us saying, &#8220;This is a string.&#8221; Which is fantastic. We can take
 that schema and <tt class="docutils literal">json.dumps</tt> and produce what we actually&nbsp;wanted:</p>
 <pre class="code python literal-block">
 <span class="k">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">QuoteSchema</span><span class="p">()</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">quotes</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
@@ -386,7 +386,7 @@ can also deserialize a collection as&nbsp;well:</p>
 receiving simple <span class="caps">JSON</span> objects is apparent. With 11 lines we can take an
 object and cast it to a dictionary and we can take a dictionary with
 certain keys and build an object with it. Sure, we&#8217;re just serializing
-and deserializing a namedtuple&#8230;&quot;But that&#8217;s how it always begins. Very&nbsp;small.&quot;</p>
+and deserializing a namedtuple&#8230;&#8221;But that&#8217;s how it always begins. Very&nbsp;small.&#8221;</p>
 <pre class="code python literal-block">
 <span class="n">Image</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s">&quot;http://i.imgur.com/zvv3ymL.gif&quot;</span><span class="p">)</span>
 </pre>
@@ -517,7 +517,7 @@ for&nbsp;everyone.</p>
 </div>
 <div class="section" id="parting-thoughts">
 <h3>Parting&nbsp;Thoughts</h3>
-<p>While this was more of a &quot;hit the ground running&quot; guide to building a
+<p>While this was more of a &#8220;hit the ground running&#8221; guide to building a
 simple <span class="caps">REST</span> <span class="caps">API</span> with Flask and its little ecosystem, I hope it&#8217;s been
 enlightening. I&#8217;ve included the whole application in <a class="reference external" href="https://gist.github.com/justanr/60f34a300ff4535c95fc">this
 gist</a> for

@@ -282,7 +282,7 @@ of albums and tracks on relevant models, and for good measure: total&nbsp;orderi
 allow an object to be garbage collected when it&#8217;s the only remaining
 reference left. Meaning if we created a bunch of Artist objects, stuffed
 them into permanent storage somewhere and then deleted the objects (and
-all their &quot;strong&quot; references), Python can come clean up some memory for
+all their &#8220;strong&#8221; references), Python can come clean up some memory for
 us. Which is incredibly useful when dealing with a lot of data at&nbsp;once.</p>
 <pre class="code python literal-block">
 <span class="kn">import</span> <span class="nn">itertools</span> <span class="kn">as</span> <span class="nn">it</span>
@@ -514,7 +514,7 @@ AttributeError                            Traceback (most recent call last)
 
 AttributeError: 'Track' object has no attribute 'title'
 </pre>
-<p>Of course to avoid dealing with &quot;hanger on&quot; variables as I like to call
+<p>Of course to avoid dealing with &#8220;hanger on&#8221; variables as I like to call
 them, this logic (as well as the logic to take a directory and extract
 it&#8217;s subdirectories and finally the music files in it) could be stored
 in a function that&#8217;d be callable again and again. Something like&nbsp;this:</p>
@@ -689,8 +689,8 @@ the database (did I give away my plan?) and throw the immediate result&nbsp;away
 <p>You know what&#8217;s really good at doing something and then throwing results
 away? Generators. Adapting <tt class="docutils literal">r_get_music_files</tt> to a general file
 walker is trivial but I&#8217;m slightly vain and overly happy with my end
-generator. Before anyone jumps on me and says, &quot;<span class="caps">ALEC</span>! There&#8217;s os.walk!
-You&#8217;ve got os imported&nbsp;already!&quot;</p>
+generator. Before anyone jumps on me and says, &#8220;<span class="caps">ALEC</span>! There&#8217;s os.walk!
+You&#8217;ve got os imported&nbsp;already!&#8221;</p>
 <p>I know. <tt class="docutils literal">os.walk</tt> almost does what we want: start with a folder, find
 the subfolders, yield a list of things. Except in this case it&#8217;s three
 tuples: <tt class="docutils literal">(dirpath, dirnames, filenames)</tt>. Which means we need to then

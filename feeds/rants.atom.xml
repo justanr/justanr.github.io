@@ -68,8 +68,8 @@ def compose(f, g):
 &lt;/pre&gt;
 &lt;p&gt;Using the special keyword syntax introduced in Python 3.0 provides a
 clean break between input and output types. And using a decorator to
-separate the concern of &amp;quot;this is type information&amp;quot; from &amp;quot;these are the
-parameters&amp;quot; is what decorators&amp;nbsp;do.&lt;/p&gt;
+separate the concern of &amp;#8220;this is type information&amp;#8221; from &amp;#8220;these are the
+parameters&amp;#8221; is what decorators&amp;nbsp;do.&lt;/p&gt;
 &lt;p&gt;As a proof of&amp;nbsp;concept:&lt;/p&gt;
 &lt;pre class="code python literal-block"&gt;
 &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;inspect&lt;/span&gt;
@@ -159,7 +159,7 @@ from something like Generic[T],&amp;nbsp;i.e.:&lt;/p&gt;
 &lt;p&gt;Nevermind the fact that I think imposing this requirement is ridiculous
 not only because should types be out of the way, the implication is that
 I&amp;#8217;m gaining some tangible runtime benefit by inheriting from Generic[T]
-&amp;#8212; we&amp;#8217;re not, static type analysis is an &amp;quot;offline&amp;quot;&amp;nbsp;thing.&lt;/p&gt;
+&amp;#8212; we&amp;#8217;re not, static type analysis is an &amp;#8220;offline&amp;#8221;&amp;nbsp;thing.&lt;/p&gt;
 &lt;p&gt;Also the problem of using my own metaclass arises. These type variables
 are scaffolded around using &lt;tt class="docutils literal"&gt;abc.ABCMeta&lt;/tt&gt; as a base, which is fine
 until the fact that we can only have one metaclass in a heirarchy comes

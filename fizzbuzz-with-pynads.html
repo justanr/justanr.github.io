@@ -101,10 +101,10 @@ Writer(16, {1: 1, 2: 2, 3: 'buzz', 4: 4, 5: 'fizz', 6: 'buzz', 7: 7, 8: 8, 9: 'b
 <p>Truly an 11x Developer solution to the [<span class="caps">STRIKEOUT</span>:world&#8217;s] universe&#8217;s
 premier code interview&nbsp;question!</p>
 <div class="section" id="what-is-pynads">
-<h2>What is&nbsp;&quot;pynads&quot;</h2>
+<h2>What is&nbsp;&#8220;pynads&#8221;</h2>
 <p>All joking aside, I&#8217;ve been hacking together a collection of
 Haskell-esque tools for Python over the last few weeks. It started as a
-&quot;Well, I&#8217;ll learn Haskell better this way.&quot; and has become&#8230;well,
+&#8220;Well, I&#8217;ll learn Haskell better this way.&#8221; and has become&#8230;well,
 honestly a tool for me learning Haskell&nbsp;still.</p>
 <p><a class="reference external" href="https://github.com/justanr/pynads">Check it out</a>, I think it&#8217;s&nbsp;nifty.</p>
 </div>
@@ -223,8 +223,8 @@ all <tt class="docutils literal">pynad</tt> types, but that&#8217;s not a requir
 put a value in a minimal&nbsp;context.</p>
 <p>But wait, what if you have a curried function and you stuffed it into a
 Just and now you don&#8217;t want to write out
-<tt class="docutils literal">just_f * just_v1 * just_v2 ...</tt>. Sure, you could think &quot;Well, what if
-I used <tt class="docutils literal">reduce(operator.mul, *justs)</tt>&quot; But I thought of that&nbsp;already.</p>
+<tt class="docutils literal">just_f * just_v1 * just_v2 ...</tt>. Sure, you could think &#8220;Well, what if
+I used <tt class="docutils literal">reduce(operator.mul, *justs)</tt>&#8221; But I thought of that&nbsp;already.</p>
 <pre class="code python literal-block">
 <span class="n">add_three_together</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">z</span><span class="p">:</span> <span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="o">+</span><span class="n">z</span>
 
@@ -283,29 +283,29 @@ you as&nbsp;well!</p>
 <pre class="literal-block">
 Just 6
 </pre>
-<p>Before you start thinking, &quot;Well, monads are just glorified if
-expressions&quot; becuase that&#8217;s missing the point, Monads are the
+<p>Before you start thinking, &#8220;Well, monads are just glorified if
+expressions&#8221; becuase that&#8217;s missing the point, Monads are the
 abstraction abstraction. They represent a way to compute something by
 abstracting away <em>how</em> it&#8217;s&nbsp;computated.</p>
 <p>There&#8217;s the Writer monad above which is a value in a monadic context but
 it also keeps some extra side-output as well. Instead of us trying to
-track this extra information ourselves, Writer says, &quot;Hey, I&#8217;ll handle
-it for you!&quot; It just wants a function that accepts a value and returns a
+track this extra information ourselves, Writer says, &#8220;Hey, I&#8217;ll handle
+it for you!&#8221; It just wants a function that accepts a value and returns a
 Writer. But here&#8217;s the really cool thing, I <em>didn&#8217;t</em> have to use a
 dictionary. It could have a list, or a string or an integer, or a custom
-class! I hear, &quot;But how!&quot; Through the power&nbsp;of&#8230;</p>
+class! I hear, &#8220;But how!&#8221; Through the power&nbsp;of&#8230;</p>
 </div>
 <div class="section" id="monoids">
 <h3>Monoids!</h3>
-<p>So monoids are pretty cool. They&#8217;re a set of something, a &quot;zero&quot; and a
+<p>So monoids are pretty cool. They&#8217;re a set of something, a &#8220;zero&#8221; and a
 binary operator that&#8217;s transative. Lots of things form monoids. Numbers
 are monoids! There&#8217;s <em>two</em> ways to make numbers monoids: with <tt class="docutils literal">0</tt> and
 <tt class="docutils literal">+</tt>, with <tt class="docutils literal">1</tt> and <tt class="docutils literal">*</tt>. However, <tt class="docutils literal">pynads</tt> is lazy and only
 defines the first&#8230;sorry, hard choices were&nbsp;made.</p>
-<p>Wait, &quot;a zero value&quot; but <tt class="docutils literal">1 != 0</tt>. That&#8217;s missing the point, a zero
+<p>Wait, &#8220;a zero value&#8221; but <tt class="docutils literal">1 != 0</tt>. That&#8217;s missing the point, a zero
 value is a value that doesn&#8217;t change the input when combined with the
 binary operator. <tt class="docutils literal">x * 1 == x</tt>.</p>
-<p>But Python&#8217;s &quot;primitive&quot; types all form&nbsp;monads!</p>
+<p>But Python&#8217;s &#8220;primitive&#8221; types all form&nbsp;monads!</p>
 <ul class="simple">
 <li><tt class="docutils literal">list</tt> is a monoid. That&#8217;s the zero value right there and it&#8217;s
 binary operator would be <tt class="docutils literal">list.extend</tt> if it was actually a&nbsp;binop.</li>
@@ -390,7 +390,7 @@ one intermediate object rather than a bunch. <tt class="docutils literal">pynads
 you treat the builtin types as monoids as well through
 <tt class="docutils literal">pynads.funcs.monoid</tt> namespace which has four functions we&#8217;re
 interested in: <tt class="docutils literal">mempty</tt>, <tt class="docutils literal">mappend</tt>, <tt class="docutils literal">mconcat</tt> and <tt class="docutils literal">is_monoid</tt>.
-<tt class="docutils literal">mempty</tt> returns the &quot;zero&quot; value for a type, <tt class="docutils literal">mappend</tt> knows how to
+<tt class="docutils literal">mempty</tt> returns the &#8220;zero&#8221; value for a type, <tt class="docutils literal">mappend</tt> knows how to
 combine types, <tt class="docutils literal">mconcat</tt> knows how to combine an iter of types into a
 single one and <tt class="docutils literal">is_monoid</tt> knows if something is monoidal or not
 (generally, it doesn&#8217;t declare <tt class="docutils literal">decimal.Decimal</tt> to be a monoid but
@@ -452,7 +452,7 @@ Mempty
 {4, 5}
 </pre>
 <p>So Writer&#8217;s little trick of allowing any Monoid be the log is really
-just, &quot;I have this dumb thing that pretends to be a Monoid as a default&nbsp;log.&quot;</p>
+just, &#8220;I have this dumb thing that pretends to be a Monoid as a default&nbsp;log.&#8221;</p>
 </div>
 </div>
 <div class="section" id="helpers">
@@ -533,7 +533,7 @@ knows what&nbsp;else.</p>
             <h4>Tags</h4>
             <ul class="list-of-tags tags-in-article"> 
                 <li><a href="/tags.html#design-ref">design
-                    <span>5</span>
+                    <span>6</span>
 </a></li>
                 <li><a href="/tags.html#haskell-ref">haskell
                     <span>3</span>

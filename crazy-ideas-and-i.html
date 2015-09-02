@@ -161,8 +161,8 @@ function? The Haskell type signature looks like&nbsp;this:</p>
 <pre class="literal-block">
 map :: (a -&gt; b) -&gt; [a] -&gt; [b]
 </pre>
-<p>&quot;Take a function of type a to type b, a list of as and return a list of
-bs.&quot; Simple. How is this parsed? What if we put type class restrictions
+<p><span class="dquo">&#8220;</span>Take a function of type a to type b, a list of as and return a list of
+bs.&#8221; Simple. How is this parsed? What if we put type class restrictions
 on the&nbsp;type:</p>
 <pre class="literal-block">
 (Monad m) =&gt; m a -&gt; (a -&gt; b) -&gt; m b
@@ -175,7 +175,7 @@ to b and return a <tt class="docutils literal">m b</tt>.</p>
 </pre>
 <p>Maybe we&#8217;re lifting <tt class="docutils literal">mappend</tt> into a monad? Let&#8217;s also pretend that
 this isn&#8217;t a bad way of doing it as well. How do we parse&nbsp;this?</p>
-<p>What about &quot;existentially types&quot;, aka. <tt class="docutils literal">forall a b.</tt> (which is
+<p>What about &#8220;existentially types&#8221;, aka. <tt class="docutils literal">forall a b.</tt> (which is
 something I&#8217;ve not used, nor understand, but apparently it&#8217;s useful
 because&nbsp;reasons).</p>
 <p>Of course, there are cons with&nbsp;this:</p>
@@ -246,8 +246,8 @@ chessboard = do
 </pre>
 <p>It just works. Obviously, something in Pynads is implemented poorly. Wah
 wah wah. But what if <tt class="docutils literal">do</tt> did something different? What if it took a
-look at that function and said, &quot;No no no, this is <em>all</em> wrong&#8230;let
-me&#8230;let me just rewrite it for you.&quot; And instead of actually&nbsp;using:</p>
+look at that function and said, &#8220;No no no, this is <em>all</em> wrong&#8230;let
+me&#8230;let me just rewrite it for you.&#8221; And instead of actually&nbsp;using:</p>
 <pre class="literal-block">
 def chessboard(ranks, files):
     r = yield List(*ranks)
@@ -337,7 +337,7 @@ someone&#8217;s using, why not break something I&#8217;ll be the only one&nbsp;c
                     <span>2</span>
 </a></li>
                 <li><a href="/tags.html#python-ref">python
-                    <span>9</span>
+                    <span>10</span>
 </a></li>
             </ul>
 

@@ -1,11 +1,412 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>from alec.thoughts import *</title><link href="http://justanr.github.io/" rel="alternate"></link><link href="http://justanr.github.io/feeds/tips-and-tricks.atom.xml" rel="self"></link><id>http://justanr.github.io/</id><updated>2015-08-25T00:00:00-04:00</updated><entry><title>Flask Lesser Knowns: Pluggable Views</title><link href="http://justanr.github.io/flask-lesser-knowns-pluggable-views" rel="alternate"></link><updated>2015-08-25T00:00:00-04:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2015-08-25:flask-lesser-knowns-pluggable-views</id><summary type="html">&lt;p&gt;Flask gets quite a bit of attention, which is awesome. However all the
+<feed xmlns="http://www.w3.org/2005/Atom"><title>from alec.thoughts import *</title><link href="http://justanr.github.io/" rel="alternate"></link><link href="http://justanr.github.io/feeds/tips-and-tricks.atom.xml" rel="self"></link><id>http://justanr.github.io/</id><updated>2015-09-02T00:00:00-04:00</updated><entry><title>On Dryers, Adapters and Software Design</title><link href="http://justanr.github.io/on-dryers-adapters-and-software-design" rel="alternate"></link><updated>2015-09-02T00:00:00-04:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2015-09-02:on-dryers-adapters-and-software-design</id><summary type="html">&lt;p&gt;About two months ago we moved into our new apartment (with some help
+from Kaitlyn&amp;#8217;s dad and my uncle). Loaded everything into the truck from
+the old apartment, drove ten miles up the road to the new apartment and
+then unloaded everything into the new apartment (on the third floor&amp;nbsp;D:).&lt;/p&gt;
+&lt;p&gt;The first thing we moved up stairs was the washer. Plugged it in, hooked
+it up, turned it on briefly to test. Boom, already feeling at home.
+Actually, it was hot outside and this was an excuse to stand in the &lt;span class="caps"&gt;AC&lt;/span&gt;
+for a minute. Then we decided, &amp;#8220;Well, we moved the washer, why not move
+the dryer now?&amp;#8221; So we did. Got it up stairs (after almost dropping it
+down a flight of stairs), pushed it into the laundry room and went to
+plug it in and &amp;#8230; it&amp;#8217;s a different&amp;nbsp;plug.&lt;/p&gt;
+&lt;p&gt;Apparently back in 2000, new residences were required to have four prong
+outlets for dryers. And our dryer had a three prong plug. That&amp;#8217;s a
+problem. My first thought was, &amp;#8220;We&amp;#8217;ll just get an adapter.&amp;#8221; Turns out,
+that&amp;#8217;s a horrible idea and had I been thinking clearly, I wouldn&amp;#8217;t have
+&amp;#8212; anyone who&amp;#8217;s used a grounded to ungrounded 120v adapter knows the
+sorts of trouble that comes with that. We ended up replacing the actual
+cable and plug &amp;#8212; the dryer had a little cover that pulled off and
+exposed four connection screws: neutral, positive, negative and ground.
+Just unscrew the old cable, screw on the new cable, plug it in and hope
+I did it right otherwise a fire&amp;nbsp;happens.&lt;/p&gt;
+&lt;p&gt;But there&amp;#8217;s an interesting thought: my first reaction was, &amp;#8220;Use an
+adapter.&amp;#8221; I&amp;#8217;ll reach for a tool that takes some interface and maps it to
+another interface. How often have I been faced with this &lt;em&gt;exact same
+problem&lt;/em&gt; in software and yet I&amp;#8217;ve chosen to do something hard or
+terrible instead? More often than I care to admit,&amp;nbsp;honestly.&lt;/p&gt;
+&lt;p&gt;Let&amp;#8217;s look at an example. Something of a trivial example, but it
+suffices for a blog post. Let&amp;#8217;s pretend that we&amp;#8217;ve developed an app that
+can send a user an authentication token for some&amp;nbsp;purpose.&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;send_user_auth_token&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;token&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;notifier&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;msg&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Your access code is {0}&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;token&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;notifier&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;notify&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;message&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;msg&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;The actual business logic here doesn&amp;#8217;t even do anything (well, it
+formats a string). It just delegates the work off to something&amp;nbsp;else.&lt;/p&gt;
+&lt;p&gt;My bank uses a system like this for password resets, except I can choose
+to get a text, an email or a phone call. They might even have a bit of
+code that looks exactly like&amp;nbsp;this.&lt;/p&gt;
+&lt;p&gt;Our imaginary app can do that as well. &lt;em&gt;How&lt;/em&gt; though, that&amp;#8217;s the
+question. We&amp;#8217;ve provided no actual sending details here. There&amp;#8217;s no
+&amp;#8220;Send text message&amp;#8221; or &amp;#8220;Send email&amp;#8221; or &amp;#8220;Initiate phone call&amp;#8221;. There&amp;#8217;s
+also no &amp;#8220;fetch user&amp;#8221; or &amp;#8220;generate token&amp;#8221;. Instead, we&amp;#8217;re relying on the
+fact that the notifier we pass it implements some &lt;tt class="docutils literal"&gt;notify&lt;/tt&gt; method that
+will handle the actual notifying given the user and the token we&amp;nbsp;provide.&lt;/p&gt;
+&lt;p&gt;Let&amp;#8217;s implement a simple notifier that we can use as an inspiration, as
+well as a user model and something to generate&amp;nbsp;tokens.&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;collections&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;namedtuple&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;random&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;SystemRandom&lt;/span&gt;
+
+&lt;span class="n"&gt;User&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;namedtuple&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;User&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;username&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;email&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;phone_number&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;generate_token&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;random_source&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;random_source&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;randrange&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;100000&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;999999&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;PrintingNotifier&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;object&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;notify&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;message&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;{0.username}: {1}&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;message&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;
+
+&lt;span class="n"&gt;print_notifier&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;PrintingNotifier&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;justanr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;User&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;justanr&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;justanr&amp;#64;service.com&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;9015555555&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;token&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;generate_token&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;SystemRandom&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+
+&lt;span class="n"&gt;send_user_auth_token&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;justanr&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;token&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;print_notifier&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
+justanr: Your access code is 614726
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
+True
+&lt;/pre&gt;
+&lt;p&gt;That&amp;#8217;s pretty cool. I bet we could replace that &lt;tt class="docutils literal"&gt;PrintingNotifier&lt;/tt&gt;
+with something that sends a text message. Twilio&amp;#8217;s cool, let&amp;#8217;s use
+that&amp;#8230;but there&amp;#8217;s a problem. The code to send an &lt;span class="caps"&gt;SMS&lt;/span&gt; with Twilio looks
+like&amp;nbsp;this:&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;twilio.rest&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;TwilioRestClient&lt;/span&gt;
+
+&lt;span class="n"&gt;client&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;TwilioRestClient&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;account_sid&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;auth_token&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;message&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;messages&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;'...'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;from_&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;'...'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;body&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;'...'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;We &lt;em&gt;can&amp;#8217;t&lt;/em&gt; just drop that in&amp;#8230;unless we modify the original&amp;nbsp;function:&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;polymorphic_notify_user&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;token&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;notifier&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;msg&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Your access code is {0}&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;token&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nb"&gt;isinstance&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;notifier&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;PrintingNotifier&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;notifier&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;notifier&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;msg&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;elif&lt;/span&gt; &lt;span class="nb"&gt;isinstance&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;notifier&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;TwilioRestClient&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;notifier&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;messages&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;phone_number&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;from_&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;application_number&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;body&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;msg&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;If I had Twilio set up in this notebook, I could get a text messsage
+that says, &amp;#8220;Your access code is 123456&amp;#8221;. But we&amp;#8217;ve done something awful.
+We&amp;#8217;ve violated Single Responsibility. Our &lt;tt class="docutils literal"&gt;send_user_auth_token&lt;/tt&gt;
+function has one responsibility: send some user some auth token using
+some notifier. It &lt;em&gt;looks&lt;/em&gt; like we&amp;#8217;ve not violated, we&amp;#8217;ve added a new
+notifier so our function should be aware of it,&amp;nbsp;right?&lt;/p&gt;
+&lt;p&gt;Nope. Are we going to add a new
+&lt;tt class="docutils literal"&gt;elif isinstance(notifier, SomeNotifierClass)&lt;/tt&gt; every time we add one?
+A check for Gmail, a check for SendMail, a check for this, a check for
+that, a check for the TestNotifier! Each with code that knows &lt;em&gt;how to
+send that particular&amp;nbsp;notification.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;What. Why does production code need to know about test code? We&amp;#8217;ll get
+an issue that reads: &amp;#8220;NameError: TestNotifier not found&amp;#8221;. And it won&amp;#8217;t
+be just once, it&amp;#8217;ll crop up again and again, everytime someone looks at
+that file and sees &lt;tt class="docutils literal"&gt;from ourapp.tests.fixtures import TestNotifier&lt;/tt&gt;
+and thinks, &amp;#8220;Wait&amp;#8230;, why?&amp;#8221; and deletes it. Every time until finally,
+fed up, you write a comment that says, &amp;#8220;&lt;span class="caps"&gt;DON&lt;/span&gt;&amp;#8217;T &lt;span class="caps"&gt;REMOVE&lt;/span&gt;, &lt;span class="caps"&gt;NEEDED&lt;/span&gt; &lt;span class="caps"&gt;FOR&lt;/span&gt;
+send_user_auth_token.&amp;#8221; You probably die a little bit inside, too. And
+it won&amp;#8217;t be just this module and this function. It&amp;#8217;ll be every module
+and every&amp;nbsp;function.&lt;/p&gt;
+&lt;p&gt;I know because I&amp;#8217;ve been there and I&amp;#8217;ve done that and I handled it be
+just not writing code for a long&amp;nbsp;time.&lt;/p&gt;
+&lt;p&gt;No, no, no, let&amp;#8217;s back up to the original&amp;nbsp;function.&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;send_user_auth_token&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;token&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;notifier&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;msg&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Your access code is {0}&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;token&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;notifier&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;notify&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;message&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;msg&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;This, I like this. It&amp;#8217;s simple. It&amp;#8217;s expressive. It does exactly what
+the name says! In fact, I&amp;#8217;d argue that it doesn&amp;#8217;t even need a docstring.
+There&amp;#8217;s no if this type else that type. So, &lt;em&gt;how&lt;/em&gt; can we use this
+function to send a &lt;span class="caps"&gt;SMS&lt;/span&gt; with the TwilioRestClient that doesn&amp;#8217;t have an
+interface that looks anything like&amp;nbsp;this.&lt;/p&gt;
+&lt;p&gt;The same way we go from a grounded three prong plug to an ungrounded two
+prong outlet (and the correct answer is &lt;em&gt;not&lt;/em&gt; tear the ground pin out
+despite what my power strips say), we use an&amp;nbsp;adapter!&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;TwilioSMSNotifier&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;object&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;twilio_client&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;sender_number&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;twilio_client&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;twilio_client&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sender_number&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;sender_number&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;notify&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;message&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;reciever&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;phone_number&lt;/span&gt;
+        &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;twilio_client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;messages&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;reciever&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;from_&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sender_number&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;body&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;message&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="n"&gt;TwilioRestException&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;False&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;We could probably handle that failure case better. But that&amp;#8217;s not the
+point here. We&amp;#8217;ve taken an interface that&amp;#8217;s &lt;em&gt;completely different&lt;/em&gt; and
+changed it by wrapping it in a class that implements our interface. If
+we wanted to send an email, we could simply create a new&amp;nbsp;implementation:&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;EmailNotifer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;object&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;email_client&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;to_html&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;False&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;client&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;email_client&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;to_html&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;to_html&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;notify&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;message&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;title&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Two Factor Auth Code&amp;quot;&lt;/span&gt;
+        &lt;span class="n"&gt;body&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;encode_to_html&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;message&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;to_html&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="n"&gt;message&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;send&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;email&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;title&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;body&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;EmailClient&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;object&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;sender&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sender&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;sender&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;encode_to_html&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;message&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="s"&gt;'&amp;lt;p&amp;gt;{0}&amp;lt;/p&amp;gt;'&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;message&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;send&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;receiver&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;title&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;body&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s"&gt;'title'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;title&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'receiver'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;receiver&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'body'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;body&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+
+
+&lt;span class="n"&gt;email_client&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;EmailClient&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'admin&amp;#64;service.com'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;email_notifier&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;EmailNotifer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;email_client&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;to_html&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;send_user_auth_token&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;justanr&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;token&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;email_notifier&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+&lt;pre class="literal-block"&gt;
+{'body': '&amp;lt;p&amp;gt;Your access code is 614726&amp;lt;/p&amp;gt;',
+ 'receiver': &lt;a class="reference external" href="mailto:'justanr&amp;#64;service.com"&gt;'justanr&amp;#64;service.com&lt;/a&gt;',
+ 'title': 'Two Factor Auth Code'}
+&lt;/pre&gt;
+&lt;p&gt;Here&amp;#8217;s an interesting thought: what if we don&amp;#8217;t know a head of time what
+email provider will be used? Instead of writing a dozen different
+&lt;tt class="docutils literal"&gt;EmailProviderNotifier&lt;/tt&gt; maybe we could conceive an &lt;tt class="docutils literal"&gt;EmailClient&lt;/tt&gt;
+interface &amp;#8212; maybe it just exposes the &lt;tt class="docutils literal"&gt;encode_to_html&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;send&lt;/tt&gt;
+methods &amp;#8212; and then implement that with the provider we need and pass
+&lt;em&gt;that&lt;/em&gt; interface to &lt;tt class="docutils literal"&gt;EmailNotifier&lt;/tt&gt;? Our system becomes &lt;em&gt;more&lt;/em&gt;
+decoupled from what&amp;#8217;s steering it. We can provide &lt;em&gt;really&lt;/em&gt; high level
+policies internally and let something external from the application
+provide implementations for them. We could simply tell end users,
+&amp;#8220;Here&amp;#8217;s the &lt;tt class="docutils literal"&gt;EmailClient&lt;/tt&gt; interface, you need to implement that for
+your provider and inject it into the&amp;nbsp;application.&amp;#8221;&lt;/p&gt;
+&lt;p&gt;However, remember you can&amp;#8217;t abstract everything away. Eventually, you
+need to write code that actually does something. But this
+Interface-to-Interface pattern (also called a Bridge, but only when we
+write both sides of it) has some &lt;em&gt;very interesting&lt;/em&gt; ramifications for
+our tests that I&amp;#8217;ll cover&amp;nbsp;below.&lt;/p&gt;
+&lt;p&gt;What if we wanted to send the auth token as an email &lt;em&gt;and&lt;/em&gt; a text
+message. We can do that without hard coding &lt;em&gt;any&lt;/em&gt; of them by reaching
+for a different design&amp;nbsp;pattern.&lt;/p&gt;
+&lt;p&gt;Related to the adapter pattern and the bridge pattern is the decorator
+pattern. Rather than changing the interface to an object or connecting
+two interfaces together, the decorator patterns adds additional
+funtionality to an object by using the&amp;nbsp;interface.&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;MultiNotifier&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;object&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;notifiers&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;notifiers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;notifiers&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;notify&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;message&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;results&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;notifier&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;notifiers&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="n"&gt;result&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;notifier&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;notify&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;message&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="n"&gt;results&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;append&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nb"&gt;all&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;results&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;In this case, if we pass MultiNotifier to the &lt;tt class="docutils literal"&gt;send_user_auth_token&lt;/tt&gt;,
+it&amp;#8217;s notify would be called which actually calls all of its internal
+notifiers. If you wanted to do logging instead, you could pass a logger
+and a notifier to the class and the notify method would log that a
+message was sent and then use the internal notifier to do the actual
+sending. Those two could even be combined:
+&lt;tt class="docutils literal"&gt;LoggingNotifier(my_logger, MultiNotifier(sms_notifier, email_notifier))&lt;/tt&gt;&lt;/p&gt;
+&lt;p&gt;Even better, with combinations like this, there&amp;#8217;s only one rule to
+remember: plugs match outlets. The plugs in this case are our classes
+and the outlets are the interfaces something expects to interact with.
+More concretely, a plug would be the EmailClient and an Outlet is the
+&lt;tt class="docutils literal"&gt;send_user_auth_token&lt;/tt&gt;. Since they don&amp;#8217;t match, we use an&amp;nbsp;adapter.&lt;/p&gt;
+&lt;p&gt;And, a very happy side effect is that &lt;tt class="docutils literal"&gt;send_user_auth_token&lt;/tt&gt; is very
+testable. It doesn&amp;#8217;t actually do anything, so there&amp;#8217;s nothing to mock
+out. We just pass it exactly what we want it to&amp;nbsp;use.&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;TestEmailNotifier&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;object&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;notify&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;message&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s"&gt;'user_email'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;email&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'body'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;message&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test_send_auth_token_to_email&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;token&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;123456&lt;/span&gt;
+    &lt;span class="n"&gt;user&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;User&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'justanr'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'justanr&amp;#64;service.com'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'5555555555'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;resp&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;send_user_auth_token&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;token&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;TestEmailNotifier&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+    &lt;span class="k"&gt;assert&lt;/span&gt; &lt;span class="n"&gt;resp&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s"&gt;'user_email'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;'justanr&amp;#64;service.com'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'body'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;'Your access code is 123456'&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="n"&gt;test_send_auth_token_to_email&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;Imagine if we had hardcoded all the actual sending logic. What does the
+test look like&amp;nbsp;then?&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;unittest&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;mock&lt;/span&gt;
+
+&lt;span class="nd"&gt;&amp;#64;mock.patch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'myapp.utils.send_user_email_token'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;return_value&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;
+&lt;span class="nd"&gt;&amp;#64;mock.patch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'myapp.utils.find_user_by_id'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;return_value&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;
+&lt;span class="nd"&gt;&amp;#64;mock.patch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'myapp.utils.generate_random_token'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;return_value&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;123456&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test_send_user_auth_token&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="k"&gt;assert&lt;/span&gt; &lt;span class="n"&gt;send_user_auth_token&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;We&amp;#8217;re patching three things and we probably still missed something.
+Instead, with the decoupled version we can test that our business logic
+&amp;#8212; given a user, a token and a notifier, send the user the token &amp;#8212;
+&lt;em&gt;works&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;We can also test if our adapters work,&amp;nbsp;too.&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test_email_adapter_translates_correctly&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;email_client&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mock&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create_autospec&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;EmailClient&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;notifier&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;EmailNotifer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;email_client&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;notifier&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;notify&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;User&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'justanr'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'alec&amp;#64;service.com'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'5555555555'&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="mi"&gt;123456&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;assert&lt;/span&gt; &lt;span class="n"&gt;email_client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;send&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;called&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; \
+        &lt;span class="n"&gt;email_client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;send&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;call_args&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;mock&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;call&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'alec&amp;#64;service.com'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'Two Factor Auth Code'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;123456&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test_email_adapter_can_send_html_email&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;email_client&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mock&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create_autospec&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;EmailClient&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;email_client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;encode_to_html&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;return_value&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;'&amp;lt;p&amp;gt;123456&amp;lt;/p&amp;gt;'&lt;/span&gt;
+    &lt;span class="n"&gt;notifier&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;EmailNotifer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;email_client&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;to_html&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;notifier&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;notify&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;User&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'justanr'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'alec&amp;#64;service.com'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'5555555555'&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="mi"&gt;123456&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;assert&lt;/span&gt; &lt;span class="n"&gt;email_client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;send&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;called&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; \
+        &lt;span class="n"&gt;email_client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;send&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;call_args&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;mock&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;call&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'alec&amp;#64;service.com'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'Two Factor Auth Code'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'&amp;lt;p&amp;gt;123456&amp;lt;/p&amp;gt;'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;test_email_adapter_translates_correctly&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;test_email_adapter_can_send_html_email&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;Here&amp;#8217;s the interesting testing ramification I mentioned above. There&amp;#8217;s a
+mantra in testing that says, &amp;#8220;Don&amp;#8217;t mock what you don&amp;#8217;t own.&amp;#8221; We don&amp;#8217;t
+own the Gmail interface, we don&amp;#8217;t own the SendMail interface. &lt;em&gt;But&lt;/em&gt; we
+do own the &lt;tt class="docutils literal"&gt;EmailClient&lt;/tt&gt; interface so we can mock it. Here I do it
+with Python 3.3&amp;#8217;s built in &lt;tt class="docutils literal"&gt;unittest.mock.create_autospec&lt;/tt&gt; but we
+could also just write a stub that does the same&amp;nbsp;thing.&lt;/p&gt;
+&lt;p&gt;When we&amp;#8217;re not terribly interested if Twilio is working or Gmail is
+working, we can switch in another notifier. Just go, &amp;#8220;Oh, well&amp;#8230;let&amp;#8217;s
+use this one instead.&amp;#8221; We also don&amp;#8217;t dictate to users, &amp;#8220;You can only use
+these email service providers.&amp;#8221; Instead we say, &amp;#8220;You can use any
+provider you like &lt;em&gt;as long as you implement this interface.&lt;/em&gt;&amp;#8221;&lt;/p&gt;
+&lt;p&gt;You change a few lines of code in a procedure that doesn&amp;#8217;t affect the
+actual logic of &lt;tt class="docutils literal"&gt;send_user_auth_token&lt;/tt&gt;. Maybe it&amp;#8217;s a Flask end&amp;nbsp;point?&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;flask&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;render_template&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;redirect&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;flash&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;flask.views&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;MethodView&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;myapp.logging&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;MasterLogger&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;myapp.auth.forms&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;ChooseTokenNotifierForm&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;myapp.notifiers&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;LoggingNotifier&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;NotifierRepository&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;myapp.models&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;User&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Token&lt;/span&gt;
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;SendUserAuthToken&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;MethodView&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;force_token_reset&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;form&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;ChooseTokenNotifierForm&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;force_token_reset&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;force_token_reset&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;user_id&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;user&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;User&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user_id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;process_notify_options&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;render_template&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'auth/send_auth_token.html'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;post&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;user_id&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;validate_on_form&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+            &lt;span class="c"&gt;# find the most appropriate notifier given the user's choice&lt;/span&gt;
+            &lt;span class="n"&gt;notifier&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;NotifierRepository&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;find&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;notifiers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="n"&gt;log_notifier&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;LoggingNotifer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;MasterLogger&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;notifier&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+            &lt;span class="n"&gt;user&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;User&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user_id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="n"&gt;active_token&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;active_token&lt;/span&gt;
+
+            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;active_token&lt;/span&gt; &lt;span class="ow"&gt;or&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;force_token_reset&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                &lt;span class="n"&gt;active_token&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Token&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create_and_persist&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;generate_token&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;SystemRandom&lt;/span&gt;&lt;span class="p"&gt;()))&lt;/span&gt;
+
+            &lt;span class="n"&gt;did_token_send&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;send_user_auth_token&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;active_token&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;token&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;log_notifier&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;did_token_send&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;redirect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'auth.verify_auth_token'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;remove_notifier_option&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;notifier&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+                &lt;span class="n"&gt;flash&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Are you sure that information is correct? Please contact customer service.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;warning&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+        &lt;span class="c"&gt;# form didn't validate, so re-render and probably display errors&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;render_template&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'auth/send_auth_token.html'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;And like that, almost by accident, we&amp;#8217;ve stumbled upon something very
+important: We&amp;#8217;ve decoupled our business logic &amp;#8212; send the user the token
+&amp;#8212; from the orchestration of &lt;em&gt;how we get that information&lt;/em&gt;. Our token
+sender doesn&amp;#8217;t care&amp;nbsp;about:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;span class="caps"&gt;HTTP&lt;/span&gt;&amp;nbsp;Endpoints&lt;/li&gt;
+&lt;li&gt;Form&amp;nbsp;validation&lt;/li&gt;
+&lt;li&gt;Getting the correct&amp;nbsp;user&lt;/li&gt;
+&lt;li&gt;The &lt;em&gt;actual sending&lt;/em&gt; of the&amp;nbsp;token&lt;/li&gt;
+&lt;li&gt;Creating a&amp;nbsp;notifier&lt;/li&gt;
+&lt;li&gt;How to handle success and&amp;nbsp;failure&lt;/li&gt;
+&lt;li&gt;&lt;span class="caps"&gt;ORM&lt;/span&gt;&amp;nbsp;models&lt;/li&gt;
+&lt;li&gt;Other application&amp;nbsp;endpoints&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;*Everything that isn&amp;#8217;t using some object to send some token to some&amp;nbsp;user*&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;All of that stuff goes into our endpoint. We let some external thing
+decide who the user is, what the token is, what notifier to use. How
+complicated does this endpoint get if we don&amp;#8217;t use interfaces? How
+convoluted, obscure and cryptic does the simple act of &lt;em&gt;sending a
+message to the user&lt;/em&gt; become? Probably&amp;nbsp;very.&lt;/p&gt;
+&lt;p&gt;And by accidentally stumbling upon all of this, we&amp;#8217;ve stumbled upon
+something else even more important: application architecture. Something
+I&amp;#8217;m just now seriously beginning to apperciate and&amp;nbsp;understand.&lt;/p&gt;
+&lt;div class="section" id="thanks"&gt;
+&lt;h2&gt;Thanks&lt;/h2&gt;
+&lt;p&gt;I didn&amp;#8217;t come up with. I&amp;#8217;m not nearly that smart. Instead, this post has
+been the product of &lt;em&gt;months of research&lt;/em&gt; and playing with
+implementations of it. It seemed so&amp;#8230;over engineered at first. But
+slowly, it&amp;#8217;s dawned on me that this is how to manage complexity in
+applications. So I&amp;#8217;d like to give thanks where it&amp;#8217;s&amp;nbsp;due:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.youtube.com/watch?v=DJtef410XaM"&gt;Brandon Rhodes&amp;#8217; The Clean Architecture in
+Python&lt;/a&gt; &amp;#8212; This was
+my first exposure to the idea. I thought, &amp;#8220;Oh that&amp;#8217;s an interesting
+idea. Invert how I ususally think about abstracting my I/O.&amp;#8221; But I
+didn&amp;#8217;t really apperciate what he saying at the&amp;nbsp;time.&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.youtube.com/watch?v=K5GguxPi3EA"&gt;Daniel Rocco&amp;#8217;s Clean and
+Green&lt;/a&gt; &amp;#8212; He gave the
+original talk at PyATL back in January 2015, with less examples than
+in the PyTenn talk. Here are the &lt;a class="reference external" href="http://pyatl.github.io/talks/2015-01_patterns/clean_and_green.html"&gt;PyATL
+slides&lt;/a&gt;.
+This is when the idea was planted. He recommended looking into Gary
+Bernhardt and Uncle Bob&amp;#8217;s talks on the&amp;nbsp;matter.&lt;/li&gt;
+&lt;li&gt;So I watched &lt;a class="reference external" href="https://www.youtube.com/watch?v=yTkzNHF6rMs"&gt;Boundaries by Gary
+Bernhardt&lt;/a&gt;&amp;#8230;which I
+didn&amp;#8217;t let sink in because a) it&amp;#8217;s Ruby and I like Python, and b)
+&amp;#8220;What the hell do tests have to do with design?&amp;#8221;. Pffft,&amp;nbsp;pass.&lt;/li&gt;
+&lt;li&gt;I don&amp;#8217;t think I watched any of Uncle Bob&amp;#8217;s talks at this point, but I
+ended up at &lt;a class="reference external" href="https://vimeo.com/80533536"&gt;&lt;span class="caps"&gt;J.B.&lt;/span&gt; Rainsberger&amp;#8217;s Integrated Tests are a
+Scam&lt;/a&gt;, which after watching the talk
+dozens of times, it began to make sense. I also realized what tests
+have to do with&amp;nbsp;design.&lt;/li&gt;
+&lt;li&gt;Eventually, I ended up watching some of Uncle Bob&amp;#8217;s videos (&lt;a class="reference external" href="https://www.youtube.com/watch?v=WpkDN78P884"&gt;this one
+for example&lt;/a&gt;). And
+after watching several variations on this talk dozens of times, this
+began to make&amp;nbsp;sense.&lt;/li&gt;
+&lt;li&gt;After the &lt;em&gt;idea&lt;/em&gt; sank in, I began looking for examples of
+applications that implement this architecture. I read a bunch of
+articles that talked about the idea, but no implementations. Silly
+me, I should&amp;#8217;ve immediately gone to the
+&lt;a class="reference external" href="https://github.com/unclebob/fitnesse"&gt;FitNesse&lt;/a&gt; repo and cloned
+it and pored over it &amp;#8212; which I&amp;#8217;ve now done, even if I don&amp;#8217;t
+completely grok&amp;nbsp;Java.&lt;/li&gt;
+&lt;li&gt;I also found a &lt;a class="reference external" href="http://fideloper.com/hexagonal-architecture"&gt;very thorough
+article&lt;/a&gt; written with
+a &lt;span class="caps"&gt;PHP&lt;/span&gt; mindset which gave not only explainations of the concepts but
+&lt;em&gt;example code&lt;/em&gt; for each concept &amp;#8212; and honestly, there is where I got
+the notifier example from, I&amp;#8217;ve merely adapted it to&amp;nbsp;Python.&lt;/li&gt;
+&lt;li&gt;My dryer for being a completely unexpected source of inspiration for
+software&amp;nbsp;design.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</summary><category term="python"></category><category term="design"></category></entry><entry><title>Flask Lesser Knowns: Pluggable Views</title><link href="http://justanr.github.io/flask-lesser-knowns-pluggable-views" rel="alternate"></link><updated>2015-08-25T00:00:00-04:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2015-08-25:flask-lesser-knowns-pluggable-views</id><summary type="html">&lt;p&gt;Flask gets quite a bit of attention, which is awesome. However all the
 tutorials and guides can&amp;#8217;t touch on every aspect of Flask, even if it is
 small. There&amp;#8217;s a ton of cool stuff that just doesn&amp;#8217;t get shown&amp;nbsp;often.&lt;/p&gt;
 &lt;div class="section" id="the-views-module"&gt;
 &lt;h2&gt;The views&amp;nbsp;Module&lt;/h2&gt;
 &lt;p&gt;Flask comes with a &lt;tt class="docutils literal"&gt;views&lt;/tt&gt; module that contains two classes: &lt;tt class="docutils literal"&gt;View&lt;/tt&gt;
-and &lt;tt class="docutils literal"&gt;MethodView&lt;/tt&gt; &amp;#8212; these are often referred to as &amp;quot;Pluggable Views&amp;quot;
+and &lt;tt class="docutils literal"&gt;MethodView&lt;/tt&gt; &amp;#8212; these are often referred to as &amp;#8220;Pluggable Views&amp;#8221;
 The idea behind these classes is&amp;nbsp;simple:&lt;/p&gt;
 &lt;ul class="simple"&gt;
 &lt;li&gt;You have complex view&amp;nbsp;logic.&lt;/li&gt;
@@ -249,10 +650,10 @@ they&amp;#8217;re amazing powerful&amp;nbsp;tools.&lt;/p&gt;
 </summary><category term="python"></category><category term="design"></category></entry><entry><title>Musings on Problem Solving</title><link href="http://justanr.github.io/musings-on-problem-solving" rel="alternate"></link><updated>2015-02-08T00:00:00-05:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2015-02-08:musings-on-problem-solving</id><summary type="html">&lt;p&gt;I just started reading a book on algorithms and data structures in
 Python. I&amp;#8217;ve also commited myself to reading every chapter, taking notes
 and doing every exercise at the end of each chapter (okay, Chapter 1 is
-all &amp;quot;This is Python, this is the syntax, here&amp;#8217;s how you loop&amp;#8230;&amp;quot; so I
+all &amp;#8220;This is Python, this is the syntax, here&amp;#8217;s how you loop&amp;#8230;&amp;#8221; so I
 skimmed it) except for the ones I can&amp;#8217;t reasonably fit in a single
 IPython Notebook cell (I&amp;#8217;m not trying shove a calculator into a
-notebook) or are just plain boring (&amp;quot;Print a statement 100 times!&amp;quot; &amp;#8212;
+notebook) or are just plain boring (&amp;#8220;Print a statement 100 times!&amp;#8221; &amp;#8212;
 seriously, this is an&amp;nbsp;exercise).&lt;/p&gt;
 &lt;p&gt;Most of the problems are okay, made me think some. Some are ones I&amp;#8217;ve
 done before. Others made me think about how to decompose the problem
@@ -304,7 +705,7 @@ function for calculating things like cubic roots as&amp;nbsp;well.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="step-3-map-inputs-to-operations"&gt;
 &lt;h3&gt;Step 3: Map Inputs To&amp;nbsp;Operations&lt;/h3&gt;
-&lt;p&gt;&amp;quot;Alec,&amp;quot; you say, &amp;quot;You skipped a step!&amp;quot; And I did. Because I/O is nasty
+&lt;p&gt;&lt;span class="dquo"&gt;&amp;#8220;&lt;/span&gt;Alec,&amp;#8221; you say, &amp;#8220;You skipped a step!&amp;#8221; And I did. Because I/O is nasty
 and I&amp;#8217;d like to do it last. For now, let&amp;#8217;s assume the integers we
 collected are 1, 2 and&amp;nbsp;3.&lt;/p&gt;
 &lt;pre class="code python literal-block"&gt;
@@ -561,8 +962,8 @@ calculation&amp;nbsp;function.&lt;/p&gt;
 &lt;div class="section" id="inheritance"&gt;
 &lt;h3&gt;Inheritance&lt;/h3&gt;
 &lt;p&gt;Inheritance is simply a way of giving access of all the data and methods
-of a class to another class. It&amp;#8217;s commonly called &amp;quot;specialization,&amp;quot;
-though Raymond Hettinger aptly describes it as &amp;quot;delegating work.&amp;quot; If
+of a class to another class. It&amp;#8217;s commonly called &amp;#8220;specialization,&amp;#8221;
+though Raymond Hettinger aptly describes it as &amp;#8220;delegating work.&amp;#8221; If
 later, accounting wants to be able to label all of our spreadsheet rows,
 we could go back and modify the original class or we could design a new
 one that does this for&amp;nbsp;us.&lt;/p&gt;
@@ -732,7 +1133,7 @@ Hello Alec
 After the greeting.
 &lt;/pre&gt;
 &lt;p&gt;We won&amp;#8217;t be writing a context manager here, but rather using one to
-implement an &amp;quot;alternate constructor&amp;quot; for our &lt;tt class="docutils literal"&gt;Spreadsheet&lt;/tt&gt; class.
+implement an &amp;#8220;alternate constructor&amp;#8221; for our &lt;tt class="docutils literal"&gt;Spreadsheet&lt;/tt&gt; class.
 Alternate constructors are a way of initializing an object in a specific
 way. These are especially handy if you find yourself occasionally
 creating an object under certain conditions. Consider &lt;tt class="docutils literal"&gt;dict.fromkeys&lt;/tt&gt;

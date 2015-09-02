@@ -149,8 +149,8 @@ def compose(f, g):
 </pre>
 <p>Using the special keyword syntax introduced in Python 3.0 provides a
 clean break between input and output types. And using a decorator to
-separate the concern of &quot;this is type information&quot; from &quot;these are the
-parameters&quot; is what decorators&nbsp;do.</p>
+separate the concern of &#8220;this is type information&#8221; from &#8220;these are the
+parameters&#8221; is what decorators&nbsp;do.</p>
 <p>As a proof of&nbsp;concept:</p>
 <pre class="code python literal-block">
 <span class="kn">import</span> <span class="nn">inspect</span>
@@ -240,7 +240,7 @@ from something like Generic[T],&nbsp;i.e.:</p>
 <p>Nevermind the fact that I think imposing this requirement is ridiculous
 not only because should types be out of the way, the implication is that
 I&#8217;m gaining some tangible runtime benefit by inheriting from Generic[T]
-&#8212; we&#8217;re not, static type analysis is an &quot;offline&quot;&nbsp;thing.</p>
+&#8212; we&#8217;re not, static type analysis is an &#8220;offline&#8221;&nbsp;thing.</p>
 <p>Also the problem of using my own metaclass arises. These type variables
 are scaffolded around using <tt class="docutils literal">abc.ABCMeta</tt> as a base, which is fine
 until the fact that we can only have one metaclass in a heirarchy comes

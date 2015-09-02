@@ -83,17 +83,17 @@
             <p>I swore to myself up and down that I wouldn&#8217;t write one of these. But
 then I went and hacked up Pynads. And then I wrote a post on Pynads. And
 then I posted explainations about Monads on reddit. So what the hell. I
-already fulfilled my &quot;Write about decorators when I understand them&quot;
+already fulfilled my &#8220;Write about decorators when I understand them&#8221;
 obligation and ditto for descriptors. So Monads, why&nbsp;not&#8230;</p>
 <div class="section" id="it-s-simple-a-monad-is-like-a">
 <h2>It&#8217;s simple, a monad is like&nbsp;a&#8230;</h2>
 <p>No. Stooooooop. :( Burritos. Bucket brigades. Semicolons. All these
-analogies just confused me for a long time. And then I &quot;got them&quot; and by
-&quot;got them&quot; I mean &quot;Even more hopelessly confused but I didn&#8217;t know
-that.&quot; Like what does &quot;programmable semicolon&quot; even mean? Every language
-I&#8217;ve used (which isn&#8217;t many) a semicolon means &quot;This bit of code ends
-here, kthxbai&quot;. The burrito analogy was meant as a critique of this
-phenomenon &#8212; and I&#8217;ll likely fall victim of the &quot;Monad Tutorial Curse&quot;.
+analogies just confused me for a long time. And then I &#8220;got them&#8221; and by
+&#8220;got them&#8221; I mean &#8220;Even more hopelessly confused but I didn&#8217;t know
+that.&#8221; Like what does &#8220;programmable semicolon&#8221; even mean? Every language
+I&#8217;ve used (which isn&#8217;t many) a semicolon means &#8220;This bit of code ends
+here, kthxbai&#8221;. The burrito analogy was meant as a critique of this
+phenomenon &#8212; and I&#8217;ll likely fall victim of the &#8220;Monad Tutorial Curse&#8221;.
 And the bucket brigade was a valiant effort by a <span class="caps">SO</span> user to explain&nbsp;them.</p>
 </div>
 <div class="section" id="it-s-simple-a-monad-is-like-a-unix-pipe">
@@ -108,13 +108,13 @@ directory and print them&nbsp;out:</p>
 ls -lh ~/Downloads | grep -i &quot;*mp4&quot; | less
 </pre>
 <p>Super simple. We take the first command <tt class="docutils literal">ls</tt> feed it some options and
-a directory to list out. Then <tt class="docutils literal">|</tt> goes &quot;Oh, you have output and I have
-this thing that needs input, here grep!&quot; And then grep does its business
-and <tt class="docutils literal">|</tt> steps back in and goes &quot;Oh, you have output and I have this
-thing that needs input, here&nbsp;less!&quot;</p>
+a directory to list out. Then <tt class="docutils literal">|</tt> goes &#8220;Oh, you have output and I have
+this thing that needs input, here grep!&#8221; And then grep does its business
+and <tt class="docutils literal">|</tt> steps back in and goes &#8220;Oh, you have output and I have this
+thing that needs input, here&nbsp;less!&#8221;</p>
 <p>Of course it isn&#8217;t a perfect analogy. But all analogies break down under
-scrutiny. But this is essentially what Haskell&#8217;s <tt class="docutils literal">&gt;&gt;=</tt> does. &quot;Oh, you
-have output, let me feed it to this function that wants input!&quot; That&#8217;s
+scrutiny. But this is essentially what Haskell&#8217;s <tt class="docutils literal">&gt;&gt;=</tt> does. &#8220;Oh, you
+have output, let me feed it to this function that wants input!&#8221; That&#8217;s
 it. Monads are about chaining together a series of actions of functions
 (depending on how you want to look at it) in a way that each
 action/function returns something that can carry the chain forward&nbsp;somehow.</p>
@@ -340,7 +340,7 @@ q = session.query(Person).filter(Person.name.startswith('A')).first()
 further, allowing us to craft complicated queries in a relatively simple&nbsp;manner.</p>
 <p>I found a more clever example in a thread on /r/learnpython about what
 features would you implement in Python given that chance. Below the
-&quot;Everything not nailed down in Haskell&quot; comment, there was one about
+&#8220;Everything not nailed down in Haskell&#8221; comment, there was one about
 universal function call syntax from D.
 <a class="reference external" href="http://www.reddit.com/r/Python/comments/33qzzf/what_features_should_python_steal_from_other/cqo1ic6">/u/AMorpork</a>
 proposed simply creating a monad where <tt class="docutils literal">__getattr__</tt> is the sequencing
@@ -468,7 +468,7 @@ and I&#8217;ll be happy to go into further&nbsp;detail.</p>
             <h4>Tags</h4>
             <ul class="list-of-tags tags-in-article"> 
                 <li><a href="/tags.html#design-ref">design
-                    <span>5</span>
+                    <span>6</span>
 </a></li>
                 <li><a href="/tags.html#haskell-ref">haskell
                     <span>3</span>
@@ -477,7 +477,7 @@ and I&#8217;ll be happy to go into further&nbsp;detail.</p>
                     <span>1</span>
 </a></li>
                 <li><a href="/tags.html#python-ref">python
-                    <span>9</span>
+                    <span>10</span>
 </a></li>
             </ul>
 

@@ -426,10 +426,10 @@ are. And <a class="reference external" href="http://pymotw.com/2/weakref/">Doug 
 <tt class="docutils literal">WeakValueDictionary</tt> or <tt class="docutils literal">WeakSet</tt> will prevent this. Most things
 <em>can</em> be weak referenced &#8212; <a class="reference external" href="https://docs.python.org/3/library/weakref.html">the
 documentation</a> goes
-into detail about what can be: &quot;class instances, functions written in
+into detail about what can be: &#8220;class instances, functions written in
 Python (but not in C), instance methods, sets, frozensets, some file
 objects, generators, type objects, sockets, arrays, deques, regular
-expression pattern objects, and code&nbsp;objects.&quot;</p>
+expression pattern objects, and code&nbsp;objects.&#8221;</p>
 <p>When you&#8217;re attempting to use <tt class="docutils literal">WeakKeyDictionary</tt> or <tt class="docutils literal">WeakSet</tt>, the
 object must meet one more requirement: hashable. So objects like
 <tt class="docutils literal">list</tt> or <tt class="docutils literal">dict</tt>, even if they were implemented in Python, can&#8217;t
@@ -476,7 +476,7 @@ descriptor, it no longer needs to worry about what name it&#8217;s being held&nb
 object. The main reason for this would be to notify only certain
 subscribers when an attribute changes but not all of them. This explores
 what happens when access a descriptor through the class and not an
-instance. Meaning answering, &quot;What does cls (or type) do on <tt class="docutils literal">__get__</tt>?</p>
+instance. Meaning answering, &#8220;What does cls (or type) do on <tt class="docutils literal">__get__</tt>?</p>
 <div class="section" id="accessing-the-descriptor">
 <h3>Accessing the&nbsp;Descriptor</h3>
 <p>Since descriptors are objects that just happen to follow a certain
@@ -566,7 +566,7 @@ so it&#8217;s not a complete drop in&nbsp;replacement.</p>
 regular <tt class="docutils literal">set</tt>. Mostly because if we remove all other references from
 an observer, do we intend to still have the observer still process
 requests? My thoughts on the matter is no, the observer should be
-considered dead. In other cases, the goal could be to have &quot;anonymous&quot;
+considered dead. In other cases, the goal could be to have &#8220;anonymous&#8221;
 observers &#8212; objects that are created and immediately injected into the
 framework rather than assigned to a name and passed in. If this is the
 desire, than <tt class="docutils literal">WeakSet</tt> wouldn&#8217;t keep the object from being immediately
@@ -621,7 +621,7 @@ onto observers for us that are local to a particular&nbsp;instance.</p>
         <span class="k">return</span> <span class="n">value</span>
 </pre>
 <p>With that built, we can reconstruct <tt class="docutils literal">WatchedAttribute</tt> to hold both
-&quot;global&quot; and &quot;local&quot;&nbsp;observers.</p>
+&#8220;global&#8221; and &#8220;local&#8221;&nbsp;observers.</p>
 <pre class="code python literal-block">
 <span class="k">class</span> <span class="nc">WatchedAttribute</span><span class="p">(</span><span class="n">CachingDescriptor</span><span class="p">,</span> <span class="n">SubjectMixin</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -703,8 +703,8 @@ upper case is bound only to the first instance of Person, where as the
 one that strips out the vowels and prints that result is bound to all of
 instances. It&#8217;s also possible to create an <tt class="docutils literal">ignore</tt> method that would
 allow specific instances to ignore certain observers as well. Or even
-better, create a set of rules that can be followed: &quot;Only invoke this
-observer if the value doesn&#8217;t&nbsp;change.&quot;</p>
+better, create a set of rules that can be followed: &#8220;Only invoke this
+observer if the value doesn&#8217;t&nbsp;change.&#8221;</p>
 <p>Something I&#8217;ve curiously ignored is pre-subscribing observers. That is
 to say, when we create the class we attach a predetermined list of
 observers to the attribute. This is a feature of the original
@@ -821,7 +821,7 @@ filled with data on the instance level? Descriptors and that
                     <span>3</span>
 </a></li>
                 <li><a href="/tags.html#python-ref">python
-                    <span>9</span>
+                    <span>10</span>
 </a></li>
             </ul>
 

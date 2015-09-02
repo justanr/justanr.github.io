@@ -87,14 +87,14 @@ informative and less example heavy. The original post was essentially
 just a series of examples of <em>how</em> you&#8217;d use decorators or <em>what</em> you&#8217;d
 use them for rather than <em>why</em> you&#8217;d use decorators and addressing
 patterns. I&#8217;m hoping this rewrite clarifies that instead of being a
-&quot;Look at all this code you probably don&#8217;t&nbsp;understand!&quot;</p>
+&#8220;Look at all this code you probably don&#8217;t&nbsp;understand!&#8221;</p>
 <p>Decorators are well championed but most posts I&#8217;ve seen about them don&#8217;t
 address many of the issues here. I wouldn&#8217;t say they&#8217;re something
 beginner or novice friendly since it delves into concepts like
-functional programming and &quot;higher order functions&quot; which is just scary
-talk for &quot;functions that accept functions as arguments&quot; and even
-currying, which basically boils down to &quot;reducing the number of inputs a
-function takes.&quot; I&#8217;m grossly over simplifying here for the sake of
+functional programming and &#8220;higher order functions&#8221; which is just scary
+talk for &#8220;functions that accept functions as arguments&#8221; and even
+currying, which basically boils down to &#8220;reducing the number of inputs a
+function takes.&#8221; I&#8217;m grossly over simplifying here for the sake of
 explaination, but I stand by these&nbsp;simplifications.</p>
 <p>Another note, apparently there was a lot of hemming and hawing in the
 Python mailing list when this construct (for lack of a better word) was
@@ -112,7 +112,7 @@ makes it sound very confusing, but hopefully that will become clear
 through examples and&nbsp;explaination.</p>
 <div class="section" id="decorator-day">
 <h2>Decorator&nbsp;Day</h2>
-<p>This is meant to be a &quot;hit the ground running&quot; sort of thing decorators.
+<p>This is meant to be a &#8220;hit the ground running&#8221; sort of thing decorators.
 Just enough information to make you feel confident but not enough that
 you know all there is to them. Though, honestly, once they click,
 they&#8217;re not so&nbsp;complicated.</p>
@@ -253,8 +253,8 @@ oriented, except for two which will be&nbsp;obvious.</p>
 <div class="section" id="flexible-decorators">
 <h3>Flexible&nbsp;Decorators</h3>
 <p>You&#8217;re going to want your decorators to work with as many functions as
-possible. Not just the one you initially noticed and thought, &quot;I can
-factor this other code out into a decorator.&quot; But what does a flexible
+possible. Not just the one you initially noticed and thought, &#8220;I can
+factor this other code out into a decorator.&#8221; But what does a flexible
 decorator look like? It&#8217;s best to compare it to a brittle decorator to
 understand&nbsp;fully.</p>
 <pre class="code python literal-block">
@@ -293,7 +293,7 @@ the Flying Saucer downtown.&nbsp;Anyways&#8230;</p>
 original metadata: <tt class="docutils literal">__name__</tt>, <tt class="docutils literal">__doc__</tt>, etc. There&#8217;s a few ways to
 retain it. Instead of hopping to the correct way, I&#8217;ll show you why
 you&#8217;ll want to do that instead. Just like ensuring defaults are set in a
-dictionary, there&#8217;s an increasing level of &quot;correctness&quot; or &quot;Pythonness&quot;
+dictionary, there&#8217;s an increasing level of &#8220;correctness&#8221; or &#8220;Pythonness&#8221;
 from what you should start with and what you should end&nbsp;with.</p>
 <p>The first thing you might try is manually transfering these attributes
 inside the&nbsp;decorator.</p>
@@ -605,7 +605,7 @@ helpful to also use some sort of data structure to organize them if
 you&#8217;re doing more than simply wrapping them. In most cases the
 <tt class="docutils literal">weakref</tt> module will either provide the answer you need or set you on
 the right path; though, there are objects that can&#8217;t be weak referenced
-&#8212; including most of the built in or &quot;primitive&quot; types in Python (str,
+&#8212; including most of the built in or &#8220;primitive&#8221; types in Python (str,
 int, float, list, dict and tuple). However, for more complex objects,
 weakrefs are a powerful tool that let you conserve memory among other
 things. It&#8217;s worth balancing using something like <tt class="docutils literal">WeakKeyDictionary</tt>
@@ -727,8 +727,8 @@ enough to solve this&nbsp;problem.</p>
 <li>Ability to pull source&nbsp;code</li>
 <li>type and isinstance stop&nbsp;working</li>
 </ul>
-<p>I&#8217;ll admit blowing up code is one of the ways I learn the best. &quot;What
-did I do that I shouldn&#8217;t have done and how do I fix it?&quot; Though,
+<p>I&#8217;ll admit blowing up code is one of the ways I learn the best. &#8220;What
+did I do that I shouldn&#8217;t have done and how do I fix it?&#8221; Though,
 sometimes the errors are hard to track&nbsp;down.</p>
 <p>Python 2&#8217;s <tt class="docutils literal">inspect.getargspec</tt> doesn&#8217;t like being passed an object
 and complains loudly about it. Python 3&#8217;s version doesn&#8217;t seem to mind,
@@ -750,7 +750,7 @@ and 3. The same fixes should apply&nbsp;here.</p>
 identify explicitly what an object is. Descriptors seems like they
 should work and rudimentary testing with it seems to cause <tt class="docutils literal">type</tt> to
 behave as expected, but I&#8217;ve not battle tested this &#8212; and the real
-question is, &quot;Why are you using <tt class="docutils literal">type</tt> anyways?&quot;</p>
+question is, &#8220;Why are you using <tt class="docutils literal">type</tt> anyways?&#8221;</p>
 <div class="section" id="actually-fixing-these">
 <h4>Actually fixing&nbsp;these</h4>
 <p>If you&#8217;re much more curious about the proper way to fix these issues, I
@@ -781,8 +781,8 @@ clarifications on <em>many</em> things I glossed over initially, thinking that
 people think the same way I do (which is probably a lot more twisted and
 convoluted than&nbsp;most).</p>
 <p>I&#8217;m probably going to rewrite several other posts as well in a more
-frank &quot;This is what&#8217;s happening&quot; manner instead of the usual &quot;Here&#8217;s a
-bunch of code, I hope you get it!&quot; that makes sense to me more than
+frank &#8220;This is what&#8217;s happening&#8221; manner instead of the usual &#8220;Here&#8217;s a
+bunch of code, I hope you get it!&#8221; that makes sense to me more than
 anyone&nbsp;else.</p>
 </div>
 
@@ -844,7 +844,7 @@ anyone&nbsp;else.</p>
                     <span>1</span>
 </a></li>
                 <li><a href="/tags.html#python-ref">python
-                    <span>9</span>
+                    <span>10</span>
 </a></li>
             </ul>
 
