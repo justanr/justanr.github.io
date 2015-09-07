@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="Alec Nikolas Reiter" />
+        <meta name="copyright" content="Alec Nikolas Reiter" />
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="/theme/slicknav.css">
+        <script src="/theme/jquery.slicknav.min.js"></script>
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+        <script type="text/javascript"
+            src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+        </script>
+        <!--[if lt IE 9]>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.2/html5shiv.js"></script>
+        <![endif]-->
+
+
+<meta name="keywords" content="my-journey-through-tdd, design, " />
+        <title>Are we hiding complexity or reducing&nbsp;it? - from alec.thoughts import *
+</title>
+        <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="http://justanr.github.io/theme/css/style.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="http://justanr.github.io/theme/css/solarizedlight.css" media="screen">
+        <link rel="shortcut icon" href="http://justanr.github.io/theme/images/favicon.ico" type="image/x-icon" />
+        <link rel="apple-touch-icon" href="http://justanr.github.io/theme/images/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" sizes="57x57" href="http://justanr.github.io/theme/images/apple-touch-icon-57x57.png" />
+        <link rel="apple-touch-icon" sizes="72x72" href="http://justanr.github.io/theme/images/apple-touch-icon-72x72.png" />
+        <link rel="apple-touch-icon" sizes="114x114" href="http://justanr.github.io/theme/images/apple-touch-icon-114x114.png" />
+        <link rel="apple-touch-icon" sizes="144x144" href="http://justanr.github.io/theme/images/apple-touch-icon-144x144.png" />
+        <link rel="icon" href="http://justanr.github.io/theme/images/apple-touch-icon-144x144.png" />
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-64904436-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+    </head>
+    <body>
+        <div id="content-sans-footer">
+        <div class="navbar navbar-static-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="http://justanr.github.io/"><span class=site-name>from alec.thoughts import *</span></a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav pull-right top-menu">
+                            <li ><a href="http://justanr.github.io">Home</a></li>
+                            <li ><a href="http://justanr.github.io/categories.html">Categories</a></li>
+                            <li ><a href="http://justanr.github.io/tags.html">Tags</a></li>
+                            <li ><a href="http://justanr.github.io/archives.html">Archives</a></li>
+                            <li><form class="navbar-search" action="http://justanr.github.io/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span1"></div>
+                <div class="span10">
+<article>
+<div class="row-fluid">
+    <header class="page_header span10 offset2">
+    <h1><a href="http://justanr.github.io/are-we-hiding-complexity-or-reducing-it"> Are we hiding complexity or reducing&nbsp;it?  </a></h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+
+            <p>Consider this seemingly innocuous Flask&nbsp;endpoint.</p>
+<pre class="code python literal-block">
+<span class="kn">from</span> <span class="nn">myapp.token</span> <span class="kn">import</span> <span class="n">TokenGenerator</span>
+<span class="kn">from</span> <span class="nn">myapp.decorators</span> <span class="kn">import</span> <span class="n">email</span>
+
+<span class="nd">&#64;app.route</span><span class="p">(</span><span class="s">'/send-reset-password-token/&lt;username&gt;'</span><span class="p">)</span>
+<span class="nd">&#64;email</span>
+<span class="k">def</span> <span class="nf">generate_auth_token_and_send_it</span><span class="p">(</span><span class="n">username</span><span class="p">):</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">)</span><span class="o">.</span><span class="n">first_or_404</span><span class="p">()</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="n">TokenGenerator</span><span class="p">(</span><span class="n">secret_key</span><span class="o">=</span><span class="n">current_app</span><span class="o">.</span><span class="n">secret_key</span><span class="p">)</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s">'op'</span><span class="p">:</span> <span class="s">'reset-token'</span><span class="p">,</span> <span class="s">'username'</span><span class="p">:</span><span class="n">user</span><span class="o">.</span><span class="n">username</span><span class="p">})</span>
+    <span class="n">html_body</span> <span class="o">=</span> <span class="n">render_template</span><span class="p">(</span><span class="s">'token-reset-email.html'</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Message</span><span class="p">(</span><span class="n">body</span><span class="o">=</span><span class="n">html_body</span><span class="p">,</span> <span class="n">receiver</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
+</pre>
+<p>And, let&#8217;s pretend the <tt class="docutils literal">email</tt> decorator looks like&nbsp;this:</p>
+<pre class="code python literal-block">
+<span class="kn">from</span> <span class="nn">myapp.extensions</span> <span class="kn">import</span> <span class="n">emailer</span>
+
+<span class="k">def</span> <span class="nf">email</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">emailer</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">sender</span><span class="o">=</span><span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">'ADMIN_EMAIL'</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s">'front.homepage'</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">decorator</span>
+</pre>
+<p>We might look at that and think, &#8220;Hey! That&#8217;s pretty cool, sending the
+email is separated from composing the email! It&#8217;s&nbsp;testable!&#8221;</p>
+<div class="section" id="is-it-though">
+<h2>Is it&nbsp;though?</h2>
+<p>What does the <tt class="docutils literal">email</tt> decorator actually do? It intercepts a request
+from some endpoint and takes the message it returns and sends it. Then
+it redirects to some homepage. It&#8217;s still coupled, we can&#8217;t test
+<em>either</em> part without cranking up Flask and running the test server and
+worse still the logic is separated&nbsp;oddly.</p>
+<p>The creation of the message is the endpoint&#8217;s responsibility. But the
+sending of the email resides some place else. The end point obviously
+<em>wants</em> to send a notification to a user, but it doesn&#8217;t. Instead it
+ends up just going &#8220;Well&#8230;.uh&#8230;here&#8217;s this message thing. I hope
+whoever gets it knows what to do with it.&#8221; Similarly, the <tt class="docutils literal">email</tt>
+decorator <em>wants</em> a message but it doesn&#8217;t build one, it gets one from
+someplace&nbsp;else.</p>
+<p>Mostly this tell us that the logic inside the <tt class="docutils literal">email</tt> decorator was
+originally inside this endpoint, but someone got tired of typing
+<tt class="docutils literal">emailer.send(msg, sender)</tt> all the time and decided that was the seam
+to split on. I&#8217;m not gonna cast stones, I&#8217;ve written things like this.
+My eyes would glaze over and became limp every time I&#8217;d need to do
+<tt class="docutils literal">emailer.send(msg, sender)</tt>.</p>
+<p>However, all this decorator has accomplished is <em>hiding</em> the complexity
+instead of <em>reducing</em> it. Remember when you were young and your mom or
+dad would tell you to clean your room. And instead of cleaning it, you
+shoved everything into the closet and under the bed? Your room <em>looked</em>
+clean, but you only <em>hid</em> the&nbsp;mess.</p>
+<p>&#8230;maybe you didn&#8217;t do that, but I remember doing that. And I do the
+same thing in my code. But now, instead of shoveling the complexity into
+decorators and pushing it away and never dealing with it, I want to look
+at the complexity and think, &#8220;What&#8217;s the best way to clean this and keep
+it from happening&nbsp;again?&#8221;</p>
+</div>
+<div class="section" id="how-can-we-fix-it">
+<h2>How can we fix&nbsp;it?</h2>
+<p>Before we touch anything, we should create a test harness (something I&#8217;m
+trying to force myself to do&nbsp;lately).</p>
+<pre class="code python literal-block">
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">mock</span>
+<span class="kn">import</span> <span class="nn">pytest</span>
+<span class="kn">from</span> <span class="nn">myapp</span> <span class="kn">import</span> <span class="n">create_app</span>
+<span class="kn">from</span> <span class="nn">myapp.auth.views</span> <span class="kn">import</span> <span class="n">generate_auth_token_and_send_it</span>
+
+<span class="nd">&#64;pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&quot;session&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">app</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">create_app</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="s">'test'</span><span class="p">)</span>
+
+
+<span class="nd">&#64;pytest.yield_fixture</span>
+<span class="k">def</span> <span class="nf">app_context</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">app_context</span><span class="p">():</span>
+        <span class="k">yield</span> <span class="n">app</span>
+</pre>
+<p>These two things are a staple in my <tt class="docutils literal">conftest.py</tt>. The first creates a
+single Flask app for the entire session. This might not be the <em>best</em>
+way to handle testing Flask apps, but it certainly speeds things up. If
+you don&#8217;t have environment senstive things (checking for Redis, for
+example), this probably good enough for end-to-end testing, if you have
+that sort of thing&#8230;well, you&#8217;ll probably want to create things
+<tt class="docutils literal">create_app_with_redis</tt> or maybe use a parametrized fixture. I&#8217;m not
+going to get into that here&nbsp;though.</p>
+<p>The <tt class="docutils literal">app_context</tt> fixture is local to each function that wants it.
+It&#8217;s much quicker to set up and teardown application contexts than a
+whole application, which makes&nbsp;sense.</p>
+<p>Next, we&#8217;ll want to batter our endpoint with tests. This part is <em>no
+fun</em> because we need to essentially test the endpoint through the <span class="caps">UI</span>.</p>
+<pre class="code python literal-block">
+<span class="kn">from</span> <span class="nn">myapp.models</span> <span class="kn">import</span> <span class="n">User</span><span class="p">,</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">unwrap</span>
+
+<span class="k">def</span> <span class="nf">test_generate_token_and_send_it_calls_emailer</span><span class="p">(</span><span class="n">app_context</span><span class="p">):</span>
+    <span class="n">fred</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s">'fred'</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s">'fred&#64;fred.fred'</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">fred</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="k">with</span> <span class="n">mock</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s">'myapp.decorators.emailer.send'</span><span class="p">)</span> <span class="k">as</span> <span class="n">sender</span><span class="p">:</span>
+        <span class="n">generate_auth_token_and_send_it</span><span class="p">(</span><span class="s">'fred'</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="n">sender</span><span class="o">.</span><span class="n">called</span>
+
+<span class="k">def</span> <span class="nf">test_expected_response_from_generate_token_and_send_it</span><span class="p">(</span><span class="n">app_context</span><span class="p">):</span>
+    <span class="n">actual_function</span> <span class="o">=</span> <span class="n">unwrap</span><span class="p">(</span><span class="n">generate_token_and_send_it</span><span class="p">)</span>
+
+    <span class="n">fred</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s">'fred'</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s">'fred&#64;fred.fred'</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">fred</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="n">message</span> <span class="o">=</span> <span class="n">actual_function</span><span class="p">(</span><span class="s">'fred'</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="s">'Your user token is'</span> <span class="ow">in</span> <span class="n">message</span><span class="o">.</span><span class="n">body</span>
+    <span class="k">assert</span> <span class="n">fred</span><span class="o">.</span><span class="n">email</span> <span class="o">==</span> <span class="n">message</span><span class="o">.</span><span class="n">receiver</span>
+
+
+<span class="k">def</span> <span class="nf">test_failure_with_nonexistent_user</span><span class="p">(</span><span class="n">app_context</span><span class="p">):</span>
+    <span class="n">actual_function</span> <span class="o">=</span> <span class="n">unwrap</span><span class="p">(</span><span class="n">generate_token_and_send_it</span><span class="p">)</span>
+
+    <span class="c"># first_or_404 calls abort,</span>
+    <span class="c"># intercepting that is easier than mocking the query</span>
+    <span class="k">with</span> <span class="n">mock</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s">'flask_sqlalchemy.abort'</span><span class="p">)</span> <span class="k">as</span> <span class="n">aborter</span><span class="p">:</span>
+        <span class="n">actual_function</span><span class="p">(</span><span class="s">'no freds'</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="n">aborter</span><span class="o">.</span><span class="n">called</span>
+</pre>
+<p>The very first thing you should notice is that <em>these tests are hard to
+write</em>. There&#8217;s all sorts of setup, things are being mocked left and
+right. We have to mock something in the Flask-SQLAlchemy library! If
+nothing else sends up red flags, mocking something in a third party
+library&nbsp;should.</p>
+<p>However, there&#8217;s something important we&#8217;ve just learned: our design is
+bad. Trying to isolate this one function, and let&#8217;s be honest there&#8217;s
+things we&#8217;ve missed here, has put tremendous pressure on our thinking.
+The only reason I knew <tt class="docutils literal">first_or_404</tt> calls <tt class="docutils literal">flask.abort</tt> is because
+I&#8217;ve contributed to the&nbsp;library.</p>
+<p>There&#8217;s also another, more insidious dependency we have: Python&nbsp;3.4+</p>
+<ul class="simple">
+<li>Python 3.2 added the <tt class="docutils literal">__wrapped__</tt> attribute for functions wrapped
+with <tt class="docutils literal">update_wrapper</tt>/<tt class="docutils literal">wraps</tt></li>
+<li>mock was added to unittest in 3.3. It is available as a third party
+library&nbsp;though.</li>
+<li>inspected.unwrap was added in 3.4, which can unwrap decorators using
+<tt class="docutils literal">__wrapped__</tt></li>
+</ul>
+<p>So these tests <em>can&#8217;t run on almost every version of Python</em>. We could
+ditch <tt class="docutils literal">unwrap</tt> and simply call dig through to <tt class="docutils literal">__wrapped__</tt>
+ourselves, but there could be more decorators between <tt class="docutils literal">&#64;email</tt> and the
+actual function that get added in the future, breaking the tests and
+they&#8217;ll be fixed by just doing this
+<tt class="docutils literal">function.__wrapped__.__wrapped__.__wrapped__</tt>. The other option is
+implementing <tt class="docutils literal">unwrap</tt> ourselves, which brings our dependencies down to
+<em>just</em> Python&nbsp;3.2</p>
+</div>
+<div class="section" id="how-to-fix-it">
+<h2>How to fix&nbsp;it.</h2>
+<p>The first step is to stop hiding the complexity. And to me, that means
+bringing the emailer <em>back</em> into the&nbsp;endpoint.</p>
+<pre class="code python literal-block">
+<span class="nd">&#64;app.route</span><span class="p">(</span><span class="s">'/send-reset-password-token/&lt;username&gt;'</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">generate_auth_token_and_send_it</span><span class="p">(</span><span class="n">username</span><span class="p">):</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">)</span><span class="o">.</span><span class="n">first_or_404</span><span class="p">()</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="n">TokenGenerator</span><span class="p">(</span><span class="n">secret_key</span><span class="o">=</span><span class="n">current_app</span><span class="o">.</span><span class="n">secret_key</span><span class="p">)</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s">'op'</span><span class="p">:</span> <span class="s">'reset-token'</span><span class="p">,</span> <span class="s">'username'</span><span class="p">:</span><span class="n">user</span><span class="o">.</span><span class="n">username</span><span class="p">})</span>
+    <span class="n">html_body</span> <span class="o">=</span> <span class="n">render_template</span><span class="p">(</span><span class="s">'token-reset-email.html'</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span><span class="n">body</span><span class="o">=</span><span class="n">html_body</span><span class="p">,</span> <span class="n">receiver</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
+    <span class="n">emailer</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">sender</span><span class="o">=</span><span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">'ADMIN_EMAIL'</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s">'index.homepage'</span><span class="p">)</span>
+</pre>
+<p>The reason for this is that <tt class="docutils literal">msg = <span class="pre">Message(...)</span></tt> and
+<tt class="docutils literal"><span class="pre">emailer.send(...)</span></tt> form a logical unit. They want to be near to each
+other, originally they were in a long distance relationship and we all
+know long distance relationships are hard. We could simply pull <em>both</em>
+the message construction and the email sender out into a decorator, but
+then the function name is wrong. It&#8217;s no longer
+<tt class="docutils literal">generate_auth_token_and_send_it</tt> it&#8217;s
+<tt class="docutils literal">generate_token_and_return_some_structure_a_decorator_deals_with</tt>.</p>
+<p>By moving that logic back inside the endpoint, we&#8217;ve eliminated our hard
+dependency on Python 3 (there&#8217;s nothing to unwrap right now, and mock
+can be pip installed). Things are looking up already. If you&#8217;re
+modifying your tests along with your source code, you can remove the
+<tt class="docutils literal">unwrap</tt> lines&nbsp;now.</p>
+</div>
+<div class="section" id="what-s-the-use-case">
+<h2>What&#8217;s the use&nbsp;case?</h2>
+<p>The next step is to look at the story the endpoint is telling&nbsp;us:</p>
+<ul class="simple">
+<li>Given a username, the endpoint locates the proper&nbsp;user</li>
+<li>When the user is found, the endpoint generates a token for password
+resets for the&nbsp;user</li>
+<li>Then the endpoint generates an&nbsp;email</li>
+<li>The endpoint sends the&nbsp;email</li>
+<li>Finally the endpoint redirects to the&nbsp;homepage</li>
+</ul>
+<p>There&#8217;s also an error&nbsp;case:</p>
+<ul class="simple">
+<li>If the endpoint can&#8217;t find the user, it redirects to an error&nbsp;page</li>
+</ul>
+<p>By doing this, we can completely pull the actual logic out into it&#8217;s own&nbsp;function:</p>
+<pre class="code python literal-block">
+<span class="k">def</span> <span class="nf">send_user_reset_token</span><span class="p">(</span><span class="n">user</span><span class="p">):</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="n">TokenGenerator</span><span class="p">(</span><span class="n">secret_key</span><span class="o">=</span><span class="n">current_app</span><span class="o">.</span><span class="n">secret_key</span><span class="p">)</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s">'op'</span><span class="p">:</span> <span class="s">'reset-token'</span><span class="p">,</span> <span class="s">'username'</span><span class="p">:</span><span class="n">user</span><span class="o">.</span><span class="n">username</span><span class="p">})</span>
+    <span class="n">html_body</span> <span class="o">=</span> <span class="n">render_template</span><span class="p">(</span><span class="s">'token-reset-email.html'</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span><span class="n">body</span><span class="o">=</span><span class="n">html_body</span><span class="p">,</span> <span class="n">receiver</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">emailer</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">sender</span><span class="o">=</span><span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">'ADMIN_EMAIL'</span><span class="p">])</span>
+
+<span class="nd">&#64;app.route</span><span class="p">(</span><span class="s">'/send-reset-password-token/&lt;username&gt;'</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">generate_token_and_send_it</span><span class="p">(</span><span class="n">username</span><span class="p">):</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">)</span><span class="o">.</span><span class="n">first_or_404</span><span class="p">()</span>
+    <span class="n">send_user_reset_token</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s">'index.homepage'</span><span class="p">)</span>
+</pre>
+<p>That&#8217;s even better. Our test through the <span class="caps">UI</span> can be replaced with
+something a little&nbsp;simpler:</p>
+<pre class="code python literal-block">
+<span class="k">def</span> <span class="nf">test_do_we_send_the_token</span><span class="p">(</span><span class="n">app_context</span><span class="p">):</span>
+    <span class="n">fred</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s">'fred'</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s">'fred&#64;fred.fred'</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">fred</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="k">with</span> <span class="n">mock</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s">'myapp.auth.view.send_user_reset_token'</span><span class="p">)</span> <span class="k">as</span> <span class="n">sender</span><span class="p">:</span>
+        <span class="n">generate_auth_token_and_send_it</span><span class="p">(</span><span class="s">'fred'</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="n">sender</span><span class="o">.</span><span class="n">called</span>
+</pre>
+<p>I&#8217;m not completely happy with this test, but it&#8217;s okay. However, before
+we completely divert our attention from the endpoint test, let&#8217;s fix the
+second test where we mock <tt class="docutils literal">flask_sqlalchemy.abort</tt>:</p>
+<pre class="code python literal-block">
+<span class="nd">&#64;app.route</span><span class="p">(</span><span class="s">'/send-reset-password-token/&lt;username&gt;'</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">generate_token_and_send_it</span><span class="p">(</span><span class="n">username</span><span class="p">):</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="p">:</span>
+        <span class="n">flash</span><span class="p">(</span><span class="s">'Username not found'</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s">'generate_token_and_send_it'</span><span class="p">)</span>
+
+    <span class="n">send_user_reset_token</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s">'index.homepage'</span><span class="p">)</span>
+
+<span class="c"># in the tests</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">get_flashed_messages</span>
+
+<span class="k">def</span> <span class="nf">test_failure_with_nonexistent_user</span><span class="p">(</span><span class="n">app_context</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">mock</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s">'myapp.auth.view.send_user_reset_token'</span><span class="p">)</span> <span class="k">as</span> <span class="n">sender</span><span class="p">:</span>
+        <span class="n">generate_auth_token_and_send_it</span><span class="p">(</span><span class="s">'fred'</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="ow">not</span> <span class="n">aborter</span><span class="o">.</span><span class="n">called</span>
+    <span class="k">assert</span> <span class="s">'Username not found'</span> <span class="ow">in</span> <span class="n">get_flashed_messages</span><span class="p">()</span>
+</pre>
+<p>We still need to spin up Flask to run these tests, but they&#8217;re simpler.
+The negative assertion in this test can be dangerous, but it&#8217;s paired
+with a positive assertion so I feel fine with having&nbsp;it.</p>
+<p>That leaves just the emailer and the token generator to deal with. The
+reason for emailer to be mocked out is obvious, but the token generator
+might be less obvious. If it&#8217;s a <em>good</em> token generator, you won&#8217;t be
+able to know ahead of time what it&#8217;ll generate, it also has a hard
+dependency on our application. Both of these make it hard to&nbsp;test.</p>
+<p><a class="reference external" href="http://justanr.github.io/on-dryers-adapters-and-software-design">The emailer problem I&#8217;ve addressed else
+where</a>,
+we just build an interface we want to use and pass the implementation
+in. We&#8217;ll do the same for the token generator. The <tt class="docutils literal">dumps</tt>/<tt class="docutils literal">loads</tt>
+interface is pretty common, so we could even subsitute the regular
+<tt class="docutils literal">json</tt> module for it. So the actual logic really&nbsp;becomes:</p>
+<pre class="code python literal-block">
+<span class="k">def</span> <span class="nf">send_user_reset_token</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">notifier</span><span class="p">):</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s">'op'</span><span class="p">:</span> <span class="s">'reset-token'</span><span class="p">,</span> <span class="s">'username'</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">username</span><span class="p">})</span>
+    <span class="n">payload</span> <span class="o">=</span> <span class="s">'Your reset token is {0}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">notifier</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">token</span><span class="p">)</span>
+
+<span class="nd">&#64;app.route</span><span class="p">(</span><span class="s">'/send-reset-password-token/&lt;username&gt;'</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">generate_token_and_send_it</span><span class="p">(</span><span class="n">username</span><span class="p">):</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="p">:</span>
+        <span class="n">flash</span><span class="p">(</span><span class="s">'Username not found'</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s">'generate_token_and_send_it'</span><span class="p">)</span>
+
+    <span class="n">notifier</span> <span class="o">=</span> <span class="n">EmailNotifier</span><span class="p">(</span><span class="n">sender</span><span class="o">=</span><span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">'ADMIN_EMAIL'</span><span class="p">],</span> <span class="n">as_html</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">tokenizer</span> <span class="o">=</span> <span class="n">TokenGenerator</span><span class="p">(</span><span class="n">secret_key</span><span class="o">=</span><span class="n">current_app</span><span class="o">.</span><span class="n">secret_key</span><span class="p">)</span>
+
+    <span class="n">send_user_reset_token</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">notifier</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s">'index.homepage'</span><span class="p">)</span>
+</pre>
+<p>And our tests against the <em>actual</em> logic become really&nbsp;easy.</p>
+<pre class="code python literal-block">
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+
+<span class="n">DummyUser</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s">'DummyUser'</span><span class="p">,</span> <span class="p">[</span><span class="s">'user'</span><span class="p">,</span> <span class="s">'email'</span><span class="p">])</span>
+<span class="n">DummyNotifer</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s">'DummyNotifier'</span><span class="p">,</span> <span class="p">[</span><span class="s">'notify'</span><span class="p">])</span>
+<span class="n">DummyTokenzier</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s">'DummyTokenizer'</span><span class="p">,</span> <span class="p">[</span><span class="s">'dumps'</span><span class="p">,</span> <span class="s">'loads'</span><span class="p">])</span>
+
+<span class="k">def</span> <span class="nf">test_send_user_reset_token</span><span class="p">():</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">DummyUser</span><span class="p">(</span><span class="s">'fred'</span><span class="p">,</span> <span class="s">'fred&#64;fred.fred'</span><span class="p">)</span>
+    <span class="n">notifier</span> <span class="o">=</span> <span class="n">DummyNotifier</span><span class="p">(</span><span class="k">lambda</span> <span class="n">user</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">token</span><span class="p">))</span>
+    <span class="n">tokenizer</span> <span class="o">=</span> <span class="n">DummyTokenizer</span><span class="p">(</span><span class="n">loads</span><span class="o">=</span><span class="k">lambda</span> <span class="n">data</span><span class="p">:</span> <span class="n">data</span><span class="p">,</span> <span class="n">dumps</span><span class="o">=</span><span class="k">lambda</span> <span class="n">data</span><span class="p">:</span> <span class="n">data</span><span class="p">)</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="n">send_user_reset_token</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">notifier</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">result</span> <span class="o">==</span> <span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="p">{</span><span class="s">'op'</span><span class="p">:</span> <span class="s">'reset-token'</span><span class="p">,</span> <span class="s">'username'</span><span class="p">:</span> <span class="s">'fred'</span><span class="p">})</span>
+</pre>
+<p>This is a <em>collaboration test</em> not a <em>unit test</em> because our
+<tt class="docutils literal">send_user_reset_token</tt> relies on the behavior of others, but it&#8217;s
+<em>isolated</em> completely from the outside world. We can test that <em>it</em>
+behaves correctly by simply handing it things we know work. If we wanted
+to make sure it talks correctly to these things, we could simply use a
+spying double and assert that each bit was&nbsp;called.</p>
+<p>If it were more complicated, say it looped through some data set, we
+could pass it five different kinds of data sets to see how it behaves
+with each (those five are: empty, one, many, lots, and blows up; this is
+one of things <a class="reference external" href="https://vimeo.com/80533536">Integrated Tests are a
+Scam</a> taught&nbsp;me).</p>
+<p>So let&#8217;s stop yanking out the complexity and simply shoving it someplace
+else and saying, &#8220;Look how clean it is! &#8230;no, no, no don&#8217;t pop open the
+decorators file!&#8221; Instead, let&#8217;s look the complexity in the eye and say,
+&#8220;I&#8217;m going to control you before you control&nbsp;me!&#8221;</p>
+<p>Now, if you pardon me, I have a closet to&nbsp;organize.</p>
+</div>
+
+            <aside>
+            <nav>
+            <ul class="articles_timeline">
+ 
+                <li class="previous_article">« <a href="http://justanr.github.io/on-dryers-adapters-and-software-design" title="Previous: On Dryers, Adapters and Software&nbsp;Design">On Dryers, Adapters and Software&nbsp;Design</a></li>
+            </ul>
+            </nav>
+            </aside>
+<section>
+<hr/>
+<p id="comment-message">I spilled my brains, spill some of yours. </p>
+<div class="accordion" id="accordion2">
+    <div class="accordion-group">
+        <div class="accordion-heading">
+            <a class="accordion-toggle disqus-comment-count" data-toggle="collapse" data-parent="#accordion2" 
+                href="http://justanr.github.io/are-we-hiding-complexity-or-reducing-it/#disqus_thread">
+                Comments
+            </a>
+        </div>
+        <div id="disqus_thread" class="accordion-body collapse">
+            <div class="accordion-inner">
+                <div class="comments">
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ballinoctobear';
+        var disqus_identifier = 'http://justanr.github.io/are-we-hiding-complexity-or-reducing-it';
+    var disqus_url = 'http://justanr.github.io/are-we-hiding-complexity-or-reducing-it';
+
+    (function() {
+         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+         dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+     })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+        </div>
+        <section>
+        <div class="span2" style="float:right;font-size:0.9em;">
+ 
+            <h4>Published</h4>
+            <time pubdate="pubdate" datetime="2015-09-07T00:00:00-04:00">Sep 7, 2015</time>
+            <h4>Category</h4>
+            <a class="category-link" href="/categories.html#design-ref">design</a> 
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article"> 
+                <li><a href="/tags.html#my-journey-through-tdd-ref">my-journey-through-tdd
+                    <span>1</span>
+</a></li>
+            </ul>
+
+        </div>
+        </section>
+    </div>
+    </article>
+                </div>
+                <div class="span1"></div>
+            </div>
+        </div>
+    </div>
+<footer>
+<div id="footer">
+    <ul class="footer-content">
+        <li class="elegant-license">Shared under the Creative Commons for content and MIT for code</li>
+        <li class="elegant-power">Powered by <a href="http://getpelican.com/" title="Pelican Home Page">Pelican</a>. Theme: <a href="http://oncrashreboot.com/pelican-elegant" title="Theme Elegant Home Page">Elegant</a> by <a href="http://oncrashreboot.com" title="Talha Mansoor Home Page">Talha Mansoor</a></li>
+    </ul>
+</div>
+</footer>            <script src="http://code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+<script type="text/javascript">
+    var disqus_shortname = 'ballinoctobear';
+
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+    </script>
+    </body>
+</html>
