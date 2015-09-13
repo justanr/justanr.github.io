@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="Alec Nikolas Reiter" />
+        <meta name="copyright" content="Alec Nikolas Reiter" />
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="/theme/slicknav.css">
+        <script src="/theme/jquery.slicknav.min.js"></script>
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+        <script type="text/javascript"
+            src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+        </script>
+        <!--[if lt IE 9]>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.2/html5shiv.js"></script>
+        <![endif]-->
+
+
+<meta name="keywords" content="flask, sqlalchemy, rants, " />
+        <title>Drawbacks in&nbsp;Flask-SQLAlchemy - from alec.thoughts import *
+</title>
+        <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="http://justanr.github.io/theme/css/style.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="http://justanr.github.io/theme/css/solarizedlight.css" media="screen">
+        <link rel="shortcut icon" href="http://justanr.github.io/theme/images/favicon.ico" type="image/x-icon" />
+        <link rel="apple-touch-icon" href="http://justanr.github.io/theme/images/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" sizes="57x57" href="http://justanr.github.io/theme/images/apple-touch-icon-57x57.png" />
+        <link rel="apple-touch-icon" sizes="72x72" href="http://justanr.github.io/theme/images/apple-touch-icon-72x72.png" />
+        <link rel="apple-touch-icon" sizes="114x114" href="http://justanr.github.io/theme/images/apple-touch-icon-114x114.png" />
+        <link rel="apple-touch-icon" sizes="144x144" href="http://justanr.github.io/theme/images/apple-touch-icon-144x144.png" />
+        <link rel="icon" href="http://justanr.github.io/theme/images/apple-touch-icon-144x144.png" />
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-64904436-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+    </head>
+    <body>
+        <div id="content-sans-footer">
+        <div class="navbar navbar-static-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="http://justanr.github.io/"><span class=site-name>from alec.thoughts import *</span></a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav pull-right top-menu">
+                            <li ><a href="http://justanr.github.io">Home</a></li>
+                            <li ><a href="http://justanr.github.io/categories.html">Categories</a></li>
+                            <li ><a href="http://justanr.github.io/tags.html">Tags</a></li>
+                            <li ><a href="http://justanr.github.io/archives.html">Archives</a></li>
+                            <li><form class="navbar-search" action="http://justanr.github.io/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span1"></div>
+                <div class="span10">
+<article>
+<div class="row-fluid">
+    <header class="page_header span10 offset2">
+    <h1><a href="http://justanr.github.io/drawbacks-in-flask-sqlalchemy"> Drawbacks in&nbsp;Flask-SQLAlchemy  </a></h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+
+            <p>If you&#8217;ve used Flask at all, you&#8217;ve probably at least heard about
+Flask-SQLAlchemy. Despite the title, it&#8217;s actually a great adapter from
+SQLAlchemy to Flask. It handles things like tying the current database
+session to the lifespan of the Flask request cycle and it&#8217;ll centralize
+a lot of the <span class="caps">ORM</span> stuff under one namespace instead of having to remember
+where to import a bunch of stuff&nbsp;from.</p>
+<p>Buuuuuut, there&#8217;s several major issues I have with&nbsp;it.</p>
+<div class="section" id="x-or-404">
+<h2>x_or_404</h2>
+<p>SQLAlchemy has a <tt class="docutils literal">first()</tt> selector that either returns the first row
+that matches the query or None. On one hand, I understand why it acts
+this way but it creates a weird disjoint between it and <tt class="docutils literal">one</tt> which&nbsp;will:</p>
+<ul class="simple">
+<li>Return the single matching&nbsp;row</li>
+<li>Throw a <tt class="docutils literal">NoResultFound</tt> if there&#8217;s no matching&nbsp;results</li>
+<li>Throw a <tt class="docutils literal">MultipleResultsFound</tt> if there&#8217;s more than one matching&nbsp;row</li>
+</ul>
+<p>Personally, it&#8217;d be good design for <tt class="docutils literal">first()</tt> to follow this pattern,
+the same with <tt class="docutils literal">get()</tt>, and I&#8217;m sure the SQLAlchemy team has their
+reasons that are perfectly valid, but that&#8217;s not what I&#8217;m here to talk&nbsp;about.</p>
+<p>Flask-SQLAlchemy adds <tt class="docutils literal">first_or_404</tt> as well as <tt class="docutils literal">get_or_404</tt>. These
+either get the desired object <em>or</em> calls <tt class="docutils literal">flask.abort(404)</tt>. Think
+about that. Your database call is either going to find the right result
+or make routing call into your&nbsp;application.</p>
+<p>If you used these, how would you test that a non-existent user causes a&nbsp;404?</p>
+<pre class="code python literal-block">
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">mock</span>
+<span class="kn">from</span> <span class="nn">myapp.users.views</span> <span class="kn">import</span> <span class="n">user_profile</span>
+
+<span class="k">def</span> <span class="nf">test_non_existent_user_causes_404</span><span class="p">():</span>
+    <span class="k">with</span> <span class="n">mock</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s">'flask_sqlalchemy.abort'</span><span class="p">)</span> <span class="k">as</span> <span class="n">aborter</span><span class="p">:</span> <span class="c"># red flag!!!</span>
+        <span class="n">user_profile</span><span class="p">(</span><span class="s">'idontexist'</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="n">aborter</span><span class="o">.</span><span class="n">called</span>
+</pre>
+<p>That&#8217;s a <em>huge</em> red flag. I need to patch something that&#8217;s essentially a
+private call in a third party library. Whereas if I use just regular ol&#8217;
+<tt class="docutils literal">first()</tt> I can check if <em>I called</em> abort, which isn&#8217;t great but at
+least I&#8217;m patching against my logic not somebody&nbsp;else&#8217;s.</p>
+<p>Now, I get the utility of this. When it was written, it was probably
+with the same mindset I have: first should throw an exception when it
+doesn&#8217;t find what it was looking for. But instead of causing a routing
+call, it could simply raise <tt class="docutils literal">NoResultFound</tt>. Or provide a
+<tt class="docutils literal">first_or_raise</tt> that allows me to provide my own exception, because
+maybe I want to handle a <tt class="docutils literal">UserNotFound</tt> differently than an
+<tt class="docutils literal">OrderNotFound</tt>. Currently, I think best practice is to <em>not</em> use the
+<tt class="docutils literal">x_or_404</tt> utilities and simply check for None. Better yet, provide
+your own utility method that does this (more on this&nbsp;later).</p>
+</div>
+<div class="section" id="conflation-of-the-model-and-the-repository">
+<h2>Conflation of the Model and the&nbsp;Repository</h2>
+<p>SQLAlchemy does a really good job of separating models from their
+repositories. There&#8217;s a very clear separatation between what <tt class="docutils literal">User</tt>
+represents and what <tt class="docutils literal">session.query(User)</tt> represents. The first is
+<em>structure</em> and the second is <em>access</em></p>
+<p>However, Flask-SQLAlchemy blurs this line to the point where it doesn&#8217;t
+exist any more. Instead of requiring data access to go through a session
+object, Flask-SQLAlchemy places a <tt class="docutils literal">query</tt> object on the models and
+allows us to do stuff&nbsp;like:</p>
+<pre class="code python literal-block">
+<span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">permission_level</span> <span class="o">&gt;=</span> <span class="n">PermissionLevels</span><span class="o">.</span><span class="n">MODERATOR</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+</pre>
+<p>This also encourages adding complex queries onto the model itself,
+further blurring the line. For example, the query above might be used
+often and so we create a query method on the User&nbsp;object:</p>
+<pre class="code python literal-block">
+<span class="k">class</span> <span class="nc">User</span><span class="p">:</span>
+    <span class="c">#...</span>
+
+    <span class="nd">&#64;classmethod</span>
+    <span class="k">def</span> <span class="nf">find_by_permission_level</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">permission</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">permission_level</span> <span class="o">&gt;=</span> <span class="n">permission</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+</pre>
+<p>That&#8217;s pretty handy. But does it make sense? I don&#8217;t think it does. Even
+more so when you consider that the query property and these methods are
+available on actual instances of&nbsp;User.</p>
+<pre class="code python literal-block">
+<span class="n">me</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">me</span><span class="o">.</span><span class="n">find_by_permission_level</span><span class="p">(</span><span class="n">PermissionLevel</span><span class="o">.</span><span class="n">MODERATOR</span><span class="p">)</span>
+<span class="n">me</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">username</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">'just'</span><span class="p">))</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+</pre>
+<p>And even scarier is that often model instances are passed directly to
+templates. It isn&#8217;t common, but if you allowed users to provide their
+own templates, what&#8217;s to stop them from running queries in the template?
+That&#8217;s bad&nbsp;news.</p>
+<p>I don&#8217;t have a good solution for this problem, the best I&#8217;ve come up
+with is to wrap data access into a repository layer itself. While it
+might seem really silly to wrap SQLAlchemy&#8217;s data access in an
+abstraction (abstraction-inception!), to me this makes the most amount
+of sense. There are pros-and-cons. The biggest pro is that these common
+queries now have an actual home, but the biggest con is that a
+repository tends to grow accessor methods at an exponential rate
+(<tt class="docutils literal">find_by_id</tt>, <tt class="docutils literal">find_by_name</tt>, <tt class="docutils literal">find_by_permission_level</tt>,
+<tt class="docutils literal">find_by_this</tt>, <tt class="docutils literal">find_by_that</tt>) outside of implementing some sort of
+criteria matching, I&#8217;m not sure how to address&nbsp;this.</p>
+<p>This alone doesn&#8217;t fix the issue of returning database models to the
+template, but that can be fixed by simply scrubbing your models before
+returning them off to the templates. Marshmallow is good for this, but
+will return dictionaries instead of objects. However, that&#8217;s easily
+fixed by providing a <tt class="docutils literal">post_dump</tt> method that transforms the result
+into something with dotted&nbsp;access:</p>
+<pre class="code python literal-block">
+<span class="kn">from</span> <span class="nn">marshmallow</span> <span class="kn">import</span> <span class="n">Schema</span>
+
+<span class="k">class</span> <span class="nc">dottedict</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getitem__</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__setitem__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">UserSchema</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+    <span class="c"># fields here</span>
+
+    <span class="nd">&#64;post_dump</span> <span class="c"># note this is Marshmallow &gt;= 2.0.0a1</span>
+    <span class="k">def</span> <span class="nf">dottify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">many</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">dotteddict</span><span class="p">(</span><span class="o">**</span><span class="n">datum</span><span class="p">)</span> <span class="k">for</span> <span class="n">datum</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">dotteddict</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+</pre>
+<p>And this is probably a good practice everyone should get into. This
+allows completely forbidding access to implementation details or private
+attributes altogether. We simply don&#8217;t serialize things like password or
+<a class="reference external" href="https://en.wikipedia.org/wiki/Surrogate_key">surrogate primary
+keys</a>. The biggest issue
+for this is that Marshmallow doesn&#8217;t handle multiple <tt class="docutils literal">post_dump</tt>
+methods deterministically. So if you need to do multiple things to the
+data after dumping it, you&#8217;re better off defining the post dump behavior
+on each schema independently, rather than allowing it propagate through
+inheritance (a mixin might be a good fix&nbsp;though).</p>
+<p>As for unblurring the line, you could set up your repository to convert
+between plain Python objects and SQLAlchemy models depending on if
+you&#8217;re accessing or persisting data, but this adds a certain amount of&nbsp;overhead.</p>
+<p>Using this approach also solves the issue of <tt class="docutils literal">first_or_404</tt>, we can
+simply define our own <tt class="docutils literal">first()</tt> method on the repository that throws
+an&nbsp;exception:</p>
+<pre class="code python literal-block">
+<span class="k">class</span> <span class="nc">UserRepository</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="nf">first</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UserNotFound</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">UserDTO</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+</pre>
+</div>
+<div class="section" id="restricting-configuration">
+<h2>Restricting&nbsp;Configuration</h2>
+<p>SQLAlchemy allows configuring just about every aspect of it. The type of
+session you use, the query class you use, on and on and on. However,
+Flask-SQLAlchemy locks you into using the ones it provides.
+<a class="reference external" href="https://github.com/mitsuhiko/flask-sqlalchemy/issues/311">There</a>
+<a class="reference external" href="https://github.com/mitsuhiko/flask-sqlalchemy/issues/327">are</a>
+<a class="reference external" href="https://github.com/mitsuhiko/flask-sqlalchemy/issues/319">several</a>
+<a class="reference external" href="https://github.com/mitsuhiko/flask-sqlalchemy/issues/266">issues</a>
+<a class="reference external" href="https://github.com/mitsuhiko/flask-sqlalchemy/issues/282">open</a>.</p>
+<p>And until these are resolved, the default advice is to subclass the
+SQLAlchemy object and override what you need. But the actual change for
+specifying custom query classes involves patching three internal helpers
+so they get the correct query class as well.&nbsp;Ugh.</p>
+<p>So going back to implementing our own <tt class="docutils literal">first_or_raise</tt> utility, we
+need&nbsp;to:</p>
+<ul class="simple">
+<li>Define our own query class with the <tt class="docutils literal">first_or_raise</tt> method</li>
+<li>Subclass the SQLAlchemy class to accept a query&nbsp;class</li>
+<li>Patch <tt class="docutils literal">_set_default_query_class</tt>, <tt class="docutils literal">_include_sqlalchemy</tt> and
+<tt class="docutils literal">_wrap_with_default_query_class</tt> to accept a query&nbsp;class.</li>
+</ul>
+<p>We could just override the <tt class="docutils literal">query_class</tt> attribute on the individual
+models if having the default query class on relationships and dynamic
+queries isn&#8217;t an&nbsp;issue.</p>
+<p>Alternatively, we could do some horrible stuff to
+<tt class="docutils literal">flask_sqlalchemy.BaseQuery</tt> directly:</p>
+<pre class="code python literal-block">
+<span class="kn">from</span> <span class="nn">flask_sqlalchemy</span> <span class="kn">import</span> <span class="n">BaseQuery</span>
+
+<span class="k">def</span> <span class="nf">first_or_raise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exception</span><span class="p">):</span>
+    <span class="n">rv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">rv</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">exception</span>
+
+    <span class="k">return</span> <span class="n">rv</span>
+
+<span class="k">def</span> <span class="nf">get_or_raise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ident</span><span class="p">,</span> <span class="n">exception</span><span class="p">):</span>
+    <span class="n">rv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ident</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">rv</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">exception</span>
+
+    <span class="k">return</span> <span class="n">rv</span>
+
+
+<span class="k">def</span> <span class="nf">patch_BaseQuery</span><span class="p">():</span>
+    <span class="n">BaseQuery</span><span class="o">.</span><span class="n">first_or_raise</span> <span class="o">=</span> <span class="n">first_or_raise</span>
+    <span class="n">BaseQuery</span><span class="o">.</span><span class="n">get_or_raise</span> <span class="o">=</span> <span class="n">get_or_raise</span>
+</pre>
+</div>
+<div class="section" id="wrapping-up">
+<h2>Wrapping&nbsp;Up</h2>
+<p>It&#8217;s important to not unconditionally love our tools, to turn a critical
+eye towards their shortcomings and to submit patches and pull requests
+to fix these issues. Flask-SQLAlchemy is a pretty good utility to have,
+if only for tying together the request-response cycle with the database&nbsp;session.</p>
+<p>Its drawbacks aren&#8217;t necessarily crippling, but they can leak into your
+code and cause a mess. Sometimes working around these drawbacks feels
+like shimming (providing our own query class), but other times, it&#8217;s
+architecting a solution (finding a home for common&nbsp;queries).</p>
+<p>I&#8217;m interested in hearing how you&#8217;ve approached these issues, or if I&#8217;m
+just&nbsp;bikeshedding.</p>
+</div>
+
+            <aside>
+            <nav>
+            <ul class="articles_timeline">
+ 
+                <li class="previous_article">« <a href="http://justanr.github.io/are-we-hiding-complexity-or-reducing-it" title="Previous: Are we hiding complexity or reducing&nbsp;it?">Are we hiding complexity or reducing&nbsp;it?</a></li>
+            </ul>
+            </nav>
+            </aside>
+<section>
+<hr/>
+<p id="comment-message">I spilled my brains, spill some of yours. </p>
+<div class="accordion" id="accordion2">
+    <div class="accordion-group">
+        <div class="accordion-heading">
+            <a class="accordion-toggle disqus-comment-count" data-toggle="collapse" data-parent="#accordion2" 
+                href="http://justanr.github.io/drawbacks-in-flask-sqlalchemy/#disqus_thread">
+                Comments
+            </a>
+        </div>
+        <div id="disqus_thread" class="accordion-body collapse">
+            <div class="accordion-inner">
+                <div class="comments">
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ballinoctobear';
+        var disqus_identifier = 'http://justanr.github.io/drawbacks-in-flask-sqlalchemy';
+    var disqus_url = 'http://justanr.github.io/drawbacks-in-flask-sqlalchemy';
+
+    (function() {
+         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+         dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+     })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+        </div>
+        <section>
+        <div class="span2" style="float:right;font-size:0.9em;">
+ 
+            <h4>Published</h4>
+            <time pubdate="pubdate" datetime="2015-09-13T00:00:00-04:00">Sep 13, 2015</time>
+            <h4>Category</h4>
+            <a class="category-link" href="/categories.html#rants-ref">rants</a> 
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article"> 
+                <li><a href="/tags.html#flask-ref">flask
+                    <span>2</span>
+</a></li>
+                <li><a href="/tags.html#sqlalchemy-ref">sqlalchemy
+                    <span>2</span>
+</a></li>
+            </ul>
+
+        </div>
+        </section>
+    </div>
+    </article>
+                </div>
+                <div class="span1"></div>
+            </div>
+        </div>
+    </div>
+<footer>
+<div id="footer">
+    <ul class="footer-content">
+        <li class="elegant-license">Shared under the Creative Commons for content and MIT for code</li>
+        <li class="elegant-power">Powered by <a href="http://getpelican.com/" title="Pelican Home Page">Pelican</a>. Theme: <a href="http://oncrashreboot.com/pelican-elegant" title="Theme Elegant Home Page">Elegant</a> by <a href="http://oncrashreboot.com" title="Talha Mansoor Home Page">Talha Mansoor</a></li>
+    </ul>
+</div>
+</footer>            <script src="http://code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+<script type="text/javascript">
+    var disqus_shortname = 'ballinoctobear';
+
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+    </script>
+    </body>
+</html>
