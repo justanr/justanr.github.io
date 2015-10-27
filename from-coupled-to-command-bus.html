@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="Alec Nikolas Reiter" />
+        <meta name="copyright" content="Alec Nikolas Reiter" />
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="/theme/slicknav.css">
+        <script src="/theme/jquery.slicknav.min.js"></script>
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+        <script type="text/javascript"
+            src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+        </script>
+        <!--[if lt IE 9]>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.2/html5shiv.js"></script>
+        <![endif]-->
+
+
+<meta name="keywords" content="python3, my-journey-through-TDD, design, " />
+        <title>From Coupled to Command&nbsp;Bus - from alec.thoughts import *
+</title>
+        <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="http://justanr.github.io/theme/css/style.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="http://justanr.github.io/theme/css/solarizedlight.css" media="screen">
+        <link rel="shortcut icon" href="http://justanr.github.io/theme/images/favicon.ico" type="image/x-icon" />
+        <link rel="apple-touch-icon" href="http://justanr.github.io/theme/images/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" sizes="57x57" href="http://justanr.github.io/theme/images/apple-touch-icon-57x57.png" />
+        <link rel="apple-touch-icon" sizes="72x72" href="http://justanr.github.io/theme/images/apple-touch-icon-72x72.png" />
+        <link rel="apple-touch-icon" sizes="114x114" href="http://justanr.github.io/theme/images/apple-touch-icon-114x114.png" />
+        <link rel="apple-touch-icon" sizes="144x144" href="http://justanr.github.io/theme/images/apple-touch-icon-144x144.png" />
+        <link rel="icon" href="http://justanr.github.io/theme/images/apple-touch-icon-144x144.png" />
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-64904436-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+    </head>
+    <body>
+        <div id="content-sans-footer">
+        <div class="navbar navbar-static-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="http://justanr.github.io/"><span class=site-name>from alec.thoughts import *</span></a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav pull-right top-menu">
+                            <li ><a href="http://justanr.github.io">Home</a></li>
+                            <li ><a href="http://justanr.github.io/categories.html">Categories</a></li>
+                            <li ><a href="http://justanr.github.io/tags.html">Tags</a></li>
+                            <li ><a href="http://justanr.github.io/archives.html">Archives</a></li>
+                            <li><form class="navbar-search" action="http://justanr.github.io/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span1"></div>
+                <div class="span10">
+<article>
+<div class="row-fluid">
+    <header class="page_header span10 offset2">
+    <h1><a href="http://justanr.github.io/from-coupled-to-command-bus"> From Coupled to Command&nbsp;Bus  </a></h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+
+            <pre class="code python literal-block">
+<span class="kn">from</span> <span class="nn">Quackr.repositories.inmemory</span> <span class="kn">import</span> <span class="n">MemberRepository</span>
+<span class="kn">from</span> <span class="nn">Quackr.exceptions</span> <span class="kn">import</span> <span class="n">ValidationError</span>
+</pre>
+<p>Put your hand up if you have an endpoint that looks like&nbsp;this:</p>
+<pre class="code python literal-block">
+<span class="nd">&#64;app.route</span><span class="p">(</span><span class="s">'/register-member'</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">'GET'</span><span class="p">,</span> <span class="s">'POST'</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">register_user</span><span class="p">():</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">NewUserForm</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">validate_on_submit</span><span class="p">():</span>
+        <span class="n">new_user</span> <span class="o">=</span> <span class="n">User</span><span class="p">()</span>
+        <span class="n">form</span><span class="o">.</span><span class="n">populate_obj</span><span class="p">(</span><span class="n">new_user</span><span class="p">)</span>
+
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">new_user</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s">'user.profile'</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">username</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s">'register_user.html'</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
+</pre>
+<p>My hand&#8217;s up. Maybe you use Django and simply call <tt class="docutils literal">form.save()</tt>
+instead. Maybe you don&#8217;t use Python but that looks really <em>friggin&nbsp;familiar.</em></p>
+<div class="section" id="it-works-what-s-the-big-deal">
+<h2>It works, what&#8217;s the big&nbsp;deal?</h2>
+<p>Does it? Can you test it without <tt class="docutils literal">with mock.patch</tt>ing everything? :(
+I can&#8217;t. And unit test doesn&#8217;t mean, &#8220;I don&#8217;t talk to the
+database&#8230;sometimes&#8221; or &#8220;Use SQLite instead of&nbsp;Postgres&#8221;.</p>
+<pre class="code python literal-block">
+<span class="nd">&#64;mock.patch</span><span class="p">(</span><span class="s">'myapp.views.NewUserForm'</span><span class="p">,</span> <span class="n">form</span><span class="p">)</span>
+<span class="nd">&#64;mock.patch</span><span class="p">(</span><span class="s">'myapp.views.db'</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
+<span class="nd">&#64;mock.patch</span><span class="p">(</span><span class="s">'myapp.views.redirect'</span><span class="p">,</span> <span class="n">redirect</span><span class="p">)</span>
+<span class="nd">&#64;mock.patch</span><span class="p">(</span><span class="s">'myapp.views.url_for'</span><span class="p">,</span> <span class="n">url_for</span><span class="p">)</span>
+<span class="nd">&#64;mock.patch</span><span class="p">(</span><span class="s">'myapp.views.render_template'</span><span class="p">,</span> <span class="n">render</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">test_register_new_user</span><span class="p">(</span><span class="n">render</span><span class="p">,</span> <span class="n">url_for</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">form</span><span class="p">):</span>
+    <span class="c"># TODO: Write test</span>
+    <span class="k">assert</span> <span class="bp">True</span>
+</pre>
+<p>Worse off, unless you allow users with the same username, where&#8217;s that
+logic at? It&#8217;s in the form, isn&#8217;t it? I&#8217;ve done that. Shouldn&#8217;t the form
+library be concerned with, &#8220;Was the form filled out correctly?&#8221; and
+transforming a <span class="caps">POST</span> request into a data&nbsp;structure.</p>
+</div>
+<div class="section" id="feature-request-create-users-from-cli-tool">
+<h2>Feature Request: Create users from <span class="caps">CLI</span>&nbsp;tool</h2>
+<p>Say you have a <span class="caps">CLI</span> tool and now your issue tracker is <em>filled</em> with
+feature requests to create users from there. How can we fix&nbsp;this?</p>
+<pre class="code python literal-block">
+<span class="kn">from</span> <span class="nn">myapp.cli.utils</span> <span class="kn">import</span> <span class="n">fake_post_request</span>
+<span class="kn">from</span> <span class="nn">myapp.views</span> <span class="kn">import</span> <span class="n">register_user</span> <span class="k">as</span> <span class="n">_register_user</span>
+
+<span class="nd">&#64;cli.command</span>
+<span class="k">def</span> <span class="nf">register_user</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">email</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">fake_post_request</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="n">email</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">):</span>
+        <span class="n">_register_user</span><span class="p">()</span>
+</pre>
+<p>Of course, <em>no one</em> would do that. <em>Especially me.</em> Rather, there&#8217;s the
+sane&nbsp;option:</p>
+<pre class="code python literal-block">
+<span class="nd">&#64;cli.command</span>
+<span class="k">def</span> <span class="nf">register_user</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">email</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+    <span class="n">crutch</span> <span class="o">=</span> <span class="n">SimpleNamespace</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="n">email</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">)</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">NewUserForm</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="n">crutch</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">validate</span><span class="p">():</span>
+        <span class="n">new_user</span> <span class="o">=</span> <span class="n">User</span><span class="p">()</span>
+        <span class="n">form</span><span class="o">.</span><span class="n">populate_obj</span><span class="p">(</span><span class="n">new_user</span><span class="p">)</span>
+
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">new_user</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="n">cli</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="s">&quot;Registered {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">username</span><span class="p">))</span>
+
+    <span class="n">cli</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">errors</span><span class="p">)</span>
+</pre>
+<p><tt class="docutils literal">git commit <span class="pre">-m</span> &quot;Add <span class="caps">CLI</span> user creation&quot; <span class="pre">-m</span> &quot;Closes #341, #344, #345&quot;; git push <span class="pre">-u</span></tt></p>
+<p>Ignoring the fact that using a form library in a <span class="caps">CLI</span> tool is
+balls-to-the-wall bonkers, if we need to add a step between populating
+the user and persistence &#8212; say, send a verification email &#8212; there&#8217;s
+two places to change that now. Maybe on the <span class="caps">CLI</span> we just want to auto
+verify the user, but that&#8217;s still a concern we need to&nbsp;address.</p>
+<div class="figure">
+<img alt="Raymond believes in us" src="http://i.imgur.com/52StaYc.jpg" />
+<p class="caption">Raymond believes in&nbsp;us</p>
+</div>
+</div>
+<div class="section" id="the-big-reveal">
+<h2>The Big&nbsp;Reveal</h2>
+<pre class="code python literal-block">
+<span class="nd">&#64;app.route</span><span class="p">(</span><span class="s">'/register-member'</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">'GET'</span><span class="p">,</span> <span class="s">'POST'</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">register_user</span><span class="p">():</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">NewUserForm</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">validate_on_submit</span><span class="p">():</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="n">RegisterUserCommand</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">username</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+                                      <span class="n">email</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">email</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+                                      <span class="n">password</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">password</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="n">current_app</span><span class="o">.</span><span class="n">command_bus</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s">'user.profile'</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">username</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s">'register_user.html'</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
+</pre>
+<p>That&#8217;s it, boring message passing. The bits under the surface aren&#8217;t
+even that interesting, honestly. It&#8217;s just a service layer and a
+dictionary. But the sheer mundaneness of it all is what&#8217;s actually
+interesting &#8212; to me at&nbsp;least.</p>
+</div>
+<div class="section" id="services">
+<h2>Services</h2>
+<p>I was going to write something about entities and models here. But I
+don&#8217;t think the actual <tt class="docutils literal">Member</tt> entity should have any say over the
+registration. Having a rule like, &#8220;Can&#8217;t have the same username as
+someone else&#8221; is something you want to keep close to your domain, but
+it&#8217;s more &#8220;Well, by the way&#8230;&#8221; than essential&nbsp;logic.</p>
+<p>Service classes are great at these in-between rules. They&#8217;re unafraid to
+take on extra logic that doesn&#8217;t seem to fit somewhere else. We just
+have to be careful not to turn them into a pandora&#8217;s box, i.e. a
+monstrous service layer rather than many small, cohesive&nbsp;classes.</p>
+<p>So what would a registration service look&nbsp;like?</p>
+<pre class="code python literal-block">
+<span class="k">class</span> <span class="nc">RegistrationService</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">member_repository</span><span class="p">,</span> <span class="n">password_hasher</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_repository</span> <span class="o">=</span> <span class="n">member_repository</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_password_hasher</span> <span class="o">=</span> <span class="n">password_hasher</span>
+
+    <span class="k">def</span> <span class="nf">register_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">email</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+        <span class="n">password</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_password_hasher</span><span class="p">(</span><span class="n">password</span><span class="p">)</span>
+        <span class="n">new_member</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repository</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">email</span><span class="p">,</span> <span class="n">password</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_member</span><span class="p">(</span><span class="n">new_member</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_repository</span><span class="o">.</span><span class="n">persist</span><span class="p">(</span><span class="n">new_member</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_validate_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_member</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repository</span><span class="o">.</span><span class="n">find_by_username</span><span class="p">(</span><span class="n">new_member</span><span class="o">.</span><span class="n">username</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s">'Username in use already'</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repository</span><span class="o">.</span><span class="n">find_by_email</span><span class="p">(</span><span class="n">new_member</span><span class="o">.</span><span class="n">email</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s">'Email in use already'</span><span class="p">)</span>
+</pre>
+<p>If we need to add another rule or cause a side-effect &#8212; sending that
+verification email &#8212; there&#8217;s a distinct place for it. We can also
+immediately begin using this class in both the web <span class="caps">UI</span> and the <span class="caps">CLI</span> tool.
+Our form library goes back to doing what it&#8217;s best at &#8212; validating a
+form &#8212; and our <span class="caps">CLI</span> tool stops using the form&nbsp;library.</p>
+<p>Another benefit is testing this. Since data access is hidden behind a
+repository, it&#8217;s trivial to fake. You don&#8217;t need <tt class="docutils literal">mock.patch</tt>. You
+don&#8217;t even have to use <tt class="docutils literal">mock</tt> at all. That said, using
+<tt class="docutils literal">mock.create_autospec</tt> for creating easy fakes is pretty&nbsp;handy:</p>
+<pre class="code python literal-block">
+<span class="k">def</span> <span class="nf">test_registration_fails_with_duplicated_email</span><span class="p">():</span>
+    <span class="n">repository</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">create_autospec</span><span class="p">(</span><span class="n">MemberRepositoryABC</span><span class="p">)</span>
+    <span class="n">repository</span><span class="o">.</span><span class="n">find_by_username</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="n">repository</span><span class="o">.</span><span class="n">find_by_email</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="bp">True</span>
+
+    <span class="n">service</span> <span class="o">=</span> <span class="n">RegistrationService</span><span class="p">(</span><span class="n">repository</span><span class="p">,</span> <span class="n">hash_password</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="n">ValidationError</span><span class="p">)</span> <span class="k">as</span> <span class="n">excinfo</span><span class="p">:</span>
+        <span class="n">service</span><span class="o">.</span><span class="n">register_user</span><span class="p">(</span><span class="s">'fred'</span><span class="p">,</span> <span class="s">'fred&#64;fred.com'</span><span class="p">,</span> <span class="s">'fredpass'</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="s">'Email in use already'</span> <span class="o">==</span> <span class="n">excinfo</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">test_registration_fails_with_duplicated_username</span><span class="p">():</span>
+    <span class="n">repository</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">create_autospec</span><span class="p">(</span><span class="n">MemberRepositoryABC</span><span class="p">)</span>
+    <span class="n">repository</span><span class="o">.</span><span class="n">find_by_username</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="bp">True</span>
+
+    <span class="n">service</span> <span class="o">=</span> <span class="n">RegistrationService</span><span class="p">(</span><span class="n">repository</span><span class="p">,</span> <span class="n">hash_password</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="n">ValidationError</span><span class="p">)</span> <span class="k">as</span> <span class="n">excinfo</span><span class="p">:</span>
+        <span class="n">service</span><span class="o">.</span><span class="n">register_user</span><span class="p">(</span><span class="s">'fred'</span><span class="p">,</span> <span class="s">'fred&#64;fred.com'</span><span class="p">,</span> <span class="s">'fredpass'</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="s">'Username in use already'</span> <span class="o">==</span> <span class="n">excinfo</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">test_registration_hashes_password</span><span class="p">():</span>
+    <span class="n">repository</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">create_autospec</span><span class="p">(</span><span class="n">MemberRepositoryABC</span><span class="p">)</span>
+    <span class="n">repository</span><span class="o">.</span><span class="n">find_by_username</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="n">repository</span><span class="o">.</span><span class="n">find_by_email</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="n">service</span> <span class="o">=</span> <span class="n">RegistrationService</span><span class="p">(</span><span class="n">repository</span><span class="p">,</span> <span class="n">hash_password</span><span class="p">)</span>
+
+    <span class="n">service</span><span class="o">.</span><span class="n">register_user</span><span class="p">(</span><span class="s">'fred'</span><span class="p">,</span> <span class="s">'fred&#64;fred.com'</span><span class="p">,</span> <span class="s">'fredpass'</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="n">repository</span><span class="o">.</span><span class="n">create</span><span class="o">.</span><span class="n">call_args</span> <span class="o">==</span> <span class="n">mock</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s">'fred'</span><span class="p">,</span> <span class="s">'fred&#64;fred.com'</span><span class="p">,</span> <span class="n">hash_password</span><span class="p">(</span><span class="s">'fredpass'</span><span class="p">))</span>
+</pre>
+<p>You get the idea. We can set up conditions to test exactly what we want.
+And since we can write these tests, there&#8217;s immediate design feedback:
+Validation should be its own thing. Which makes the service layer more
+about orchestration and less about logic. But that&#8217;s a different topic
+for a different&nbsp;time.</p>
+<p>Honestly, this is a fine place to stop. Especially if you&#8217;re building a
+relatively simple application. However, if this produces a degree of
+coupling that makes you uncomfortable, or if your registration service
+becomes involved enough that you need stick a facade in front of it, you
+need to <tt class="docutils literal">grep <span class="pre">-r</span> RegistrationService myapp</tt> to make sure you change
+all the references to it. Instead, we can just hide it from the get go
+behind&nbsp;a</p>
+</div>
+<div class="section" id="command-bus">
+<h2>Command&nbsp;Bus</h2>
+<p>The most basic command bus is a wrapper around a dictionary. It has
+command types as keys and their handlers as values. You might be
+inclined to insert a handler layer between the services and the command
+bus, but if it&#8217;s not doing anything (dispatching domain events, for
+example), I think it&#8217;s kind of pointless. Rather, I like mapping bound
+methods directly to&nbsp;commands.</p>
+<pre class="code python literal-block">
+<span class="k">def</span> <span class="nf">_get_obj_type</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">obj</span>
+    <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">HandlerNotFound</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">CommandBus</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">handler</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span><span class="p">[</span><span class="n">_get_obj_type</span><span class="p">(</span><span class="n">command</span><span class="p">)]</span> <span class="o">=</span> <span class="n">handler</span>
+
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">):</span>
+        <span class="n">command_type</span> <span class="o">=</span> <span class="n">_get_obj_type</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span><span class="p">[</span><span class="n">command_type</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">HandlerNotFound</span><span class="p">(</span><span class="s">&quot;Handler not found for {0!r}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">command_type</span><span class="p">))</span> <span class="kn">from</span> <span class="bp">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">handler</span><span class="p">(</span><span class="o">*</span><span class="n">comand</span><span class="p">)</span>
+</pre>
+<p>The only thing missing now is the actual commands. I like using
+<tt class="docutils literal">namedtuple</tt> for this. They&#8217;re lightweight, immutable and provide
+dotted access if we need&nbsp;it.</p>
+<pre class="code python literal-block">
+<span class="n">RegisterUserCommand</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s">'RegisterUserCommand'</span><span class="p">,</span> <span class="p">[</span><span class="s">'username'</span><span class="p">,</span> <span class="s">'email'</span><span class="p">,</span> <span class="s">'password'</span><span class="p">])</span>
+</pre>
+</div>
+<div class="section" id="wiring-it-all-up">
+<h2>Wiring it all&nbsp;up</h2>
+<p>Wiring up this example is really easy. The dependencies are straight
+forward and don&#8217;t form any&nbsp;cycles.</p>
+<pre class="code python literal-block">
+<span class="kn">from</span> <span class="nn">hashlib</span> <span class="kn">import</span> <span class="n">sha256</span>
+
+<span class="k">def</span> <span class="nf">hash_password</span><span class="p">(</span><span class="n">password</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">sha256</span><span class="p">(</span><span class="n">password</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+
+<span class="n">registar</span> <span class="o">=</span> <span class="n">RegistrationService</span><span class="p">(</span><span class="n">MemberRepository</span><span class="p">(),</span> <span class="n">hash_password</span><span class="p">)</span>
+<span class="n">bus</span> <span class="o">=</span> <span class="n">CommandBus</span><span class="p">()</span>
+
+<span class="n">bus</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">RegisterUserCommand</span><span class="p">,</span> <span class="n">registar</span><span class="o">.</span><span class="n">register_user</span><span class="p">)</span>
+</pre>
+<p>But for an actual application, you&#8217;ll likely want to use some sort of
+factory. Many Flask apps already follow this pattern. There&#8217;s a
+<tt class="docutils literal">create_app</tt> function that creates the initial application and then
+calls things like <tt class="docutils literal">register_blueprints</tt> and <tt class="docutils literal">initialize_extensions</tt>.
+Following the same pattern here could be&nbsp;beneficial.</p>
+<p>That&#8217;s it. That&#8217;s the heart of all this. I do have some thoughts and
+then some more code at the bottom. But if you&#8217;re eyes have glazed over,
+it might a good time to head over to
+<a class="reference external" href="https://www.reddit.com/r/pitbulls">/r/pitbulls</a> for a little&nbsp;while.</p>
+</div>
+<div class="section" id="thoughts">
+<h2>Thoughts</h2>
+<p>This isn&#8217;t new. I don&#8217;t think I&#8217;m a revolutionary or even going, &#8220;I&#8217;m so
+stinking smart.&#8221; I&#8217;m just a guy, dumb as a box of rocks, trying to
+figure out something better, trying to figure out, &#8220;Why the heck are my
+tests hard to write and why aren&#8217;t they reliable?&#8221; I do think there&#8217;s
+merit&nbsp;here.</p>
+<p>This style of architecture allows loose coupling between the <span class="caps">UI</span> and the
+logic. Our web <span class="caps">UI</span> and <span class="caps">CLI</span> tool simply need to drop a command off onto a
+dispatcher. They only thing they&#8217;re really worried about is building
+that&nbsp;command.</p>
+<p>This has a very interesting consequence: inputs become better defined.
+What&#8217;s required for registering a user &#8212; or anything else &#8212; is
+strictly defined by the command. The command can&#8217;t be created without a
+username, email and password. And if that&#8217;s all that&#8217;s needed to create
+the command, our form or <span class="caps">CLI</span> inputs don&#8217;t need to grow beyond that. That
+feeling of dread that washes over me when I look at my User model and my
+form library and wonder, &#8220;What the hell do I do?&#8221; is&nbsp;gone.</p>
+<p>By using service layers, we provide a home for things like validation,
+registration, and any other in-between logic instead of it being shoved
+into a model or controller or even view!† By giving things homes, we
+must also give them names. I feel the same way towards repositories,
+they give a home and a name to all the random queries that just chill
+out in the application. I&#8217;m not knocking on SQLAlchemy, Django&#8217;s <span class="caps">ORM</span> or
+any other <span class="caps">ORM</span>, they&#8217;re excellent tools but I&#8217;d much rather support what
+I need, rather than the whole&nbsp;shebang.</p>
+<p>Adding new functionality isn&#8217;t terrible difficult either. If there&#8217;s a
+need to create a fully fleshed out member (set the permission level, add
+groups, etc) from the admin panel, it&#8217;s a matter of figuring out if this
+fits into the current scope or if <tt class="docutils literal">manual_create_user</tt> needs to be&nbsp;created.</p>
+<p>But, it&#8217;s not all sunshine and rainbows, though &#8212; there does need to be
+rain for&nbsp;rainbows.</p>
+<p>Is it really that loosely coupled? Our command is coupled to the
+signature of <tt class="docutils literal">RegistrationService.register_user</tt> by both the number
+<em>and</em> arrangement of arguments because we simply unravel the command. In
+turn, our <span class="caps">UI</span> is coupled to the structure of the command. And adding an
+new argument means cutting across all these layers at once. This sort of
+coupling can&#8217;t be removed by a completely generic&nbsp;solution.</p>
+<p>There&#8217;s also the real chance that by moving towards this architecture,
+code goes from spaghetti to lasagna. From no structure to too much
+structure. This is my biggest worry, honestly. If we need to add a
+verify flag to this code we need to change in three different places:
+<span class="caps">UI</span>, <tt class="docutils literal">RegisterNewUserCommand</tt> and
+<tt class="docutils literal">RegistrationService.register_user</tt>. It could be argued that a change
+like this is important enough to warrant changing all those things. But
+if this pattern repeats again and again, even for trivial changes then
+it&#8217;s worth reevaluating&nbsp;choices.</p>
+<p>For these problems, I don&#8217;t have a good solution. A smarter command bus
+or more flexible command data structure could be the answer. Maybe that
+introduces new issues and problems. A dotted dictionary immediately
+seems like a good fix, but how do we determine <em>what</em> command it
+represents? Subclassing it for every command seems silly, but providing
+a <tt class="docutils literal">name</tt> attribute could conflict with potential values. There&#8217;s also
+the potential for filling it out wrong. Like I said, I don&#8217;t have a good
+solution. My best advice is do what fits your brain the&nbsp;best.</p>
+</div>
+<div class="section" id="other-things">
+<h2>Other&nbsp;things</h2>
+<p>Not enough code? Well, I got some more right&nbsp;here.</p>
+<p>Even though our command bus doesn&#8217;t return anything, it does allow
+exceptions to propagate out of it. It&#8217;d be nice if we could translate
+that error back into a form error. One change might be adding an
+attribute to the <tt class="docutils literal">ValidationError</tt> that allows specifying which field
+caused the&nbsp;error:</p>
+<pre class="code python literal-block">
+<span class="k">class</span> <span class="nc">ValidationError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">field</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span>
+</pre>
+<p>You could argue that this is a <span class="caps">UI</span> concern leaking into the domain. And
+there&#8217;s some definite merit to that, but a small allowance like this
+creates a better <span class="caps">UI</span> experience &#8212; or at least better <span class="caps">UI</span> code.
+<a class="reference external" href="https://www.python.org/dev/peps/pep-0020/">Praciticality beats
+Purity.</a> It&#8217;s much simpler
+to yank this field off rather than attempting to parse an error message
+to determine where to place the&nbsp;error.</p>
+<p>And even though the controller above is nice and tight, it can be
+improved. I think this is a great use case for Flask&#8217;s class based&nbsp;views.</p>
+<pre class="code python literal-block">
+<span class="k">class</span> <span class="nc">RegisterUser</span><span class="p">(</span><span class="n">MethodView</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">form</span> <span class="o">=</span> <span class="n">NewUserForm</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_render</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">validate_on_submit</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pass_command</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_render</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_pass_command</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="n">RegisterUserCommand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">username</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">email</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">password</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">current_app</span><span class="o">.</span><span class="n">command_bus</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">errors</span><span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">field</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_render</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redirect</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_render</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s">'user_registration.html'</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_redirect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s">'user.profile'</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">username</span><span class="p">))</span>
+</pre>
+<p>Yes, it&#8217;s more code than before. But it&#8217;s simpler code than before.
+We&#8217;ve also gained the feature of rendering errors from the command back
+to the user and letting them know, &#8220;Hey, that email&#8217;s taken.&#8221; The
+controller&#8217;s only actual logic is two conditional branches, which are
+really easy to check. There&#8217;s only five test cases that can be written&nbsp;here.</p>
+<p>The command bus can be swapped out easily, or wrapped up in a
+<a class="reference external" href="https://en.wikipedia.org/wiki/Decorator_pattern">decorator</a> (not the
+<tt class="docutils literal">&#64;whatever</tt> kind) to provide additional behavior. Maybe you want to
+log every command that comes down the pipe. Or maybe you want to push
+some commands out of process or even submit them as <span class="caps">JSON</span> to a third
+party service. If your logic is tightly coupled to your <span class="caps">UI</span>, this becomes
+a nightmare to&nbsp;do.</p>
+</div>
+<div class="section" id="thanks-attributions-and-further-consumption">
+<h2>Thanks, Attributions and Further&nbsp;Consumption</h2>
+<p>To the <span class="caps">PHP</span> community, in particular <a class="reference external" href="https://www.youtube.com/watch?v=ajhqScWECMo">Ross
+Tuck</a>, <a class="reference external" href="http://fideloper.com/hexagonal-architecture">Chris
+Fidao</a> and <a class="reference external" href="https://www.youtube.com/watch?v=2_380DKU93U">Shawn
+McCool</a> were huge
+inspirations for&nbsp;this.</p>
+<p>In the Ruby world, Matt Wynne for his <a class="reference external" href="https://www.youtube.com/watch?v=CGN4RFkhH2M">Hexagonal Rails talk at GoRuCo
+2012</a> and Sandi Metz&#8217;s
+<a class="reference external" href="https://www.youtube.com/watch?v=8bZh5LMaSmE">All the Little Things</a>
+that provided the inspiration for the &#8220;talk-back&#8221; controller above.
+There&#8217;s countless others here as&nbsp;well.</p>
+<p>Alistair Cockburn&#8217;s <a class="reference external" href="http://alistair.cockburn.us/Hexagonal+architecture">original hexagonal architecture
+post</a>.</p>
+<p>And to all the <span class="caps">DDD</span>, <span class="caps">XP</span> and Clean Code people I&#8217;ve shamelessly stolen
+ideas&nbsp;from.</p>
+<p>†: As an aside, let&#8217;s just recognize that Flask <em>is</em> <span class="caps">MVC</span>, or atleast <span class="caps">VC</span>.
+Whatever most people call the &#8220;view&#8221; is actually the controller and the
+&#8220;template&#8221; is actually just part of the view &#8212; the whole view being the
+<tt class="docutils literal">Response</tt> object generated: body, headers, status code. But then
+again, this isn&#8217;t a hill I&#8217;m willing to die on&nbsp;either.</p>
+</div>
+
+            <aside>
+            <nav>
+            <ul class="articles_timeline">
+ 
+                <li class="previous_article">« <a href="http://justanr.github.io/simple-criteria-filtering-in-python" title="Previous: Simple Criteria Filtering in&nbsp;Python">Simple Criteria Filtering in&nbsp;Python</a></li>
+            </ul>
+            </nav>
+            </aside>
+<section>
+<hr/>
+<p id="comment-message">I spilled my brains, spill some of yours. </p>
+<div class="accordion" id="accordion2">
+    <div class="accordion-group">
+        <div class="accordion-heading">
+            <a class="accordion-toggle disqus-comment-count" data-toggle="collapse" data-parent="#accordion2" 
+                href="http://justanr.github.io/from-coupled-to-command-bus/#disqus_thread">
+                Comments
+            </a>
+        </div>
+        <div id="disqus_thread" class="accordion-body collapse">
+            <div class="accordion-inner">
+                <div class="comments">
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ballinoctobear';
+        var disqus_identifier = 'http://justanr.github.io/from-coupled-to-command-bus';
+    var disqus_url = 'http://justanr.github.io/from-coupled-to-command-bus';
+
+    (function() {
+         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+         dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+     })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+        </div>
+        <section>
+        <div class="span2" style="float:right;font-size:0.9em;">
+ 
+            <h4>Published</h4>
+            <time pubdate="pubdate" datetime="2015-09-22T00:00:00-04:00">Sep 22, 2015</time>
+            <h4>Category</h4>
+            <a class="category-link" href="/categories.html#design-ref">design</a> 
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article"> 
+                <li><a href="/tags.html#my-journey-through-TDD-ref">my-journey-through-TDD
+                    <span>2</span>
+</a></li>
+                <li><a href="/tags.html#python3-ref">python3
+                    <span>4</span>
+</a></li>
+            </ul>
+
+        </div>
+        </section>
+    </div>
+    </article>
+                </div>
+                <div class="span1"></div>
+            </div>
+        </div>
+    </div>
+<footer>
+<div id="footer">
+    <ul class="footer-content">
+        <li class="elegant-license">Shared under the Creative Commons for content and MIT for code</li>
+        <li class="elegant-power">Powered by <a href="http://getpelican.com/" title="Pelican Home Page">Pelican</a>. Theme: <a href="http://oncrashreboot.com/pelican-elegant" title="Theme Elegant Home Page">Elegant</a> by <a href="http://oncrashreboot.com" title="Talha Mansoor Home Page">Talha Mansoor</a></li>
+    </ul>
+</div>
+</footer>            <script src="http://code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+<script type="text/javascript">
+    var disqus_shortname = 'ballinoctobear';
+
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+    </script>
+    </body>
+</html>
