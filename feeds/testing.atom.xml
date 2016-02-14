@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>from alec.thoughts import *</title><link href="http://justanr.github.io/" rel="alternate"></link><link href="http://justanr.github.io/feeds/testing.atom.xml" rel="self"></link><id>http://justanr.github.io/</id><updated>2016-02-14T00:00:00-05:00</updated><entry><title>On Testing</title><link href="http://justanr.github.io/on-testing" rel="alternate"></link><updated>2016-02-14T00:00:00-05:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2016-02-14:on-testing</id><summary type="html">&lt;p&gt;I had the pleasure of being involved in a discussion on reddit &amp;#8212; which
+is not something a person usually says. But the gist of it was this &amp;#8212;
+comments are shortened, vote totals are approximate, and the names have
+been changed to protect the involved parties. To add context, this was a
+discussion on the topic of using &lt;tt class="docutils literal"&gt;unittest.mock&lt;/tt&gt; to make testing&amp;nbsp;easier.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;/u/User1 [-1] &amp;#8220;Don&amp;#8217;t mock what you don&amp;#8217;t&amp;nbsp;own.&amp;#8221;&lt;/p&gt;
+&lt;p&gt;/u/User2 [+5] &amp;#8220;You don&amp;#8217;t think mocking something like os.remove is a
+good&amp;nbsp;move?&amp;#8221;&lt;/p&gt;
+&lt;p&gt;/u/User1 [-6] &amp;#8220;No, I think it&amp;#8217;s bad&amp;nbsp;architecture.&amp;#8221;&lt;/p&gt;
+&lt;p&gt;/u/User2 [+7] &amp;#8220;You&amp;#8217;re insane then.&amp;nbsp;:)&amp;#8221;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;This exchange has lead me to conclude two&amp;nbsp;things:&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;The phrase &amp;#8220;unit test&amp;#8221; is&amp;nbsp;meaningless.&lt;/li&gt;
+&lt;li&gt;Mocks are poorly understood and&amp;nbsp;abused.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;I offered this case for not mocking something like &lt;tt class="docutils literal"&gt;os.remove&lt;/tt&gt;, with a
+bit of a text dump &amp;#8212; something I&amp;#8217;m often guilty of doing for better or&amp;nbsp;worse.&lt;/p&gt;
+&lt;blockquote&gt;
+Things like os.remove are rarely stand alone things, they&amp;#8217;re often
+paired with stuff like &amp;#8220;Format this file name.&amp;#8221;, &amp;#8220;Join this path.&amp;#8221;
+&amp;#8220;Can I find the file?&amp;#8221;, &amp;#8220;Do I have permission to remove the file.&amp;#8221;&lt;/blockquote&gt;
+&lt;p&gt;As well as these code&amp;nbsp;samples:&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;abc&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;ABC&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;abstractmethod&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;os&lt;/span&gt;
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;ReportRemover&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ABC&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="nd"&gt;&amp;#64;abstractmethod&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;remove_report&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;pass&lt;/span&gt;
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;FileReportRemover&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ReportRemover&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ext&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_path&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;path&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_ext&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;ext&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;remove_report&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;filename&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_is_removable&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;filename&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+            &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;remove&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;filename&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;False&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;_format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;filename&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;'{}.{}'&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_ext&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;filename&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;_is_removable&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;filename&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;exists&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;filename&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;isfile&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;filename&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;And caveated that with I&amp;#8217;d offer that rich class interface when I have
+multiple contexts to remove a &amp;#8220;report&amp;#8221; &amp;#8212; maybe it&amp;#8217;s generated from a
+database, maybe it&amp;#8217;s on S3, maybe I&amp;#8217;m running a test and don&amp;#8217;t even have
+an actual report to remove. Conversely, I also offered this sample that
+I might use if I&amp;#8217;m only going to have reports on the local&amp;nbsp;filesystem:&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;collections&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;namedtuple&lt;/span&gt;
+&lt;span class="n"&gt;Settings&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;namedtuple&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'Settings'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;'DEFAULT_REPORT_PATH'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'DEFAULT_REPORT_EXT'&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;span class="n"&gt;SETTINGS&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Settings&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'path/to/reports'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'html'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;remove_report&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;SETTINGS&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;DEFAULT_REPORT_PATH&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ext&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;SETTINGS&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;DEFAULT_REPORT_EXT&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;filename&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'{}.{}'&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ext&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;exists&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;filename&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;isfile&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;filename&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;remove&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;filename&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;False&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;Which was met with the question of, &amp;#8220;Well how do you test that?&amp;#8221; And
+this sort of astonished me. And maybe that&amp;#8217;s because of my growth as a
+developer. But the answer seemed obvious to me, &amp;#8220;Create a directory, put
+a file named test.report in it, run remove_report, assert that the
+directory is&amp;nbsp;empty.&amp;#8221;&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;pytest&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;things.reports&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;remove_report&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test_remove_report_deletes_file_report&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;tmpdir&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;report_dir&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;tmpdir&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mkdir&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'delete_report'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;report&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;report_dir&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'test.report'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;report&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;''&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="c"&gt;#needed to &amp;quot;create&amp;quot; the file&lt;/span&gt;
+
+    &lt;span class="n"&gt;remove_report&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;'test'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ext&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;'report'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;report_dir&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;strpath&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="k"&gt;assert&lt;/span&gt; &lt;span class="n"&gt;report_dir&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;listdir&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;You can do the same thing with the class interface as well. Just import
+FileReportRemover and run &lt;tt class="docutils literal"&gt;FileReportRemove.remove_report&lt;/tt&gt; with an
+instance of it instead. Maybe this person was under the impression that
+unit tests are the &lt;em&gt;only&lt;/em&gt; type of test, or maybe the only &lt;em&gt;valuable&lt;/em&gt;
+test. But what is the value of this&amp;nbsp;test:&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;unittest&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;mock&lt;/span&gt;
+
+&lt;span class="nd"&gt;&amp;#64;mock.patch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'os.path'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nd"&gt;&amp;#64;mock.patch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'os.remove'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test_remove_report_deletes_file_report&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;osremove&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ospath&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;ospath&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;return_value&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;'path/test.report'&lt;/span&gt;
+    &lt;span class="n"&gt;ospath&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;isfile&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;return_value&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;
+    &lt;span class="n"&gt;ospath&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;exists&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;
+
+    &lt;span class="n"&gt;remove_report&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'test'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'report'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'path'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="k"&gt;assert&lt;/span&gt; &lt;span class="n"&gt;ospath&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;call_args&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="s"&gt;'path'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'test.report'&lt;/span&gt;&lt;span class="p"&gt;),)&lt;/span&gt;
+    &lt;span class="k"&gt;assert&lt;/span&gt; &lt;span class="n"&gt;ospath&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;isfile&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;called&lt;/span&gt;
+    &lt;span class="k"&gt;assert&lt;/span&gt; &lt;span class="n"&gt;ospath&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;exists&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;called&lt;/span&gt;
+    &lt;span class="k"&gt;assert&lt;/span&gt; &lt;span class="n"&gt;osremove&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;call_args&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="s"&gt;'path/test.report'&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;There&amp;#8217;s so much noise in this test. We&amp;#8217;re setting up mocks, there&amp;#8217;s
+strings all over, multiple asserts &amp;#8212; which isn&amp;#8217;t necessarily bad, but
+can be symptomatic of a poorly designed test. In fairness, there are
+three lines of setup in the other test, but I find that the setup is
+&lt;em&gt;much&lt;/em&gt; clearer: We create a directory and put a file in it. In this one,
+we&amp;#8217;re setting up mock return values. And we need to mock an entire
+submodule of os.path, otherwise the test will&amp;nbsp;explode.&lt;/p&gt;
+&lt;p&gt;More over, it doesn&amp;#8217;t get to the heart of the point of a test: are we
+actually removing a file from the file system. And it&amp;#8217;s fragile, if the
+interface of &lt;tt class="docutils literal"&gt;os&lt;/tt&gt; changes &amp;#8212; unlikely, but that&amp;#8217;s besides the point &amp;#8212;
+the test will still pass. Using the &lt;tt class="docutils literal"&gt;autospec&lt;/tt&gt; feature of mock will
+ease this pain, but I think that&amp;#8217;s an anti-pattern in this case. We&amp;#8217;re
+still creating a bunch of noise in the&amp;nbsp;test.&lt;/p&gt;
+&lt;p&gt;And the worst part is this sets a precedence of mocking anything that&amp;#8217;s
+inconvenient. All of the tests will look like this. Meaning, you&amp;#8217;ll have
+to examine every piece of code under test to understand it. At that
+point, why even have tests? I&amp;#8217;m being serious. I should be able to read
+the tests for some code and have a decent idea of what the
+implementation&amp;nbsp;is.&lt;/p&gt;
+&lt;div class="figure"&gt;
+&lt;img alt="The Incredibles, © Disney 2004" src="http://i.imgur.com/765mGJo.jpg" /&gt;
+&lt;p class="caption"&gt;The Incredibles, © Disney&amp;nbsp;2004&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;Of course, I got asked, &amp;#8220;When would you mock?&amp;#8221; And the answer to that
+is, &amp;#8220;Any time I need to test that &lt;tt class="docutils literal"&gt;remove_report&lt;/tt&gt; did something but I
+don&amp;#8217;t actually need to remove a report.&amp;#8221; I offered the concept of a
+report&amp;nbsp;sweeper:&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test_report_sweeper_ignores_os_error&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;remover&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mock&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Mock&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;side_effect&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="ne"&gt;OSError&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;You shouldn't see me&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+    &lt;span class="n"&gt;reports&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;'foo'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'bar'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'baz'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+    &lt;span class="n"&gt;report_sweeper&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;reports&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;remover&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;remover&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="k"&gt;assert&lt;/span&gt; &lt;span class="n"&gt;remover&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;call_args_list&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;mock&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;call&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'foo'&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;mock&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;call&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'bar'&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;mock&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;call&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'baz'&lt;/span&gt;&lt;span class="p"&gt;)]&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;Because &lt;em&gt;I&lt;/em&gt; own the interface to report_remover, I can comfortably mock
+that dependency. An alternative approach avoids mocking&amp;nbsp;altogether:&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test_report_sweeper_ignores_os_error_oddly&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;call_count&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;
+    &lt;span class="n"&gt;reports&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;'foo'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'bar'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'baz'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;remover&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ext&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;None&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;None&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;nonlocal&lt;/span&gt; &lt;span class="n"&gt;call_count&lt;/span&gt;
+        &lt;span class="n"&gt;call_count&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+        &lt;span class="k"&gt;raise&lt;/span&gt; &lt;span class="ne"&gt;OSError&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;You shouldn't see me&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="n"&gt;report_sweeper&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;reports&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;remover&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;remover&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="k"&gt;assert&lt;/span&gt; &lt;span class="n"&gt;call_count&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;I&amp;#8217;ll be honest, I like the mock approach here &lt;em&gt;more&lt;/em&gt; because it&amp;#8217;s less
+noise. There is the mental overhead of knowing what &lt;tt class="docutils literal"&gt;Mock.side_effect&lt;/tt&gt;
+does, but it&amp;#8217;s such a useful thing to know that I&amp;#8217;d rather someone look
+it up than understand the oddness that is the locally defined remover.
+But in either case, you can imagine what the implementation of
+&lt;tt class="docutils literal"&gt;report_sweeper&lt;/tt&gt; looks&amp;nbsp;like:&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;report_sweeper&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;reports&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;remover&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;remove_report&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;report&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;reports&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="n"&gt;remover&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;report&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="ne"&gt;OSError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="k"&gt;pass&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;This is what a true unit test is. We want to assert that in the case of
+an OSError, &lt;tt class="docutils literal"&gt;report_sweeper&lt;/tt&gt; ignores it. You don&amp;#8217;t bother with fiddly
+details like, add a file to the system but give it the wrong permissions
+or just don&amp;#8217;t add a file to your system, or whatever. Do we want an
+integration test? Maybe, but given an OSError is an OSError, maybe&amp;nbsp;not.&lt;/p&gt;
+&lt;div class="section" id="deeper-lessons"&gt;
+&lt;h2&gt;Deeper&amp;nbsp;Lessons&lt;/h2&gt;
+&lt;p&gt;Going back to the original exchange that prompted this whole thing, I
+think there&amp;#8217;s more important lessons to learn &amp;#8212; or rather unlearn &amp;#8212;
+about&amp;nbsp;testing.&lt;/p&gt;
+&lt;div class="section" id="unit-tests-aren-t-the-end-all-be-all"&gt;
+&lt;h3&gt;Unit Tests Aren&amp;#8217;t The End All Be&amp;nbsp;All&lt;/h3&gt;
+&lt;p&gt;I love unit tests. I love being able to spin up a tiny portion of my
+application and make assertions about a laser focused behavior. &amp;#8220;Given I
+want to remove some reports, when an OSError occures, then the sweeper
+ignores it.&amp;#8221; That says nothing about what a report is, where they live
+or even how I&amp;#8217;m removing&amp;nbsp;it.&lt;/p&gt;
+&lt;p&gt;But on the other end, I need to be able to test that I can actually
+remove a report. And you &lt;em&gt;can&amp;#8217;t&lt;/em&gt; unit test this. It&amp;#8217;s inherently tied to
+an external system &amp;#8212; the file system, a database, the network. Maybe
+it&amp;#8217;s tied to &lt;em&gt;several&lt;/em&gt; of these external systems &amp;#8212; we keep a list of
+reports in the database but they live in S3&amp;nbsp;buckets.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="indirection-is-invaluable"&gt;
+&lt;h3&gt;Indirection is&amp;nbsp;Invaluable&lt;/h3&gt;
+&lt;p&gt;Because I want to be able to unit test my &lt;tt class="docutils literal"&gt;report_sweeper&lt;/tt&gt;, I don&amp;#8217;t
+want to tie that to these external systems. Instead I want to tie it to
+a contract with my report remover: If you give me a name of a report,
+I&amp;#8217;ll handle the orchestration of removing it and let you know if it&amp;nbsp;succeeded.&lt;/p&gt;
+&lt;p&gt;The indirection is not directly calling into the &lt;tt class="docutils literal"&gt;os&lt;/tt&gt; module, instead
+I call something that calls that for me. And this applies to &lt;em&gt;all&lt;/em&gt;
+external collaborators. If you use &lt;tt class="docutils literal"&gt;requests&lt;/tt&gt; to get some information,
+don&amp;#8217;t call &lt;tt class="docutils literal"&gt;requests.get&lt;/tt&gt; directly &amp;#8212; have an adapter that manages all
+of that for you. I know this sounds crazy, but which is more descriptive&amp;nbsp;read:&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get_some_data&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;id&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;requests&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'http://somedatasource.com/things/{}'&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;id&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+    &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;raise_for_status&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;serializer&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;SomeSerializer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;serializer&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;is_valid&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;raise_exception&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;serializer&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;Or:&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get_some_data&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;id&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;external&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;ExternalHelper&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;uri&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;'https://somedatasource.com/things/{}'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;serializer&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;SomeSerializer&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;external&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;fetch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;Even better is if &lt;tt class="docutils literal"&gt;get_some_data&lt;/tt&gt; is actually a method on an object
+that lists &lt;tt class="docutils literal"&gt;ExternalHelper&lt;/tt&gt; as a&amp;nbsp;dependency.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="patching-is-a-symptom"&gt;
+&lt;h3&gt;Patching Is A&amp;nbsp;Symptom&lt;/h3&gt;
+&lt;p&gt;If you find yourself monkey patching stuff, step back and think, &amp;#8220;Why?&amp;#8221;
+Why are you patching that? It could be because you&amp;#8217;ve tightly coupled
+your logic to &lt;tt class="docutils literal"&gt;requests&lt;/tt&gt; (or any other external package). In that
+case, you should wrap up that communication. If you&amp;#8217;re patching in that
+adapter, it could be because you&amp;#8217;re testing a specific failure that&amp;#8217;s
+hard to emulate &amp;#8212; and generally, I&amp;#8217;m okay with that. But it&amp;#8217;s best to
+run that test as a live integration against that external&amp;nbsp;system.&lt;/p&gt;
+&lt;p&gt;But if you find yourself patching parts of the object you&amp;#8217;re actively
+testing, you need to stop and find out what you need to do to ease that
+relationship. By patching that method, you&amp;#8217;re only going to bake in the
+badness and cause tremendous pain down the&amp;nbsp;road.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="unit-test-logic"&gt;
+&lt;h3&gt;Unit Test&amp;nbsp;Logic&lt;/h3&gt;
+&lt;p&gt;If there&amp;#8217;s logic, test it. Test it every way you can think, and then get
+the nearest child to give it input and fix any holes they find. This
+will generally involve using stubs and fakes for expensive collaborators
+&amp;#8212; things that do I/O, system calls and &lt;span class="caps"&gt;CPU&lt;/span&gt; warmers. But if you don&amp;#8217;t
+need to fake something, don&amp;#8217;t. Just use the real thing. It&amp;#8217;s&amp;nbsp;okay.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="boundary-test-relationships"&gt;
+&lt;h3&gt;Boundary Test&amp;nbsp;Relationships&lt;/h3&gt;
+&lt;p&gt;This makes the assumption you wrap up external dependencies. When you&amp;#8217;re
+testing relationships, you want to make sure Subject A talks to Subject
+B correctly, and vice versa. You&amp;#8217;re testing things like, &amp;#8220;Given I want
+Frob 314, Then I ask FrobRepository to fetch with 314 as the argument.&amp;#8221;
+You want to test that the right arguments get to the right things and
+only add enough support code to get the test to&amp;nbsp;finish.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="integration-test-wrappers"&gt;
+&lt;h3&gt;Integration Test&amp;nbsp;Wrappers&lt;/h3&gt;
+&lt;p&gt;There&amp;#8217;s generally very little logic in something that only serves to
+translate inputs and outputs from Domain A to Domain B. It&amp;#8217;s usually
+things like&amp;nbsp;this:&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Notifier&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ABC&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="nd"&gt;&amp;#64;abstractmethod&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;notify&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;recipient&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;message&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;pass&lt;/span&gt;
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;TwilioTexter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Notifier&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;sender&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;client&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;client&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;client&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sender&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;sender&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;notify&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;recipient&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;message&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;messages&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;recipient&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;phone_number&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;from_&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sender&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;body&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;message&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;You&amp;#8217;ll recieve &lt;em&gt;no value&lt;/em&gt; from all the mocking and patching in the world
+with this. You&amp;#8217;ll derive some value from boundary testing this by
+supplying a fake client that records its inputs. But the most value will
+come from &lt;em&gt;actually&lt;/em&gt; sending a text message with a&amp;nbsp;test.&lt;/p&gt;
+&lt;p&gt;Now, you&amp;#8217;ll not want to always send a text message when you run your
+test suite, especially if you&amp;#8217;re not poking something related to this
+wrapper. Luckily, &lt;tt class="docutils literal"&gt;py.test&lt;/tt&gt; provides a very helpful marker module and
+a way to specify when to run these&amp;nbsp;markers:&lt;/p&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="c"&gt;# tests/.../test_twilio_wrapper.py&lt;/span&gt;
+
+&lt;span class="nd"&gt;&amp;#64;pytest.mark.costs_money&lt;/span&gt;
+&lt;span class="nd"&gt;&amp;#64;pytest.mark.integration&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;TestTwilioWrapperSuite&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;object&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;pass&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;And on the command line, you can specify like&amp;nbsp;this:&lt;/p&gt;
+&lt;pre class="code bash literal-block"&gt;
+py.test -m &lt;span class="s2"&gt;&amp;quot;not integration or system&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;to only run unit tests,&amp;nbsp;or&lt;/p&gt;
+&lt;pre class="code bash literal-block"&gt;
+py.test -m &lt;span class="s2"&gt;&amp;quot;integration and not costs_money&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;To only run integrations that aren&amp;#8217;t also tagged with the
+&lt;tt class="docutils literal"&gt;costs_money&lt;/tt&gt; tag. Or you could only tag it with &lt;tt class="docutils literal"&gt;costs_money&lt;/tt&gt; to
+avoid accidentally running it with your integration tests. Another big
+helper here is tox, which goes a long way to setting up and executing
+tests for you. I love it so much, I&amp;#8217;ve bound it to &lt;tt class="docutils literal"&gt;&amp;lt;F12&amp;gt;&lt;/tt&gt; in normal
+mode for Vim. Alternatively, you can simply run
+&lt;tt class="docutils literal"&gt;!tox &lt;span class="pre"&gt;-e&lt;/span&gt; comma,separated,envs&lt;/tt&gt; as&amp;nbsp;well.&lt;/p&gt;
+&lt;p&gt;This allows you to run fast moving unit tests all the time and slow
+moving integration tests and system tests&amp;nbsp;sometimes.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="system-tests-are-for-the-big-picture"&gt;
+&lt;h3&gt;System Tests Are For The Big&amp;nbsp;Picture&lt;/h3&gt;
+&lt;p&gt;You don&amp;#8217;t want to do fine grained testing in your system tests. These
+are tests that integrate with things like frameworks, threads, asyncio,
+etc. And require specialized setup and the whole production application
+(though not necessarily the production data). These would be things
+like, &amp;#8220;When I send a notification throught Twilio, the &lt;span class="caps"&gt;SMS&lt;/span&gt; sink shows
+the message as&amp;nbsp;recieved&amp;#8221;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="fin"&gt;
+&lt;h2&gt;Fin!&lt;/h2&gt;
+&lt;p&gt;As usual, I&amp;#8217;d like to end with some other content for you to consume
+that inspired me for this&amp;nbsp;post:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://blog.fugue.co/2016-02-11-python-mocking-101.html"&gt;Mike Lin - Python Mocking 101: Fake It Before You Make
+It&lt;/a&gt;.
+This is the post that started the conversation. While it feel it
+gives bad advice &amp;#8212; encouraging patching of external dependencies &amp;#8212;
+it&amp;#8217;s a decent over view of the power of the mock&amp;nbsp;library.&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.youtube.com/watch?v=VD51AkG8EZw"&gt;Justin Searls - How To Stop Hating Your Test
+Suite&lt;/a&gt;. I really like
+Justin Searls. He&amp;#8217;s funny, informative, passionate and uses vim. By
+default I have to like him. He also gives really good talks about&amp;nbsp;testing.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</summary><category term="my-journey-through-tdd"></category></entry></feed>
