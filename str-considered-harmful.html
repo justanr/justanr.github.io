@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="Alec Nikolas Reiter" />
+        <meta name="copyright" content="Alec Nikolas Reiter" />
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="/theme/slicknav.css">
+        <script src="/theme/jquery.slicknav.min.js"></script>
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+        <script type="text/javascript"
+            src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+        </script>
+        <!--[if lt IE 9]>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.2/html5shiv.js"></script>
+        <![endif]-->
+
+
+<meta name="keywords" content="design, tips and tricks, " />
+        <title>str considered&nbsp;harmful - from alec.thoughts import *
+</title>
+        <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="http://justanr.github.io/theme/css/style.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="http://justanr.github.io/theme/css/solarizedlight.css" media="screen">
+        <link rel="shortcut icon" href="http://justanr.github.io/theme/images/favicon.ico" type="image/x-icon" />
+        <link rel="apple-touch-icon" href="http://justanr.github.io/theme/images/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" sizes="57x57" href="http://justanr.github.io/theme/images/apple-touch-icon-57x57.png" />
+        <link rel="apple-touch-icon" sizes="72x72" href="http://justanr.github.io/theme/images/apple-touch-icon-72x72.png" />
+        <link rel="apple-touch-icon" sizes="114x114" href="http://justanr.github.io/theme/images/apple-touch-icon-114x114.png" />
+        <link rel="apple-touch-icon" sizes="144x144" href="http://justanr.github.io/theme/images/apple-touch-icon-144x144.png" />
+        <link rel="icon" href="http://justanr.github.io/theme/images/apple-touch-icon-144x144.png" />
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-64904436-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+    </head>
+    <body>
+        <div id="content-sans-footer">
+        <div class="navbar navbar-static-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="http://justanr.github.io/"><span class=site-name>from alec.thoughts import *</span></a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav pull-right top-menu">
+                            <li ><a href="http://justanr.github.io">Home</a></li>
+                            <li ><a href="http://justanr.github.io/categories.html">Categories</a></li>
+                            <li ><a href="http://justanr.github.io/tags.html">Tags</a></li>
+                            <li ><a href="http://justanr.github.io/archives.html">Archives</a></li>
+                            <li><form class="navbar-search" action="http://justanr.github.io/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span1"></div>
+                <div class="span10">
+<article>
+<div class="row-fluid">
+    <header class="page_header span10 offset2">
+    <h1><a href="http://justanr.github.io/str-considered-harmful"> str considered&nbsp;harmful  </a></h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+
+            <div class="section" id="omg-how-could-u-consider-str-harmful-1-111">
+<h2><span class="dquo">&#8220;</span>omg how could u consider str&nbsp;harmful!!1!!111&#8221;</h2>
+<p>Strings are the most degenerate datastructure at our disposable. That&#8217;s
+not to say they&#8217;re not useful &#8212; because they are. But they&#8217;re terrible
+for communicating non-string data. Consider an <span class="caps">IP</span>&nbsp;address:</p>
+<pre class="code python literal-block">
+<span class="n">myip</span> <span class="o">=</span> <span class="s">'127.0.0.1'</span>
+</pre>
+<p>Unless this is on the boundary between two systems, this string actually
+loses a tremendous amount of information. Every time we&#8217;ll want to know
+something about it, we&#8217;ll need to parse&nbsp;it.</p>
+<pre class="code python literal-block">
+<span class="k">def</span> <span class="nf">get_ip_network</span><span class="p">(</span><span class="n">ip_str</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ip_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">'.'</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]]</span>
+
+<span class="k">def</span> <span class="nf">get_ip_host</span><span class="p">(</span><span class="n">ip_str</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ip_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">'.'</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]]</span>
+</pre>
+<pre class="code python literal-block">
+<span class="k">print</span><span class="p">(</span><span class="n">get_ip_network</span><span class="p">(</span><span class="n">myip</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">get_ip_host</span><span class="p">(</span><span class="n">myip</span><span class="p">))</span>
+</pre>
+<pre class="literal-block">
+[127, 0]
+[0, 1]
+</pre>
+<p>Strings hide things very well. They&#8217;re an opaque collection of
+characters (or bytes if you&#8217;re on Python 2). They provide no structure,
+no semantics. They have no attributes and the only methods on them
+(short of monkey patching it, which don&#8217;t except for for fun) are
+related to transforming the collection of characters into a different
+collection of characters (or a collection of a collection of&nbsp;characters).</p>
+<p>Instead, what if had something that represented the concept of an <span class="caps">IP</span>&nbsp;Address:</p>
+<pre class="code python literal-block">
+<span class="k">class</span> <span class="nc">IPAddress</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre>
+<p>And we could pass in the parts of the ip to&nbsp;it:</p>
+<pre class="code python literal-block">
+<span class="k">class</span> <span class="nc">IPAddress</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">subnet</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">network</span> <span class="o">=</span> <span class="n">network</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">subnet</span> <span class="o">=</span> <span class="n">subnet</span>
+</pre>
+<p>This doesn&#8217;t do us any good when we already have a string representation
+of the <span class="caps">IP</span>, to avoid parsing that and passing it in every time we get an
+<span class="caps">IP</span> Address, let&#8217;s add an alternative&nbsp;constructor:</p>
+<pre class="code python literal-block">
+<span class="k">class</span> <span class="nc">IPAddress</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">subnet</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">network</span> <span class="o">=</span> <span class="n">network</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">subnet</span> <span class="o">=</span> <span class="n">subnet</span>
+
+    <span class="nd">&#64;classmethod</span>
+    <span class="k">def</span> <span class="nf">fromstr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">ipstr</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s">'/'</span> <span class="ow">in</span> <span class="n">ipstr</span><span class="p">:</span>
+            <span class="n">ip</span><span class="p">,</span> <span class="n">subnet</span> <span class="o">=</span> <span class="n">ipstr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">'/'</span><span class="p">)</span>
+            <span class="n">subnet</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">subnet</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ip</span><span class="p">,</span> <span class="n">subnet</span> <span class="o">=</span> <span class="n">ipstr</span><span class="p">,</span> <span class="bp">None</span>
+
+        <span class="n">divided</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ip</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">'.'</span><span class="p">)]</span>
+        <span class="n">network</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">divided</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">host</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">divided</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span>
+
+        <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">subnet</span><span class="p">)</span>
+
+<span class="n">MyIP</span> <span class="o">=</span> <span class="n">IPAddress</span><span class="o">.</span><span class="n">fromstr</span><span class="p">(</span><span class="n">myip</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">MyIP</span><span class="o">.</span><span class="n">network</span><span class="p">,</span> <span class="n">MyIP</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="n">MyIP</span><span class="o">.</span><span class="n">subnet</span><span class="p">)</span>
+</pre>
+<pre class="literal-block">
+(127, 0) (0, 1) None
+</pre>
+<p>But it could helpful to &#8220;unparse&#8221; this as well. Let&#8217;s add <tt class="docutils literal">__str__</tt>
+and <tt class="docutils literal">__repr__</tt> methods as those are part of the Python&nbsp;protocol:</p>
+<pre class="code python literal-block">
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
+
+<span class="k">class</span> <span class="nc">IPAddress</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">subnet</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">network</span> <span class="o">=</span> <span class="n">network</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">subnet</span> <span class="o">=</span> <span class="n">subnet</span>
+
+    <span class="nd">&#64;classmethod</span>
+    <span class="k">def</span> <span class="nf">fromstr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">ipstr</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s">'/'</span> <span class="ow">in</span> <span class="n">ipstr</span><span class="p">:</span>
+            <span class="n">ip</span><span class="p">,</span> <span class="n">subnet</span> <span class="o">=</span> <span class="n">ipstr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">'/'</span><span class="p">)</span>
+            <span class="n">subnet</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">subnet</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ip</span><span class="p">,</span> <span class="n">subnet</span> <span class="o">=</span> <span class="n">ipstr</span><span class="p">,</span> <span class="bp">None</span>
+
+        <span class="n">divided</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ip</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">'.'</span><span class="p">)]</span>
+        <span class="n">network</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">divided</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">host</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">divided</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span>
+
+        <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">subnet</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="s">'{}.{}.{}.{}'</span>
+        <span class="n">ip</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">chain</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">subnet</span><span class="p">:</span>
+            <span class="n">ip</span> <span class="o">+=</span> <span class="s">'/{}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subnet</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ip</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">'{}(network={!r}, host={!r}, subnet={!r})'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">subnet</span>
+        <span class="p">)</span>
+</pre>
+<pre class="code python literal-block">
+<span class="n">ip</span> <span class="o">=</span> <span class="n">IPAddress</span><span class="o">.</span><span class="n">fromstr</span><span class="p">(</span><span class="s">'127.0.0.1/24'</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">'As str:  '</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">ip</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s">'As repr: '</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="n">ip</span><span class="p">))</span>
+</pre>
+<pre class="literal-block">
+As str:   127.0.0.1/24
+As repr:  IPAddress(network=(127, 0), host=(0, 1), subnet=24)
+</pre>
+<p>And like that, we&#8217;ve transformed a very degenerate datastructure into a
+very rich value object. I won&#8217;t claim it&#8217;s comprehensive, because it&#8217;s
+not. But it&#8217;s very useful. Every time we get an <span class="caps">IP</span> Address &#8212; maybe from
+bash &#8212; we can simply call <tt class="docutils literal">IPAddress.fromstr</tt> and when we need to
+spit one back out, we simple call <tt class="docutils literal">str(some_ip)</tt>.</p>
+</div>
+<div class="section" id="the-value-of-objects">
+<h2>The Value Of&nbsp;Objects</h2>
+<p>Imagine if every time you found self repeatedly parsing a string for
+data, you looked at <em>why</em> and <em>how</em> you were doing that and wrapped that
+up into an object and gave it a name. Consider <a class="reference external" href="https://gist.github.com/justanr/3df4ac627939e0029fec">a money
+object</a> &#8212;
+sorry to link off, it&#8217;s like a hundred&nbsp;lines.</p>
+<pre class="code python literal-block">
+<span class="n">Money</span><span class="o">.</span><span class="n">fromstr</span><span class="p">(</span><span class="s">'$5.99'</span><span class="p">)</span>
+</pre>
+<pre class="literal-block">
+Money(symbol='$', amount=Decimal('5.99'))
+</pre>
+<pre class="code python literal-block">
+<span class="n">Money</span><span class="p">(</span><span class="s">'$'</span><span class="p">,</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s">'5.99'</span><span class="p">))</span> <span class="o">+</span> <span class="n">Money</span><span class="p">(</span><span class="s">'$'</span><span class="p">,</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s">'2.99'</span><span class="p">))</span>
+</pre>
+<pre class="literal-block">
+Money(symbol='$', amount=Decimal('8.98'))
+</pre>
+<pre class="code python literal-block">
+<span class="n">Money</span><span class="p">(</span><span class="s">'$'</span><span class="p">,</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s">'6.00'</span><span class="p">))</span> <span class="o">*</span> <span class="mf">4.444</span>
+</pre>
+<pre class="literal-block">
+Money(symbol='$', amount=Decimal('26.64'))
+</pre>
+<pre class="code python literal-block">
+<span class="n">a</span> <span class="o">=</span> <span class="n">Money</span><span class="p">(</span><span class="s">'$'</span><span class="p">,</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s">'4'</span><span class="p">))</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">Money</span><span class="p">(</span><span class="s">'$'</span><span class="p">,</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s">'5'</span><span class="p">))</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">'Is {!s} less than {!s}?'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">),</span> <span class="n">a</span> <span class="o">&lt;</span> <span class="n">b</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">'Is {!s} greater than {!s}?'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">),</span> <span class="n">b</span> <span class="o">&gt;</span> <span class="n">a</span><span class="p">)</span>
+</pre>
+<pre class="literal-block">
+Is $4 less than $5? True
+Is $5 greater than $4? True
+</pre>
+<pre class="code python literal-block">
+<span class="n">Money</span><span class="p">(</span><span class="s">'$'</span><span class="p">,</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s">'4'</span><span class="p">))</span> <span class="o">+</span> <span class="n">Money</span><span class="p">(</span><span class="s">'PY'</span><span class="p">,</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s">'4'</span><span class="p">))</span>
+</pre>
+<pre class="literal-block">
+---------------------------------------------------------------------------
+
+TypeError                                 Traceback (most recent call last)
+
+&lt;ipython-input-96-64653f8687f6&gt; in &lt;module&gt;()
+----&gt; 1 Money('$', decimal.Decimal('4')) + Money('PY', decimal.Decimal('4'))
+
+
+&lt;ipython-input-92-435a9268a93f&gt; in __add__(self, other)
+     51
+     52     def __add__(self, other):
+---&gt; 53         self._raise_if_separate_types(other)
+     54
+     55         with decimal.localcontext(_MONEY_CONTEXT):
+
+
+&lt;ipython-input-92-435a9268a93f&gt; in _raise_if_separate_types(self, other)
+     40         if not self.symbol == other.symbol:
+     41             # not true, but conversions are another matter
+---&gt; 42             raise TypeError(&quot;Can't compare across monetary types&quot;)
+     43
+     44     def __eq__(self, other):
+
+
+TypeError: Can't compare across monetary types
+</pre>
+<pre class="code python literal-block">
+<span class="n">Money</span><span class="p">(</span><span class="s">'$'</span><span class="p">,</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s">'5.00'</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="mi">2j</span><span class="p">)</span>
+</pre>
+<pre class="literal-block">
+---------------------------------------------------------------------------
+
+TypeError                                 Traceback (most recent call last)
+
+&lt;ipython-input-112-9ec796c19bd6&gt; in &lt;module&gt;()
+----&gt; 1 Money('$', decimal.Decimal('5.00')) * (1+2j)
+
+
+&lt;ipython-input-101-150ed09c4d64&gt; in __mul__(self, other)
+     67     def __mul__(self, other):
+     68         if not isinstance(other, Real):
+---&gt; 69             raise TypeError(&quot;Can only multiple money by real numbers&quot;)
+     70
+     71         if isinstance(other, float):
+
+
+TypeError: Can only multiple money by real numbers
+</pre>
+<p>With a small module, we&#8217;ve created a very useful money object that
+guards us against silly mistakes like multiplying five dollars by three
+dollars or adding dollars to yen (without converting them first).
+There&#8217;s also comparison operators and precision&nbsp;guards.</p>
+<p>These things are called <em>value objects</em> and they&#8217;re something that
+should be part of your programming dictionary. And they bring lots of
+value <em>ba-dum-tis</em>.</p>
+<div class="section" id="they-have-very-little-behavior">
+<h3>They have very little&nbsp;behavior</h3>
+<p>The money and <span class="caps">IP</span> address objects only do stuff that involves
+transforming themselves into a new version of themselves. <tt class="docutils literal">Money</tt> only
+has behavior related to adding and subtracting amounts of money, and
+multiplying and dividing amounts of money by a real number. If
+<tt class="docutils literal">IPAddress</tt> had behavior, it might be something like checking if an <span class="caps">IP</span>
+is in it&#8217;s subnet&nbsp;mask.</p>
+<p>But value objects are predominantly related to <em>being</em> rather than
+<em>doing</em>. And they&#8217;re very useful as things being passed into&nbsp;methods:</p>
+<pre class="code python literal-block">
+<span class="n">cc</span> <span class="o">=</span> <span class="n">CreditCard</span><span class="p">(</span><span class="s">'4474...'</span><span class="p">)</span>
+<span class="n">cc</span><span class="o">.</span><span class="n">charge</span><span class="p">(</span><span class="n">Money</span><span class="o">.</span><span class="n">fromstr</span><span class="p">(</span><span class="s">'$5.99'</span><span class="p">)</span>
+</pre>
+</div>
+<div class="section" id="they-re-generally-immutable">
+<h3>They&#8217;re generally&nbsp;immutable</h3>
+<p>Python doesn&#8217;t make immutability easy. Sure, you can do fun stuff like
+inherit from a namedtuple &#8212; which is frought with its own issues &#8212; or
+overriding <tt class="docutils literal">__setattr__</tt> to throw an error, but that doesn&#8217;t stop
+someone from doing <tt class="docutils literal">object.__setattr__(immutable, name, value)</tt>. You
+<em>could</em> write a C extension, but who wants to do that for such little&nbsp;value.</p>
+<p>Instead, we can write methods that return new instances of the object in
+question and trust our users that they know what they&#8217;re doing if they
+go about changing attributes. Consenting adults and all&nbsp;that.</p>
+</div>
+<div class="section" id="that-make-the-implicit-explicit">
+<h3>That make the implicit&nbsp;explicit</h3>
+<p>What&#8217;s clearer about its&nbsp;purpose?</p>
+<pre class="code python literal-block">
+<span class="s">'127.0.0.1/24'</span>
+<span class="n">IPAddress</span><span class="p">((</span><span class="mi">127</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mi">24</span><span class="p">)</span>
+</pre>
+<p>Pycharm, Jupyter and vim plugins (and I guess other editors) will
+display all sorts of information about IPAddress but when examining
+<tt class="docutils literal">'127.0.0.1/24</tt> you&#8217;d think it&#8217;s a regular ol&#8217; string and you&#8217;ll need
+to print it out to see the&nbsp;details.</p>
+<p>They also provide a convenient place to raise errors if something bad
+happens. <tt class="docutils literal">$3 * $5</tt> doesn&#8217;t make any sense no matter how long you stare
+at it.† So you can get really strict type checking if needed as well; if
+you&#8217;re on Python 3, combine this with type annotations as&nbsp;well:</p>
+<pre class="code python literal-block">
+<span class="k">class</span> <span class="nc">Money</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">amount</span><span class="p">:</span><span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">):</span>
+        <span class="o">...</span>
+</pre>
+<p>And your code editting tools will reveal even more information about
+your&nbsp;types.</p>
+</div>
+<div class="section" id="they-group-up-related-things">
+<h3>They group up related&nbsp;things</h3>
+<p>If you find yourself passing around a tuple, quite often your
+application is telling you to name that thing. Generally, my first stop
+is to upgrade a regular tuple to a namedtuple. And this goes a long way
+towards upgrading the semantics of my application. Instead&nbsp;of:</p>
+<pre class="code python literal-block">
+<span class="p">((</span><span class="mi">127</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mi">24</span><span class="p">)</span>
+</pre>
+<pre class="literal-block">
+((127, 0), (0, 1), 24)
+</pre>
+<p>I now&nbsp;have:</p>
+<pre class="code python literal-block">
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+<span class="n">IP</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s">'IP'</span><span class="p">,</span> <span class="p">[</span><span class="s">'network'</span><span class="p">,</span> <span class="s">'host'</span><span class="p">,</span> <span class="s">'subnet'</span><span class="p">])</span>
+<span class="n">IP</span><span class="p">((</span><span class="mi">127</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mi">24</span><span class="p">)</span>
+</pre>
+<pre class="literal-block">
+IP(network=(127, 0), host=(0, 1), subnet=24)
+</pre>
+<p>Then if I need to add parsing logic (<tt class="docutils literal">fromstr</tt>, etc), I only need to
+swap out in one place. However, like I said, inheriting from
+<tt class="docutils literal">namedtuple</tt> leads to all sorts of issues, namely your type&nbsp;is:</p>
+<ul class="simple">
+<li>iterable but overriding <tt class="docutils literal">__iter__</tt> isn&#8217;t an&nbsp;issue</li>
+<li>subscriptable and overriding this <em>is</em> an&nbsp;issue</li>
+<li>saddled with the entire interface of <tt class="docutils literal">namedtuple</tt> as well &#8212;
+<tt class="docutils literal">_replace</tt>, <tt class="docutils literal">_asdict</tt>,&nbsp;etc.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="don-t-be-afraid-of-objects">
+<h2>Don&#8217;t be afraid of&nbsp;Objects</h2>
+<p>A few years ago, Jack Diederich gave a very influential talk called
+<a class="reference external" href="https://www.youtube.com/watch?v=o9pEzgHorH0">Stop Writing Classes</a>
+&#8212; perhaps you&#8217;ve seen it, if not take a watch &#8212; which I think is full
+of very good advice. But some Pythonistas drank the kool-aid a little
+too deeply and thought this meant &#8220;Don&#8217;t write <em>any</em> classes.&#8221; I won&#8217;t
+claim to have special insight into Jack&#8217;s mindset or opinions, but I&#8217;m
+not sure that&#8217;s what he meant. Instead, I&#8217;m pretty sure he meant, &#8220;If it
+doesn&#8217;t need to be a class, don&#8217;t make a class.&#8221; My favorite example is
+the <tt class="docutils literal">MuffinMail.MuffinHash.MuffinHash</tt> &#8212; which is just&nbsp;this:</p>
+<pre class="code python literal-block">
+<span class="n">MuffinHash</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre>
+<p>And on the opposite of this debate is another well known developer:
+<a class="reference external" href="http://lucumr.pocoo.org/2013/2/13/moar-classes/">Armin Ronancher - Start Writing More
+Classes</a>. And in
+this, Armin advocates for creating a rich domain of classes that have
+tightly focused behaviors and&nbsp;relationships.</p>
+<p>I generally lean toward&#8217;s Armin opinion. After all, Python is an object
+oriented language, why shouldn&#8217;t we use classes and objects to enhance
+our intent? For example, in the money example, normally to set a local
+context with decimals, you need to&nbsp;do:</p>
+<pre class="code python literal-block">
+<span class="k">with</span> <span class="n">decimal</span><span class="o">.</span><span class="n">localcontext</span><span class="p">(</span><span class="n">my_context</span><span class="p">)</span> <span class="k">as</span> <span class="n">c</span><span class="p">:</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">prec</span> <span class="o">=</span> <span class="mi">2</span> <span class="c"># if you need to adjust it</span>
+    <span class="c"># operations</span>
+</pre>
+<p>But, since we&#8217;re not afraid of objects, we&#8217;ll just wrap up the Context
+in our context manager (confusing much) that we can just use&nbsp;like:‡</p>
+<pre class="code python literal-block">
+<span class="k">with</span> <span class="n">Context</span><span class="p">(</span><span class="n">prec</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="k">as</span> <span class="n">c</span><span class="p">:</span>
+    <span class="c"># if we *really* need to modify c we can</span>
+    <span class="c"># operations</span>
+</pre>
+</div>
+<div class="section" id="but-sometimes-you-don-t-need-a-class">
+<h2>But sometimes you don&#8217;t need a&nbsp;class</h2>
+<p>Armin also has some very good advice about functions,&nbsp;too:</p>
+<blockquote>
+This is a convenience function, it does not implement actual
+template rendering. It just further simplifies a common case.</blockquote>
+<p>However, at the same time, these convenience functions can become part
+of our domain as well. If you&#8217;ve ever used Redis as a cache, you&#8217;ve
+probably set timeouts so keys and values aren&#8217;t just hanging out
+forever. So, you&#8217;ve probably go things like this hanging out in the&nbsp;code:</p>
+<pre class="code python literal-block">
+<span class="n">cache</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span> <span class="c"># 5 minutes</span>
+</pre>
+<p>I noticed this at work and it kinda bugged me. There&#8217;s code and then a
+very descriptive comment right next to it that is screaming the intent.
+Why not marry those&nbsp;two?</p>
+<pre class="code python literal-block">
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timedelta</span>
+
+<span class="k">def</span> <span class="nf">cache_timeout</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">timedelta</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">())</span>
+</pre>
+<p>Now we can use that&nbsp;instead:</p>
+<pre class="code python literal-block">
+<span class="n">cache</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">cache_timeout</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>
+</pre>
+<p>I found this one change did three&nbsp;things:</p>
+<ol class="arabic simple">
+<li>Eliminated a <em>bunch</em> of useless constants. Things like
+<tt class="docutils literal">settings.FIVE_MINUTES = 300</tt>.&nbsp;Yuck.</li>
+<li>Eliminated a <em>bunch</em> of descriptive but useless comments. Things like
+<tt class="docutils literal"># 5 minutes</tt>.</li>
+<li>Eased the context switch between Django and Angular. Python really
+likes seconds but Javascript <em>loves</em> microseconds &#8212; why, I don&#8217;t
+know, but it&nbsp;does.</li>
+</ol>
+<p>I&#8217;m in the process of working out the details for a javascript version
+of this so I don&#8217;t have another frightfully embarrassing episode when I
+accidentally asked why our Selenium test driver was set to timeout after
+thirty-three hours instead of two&nbsp;minutes.</p>
+</div>
+<div class="section" id="fin">
+<h2>Fin</h2>
+<p>Hopefully this is illuminating. When I first learned about value
+objects, I remember thinking, &#8220;Pfft, what&#8217;s even the point?&#8221; But after
+having worked with them, I really, really enjoy the depth they bring to
+an&nbsp;application.</p>
+<p>I don&#8217;t have much to put here, because value objects usually come up in
+the context of larger talks. I will leave the <a class="reference external" href="http://martinfowler.com/bliki/ValueObject.html">short Martin Fowler
+page</a> about them here&nbsp;though.</p>
+<p>†: I&#8217;m sure I&#8217;ll get an economist leaving a comment about super dollars
+or something else I&#8217;ve never heard of&nbsp;before.</p>
+<p>‡: I&#8217;m not sure if my love of adapters is well known enough, so I&#8217;ll
+just advertise it some&nbsp;more.</p>
+</div>
+
+            <aside>
+            <nav>
+            <ul class="articles_timeline">
+ 
+                <li class="previous_article">« <a href="http://justanr.github.io/exploring-code-architecture" title="Previous: Exploring Code&nbsp;Architecture">Exploring Code&nbsp;Architecture</a></li>
+ 
+                <li class="next_article"><a href="http://justanr.github.io/on-testing" title="Next: On&nbsp;Testing">On&nbsp;Testing</a> »</li>
+            </ul>
+            </nav>
+            </aside>
+<section>
+<hr/>
+<p id="comment-message">I spilled my brains, spill some of yours. </p>
+<div class="accordion" id="accordion2">
+    <div class="accordion-group">
+        <div class="accordion-heading">
+            <a class="accordion-toggle disqus-comment-count" data-toggle="collapse" data-parent="#accordion2" 
+                href="http://justanr.github.io/str-considered-harmful/#disqus_thread">
+                Comments
+            </a>
+        </div>
+        <div id="disqus_thread" class="accordion-body collapse">
+            <div class="accordion-inner">
+                <div class="comments">
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ballinoctobear';
+        var disqus_identifier = 'http://justanr.github.io/str-considered-harmful';
+    var disqus_url = 'http://justanr.github.io/str-considered-harmful';
+
+    (function() {
+         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+         dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+     })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+        </div>
+        <section>
+        <div class="span2" style="float:right;font-size:0.9em;">
+ 
+            <h4>Published</h4>
+            <time pubdate="pubdate" datetime="2016-02-14T00:00:00-05:00">Feb 14, 2016</time>
+            <h4>Category</h4>
+            <a class="category-link" href="/categories.html#tips-and-tricks-ref">tips and tricks</a> 
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article"> 
+                <li><a href="/tags.html#design-ref">design
+                    <span>8</span>
+</a></li>
+            </ul>
+
+        </div>
+        </section>
+    </div>
+    </article>
+                </div>
+                <div class="span1"></div>
+            </div>
+        </div>
+    </div>
+<footer>
+<div id="footer">
+    <ul class="footer-content">
+        <li class="elegant-license">Shared under the Creative Commons for content and MIT for code</li>
+        <li class="elegant-power">Powered by <a href="http://getpelican.com/" title="Pelican Home Page">Pelican</a>. Theme: <a href="http://oncrashreboot.com/pelican-elegant" title="Theme Elegant Home Page">Elegant</a> by <a href="http://oncrashreboot.com" title="Talha Mansoor Home Page">Talha Mansoor</a></li>
+    </ul>
+</div>
+</footer>            <script src="http://code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+<script type="text/javascript">
+    var disqus_shortname = 'ballinoctobear';
+
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+    </script>
+    </body>
+</html>
