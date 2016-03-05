@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>from alec.thoughts import *</title><link href="http://justanr.github.io/" rel="alternate"></link><link href="http://justanr.github.io/feeds/tips-and-tricks.atom.xml" rel="self"></link><id>http://justanr.github.io/</id><updated>2016-02-14T00:00:00-05:00</updated><entry><title>str considered harmful</title><link href="http://justanr.github.io/str-considered-harmful" rel="alternate"></link><updated>2016-02-14T00:00:00-05:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2016-02-14:str-considered-harmful</id><summary type="html">&lt;div class="section" id="omg-how-could-u-consider-str-harmful-1-111"&gt;
-&lt;h2&gt;&lt;span class="dquo"&gt;&amp;#8220;&lt;/span&gt;omg how could u consider str&amp;nbsp;harmful!!1!!111&amp;#8221;&lt;/h2&gt;
-&lt;p&gt;Strings are the most degenerate datastructure at our disposable. That&amp;#8217;s
+<feed xmlns="http://www.w3.org/2005/Atom"><title>from alec.thoughts import *</title><link href="http://justanr.github.io/" rel="alternate"></link><link href="http://justanr.github.io/feeds/tips-and-tricks.atom.xml" rel="self"></link><id>http://justanr.github.io/</id><updated>2016-02-14T00:00:00-05:00</updated><entry><title>The Value of Objects</title><link href="http://justanr.github.io/the-value-of-objects" rel="alternate"></link><updated>2016-02-14T00:00:00-05:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2016-02-14:the-value-of-objects</id><summary type="html">&lt;p&gt;Strings are the most degenerate datastructure at our disposable. That&amp;#8217;s
 not to say they&amp;#8217;re not useful &amp;#8212; because they are. But they&amp;#8217;re terrible
-for communicating non-string data. Consider an &lt;span class="caps"&gt;IP&lt;/span&gt;&amp;nbsp;address:&lt;/p&gt;
+for communicating non-string data. But people use them all the time to
+communicate non-string data. It&amp;#8217;s called &lt;a class="reference external" href="http://c2.com/cgi/wiki?PrimitiveObsession"&gt;Primitive
+Obession&lt;/a&gt; &amp;#8212; the idea that
+&amp;#8220;The data types built into the language are more than enough for me.
+&lt;a class="reference external" href="http://www.jamesshore.com/Blog/PrimitiveObsession.html"&gt;Why should I make an age class when we have
+int?&lt;/a&gt;&amp;#8221;&lt;/p&gt;
+&lt;p&gt;Consider an &lt;span class="caps"&gt;IP&lt;/span&gt;&amp;nbsp;address:&lt;/p&gt;
 &lt;pre class="code python literal-block"&gt;
 &lt;span class="n"&gt;myip&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;'127.0.0.1'&lt;/span&gt;
 &lt;/pre&gt;
@@ -132,7 +136,9 @@ very rich value object. I won&amp;#8217;t claim it&amp;#8217;s comprehensive, be
 not. But it&amp;#8217;s very useful. Every time we get an &lt;span class="caps"&gt;IP&lt;/span&gt; Address &amp;#8212; maybe from
 bash &amp;#8212; we can simply call &lt;tt class="docutils literal"&gt;IPAddress.fromstr&lt;/tt&gt; and when we need to
 spit one back out, we simple call &lt;tt class="docutils literal"&gt;str(some_ip)&lt;/tt&gt;.&lt;/p&gt;
-&lt;/div&gt;
+&lt;p&gt;Edit: I recently became aware of the Python 3.3+ &lt;tt class="docutils literal"&gt;ipaddress&lt;/tt&gt; module,
+which is pretty neat and you should totally use that if you need to
+manipulate &lt;span class="caps"&gt;IP&lt;/span&gt;&amp;nbsp;Addresses.&lt;/p&gt;
 &lt;div class="section" id="the-value-of-objects"&gt;
 &lt;h2&gt;The Value Of&amp;nbsp;Objects&lt;/h2&gt;
 &lt;p&gt;Imagine if every time you found self repeatedly parsing a string for
@@ -177,24 +183,24 @@ Is $5 greater than $4? True
 
 TypeError                                 Traceback (most recent call last)
 
-&amp;lt;ipython-input-96-64653f8687f6&amp;gt; in &amp;lt;module&amp;gt;()
+&amp;lt;ipython-input-7-64653f8687f6&amp;gt; in &amp;lt;module&amp;gt;()
 ----&amp;gt; 1 Money('$', decimal.Decimal('4')) + Money('PY', decimal.Decimal('4'))
 
 
-&amp;lt;ipython-input-92-435a9268a93f&amp;gt; in __add__(self, other)
-     51
-     52     def __add__(self, other):
----&amp;gt; 53         self._raise_if_separate_types(other)
-     54
-     55         with decimal.localcontext(_MONEY_CONTEXT):
+&amp;lt;ipython-input-2-7d9459663a9f&amp;gt; in __add__(self, other)
+     53
+     54     def __add__(self, other):
+---&amp;gt; 55         self._raise_if_separate_types(other)
+     56
+     57         with MONEY_CONTEXT:
 
 
-&amp;lt;ipython-input-92-435a9268a93f&amp;gt; in _raise_if_separate_types(self, other)
-     40         if not self.symbol == other.symbol:
-     41             # not true, but conversions are another matter
----&amp;gt; 42             raise TypeError(&amp;quot;Can't compare across monetary types&amp;quot;)
-     43
-     44     def __eq__(self, other):
+&amp;lt;ipython-input-2-7d9459663a9f&amp;gt; in _raise_if_separate_types(self, other)
+     42         if not self.symbol == other.symbol:
+     43             # not true, but conversions are another matter
+---&amp;gt; 44             raise TypeError(&amp;quot;Can't compare across monetary types&amp;quot;)
+     45
+     46     def __eq__(self, other):
 
 
 TypeError: Can't compare across monetary types
@@ -207,16 +213,16 @@ TypeError: Can't compare across monetary types
 
 TypeError                                 Traceback (most recent call last)
 
-&amp;lt;ipython-input-112-9ec796c19bd6&amp;gt; in &amp;lt;module&amp;gt;()
+&amp;lt;ipython-input-8-9ec796c19bd6&amp;gt; in &amp;lt;module&amp;gt;()
 ----&amp;gt; 1 Money('$', decimal.Decimal('5.00')) * (1+2j)
 
 
-&amp;lt;ipython-input-101-150ed09c4d64&amp;gt; in __mul__(self, other)
-     67     def __mul__(self, other):
-     68         if not isinstance(other, Real):
----&amp;gt; 69             raise TypeError(&amp;quot;Can only multiple money by real numbers&amp;quot;)
-     70
-     71         if isinstance(other, float):
+&amp;lt;ipython-input-2-7d9459663a9f&amp;gt; in __mul__(self, other)
+     70     def __mul__(self, other):
+     71         if not isinstance(other, Real):
+---&amp;gt; 72             raise TypeError(&amp;quot;Can only multiple money by real numbers&amp;quot;)
+     73
+     74         if isinstance(other, float):
 
 
 TypeError: Can only multiple money by real numbers
@@ -339,7 +345,7 @@ context with decimals, you need to&amp;nbsp;do:&lt;/p&gt;
     &lt;span class="c"&gt;# operations&lt;/span&gt;
 &lt;/pre&gt;
 &lt;p&gt;But, since we&amp;#8217;re not afraid of objects, we&amp;#8217;ll just wrap up the Context
-in our context manager (confusing much) that we can just use&amp;nbsp;like:‡&lt;/p&gt;
+in our own context manager (confusing much) that we can just use&amp;nbsp;like:‡&lt;/p&gt;
 &lt;pre class="code python literal-block"&gt;
 &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;Context&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;prec&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="c"&gt;# if we *really* need to modify c we can&lt;/span&gt;
@@ -365,12 +371,12 @@ Why not marry those&amp;nbsp;two?&lt;/p&gt;
 &lt;pre class="code python literal-block"&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;datetime&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;timedelta&lt;/span&gt;
 
-&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;cache_timeout&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;as_seconds&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;timedelta&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;total_seconds&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
 &lt;/pre&gt;
 &lt;p&gt;Now we can use that&amp;nbsp;instead:&lt;/p&gt;
 &lt;pre class="code python literal-block"&gt;
-&lt;span class="n"&gt;cache&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;set&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;timeout&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;cache_timeout&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;minutes&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="n"&gt;cache&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;set&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;timeout&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;as_seconds&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;minutes&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
 &lt;/pre&gt;
 &lt;p&gt;I found this one change did three&amp;nbsp;things:&lt;/p&gt;
 &lt;ol class="arabic simple"&gt;
@@ -394,8 +400,10 @@ objects, I remember thinking, &amp;#8220;Pfft, what&amp;#8217;s even the point?&
 having worked with them, I really, really enjoy the depth they bring to
 an&amp;nbsp;application.&lt;/p&gt;
 &lt;p&gt;I don&amp;#8217;t have much to put here, because value objects usually come up in
-the context of larger talks. I will leave the &lt;a class="reference external" href="http://martinfowler.com/bliki/ValueObject.html"&gt;short Martin Fowler
-page&lt;/a&gt; about them here&amp;nbsp;though.&lt;/p&gt;
+the context of larger talks, usually in the context of &lt;span class="caps"&gt;DDD&lt;/span&gt; &amp;#8212; which is
+sad since these are just so friggen valuable in any application. There
+is of course a &lt;a class="reference external" href="http://martinfowler.com/bliki/ValueObject.html"&gt;short Martin Fowler
+page&lt;/a&gt; about value&amp;nbsp;objects.&lt;/p&gt;
 &lt;p&gt;†: I&amp;#8217;m sure I&amp;#8217;ll get an economist leaving a comment about super dollars
 or something else I&amp;#8217;ve never heard of&amp;nbsp;before.&lt;/p&gt;
 &lt;p&gt;‡: I&amp;#8217;m not sure if my love of adapters is well known enough, so I&amp;#8217;ll
