@@ -123,12 +123,12 @@ I find it&#8217;s nice to list&nbsp;anyways.</p>
 Since Python has first class functions (meaning functions can be treated
 like data), this is <em>really</em> easy. We&#8217;ll also make a simple root
 function for calculating things like cubic roots as&nbsp;well.</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">add</span><span class="p">,</span> <span class="n">sub</span><span class="p">,</span> <span class="n">mul</span><span class="p">,</span> <span class="n">mod</span><span class="p">,</span> <span class="n">truediv</span>
-<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">log</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">operator</span> <span class="k">import</span> <span class="n">add</span><span class="p">,</span> <span class="n">sub</span><span class="p">,</span> <span class="n">mul</span><span class="p">,</span> <span class="n">mod</span><span class="p">,</span> <span class="n">truediv</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">log</span>
 
-<span class="c"># roots are just fractional exponentials when you get down to it</span>
-<span class="c"># ...or maybe exponentials are fractional roots...</span>
+<span class="c1"># roots are just fractional exponentials when you get down to it</span>
+<span class="c1"># ...or maybe exponentials are fractional roots...</span>
 <span class="k">def</span> <span class="nf">root</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">power</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">base</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">power</span><span class="p">)</span>
 
@@ -141,7 +141,7 @@ function for calculating things like cubic roots as&nbsp;well.</p>
 <p><span class="dquo">&#8220;</span>Alec,&#8221; you say, &#8220;You skipped a step!&#8221; And I did. Because I/O is nasty
 and I&#8217;d like to do it last. For now, let&#8217;s assume the integers we
 collected are 1, 2 and&nbsp;3.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="n">integers</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
 </pre>
 <p>For this step we need to make our operation to a potential output.
@@ -149,7 +149,7 @@ Basically: <tt class="docutils literal">f(a, b) == c</tt>. Again, this is easy. 
 check if <tt class="docutils literal">a == f(b,c)</tt> in the same step. Like I said before, Python&#8217;s
 functions can be treated just like data and this includes passing them
 as arguments to other&nbsp;functions.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">either_side_true</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">a</span> <span class="o">==</span> <span class="n">op</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="ow">or</span> <span class="n">op</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span> <span class="o">==</span> <span class="n">c</span>
 </pre>
@@ -166,21 +166,21 @@ into a single&nbsp;expression.</p>
 <p>Say you wanted to check if any variable in a given group was equal to
 something. You might do (ignoring that you&#8217;d actually have a list and do
 <tt class="docutils literal">if 1 in list_of_vars:</tt>)&#8230;</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="n">a</span> <span class="o">=</span> <span class="mi">2</span>
 <span class="n">b</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="n">c</span> <span class="o">=</span> <span class="mi">5</span>
 
 <span class="k">if</span> <span class="n">a</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">b</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">c</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">&quot;We've got a winner!&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;We've got a winner!&quot;</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 We've got a winner!
 </pre>
 <p>&#8230;but with <tt class="docutils literal">any</tt> we can simply do&nbsp;this&#8230;</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">v</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="p">[</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">]):</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">&quot;I said We've got a winner!&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;I said We've got a winner!&quot;</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 I said We've got a winner!
@@ -192,9 +192,9 @@ check or you already have a list built, in which case <tt class="docutils litera
 <em>is</em> superior, but these should be tools you consider from time to&nbsp;time.</p>
 <p>Now, we want to check if <tt class="docutils literal">any</tt> of our operations returns True if
 <tt class="docutils literal">a == f(c,b)</tt> or <tt class="docutils literal">c == f(a,b)</tt>.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">either_side_true</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="o">*</span><span class="n">integers</span><span class="p">)</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">operations</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Heck yeah at least one did.&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Heck yeah at least one did.&quot;</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 Heck yeah at least one did.
@@ -208,13 +208,13 @@ to fiddle with it more, but for this case, I feel that&#8217;s&nbsp;overkill.</p
 We need to collect three integers, probably using <span class="caps">STDIN</span>. But they could
 come from a file, a database or anywhere. But let&#8217;s focus on just
 grabbing them from <span class="caps">STDIN</span>.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">collect_ints_from_stdin</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
     <span class="n">ints</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">ints</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">v</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s">&quot;Please type an integer: &quot;</span><span class="p">))</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Please type an integer: &quot;</span><span class="p">))</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
             <span class="k">continue</span>
         <span class="k">else</span><span class="p">:</span>
@@ -241,13 +241,13 @@ the full <tt class="docutils literal">try/except/else/finally</tt> concept is fo
 <h3>Step 5: Put it&nbsp;altogther</h3>
 <p>Finally, we&#8217;ll take these individual components and piece them together
 into a cohesive&nbsp;answer.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">answer</span><span class="p">(</span><span class="n">operations</span><span class="p">,</span> <span class="n">num_ints</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">collector</span><span class="o">=</span><span class="n">collect_ints_from_stdin</span><span class="p">):</span>
     <span class="n">ints</span> <span class="o">=</span> <span class="n">collector</span><span class="p">(</span><span class="n">num_ints</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">either_side_true</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="o">*</span><span class="n">ints</span><span class="p">)</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">operations</span><span class="p">):</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&quot;Heck yeah at least one did!&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Heck yeah at least one did!&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&quot;D: Nope!&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;D: Nope!&quot;</span><span class="p">)</span>
 </pre>
 <p>If you add <tt class="docutils literal">if __name__ == &quot;__main__&quot;: answer(operations)</tt> and count
 spacing and imports, the whole thing&#8217;s less than forty&nbsp;lines!</p>
@@ -353,10 +353,10 @@ exercise to you to figure&nbsp;out.</p>
             <h4>Tags</h4>
             <ul class="list-of-tags tags-in-article"> 
                 <li><a href="/tags.html#design-ref">design
-                    <span>8</span>
+                    <span>7</span>
 </a></li>
                 <li><a href="/tags.html#python-ref">python
-                    <span>12</span>
+                    <span>15</span>
 </a></li>
             </ul>
 

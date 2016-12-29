@@ -82,9 +82,11 @@
 
             <div class="section" id="recap">
 <h2>Recap</h2>
-<p>In the <a class="reference external" href="http://justanr.github.io/describing-descriptors">last post</a> about descriptors I
-introduced the concept of building an observer pattern with descriptors,
-something Chris Beaumont almost teases with in his <a class="reference external" href="http://nbviewer.ipython.org/gist/ChrisBeaumont/5758381/descriptor_writeup.ipynb">Python Descriptors
+<p>In the <a class="reference external" href="http://justanr.blogspot.com/2014/09/descriptor-day.html">last
+post</a> about
+descriptors I introduced the concept of building an observer pattern
+with descriptors, something Chris Beaumont almost teases with in his
+<a class="reference external" href="http://nbviewer.ipython.org/gist/ChrisBeaumont/5758381/descriptor_writeup.ipynb">Python Descriptors
 Demystified</a>.
 But, I feel he left a lot on the table with that&nbsp;concept.</p>
 <p>Before delving deep into the code (and this post is going to be very
@@ -97,19 +99,19 @@ code heavy), let&#8217;s recap what we learned last&nbsp;time:</p>
 </ul>
 <p>And now for a little bit of code dump to get it active in this notebook
 as well as reminding us what it looks&nbsp;like:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Descriptor</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
 
 <span class="k">class</span> <span class="nc">checkedmeta</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">clsname</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">methods</span><span class="p">):</span>
-        <span class="c"># Attach attribute names to the descriptors</span>
+        <span class="c1"># Attach attribute names to the descriptors</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">methods</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Descriptor</span><span class="p">):</span>
                 <span class="n">value</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">key</span>
-        <span class="c"># really we should use super rather than type here</span>
+        <span class="c1"># really we should use super rather than type here</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">clsname</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">methods</span><span class="p">)</span>
 </pre>
 </div>
@@ -121,24 +123,24 @@ programming is very common, for example, in Node.js. These can be
 utilized in Python as well. For now, I&#8217;m going to stick with my business
 crucial <tt class="docutils literal">to_lower</tt> as our callback to give an example before moving on
 to actually working with the observer&nbsp;pattern.</p>
-<pre class="code python literal-block">
-<span class="c"># pretend this lives at in a package called critical</span>
-<span class="c"># and actually does something really useful</span>
+<pre class="code ipython3 literal-block">
+<span class="c1"># pretend this lives at in a package called critical</span>
+<span class="c1"># and actually does something really useful</span>
 <span class="k">def</span> <span class="nf">to_lower</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
 <span class="k">def</span> <span class="nf">print_lower</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">to_lower</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">to_lower</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
 
-<span class="c">#from critical import print_lower</span>
+<span class="c1">#from critical import print_lower</span>
 <span class="k">def</span> <span class="nf">my_business_logic</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
-    <span class="n">remove</span> <span class="o">=</span> <span class="s">'aeiou'</span>
+    <span class="n">remove</span> <span class="o">=</span> <span class="s1">'aeiou'</span>
 
-    <span class="n">value</span> <span class="o">=</span> <span class="s">''</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">value</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">c</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">remove</span><span class="p">])</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">value</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">c</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">remove</span><span class="p">])</span>
     <span class="n">callback</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">value</span>
 
-<span class="n">my_business_logic</span><span class="p">(</span><span class="s">'Alec Reiter'</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">print_lower</span><span class="p">)</span>
+<span class="n">my_business_logic</span><span class="p">(</span><span class="s1">'Alec Reiter'</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">print_lower</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 lc rtr
@@ -152,10 +154,10 @@ Node.js uses callbacks for things like error handling on view functions.
 This is just to give an idea of what&#8217;s happening in a basic sense. Your
 code runs and then sends a request to the callback for more action.
 Implementing call back descriptors is pretty&nbsp;easy.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">CallbackAttribute</span><span class="p">(</span><span class="n">Descriptor</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="n">callback</span>
 
@@ -165,7 +167,7 @@ Implementing call back descriptors is pretty&nbsp;easy.</p>
             <span class="bp">self</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
 <span class="k">def</span> <span class="nf">frobed_callback</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Set {} on {!s} to {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Set </span><span class="si">{}</span><span class="s2"> on </span><span class="si">{!s}</span><span class="s2"> to </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
 
 <span class="k">class</span> <span class="nc">Thing</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">checkedmeta</span><span class="p">):</span>
     <span class="n">frob</span> <span class="o">=</span> <span class="n">CallbackAttribute</span><span class="p">(</span><span class="n">callback</span><span class="o">=</span><span class="n">frobed_callback</span><span class="p">)</span>
@@ -205,13 +207,13 @@ differences. I won&#8217;t delve into them, but the take away is that all four
 of these follow the same basic pattern: An object hooks callbacks which
 run when they&#8217;re notified of&nbsp;something.</p>
 <p>An easy implementation of this would look like&nbsp;this:</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABCMeta</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">abc</span> <span class="k">import</span> <span class="n">ABCMeta</span><span class="p">,</span> <span class="n">abstractmethod</span>
 
 <span class="k">class</span> <span class="nc">SubjectMixin</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Mixin that will allow an object to notify observers about changes to itself.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observers</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_observers</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">observers</span><span class="p">:</span>
@@ -250,7 +252,7 @@ all of them and their <tt class="docutils literal">update</tt> method</li>
 </ul>
 <p>Observers are free to implement <tt class="docutils literal">update</tt> in whatever way, but they
 must implement it. A simple implementation might look like&nbsp;this.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Person</span><span class="p">(</span><span class="n">SubjectMixin</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -263,13 +265,13 @@ must implement it. A simple implementation might look like&nbsp;this.</p>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">):</span>
-        <span class="n">remove</span> <span class="o">=</span> <span class="s">'aeiou'</span>
+        <span class="n">remove</span> <span class="o">=</span> <span class="s1">'aeiou'</span>
         <span class="n">value</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="s">''</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">value</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">remove</span><span class="p">])</span>
-        <span class="k">print</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">value</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">remove</span><span class="p">])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 <span class="n">plnv</span> <span class="o">=</span> <span class="n">PrintLowerNoVowels</span><span class="p">()</span>
-<span class="n">me</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;Alec Reiter&quot;</span><span class="p">,</span> <span class="n">observers</span><span class="o">=</span><span class="p">[</span><span class="n">plnv</span><span class="p">])</span>
+<span class="n">me</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Alec Reiter&quot;</span><span class="p">,</span> <span class="n">observers</span><span class="o">=</span><span class="p">[</span><span class="n">plnv</span><span class="p">])</span>
 <span class="n">me</span><span class="o">.</span><span class="n">notify</span><span class="p">()</span>
 </pre>
 <pre class="literal-block">
@@ -281,25 +283,25 @@ articles I read. It&#8217;s also possible to automate the notification via
 change the <tt class="docutils literal">name</tt> attribute on a <tt class="docutils literal">Person</tt> instance. We could write
 that logic every where. Maybe apply it with a context manager or
 decorator. But, tying it to the object makes the most amount of&nbsp;sense.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Person</span><span class="p">(</span><span class="n">SubjectMixin</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__name</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__name</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
 
     <span class="nd">&#64;property</span>
     <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__name</span>
 
-    <span class="nd">&#64;name.setter</span>
+    <span class="nd">&#64;name</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">value</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__name</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__name</span> <span class="o">=</span> <span class="n">value</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="p">()</span>
 
-<span class="n">me</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;Alec Reiter&quot;</span><span class="p">,</span> <span class="n">observers</span><span class="o">=</span><span class="p">[</span><span class="n">plnv</span><span class="p">])</span>
+<span class="n">me</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Alec Reiter&quot;</span><span class="p">,</span> <span class="n">observers</span><span class="o">=</span><span class="p">[</span><span class="n">plnv</span><span class="p">])</span>
 </pre>
 <pre class="literal-block">
 lc rtr
@@ -309,7 +311,7 @@ an attrbute is changed, we could just override <tt class="docutils literal">__se
 this for us. Which circumvents the needs to write properties for every
 attribute if this is the only action we&#8217;re concerned with. It&#8217;s super
 easy to implement as&nbsp;well.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Person</span><span class="p">(</span><span class="n">SubjectMixin</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -320,7 +322,7 @@ easy to implement as&nbsp;well.</p>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="p">()</span>
 
-<span class="n">me</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;Alec Reiter&quot;</span><span class="p">,</span> <span class="n">observers</span><span class="o">=</span><span class="p">[</span><span class="n">plnv</span><span class="p">])</span>
+<span class="n">me</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Alec Reiter&quot;</span><span class="p">,</span> <span class="n">observers</span><span class="o">=</span><span class="p">[</span><span class="n">plnv</span><span class="p">])</span>
 </pre>
 <pre class="literal-block">
 lc rtr
@@ -339,9 +341,9 @@ emitting an event every time <tt class="docutils literal">age</tt> is changed if
 <p>The first step is to identify the logic we&#8217;d end up repeating in each
 property and moving that into a seperate object. We&#8217;ll call this new
 class <tt class="docutils literal">WatchedAttribute</tt>.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">WatchedAttribute</span><span class="p">(</span><span class="n">Descriptor</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
@@ -356,8 +358,8 @@ class <tt class="docutils literal">WatchedAttribute</tt>.</p>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
 
-<span class="n">me</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;Alec Reiter&quot;</span><span class="p">,</span> <span class="n">observers</span><span class="o">=</span><span class="p">[</span><span class="n">plnv</span><span class="p">])</span>
-<span class="n">me</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;Alec Reiter&quot;</span>
+<span class="n">me</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Alec Reiter&quot;</span><span class="p">,</span> <span class="n">observers</span><span class="o">=</span><span class="p">[</span><span class="n">plnv</span><span class="p">])</span>
+<span class="n">me</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Alec Reiter&quot;</span>
 </pre>
 <pre class="literal-block">
 lc rtr
@@ -390,9 +392,9 @@ reference count drops to 0, it&#8217;s space in memory can be reclaimed by
 Python for use else where. Sometimes we only want to hold a reference to
 an object but not so tightly it won&#8217;t be garbage collected if we forget
 about it. Consider&nbsp;this:</p>
-<pre class="code python literal-block">
-<span class="k">print</span><span class="p">(</span><span class="n">me</span><span class="p">)</span>
-<span class="n">registry</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;me&quot;</span> <span class="p">:</span> <span class="n">me</span><span class="p">}</span>
+<pre class="code ipython3 literal-block">
+<span class="nb">print</span><span class="p">(</span><span class="n">me</span><span class="p">)</span>
+<span class="n">registry</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;me&quot;</span> <span class="p">:</span> <span class="n">me</span><span class="p">}</span>
 </pre>
 <pre class="literal-block">
 &lt;__main__.Person object at 0x7f0d2c2c64e0&gt;
@@ -400,13 +402,13 @@ about it. Consider&nbsp;this:</p>
 <p>Storing instances in a dictionary as keys or values (or in a list or
 set) as a form of caching is extremely common. But if we remove all the
 other instances of the object laying&nbsp;around&#8230;</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">del</span> <span class="n">me</span>
 </pre>
 <p>&#8230;that reference is left hanging&nbsp;around:</p>
-<pre class="code python literal-block">
-<span class="n">me</span> <span class="o">=</span> <span class="n">registry</span><span class="p">[</span><span class="s">'me'</span><span class="p">]</span>
-<span class="k">print</span><span class="p">(</span><span class="n">me</span><span class="p">)</span>
+<pre class="code ipython3 literal-block">
+<span class="n">me</span> <span class="o">=</span> <span class="n">registry</span><span class="p">[</span><span class="s1">'me'</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">me</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 &lt;__main__.Person object at 0x7f0d2c2c64e0&gt;
@@ -436,8 +438,8 @@ object must meet one more requirement: hashable. So objects like
 take advantage of these structures. However, outside of a few corner
 cases, this restraint won&#8217;t affect us&nbsp;here.</p>
 <p>Implementing it is incredibly&nbsp;easy.</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">weakref</span> <span class="kn">import</span> <span class="n">WeakKeyDictionary</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">weakref</span> <span class="k">import</span> <span class="n">WeakKeyDictionary</span>
 
 <span class="k">class</span> <span class="nc">WatchedAttribute</span><span class="p">(</span><span class="n">Descriptor</span><span class="p">):</span>
 
@@ -460,7 +462,7 @@ cases, this restraint won&#8217;t affect us&nbsp;here.</p>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
 
-<span class="n">me</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;Alec Reiter&quot;</span><span class="p">,</span> <span class="n">observers</span><span class="o">=</span><span class="p">[</span><span class="n">plnv</span><span class="p">])</span>
+<span class="n">me</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Alec Reiter&quot;</span><span class="p">,</span> <span class="n">observers</span><span class="o">=</span><span class="p">[</span><span class="n">plnv</span><span class="p">])</span>
 </pre>
 <pre class="literal-block">
 lc rtr
@@ -493,11 +495,11 @@ registration of observers and notification out into the descriptors and
 our SubjectMixin can be redefined to work with our&nbsp;descriptor.</p>
 <p>Actually, we end up redefining the Descriptor and WatchedAttribute
 classes as well. Forewarning, this is a bit of a code&nbsp;dump.</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">weakref</span> <span class="kn">import</span> <span class="n">WeakSet</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">weakref</span> <span class="k">import</span> <span class="n">WeakSet</span>
 
 <span class="k">class</span> <span class="nc">SubjectMixin</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observers</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_observers</span> <span class="o">=</span> <span class="n">WeakSet</span><span class="p">()</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -515,7 +517,7 @@ classes as well. Forewarning, this is a bit of a code&nbsp;dump.</p>
         <span class="k">if</span> <span class="n">observer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_observers</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_observers</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">observer</span><span class="p">)</span>
 </pre>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">CachingDescriptor</span><span class="p">(</span><span class="n">Descriptor</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -523,16 +525,16 @@ classes as well. Forewarning, this is a bit of a code&nbsp;dump.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">_instances</span> <span class="o">=</span> <span class="n">WeakKeyDictionary</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">cls</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">instance</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">instance</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instances</span><span class="p">[</span><span class="n">instance</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_instances</span><span class="p">[</span><span class="n">instance</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 </pre>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">WatchedAttribute</span><span class="p">(</span><span class="n">CachingDescriptor</span><span class="p">,</span> <span class="n">SubjectMixin</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observers</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">observers</span><span class="o">=</span><span class="n">observers</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
@@ -547,7 +549,7 @@ classes as well. Forewarning, this is a bit of a code&nbsp;dump.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
 
 <span class="n">Person</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">add_observer</span><span class="p">(</span><span class="n">plnv</span><span class="p">)</span>
-<span class="n">me</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;Alec Reiter&quot;</span><span class="p">)</span>
+<span class="n">me</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Alec Reiter&quot;</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 lc rtr
@@ -588,8 +590,9 @@ descriptors and other objects. <tt class="docutils literal">WatchedAttribute</tt
 <tt class="docutils literal">Descriptor.__set__</tt> operates (or rather extends it if you want to
 split hairs) to combine the two&nbsp;fully.</p>
 </div>
+</div>
 <div class="section" id="going-further">
-<h3>Going&nbsp;Further</h3>
+<h2>Going&nbsp;Further</h2>
 <p>We could, of course, go further to registering observers for every
 instance of an object with the <tt class="docutils literal">WatchedAttribute</tt> and specific
 instances as well. Implementing this is a just a <em>mite</em> trickier, but
@@ -600,10 +603,10 @@ not terribly. The first step is to imitate the behavior of
 a&nbsp;constructor.</p>
 <p>The reason for building this is to utilize <tt class="docutils literal">WeakSet</tt> as a way to hold
 onto observers for us that are local to a particular&nbsp;instance.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">WeakKeyDefaultDict</span><span class="p">(</span><span class="n">WeakKeyDictionary</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default_factory</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default_factory</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">default_factory</span> <span class="o">=</span> <span class="n">default_factory</span>
 
@@ -622,7 +625,7 @@ onto observers for us that are local to a particular&nbsp;instance.</p>
 </pre>
 <p>With that built, we can reconstruct <tt class="docutils literal">WatchedAttribute</tt> to hold both
 &#8220;global&#8221; and &#8220;local&#8221;&nbsp;observers.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">WatchedAttribute</span><span class="p">(</span><span class="n">CachingDescriptor</span><span class="p">,</span> <span class="n">SubjectMixin</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -632,14 +635,14 @@ onto observers for us that are local to a particular&nbsp;instance.</p>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__set__</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">add_observer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observer</span><span class="p">,</span> <span class="n">instance</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">instance</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">add_observer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observer</span><span class="p">,</span> <span class="n">instance</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">instance</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add_observer</span><span class="p">(</span><span class="n">observer</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_local_observers</span><span class="p">[</span><span class="n">instance</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">observer</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">remove_observer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observer</span><span class="p">,</span> <span class="n">instance</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">instance</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">remove_observer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observer</span><span class="p">,</span> <span class="n">instance</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">instance</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">remove_observer</span><span class="p">(</span><span class="n">observer</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">observer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_local_observers</span><span class="p">[</span><span class="n">instance</span><span class="p">]:</span>
@@ -655,7 +658,7 @@ as previous iterations on <tt class="docutils literal">WatchedAttribute</tt> exc
 behavior we&#8217;ve overriden here. I&#8217;m also going to add some convience
 methods to the <tt class="docutils literal">Person</tt> class to make it slightly easier to interact
 with the&nbsp;observers.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Person</span><span class="p">:</span>
     <span class="n">name</span> <span class="o">=</span> <span class="n">WatchedAttribute</span><span class="p">()</span>
 
@@ -666,34 +669,34 @@ with the&nbsp;observers.</p>
     <span class="k">def</span> <span class="nf">access_watched</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">attach</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">observer</span><span class="p">,</span> <span class="n">global_</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">attach</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">observer</span><span class="p">,</span> <span class="n">global_</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="n">watched</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_watched</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
-        <span class="n">inst</span> <span class="o">=</span> <span class="bp">None</span> <span class="k">if</span> <span class="n">global_</span> <span class="k">else</span> <span class="bp">self</span>
+        <span class="n">inst</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">global_</span> <span class="k">else</span> <span class="bp">self</span>
         <span class="n">watched</span><span class="o">.</span><span class="n">add_observer</span><span class="p">(</span><span class="n">observer</span><span class="p">,</span> <span class="n">inst</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">detach</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">observer</span><span class="p">,</span> <span class="n">global_</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">detach</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">observer</span><span class="p">,</span> <span class="n">global_</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="n">watched</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_watched</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
-        <span class="n">inst</span> <span class="o">=</span> <span class="bp">None</span> <span class="k">if</span> <span class="n">global_</span> <span class="k">else</span> <span class="bp">self</span>
+        <span class="n">inst</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">global_</span> <span class="k">else</span> <span class="bp">self</span>
         <span class="n">watched</span><span class="o">.</span><span class="n">remove_observer</span><span class="p">(</span><span class="n">observer</span><span class="p">,</span> <span class="n">inst</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">PrintUpper</span><span class="p">(</span><span class="n">ObserverMixin</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">):</span>
-        <span class="k">print</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
 
 
 <span class="n">pu</span> <span class="o">=</span> <span class="n">PrintUpper</span><span class="p">()</span>
-<span class="n">me</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
-<span class="n">me</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="s">'name'</span><span class="p">,</span> <span class="n">plnv</span><span class="p">,</span> <span class="n">global_</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="n">me</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="s">'name'</span><span class="p">,</span> <span class="n">pu</span><span class="p">)</span>
-<span class="n">me</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;Alec Reiter&quot;</span>
+<span class="n">me</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="n">me</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="s1">'name'</span><span class="p">,</span> <span class="n">plnv</span><span class="p">,</span> <span class="n">global_</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">me</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="s1">'name'</span><span class="p">,</span> <span class="n">pu</span><span class="p">)</span>
+<span class="n">me</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Alec Reiter&quot;</span>
 </pre>
 <pre class="literal-block">
 lc rtr
 ALEC REITER
 </pre>
-<pre class="code python literal-block">
-<span class="n">other</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;Ol' Long Johnson&quot;</span><span class="p">)</span>
+<pre class="code ipython3 literal-block">
+<span class="n">other</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Ol' Long Johnson&quot;</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 l' lng jhnsn
@@ -711,7 +714,7 @@ observers to the attribute. This is a feature of the original
 <tt class="docutils literal">SubjectMixin</tt> class and is inherited to <tt class="docutils literal">WatchedAttribute</tt> (or as
 Raymond Hettinger would put it: <tt class="docutils literal">WatchedAttribute</tt> delegates the work
 to <tt class="docutils literal">SubjectMixin</tt>).</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Person</span><span class="p">:</span>
     <span class="n">name</span> <span class="o">=</span> <span class="n">WatchedAttribute</span><span class="p">(</span><span class="n">observers</span><span class="o">=</span><span class="p">[</span><span class="n">plnv</span><span class="p">])</span>
 
@@ -722,17 +725,16 @@ to <tt class="docutils literal">SubjectMixin</tt>).</p>
     <span class="k">def</span> <span class="nf">access_watched</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">attach</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">observer</span><span class="p">,</span> <span class="n">global_</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">attach</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">observer</span><span class="p">,</span> <span class="n">global_</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="n">watched</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_watched</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
-        <span class="n">inst</span> <span class="o">=</span> <span class="bp">None</span> <span class="k">if</span> <span class="n">global_</span> <span class="k">else</span> <span class="bp">self</span>
+        <span class="n">inst</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">global_</span> <span class="k">else</span> <span class="bp">self</span>
         <span class="n">watched</span><span class="o">.</span><span class="n">add_observer</span><span class="p">(</span><span class="n">observer</span><span class="p">,</span> <span class="n">inst</span><span class="p">)</span>
 
-<span class="n">me</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;Alec Reiter&quot;</span><span class="p">)</span>
+<span class="n">me</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Alec Reiter&quot;</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 lc rtr
 </pre>
-</div>
 </div>
 <div class="section" id="fin">
 <h2>Fin</h2>
@@ -821,7 +823,7 @@ filled with data on the instance level? Descriptors and that
                     <span>3</span>
 </a></li>
                 <li><a href="/tags.html#python-ref">python
-                    <span>12</span>
+                    <span>15</span>
 </a></li>
             </ul>
 

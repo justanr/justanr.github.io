@@ -18,7 +18,7 @@
         <![endif]-->
 
 
-<meta name="keywords" content="haskell, python3, rants, " />
+<meta name="keywords" content="python, haskell, rants, " />
         <title><span class="caps">PEP</span> 484 and&nbsp;Me - from alec.thoughts import *
 </title>
         <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
@@ -92,8 +92,8 @@ at some point we&#8217;ve got a type&nbsp;mismatch.</p>
 base &#8212; assuming it&#8217;s been used. :/ On the other hand, it&#8217;s down right
 <em>ugly</em>. I&#8217;m not a big fan of inlining types, at all. Some things aren&#8217;t
 so&nbsp;bad&#8230;</p>
-<pre class="code python literal-block">
-<span class="kn">import</span> <span class="nn">typing</span> <span class="kn">as</span> <span class="nn">t</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
 
 <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">x</span><span class="o">+</span><span class="n">y</span>
@@ -106,8 +106,8 @@ returns an int. However, for something more complicated, let&#8217;s say
 zipWith (a -&gt; b -&gt; c) -&gt; [a] -&gt; [b] -&gt; [c]
 </pre>
 <p>And here&#8217;s the proposed <span class="caps">PEP</span>&nbsp;syntax:</p>
-<pre class="code python literal-block">
-<span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">TypeVar</span><span class="p">(</span><span class="s">'A'</span><span class="p">),</span> <span class="n">t</span><span class="o">.</span><span class="n">TypeVar</span><span class="p">(</span><span class="s">'B'</span><span class="p">),</span> <span class="n">t</span><span class="o">.</span><span class="n">TypeVar</span><span class="p">(</span><span class="s">'C'</span><span class="p">)</span>
+<pre class="code ipython3 literal-block">
+<span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">TypeVar</span><span class="p">(</span><span class="s1">'A'</span><span class="p">),</span> <span class="n">t</span><span class="o">.</span><span class="n">TypeVar</span><span class="p">(</span><span class="s1">'B'</span><span class="p">),</span> <span class="n">t</span><span class="o">.</span><span class="n">TypeVar</span><span class="p">(</span><span class="s1">'C'</span><span class="p">)</span>
 
 <span class="k">def</span> <span class="nf">zip_with</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">],</span> <span class="n">C</span><span class="p">],</span> <span class="n">a</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">A</span><span class="p">],</span> <span class="n">b</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">B</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">C</span><span class="p">]:</span>
     <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
@@ -116,12 +116,12 @@ zipWith (a -&gt; b -&gt; c) -&gt; [a] -&gt; [b] -&gt; [c]
 what&#8217;s actually relavant. This is something that really bothers me about
 <em>all</em> inlined types. Here&#8217;s the proposed <span class="caps">PEP</span> syntax for something as
 simple as&nbsp;compose:</p>
-<pre class="code python literal-block">
-<span class="c"># compose :: (b -&gt; c) -&gt; (a -&gt; b) -&gt; (a -&gt; c)</span>
+<pre class="code ipython3 literal-block">
+<span class="c1"># compose :: (b -&gt; c) -&gt; (a -&gt; b) -&gt; (a -&gt; c)</span>
 <span class="k">def</span> <span class="nf">compose</span><span class="p">(</span><span class="n">f</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="n">B</span><span class="p">],</span> <span class="n">C</span><span class="p">],</span> <span class="n">g</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="n">A</span><span class="p">],</span> <span class="n">B</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="n">A</span><span class="p">],</span> <span class="n">C</span><span class="p">]:</span>
     <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">f</span><span class="p">(</span><span class="n">g</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 
-<span class="k">print</span><span class="p">(</span><span class="n">compose</span><span class="o">.</span><span class="n">__annotations__</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">compose</span><span class="o">.</span><span class="n">__annotations__</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 {'f': typing.CallableCallable[[~B], ~C], 'return': typing.CallableCallable[[~A], ~C], 'g': typing.CallableCallable[[~A], ~B]}
@@ -152,18 +152,18 @@ clean break between input and output types. And using a decorator to
 separate the concern of &#8220;this is type information&#8221; from &#8220;these are the
 parameters&#8221; is what decorators&nbsp;do.</p>
 <p>As a proof of&nbsp;concept:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="kn">import</span> <span class="nn">inspect</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">wraps</span>
 
 <span class="k">def</span> <span class="nf">typed</span><span class="p">(</span><span class="o">*</span><span class="n">types</span><span class="p">,</span> <span class="n">returns</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">deco</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-        <span class="c"># todo handle *args, **kwargs</span>
+        <span class="c1"># todo handle *args, **kwargs</span>
         <span class="n">params</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getargspec</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">args</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">types</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Must provide types for all parameters&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Must provide types for all parameters&quot;</span><span class="p">)</span>
         <span class="n">annotations</span> <span class="o">=</span> <span class="p">{</span><span class="n">a</span><span class="p">:</span> <span class="n">t</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">types</span><span class="p">)}</span>
-        <span class="n">annotations</span><span class="p">[</span><span class="s">'return'</span><span class="p">]</span> <span class="o">=</span> <span class="n">returns</span>
+        <span class="n">annotations</span><span class="p">[</span><span class="s1">'return'</span><span class="p">]</span> <span class="o">=</span> <span class="n">returns</span>
         <span class="n">f</span><span class="o">.</span><span class="n">__annotations__</span> <span class="o">=</span> <span class="n">annotations</span>
         <span class="nd">&#64;wraps</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -171,12 +171,12 @@ parameters&#8221; is what decorators&nbsp;do.</p>
         <span class="k">return</span> <span class="n">wrapper</span>
     <span class="k">return</span> <span class="n">deco</span>
 </pre>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="nd">&#64;typed</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="n">B</span><span class="p">],</span> <span class="n">C</span><span class="p">],</span> <span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="n">A</span><span class="p">],</span> <span class="n">B</span><span class="p">],</span> <span class="n">returns</span><span class="o">=</span><span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="n">A</span><span class="p">],</span> <span class="n">C</span><span class="p">])</span>
 <span class="k">def</span> <span class="nf">compose</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">g</span><span class="p">):</span>
     <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">f</span><span class="p">(</span><span class="n">g</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 </pre>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="n">compose</span><span class="o">.</span><span class="n">__annotations__</span>
 </pre>
 <pre class="literal-block">
@@ -184,7 +184,7 @@ parameters&#8221; is what decorators&nbsp;do.</p>
  'g': typing.CallableCallable[[~A], ~B],
  'return': typing.CallableCallable[[~A], ~C]}
 </pre>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="nd">&#64;typed</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">returns</span><span class="o">=</span><span class="n">C</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">mismatched</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
     <span class="k">pass</span>
@@ -213,9 +213,9 @@ TypeError: Must provide types for all parameters
 <p>Of course, there&#8217;s still the issue of things like classes that accept
 instances of themselves as arguments to methods. The cannonical example
 appears to be&nbsp;Nodes:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Node</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">left</span> <span class="o">=</span> <span class="n">left</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">right</span> <span class="o">=</span> <span class="n">right</span>
@@ -232,7 +232,7 @@ class Node:
 (something that has bitten me before, but was easy enough to work around
 in that case). I believe the current fix for this is actually inheriting
 from something like Generic[T],&nbsp;i.e.:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Node</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">Generic</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">T</span><span class="p">]):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">T</span><span class="p">):</span>
         <span class="k">pass</span>
@@ -255,7 +255,7 @@ minimal&nbsp;gain.</p>
  
                 <li class="previous_article">« <a href="http://justanr.github.io/fun-with-descriptors" title="Previous: Fun With&nbsp;Descriptors">Fun With&nbsp;Descriptors</a></li>
  
-                <li class="next_article"><a href="http://justanr.github.io/i-wrote-a-monad-tutorial-for-some-reason" title="Next: I wrote a monad tutorial for some&nbsp;reason&#8230;">I wrote a monad tutorial for some&nbsp;reason&#8230;</a> »</li>
+                <li class="next_article"><a href="http://justanr.github.io/i-wrote-a-monad-tutorial-for-some-reason" title="Next: I wrote a monad tutorial for some&nbsp;reason…">I wrote a monad tutorial for some&nbsp;reason…</a> »</li>
             </ul>
             </nav>
             </aside>
@@ -305,8 +305,8 @@ minimal&nbsp;gain.</p>
                 <li><a href="/tags.html#haskell-ref">haskell
                     <span>3</span>
 </a></li>
-                <li><a href="/tags.html#python3-ref">python3
-                    <span>3</span>
+                <li><a href="/tags.html#python-ref">python
+                    <span>15</span>
 </a></li>
             </ul>
 

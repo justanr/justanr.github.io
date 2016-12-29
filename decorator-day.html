@@ -18,7 +18,7 @@
         <![endif]-->
 
 
-<meta name="keywords" content="python, decorators, functions, tutorials, " />
+<meta name="keywords" content="python, functions, decorators, tutorials, " />
         <title>Decorator&nbsp;Day - from alec.thoughts import *
 </title>
         <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
@@ -140,7 +140,7 @@ functions, they are treated just the same as anything else in the
 language. And since methods are simply functions attached to a class or
 object, the same applied to them as well. <tt class="docutils literal">str.join</tt> is just as first
 class as <tt class="docutils literal">map</tt>.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="n">my_func</span> <span class="o">=</span> <span class="nb">dir</span>
 
 <span class="n">funcs</span> <span class="o">=</span> <span class="p">[</span><span class="nb">filter</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
@@ -161,7 +161,7 @@ outer scope and stuff it into their <tt class="docutils literal">__closure__</tt
 is just simply a tuple of cell objects that contain other things. This
 is essentially a snapshot of the outer function when it&#8217;s created.
 Usually, the inner function is returned by the outer&nbsp;function.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">adds_four</span><span class="p">():</span>
     <span class="n">x</span> <span class="o">=</span> <span class="mi">4</span>
     <span class="k">def</span> <span class="nf">inner</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
@@ -169,8 +169,8 @@ Usually, the inner function is returned by the outer&nbsp;function.</p>
     <span class="k">return</span> <span class="n">inner</span>
 
 <span class="n">o</span> <span class="o">=</span> <span class="n">adds_four</span><span class="p">()</span>
-<span class="k">print</span><span class="p">(</span><span class="n">o</span><span class="p">())</span>
-<span class="k">print</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">__closure__</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">o</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">__closure__</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 4
@@ -198,14 +198,14 @@ to&nbsp;it.</p>
 <p>There&#8217;s two ways to use decorators: the old way, pre-2.5, and the
 special <tt class="docutils literal">&#64;decorator</tt> syntax. They do the same thing, like using
 <tt class="docutils literal">list(1, 2, 3)</tt> or <tt class="docutils literal">[1, 2, 3]</tt>, one&#8217;s just syntatic&nbsp;sugar.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">f</span>
 
 <span class="k">def</span> <span class="nf">my_func</span><span class="p">():</span>
     <span class="k">pass</span>
 
-<span class="n">my_func</span> <span class="o">=</span> <span class="n">decorator</span><span class="p">(</span><span class="n">my_func</span><span class="p">)</span> <span class="c"># this is the old way</span>
+<span class="n">my_func</span> <span class="o">=</span> <span class="n">decorator</span><span class="p">(</span><span class="n">my_func</span><span class="p">)</span> <span class="c1"># this is the old way</span>
 
 <span class="nd">&#64;decorator</span>
 <span class="k">def</span> <span class="nf">my_func</span><span class="p">():</span>
@@ -232,17 +232,17 @@ decorators. I&#8217;m hoping to identify some of the most common&nbsp;ones.</p>
 <p>Basically, this is a decorator that takes in an object, does something
 and returns the original object. It might register it somewhere, gather
 some information about or add an attribute to&nbsp;it.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">pass_through</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-    <span class="n">f</span><span class="o">.</span><span class="n">inspected</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">inspected</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">return</span> <span class="n">f</span>
 
 <span class="nd">&#64;pass_through</span>
 <span class="k">def</span> <span class="nf">thing</span><span class="p">():</span>
-    <span class="k">return</span> <span class="s">&quot;Thing()&quot;</span>
+    <span class="k">return</span> <span class="s2">&quot;Thing()&quot;</span>
 
-<span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">thing</span><span class="p">,</span> <span class="s">'inspected'</span><span class="p">)</span>
-<span class="k">assert</span> <span class="n">thing</span><span class="o">.</span><span class="n">__name__</span> <span class="o">==</span> <span class="s">'thing'</span>
+<span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">thing</span><span class="p">,</span> <span class="s1">'inspected'</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">thing</span><span class="o">.</span><span class="n">__name__</span> <span class="o">==</span> <span class="s1">'thing'</span>
 </pre>
 <p>It&#8217;s common enough but usually they&#8217;re not doing anything too exciting
 or surprising. But it&#8217;s definitely worth distinguishing it from
@@ -257,9 +257,9 @@ possible. Not just the one you initially noticed and thought, &#8220;I can
 factor this other code out into a decorator.&#8221; But what does a flexible
 decorator look like? It&#8217;s best to compare it to a brittle decorator to
 understand&nbsp;fully.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">brittle</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">,</span> <span class="n">kwarg1</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">kwarg2</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">,</span> <span class="n">kwarg1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwarg2</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">,</span> <span class="n">kwarg1</span><span class="p">,</span> <span class="n">kwarg2</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">wrapper</span>
 
@@ -274,12 +274,12 @@ one, we&#8217;d have to write every function we decorate with it to accept
 four arguments. Where as the second example, the flexible one, can
 accept any number of positional or keyword&nbsp;arguments.</p>
 <p>To give a concrete&nbsp;example&#8230;</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="nd">&#64;flexible</span>
-<span class="k">def</span> <span class="nf">dinner</span><span class="p">(</span><span class="n">food</span><span class="p">,</span> <span class="n">beer</span><span class="p">):</span> <span class="c"># &lt;- becomes wrapper</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">'Eating'</span><span class="p">,</span> <span class="n">food</span><span class="p">,</span> <span class="s">'and drinking'</span><span class="p">,</span> <span class="n">beer</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">dinner</span><span class="p">(</span><span class="n">food</span><span class="p">,</span> <span class="n">beer</span><span class="p">):</span> <span class="c1"># &lt;- becomes wrapper</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'Eating'</span><span class="p">,</span> <span class="n">food</span><span class="p">,</span> <span class="s1">'and drinking'</span><span class="p">,</span> <span class="n">beer</span><span class="p">)</span>
 
-<span class="n">dinner</span><span class="p">(</span><span class="s">'bratzel'</span><span class="p">,</span> <span class="s">'azazel'</span><span class="p">)</span> <span class="c"># &lt;- actually wrapper</span>
+<span class="n">dinner</span><span class="p">(</span><span class="s1">'bratzel'</span><span class="p">,</span> <span class="s1">'azazel'</span><span class="p">)</span> <span class="c1"># &lt;- actually wrapper</span>
 </pre>
 <pre class="literal-block">
 Eating bratzel and drinking azazel
@@ -297,10 +297,10 @@ dictionary, there&#8217;s an increasing level of &#8220;correctness&#8221; or &#
 from what you should start with and what you should end&nbsp;with.</p>
 <p>The first thing you might try is manually transfering these attributes
 inside the&nbsp;decorator.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">loggit</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">logger</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&quot;Calling {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Calling </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">__name__</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">__name__</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">__doc__</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">__doc__</span>
@@ -320,7 +320,7 @@ my_dict[something].append(value)
 <p>Well, decorators are good at removing extraneous code from a function,
 let&#8217;s try writing a decorator decorator &#8212; as confusing as that sounds,
 it&#8217;s pretty common, so we&#8217;re catching two pythons with one&nbsp;net.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">decorator_decorator</span><span class="p">(</span><span class="n">deco</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
         <span class="n">g</span> <span class="o">=</span> <span class="n">deco</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
@@ -336,7 +336,7 @@ it&#8217;s pretty common, so we&#8217;re catching two pythons with one&nbsp;net.
 <span class="nd">&#64;decorator_decorator</span>
 <span class="k">def</span> <span class="nf">loggit</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">logger</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&quot;Calling {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Calling </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">logger</span>
 
@@ -345,8 +345,8 @@ it&#8217;s pretty common, so we&#8217;re catching two pythons with one&nbsp;net.
     <span class="sd">&quot;&quot;&quot;Doubles a number&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x</span>
 
-<span class="k">assert</span> <span class="n">double</span><span class="o">.</span><span class="n">__name__</span> <span class="o">==</span> <span class="s">'double'</span>
-<span class="k">assert</span> <span class="n">double</span><span class="o">.</span><span class="n">__doc__</span> <span class="o">==</span> <span class="s">'Doubles a number'</span>
+<span class="k">assert</span> <span class="n">double</span><span class="o">.</span><span class="n">__name__</span> <span class="o">==</span> <span class="s1">'double'</span>
+<span class="k">assert</span> <span class="n">double</span><span class="o">.</span><span class="n">__doc__</span> <span class="o">==</span> <span class="s1">'Doubles a number'</span>
 </pre>
 <p>That&#8217;s <em>almost</em> better. Except it&#8217;s really ugly. Like <em>really</em> ugly. And
 actually, I find it more confusing than helpful. When I initially wrote
@@ -390,13 +390,13 @@ for reasons that&#8217;ll become obvious&nbsp;later.</li>
 attributes isn&#8217;t present on the underlying object (such as <tt class="docutils literal">__name__</tt>
 on an instance of an&nbsp;object).</p>
 <p>Here&#8217;s how you <em>should</em> be perserving metadata through&nbsp;decorators:</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">wraps</span>
 
 <span class="k">def</span> <span class="nf">loggit</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
     <span class="nd">&#64;wraps</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">logger</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&quot;Calling {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Calling </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">logger</span>
 
@@ -405,8 +405,8 @@ on an instance of an&nbsp;object).</p>
     <span class="sd">&quot;&quot;&quot;Doubles a number&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x</span>
 
-<span class="k">assert</span> <span class="n">double</span><span class="o">.</span><span class="n">__name__</span> <span class="o">==</span> <span class="s">'double'</span>
-<span class="k">assert</span> <span class="n">double</span><span class="o">.</span><span class="n">__doc__</span> <span class="o">==</span> <span class="s">'Doubles a number'</span>
+<span class="k">assert</span> <span class="n">double</span><span class="o">.</span><span class="n">__name__</span> <span class="o">==</span> <span class="s1">'double'</span>
+<span class="k">assert</span> <span class="n">double</span><span class="o">.</span><span class="n">__doc__</span> <span class="o">==</span> <span class="s1">'Doubles a number'</span>
 <span class="k">assert</span> <span class="ow">not</span> <span class="n">double</span><span class="o">.</span><span class="n">__annotations__</span>
 </pre>
 <p>Using <tt class="docutils literal">&#64;wraps</tt> and <tt class="docutils literal">update_wrapper</tt> is like when you stumble across
@@ -431,21 +431,21 @@ touch on those a little later,&nbsp;however.</p>
 <p>Occasionally, you need to use keyword arguments in your decorators,
 either to pass context, run setup or just set flags. There&#8217;s a few ways
 to do&nbsp;it&#8230;</p>
-<pre class="code python literal-block">
-<span class="k">def</span> <span class="nf">print_before</span><span class="p">(</span><span class="n">phrase</span><span class="o">=</span><span class="s">&quot;Setting up!&quot;</span><span class="p">):</span>
+<pre class="code ipython3 literal-block">
+<span class="k">def</span> <span class="nf">print_before</span><span class="p">(</span><span class="n">phrase</span><span class="o">=</span><span class="s2">&quot;Setting up!&quot;</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">actual_decorator</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
         <span class="nd">&#64;wraps</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-            <span class="k">print</span><span class="p">(</span><span class="n">phrase</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">phrase</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">wrapper</span>
     <span class="k">return</span> <span class="n">actual_decorator</span>
 
-<span class="nd">&#64;print_before</span><span class="p">(</span><span class="n">phrase</span><span class="o">=</span><span class="s">&quot;such setup&quot;</span><span class="p">)</span>
+<span class="nd">&#64;print_before</span><span class="p">(</span><span class="n">phrase</span><span class="o">=</span><span class="s2">&quot;such setup&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">doubles</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span><span class="n">x</span>
 
-<span class="nd">&#64;print_before</span><span class="p">()</span> <span class="c"># parens required</span>
+<span class="nd">&#64;print_before</span><span class="p">()</span> <span class="c1"># parens required</span>
 <span class="k">def</span> <span class="nf">random</span><span class="p">():</span>
     <span class="k">return</span> <span class="mi">4</span>
 </pre>
@@ -465,25 +465,25 @@ would quickly become&nbsp;messy.</p>
 <p>Back to optional kwargs, instead of having an outermost function that we
 must explictly call, why not use <tt class="docutils literal">functools.partial</tt> and setup a
 little&nbsp;check?</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">partial</span>
 
-<span class="k">def</span> <span class="nf">print_before</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">phrase</span><span class="o">=</span><span class="s">&quot;Settin up!&quot;</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">f</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">print_before</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">phrase</span><span class="o">=</span><span class="s2">&quot;Settin up!&quot;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">f</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">partial</span><span class="p">(</span><span class="n">print_before</span><span class="p">,</span> <span class="n">phrase</span><span class="o">=</span><span class="n">phrase</span><span class="p">)</span>
 
     <span class="nd">&#64;wraps</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">print</span><span class="p">(</span><span class="n">phrase</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">phrase</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">wrapper</span>
 
-<span class="nd">&#64;print_before</span> <span class="c"># parens not needed</span>
+<span class="nd">&#64;print_before</span> <span class="c1"># parens not needed</span>
 <span class="k">def</span> <span class="nf">double</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="k">return</span> <span class="mi">2</span><span class="o">*</span><span class="n">x</span>
 
-<span class="nd">&#64;print_before</span><span class="p">(</span><span class="n">phrase</span><span class="o">=</span><span class="s">&quot;such dice roll!&quot;</span><span class="p">)</span>
+<span class="nd">&#64;print_before</span><span class="p">(</span><span class="n">phrase</span><span class="o">=</span><span class="s2">&quot;such dice roll!&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">random</span><span class="p">():</span>
     <span class="k">return</span> <span class="mi">4</span>
 </pre>
@@ -507,25 +507,25 @@ than&nbsp;before.</p>
 <p>We&#8217;re already writing a decorator, and we&#8217;re getting pretty good at
 them, so why not a decorator that&#8217;ll handle this for us? This is
 probably the most confusing example, so hold&nbsp;on:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">optional_kwargs</span><span class="p">(</span><span class="n">deco</span><span class="p">):</span>
     <span class="nd">&#64;wraps</span><span class="p">(</span><span class="n">deco</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span> <span class="c"># &lt;- actual function our decorator becomes</span>
-        <span class="k">if</span> <span class="n">f</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span> <span class="c1"># &lt;- actual function our decorator becomes</span>
+        <span class="k">if</span> <span class="n">f</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">partial</span><span class="p">(</span><span class="n">wrapper</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">deco</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">wrapper</span>
 
 <span class="nd">&#64;optional_kwargs</span>
-<span class="k">def</span> <span class="nf">print_before</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">phrase</span><span class="o">=</span><span class="s">&quot;Setting up!&quot;</span><span class="p">):</span> <span class="c"># &lt;- becomes the closure inside in optional_kwargs</span>
+<span class="k">def</span> <span class="nf">print_before</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">phrase</span><span class="o">=</span><span class="s2">&quot;Setting up!&quot;</span><span class="p">):</span> <span class="c1"># &lt;- becomes the closure inside in optional_kwargs</span>
     <span class="nd">&#64;wraps</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">print</span><span class="p">(</span><span class="n">phrase</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">phrase</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">wrapper</span>
 
-<span class="nd">&#64;print_before</span><span class="p">(</span><span class="n">phrase</span><span class="o">=</span><span class="s">&quot;much mind bend!&quot;</span><span class="p">)</span> <span class="c"># &lt;- optional_kwarg's closure</span>
-<span class="k">def</span> <span class="nf">random</span><span class="p">():</span> <span class="c"># &lt;- becomes print_before's closure</span>
+<span class="nd">&#64;print_before</span><span class="p">(</span><span class="n">phrase</span><span class="o">=</span><span class="s2">&quot;much mind bend!&quot;</span><span class="p">)</span> <span class="c1"># &lt;- optional_kwarg's closure</span>
+<span class="k">def</span> <span class="nf">random</span><span class="p">():</span> <span class="c1"># &lt;- becomes print_before's closure</span>
     <span class="k">return</span> <span class="mi">4</span>
 </pre>
 <p>This looks really complex and intimidating, but it&#8217;s really not when you
@@ -552,8 +552,8 @@ causes your eyes to roll into the back of your head when you revisit it.
 Sometimes you just need a good &#8216;ol object to handle things for you.
 There&#8217;s two different ways to use objects as decorators, one is to use
 one instance per wrap and the other is to use one instance for every&nbsp;wrap.</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">update_wrapper</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">update_wrapper</span>
 
 <span class="k">class</span> <span class="nc">wrapperobj</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
@@ -575,7 +575,7 @@ when your logic becomes much more complex than what a simple function
 should reasonably handle, things like transcieving data to an event loop
 or socket for example or creating individual caches for each&nbsp;object.</p>
 <p>Let&#8217;s look at using a single instance to wrap multiple&nbsp;objects.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">onewrapper</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
         <span class="nd">&#64;wraps</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
@@ -621,20 +621,20 @@ maybe it&#8217;s just simpler than writing a metaclass in the first place.
 This next example comes from the
 <a class="reference external" href="https://github.com/kelp404/six">six.py</a> project and allows you to
 decorate a class to be applied in Python 2 and&nbsp;3.</p>
-<pre class="code python literal-block">
-<span class="c"># from six.py</span>
+<pre class="code ipython3 literal-block">
+<span class="c1"># from six.py</span>
 <span class="k">def</span> <span class="nf">add_metaclass</span><span class="p">(</span><span class="n">metaclass</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Class decorator for creating a class with a metaclass.&quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
         <span class="n">orig_vars</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">slots</span> <span class="o">=</span> <span class="n">orig_vars</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">'__slots__'</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">slots</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">slots</span> <span class="o">=</span> <span class="n">orig_vars</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'__slots__'</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">slots</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">slots</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                 <span class="n">slots</span> <span class="o">=</span> <span class="p">[</span><span class="n">slots</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">slots_var</span> <span class="ow">in</span> <span class="n">slots</span><span class="p">:</span>
                 <span class="n">orig_vars</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">slots_var</span><span class="p">)</span>
-        <span class="n">orig_vars</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">'__dict__'</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
-        <span class="n">orig_vars</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">'__weakref__'</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="n">orig_vars</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">'__dict__'</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">orig_vars</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">'__weakref__'</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">metaclass</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">__bases__</span><span class="p">,</span> <span class="n">orig_vars</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">wrapper</span>
 </pre>
@@ -648,7 +648,7 @@ happens is that Python defines the original object, then it walks up
 each decorator, passing the return value from each to the next
 decorator. That&#8217;s pretty much all there is to stacking decorators,
 except for one thing that I&#8217;ll cover in the next&nbsp;section.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="nd">&#64;wrapperobj</span>
 <span class="nd">&#64;print_before</span>
 <span class="k">def</span> <span class="nf">random</span><span class="p">():</span>
@@ -668,14 +668,14 @@ attributes as well (since they are really just key-value pairs sitting
 in <tt class="docutils literal">__dict__</tt>). In case you forgot, <tt class="docutils literal">pass_through</tt> is the first
 example in this section, it merely adds an attribute called
 <tt class="docutils literal">inspected</tt> to an&nbsp;object.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="nd">&#64;wrapperobj</span>
 <span class="nd">&#64;pass_through</span>
 <span class="k">def</span> <span class="nf">random</span><span class="p">():</span>
     <span class="k">return</span> <span class="mi">4</span>
 
-<span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">random</span><span class="p">,</span> <span class="s">'inspected'</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">random</span><span class="p">,</span> <span class="s1">'inspected'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 {'__annotations__': {}, 'f': &lt;function random at 0x7f26c0039d08&gt;, '__qualname__': 'random', '__wrapped__': &lt;function random at 0x7f26c0039d08&gt;, 'inspected': True, '__doc__': None, '__module__': '__main__', '__name__': 'random'}
@@ -844,7 +844,7 @@ anyone&nbsp;else.</p>
                     <span>1</span>
 </a></li>
                 <li><a href="/tags.html#python-ref">python
-                    <span>12</span>
+                    <span>15</span>
 </a></li>
             </ul>
 

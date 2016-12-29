@@ -18,7 +18,7 @@
         <![endif]-->
 
 
-<meta name="keywords" content="data processing, tutorial, " />
+<meta name="keywords" content="python, data processing, tutorials, " />
         <title>Python and Audio&nbsp;Metadata - from alec.thoughts import *
 </title>
         <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
@@ -123,44 +123,44 @@ files you&nbsp;want.</p>
 from one artist today, but extending this out to covering your whole
 library is easy (well, as long as you store your music in one location
 and in a reasonable&nbsp;pattern).</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">tinytag</span> <span class="kn">import</span> <span class="n">TinyTag</span>
-<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">os.path</span> <span class="kn">as</span> <span class="nn">path</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">tinytag</span> <span class="k">import</span> <span class="n">TinyTag</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">os.path</span> <span class="k">as</span> <span class="nn">path</span>
 
-<span class="c"># audio types TinyTag supports</span>
-<span class="n">valid_types</span> <span class="o">=</span> <span class="p">(</span><span class="s">'mp3'</span><span class="p">,</span> <span class="s">'ogg'</span><span class="p">,</span> <span class="s">'oga'</span><span class="p">,</span> <span class="s">'wav'</span><span class="p">,</span> <span class="s">'flac'</span><span class="p">)</span>
+<span class="c1"># audio types TinyTag supports</span>
+<span class="n">valid_types</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'mp3'</span><span class="p">,</span> <span class="s1">'ogg'</span><span class="p">,</span> <span class="s1">'oga'</span><span class="p">,</span> <span class="s1">'wav'</span><span class="p">,</span> <span class="s1">'flac'</span><span class="p">)</span>
 
-<span class="c"># artist directory</span>
-<span class="n">acid_bath</span> <span class="o">=</span> <span class="s">'/home/justanr/Music/Acid Bath/'</span>
+<span class="c1"># artist directory</span>
+<span class="n">acid_bath</span> <span class="o">=</span> <span class="s1">'/home/justanr/Music/Acid Bath/'</span>
 
-<span class="c">#extract the directories within the artist directory</span>
-<span class="n">albums</span> <span class="o">=</span> <span class="p">[</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">acid_bath</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">acid_bath</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="s">'Demos'</span> <span class="ow">in</span> <span class="n">a</span><span class="p">]</span>
+<span class="c1">#extract the directories within the artist directory</span>
+<span class="n">albums</span> <span class="o">=</span> <span class="p">[</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">acid_bath</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">acid_bath</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="s1">'Demos'</span> <span class="ow">in</span> <span class="n">a</span><span class="p">]</span>
 
 <span class="n">tracks</span> <span class="o">=</span> <span class="p">[]</span>
 
-<span class="c"># extract tracks from each album directory</span>
+<span class="c1"># extract tracks from each album directory</span>
 <span class="k">for</span> <span class="n">album</span> <span class="ow">in</span> <span class="n">albums</span><span class="p">:</span>
     <span class="n">_tracks</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">album</span><span class="p">):</span>
-        <span class="c"># did you know it was possible to pass an iterable to str.endswith?</span>
+        <span class="c1"># did you know it was possible to pass an iterable to str.endswith?</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">t</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">valid_types</span><span class="p">):</span>
             <span class="k">continue</span>
         <span class="n">_tracks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">album</span><span class="p">,</span> <span class="n">t</span><span class="p">))</span>
     <span class="n">tracks</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">_tracks</span><span class="p">)</span>
 
-<span class="k">del</span> <span class="n">_tracks</span> <span class="c"># no need for hanger-ons.</span>
+<span class="k">del</span> <span class="n">_tracks</span> <span class="c1"># no need for hanger-ons.</span>
 
-<span class="c"># convert track paths to TinyTag objects</span>
+<span class="c1"># convert track paths to TinyTag objects</span>
 <span class="n">tracks</span> <span class="o">=</span> <span class="p">[</span><span class="n">TinyTag</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tracks</span><span class="p">]</span>
 
-<span class="c"># string representation is actually a</span>
-<span class="c"># string representation of a dictionary</span>
-<span class="c"># created on the fly from the public</span>
-<span class="c"># values on the actual object</span>
-<span class="k">print</span><span class="p">(</span><span class="n">tracks</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="c1"># string representation is actually a</span>
+<span class="c1"># string representation of a dictionary</span>
+<span class="c1"># created on the fly from the public</span>
+<span class="c1"># values on the actual object</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">tracks</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 </pre>
 <pre class="literal-block">
-{'year': '1994', 'duration': 297.87708785043435, 'track': 'x035', 'audio_offset': 192239, 'artist': 'x03Acid Bath', 'filesize': 11915076, 'bitrate': 320.0, 'title': 'x03Jezebel', 'album': 'x03When the Kite String Pops', 'track_total': '14', 'samplerate': 44100}
+{'track_total': '14', 'title': 'x03Jezebel', 'filesize': 11915076, 'artist': 'x03Acid Bath', 'album': 'x03When the Kite String Pops', 'track': 'x035', 'audio_offset': 192239, 'bitrate': 320.0, 'year': '1994', 'samplerate': 44100, 'duration': 297.87708785043435}
 </pre>
 <p>As an aside, if you&#8217;ve never listened to <a class="reference external" href="http://www.metal-archives.com/bands/Acid_Bath/19">Acid
 Bath</a>, I can&#8217;t
@@ -177,31 +177,31 @@ here though: <tt class="docutils literal">\x03</tt> denotes <tt class="docutils 
 you&#8217;re suppose to see it in <span class="caps">ID3</span> tags (though, that&#8217;s based on second
 hand information as my search-fu didn&#8217;t turn up anything). However, I
 have actually run into an encoding issue using TinyTag (I&#8217;m not sure if
-the problem is with the file, Python or TinyTag). An&nbsp;example:</p>
-<pre class="code python literal-block">
-<span class="n">nzp</span> <span class="o">=</span> <span class="n">TinyTag</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">'/home/justanr/Music/At the Drive-In/Relationship of Command/11 Non‐Zero Possibility.mp3'</span><span class="p">)</span>
+the problem is with the file, Python, IPython or TinyTag). An&nbsp;example:</p>
+<pre class="code ipython3 literal-block">
+<span class="n">nzp</span> <span class="o">=</span> <span class="n">TinyTag</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'/home/justanr/Music/At the Drive‐In/Relationship of Command/11 Non‐Zero Possibility.mp3'</span><span class="p">)</span>
 
-<span class="k">print</span><span class="p">(</span><span class="s">'Expected:      At the Drive-In - Relationship of Command - 11 - Non-Zero Possibility'</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s">'Actual:       '</span><span class="p">,</span> <span class="s">' - '</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">nzp</span><span class="o">.</span><span class="n">artist</span><span class="p">,</span> <span class="n">nzp</span><span class="o">.</span><span class="n">album</span><span class="p">,</span> <span class="n">nzp</span><span class="o">.</span><span class="n">track</span><span class="p">,</span> <span class="n">nzp</span><span class="o">.</span><span class="n">title</span><span class="p">]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'Expected:      At the Drive-In - Relationship of Command - 11 - Non-Zero Possibility'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'Actual:       '</span><span class="p">,</span> <span class="s1">' - '</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">nzp</span><span class="o">.</span><span class="n">artist</span><span class="p">,</span> <span class="n">nzp</span><span class="o">.</span><span class="n">album</span><span class="p">,</span> <span class="n">nzp</span><span class="o">.</span><span class="n">track</span><span class="p">,</span> <span class="n">nzp</span><span class="o">.</span><span class="n">title</span><span class="p">]))</span>
 
-<span class="c"># This is just a bandage.</span>
-<span class="c"># The actual issue is an encoding issue</span>
-<span class="c"># I've not been able to track down.</span>
+<span class="c1"># This is just a bandage.</span>
+<span class="c1"># The actual issue is an encoding issue</span>
+<span class="c1"># I've not been able to track down.</span>
 
-<span class="c"># I'd like to thank /u/anossov and /u/ryeguy146</span>
-<span class="c"># for help, even though we all agree this isn't</span>
-<span class="c"># the correct way to address the issue at hand</span>
+<span class="c1"># I'd like to thank /u/anossov and /u/ryeguy146</span>
+<span class="c1"># for help, even though we all agree this isn't</span>
+<span class="c1"># the correct way to address the issue at hand</span>
 
-<span class="k">def</span> <span class="nf">fixer</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">UnicodeEncodeError</span><span class="p">),</span> <span class="n">handle</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">fixer</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">UnicodeEncodeError</span><span class="p">),</span> <span class="n">handle</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">'''Actual fixer function for fix_track
 
     ignore is a tuple of exceptions we should just discard.
     handle is an optional exception handler.
     '''</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">'latin-1'</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">'utf-8'</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-        <span class="c"># matching \x03 is frustrating</span>
-        <span class="c"># again, just a crutch to lean on</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'latin-1'</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="c1"># matching \x03 is frustrating</span>
+        <span class="c1"># again, just a crutch to lean on</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">isprintable</span><span class="p">():</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
     <span class="k">except</span> <span class="n">ignore</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -210,15 +210,15 @@ the problem is with the file, Python or TinyTag). An&nbsp;example:</p>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">pass</span>
     <span class="k">finally</span><span class="p">:</span>
-        <span class="c"># we always end up here</span>
+        <span class="c1"># we always end up here</span>
         <span class="k">return</span> <span class="n">value</span>
 
 
 <span class="k">def</span> <span class="nf">fix_track</span><span class="p">(</span>
               <span class="n">track</span><span class="p">,</span>
               <span class="n">fixer</span><span class="o">=</span><span class="n">fixer</span><span class="p">,</span>
-              <span class="n">fields</span><span class="o">=</span><span class="p">(</span><span class="s">'artist'</span><span class="p">,</span> <span class="s">'album'</span><span class="p">,</span> <span class="s">'title'</span><span class="p">,</span> <span class="s">'track'</span><span class="p">,</span> <span class="s">'year'</span><span class="p">,</span> <span class="s">'track_total'</span><span class="p">),</span>
-              <span class="n">int_convert</span><span class="o">=</span><span class="p">(</span><span class="s">'track'</span><span class="p">,</span> <span class="s">'year'</span><span class="p">,</span> <span class="s">'track_total'</span><span class="p">)</span>
+              <span class="n">fields</span><span class="o">=</span><span class="p">(</span><span class="s1">'artist'</span><span class="p">,</span> <span class="s1">'album'</span><span class="p">,</span> <span class="s1">'title'</span><span class="p">,</span> <span class="s1">'track'</span><span class="p">,</span> <span class="s1">'year'</span><span class="p">,</span> <span class="s1">'track_total'</span><span class="p">),</span>
+              <span class="n">int_convert</span><span class="o">=</span><span class="p">(</span><span class="s1">'track'</span><span class="p">,</span> <span class="s1">'year'</span><span class="p">,</span> <span class="s1">'track_total'</span><span class="p">)</span>
               <span class="p">):</span>
     <span class="sd">'''Fix encoding issue encountered on some tracks.
 
@@ -230,9 +230,9 @@ the problem is with the file, Python or TinyTag). An&nbsp;example:</p>
     <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
         <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">track</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="p">:</span>
-            <span class="c"># value is likely None</span>
-            <span class="c"># we'll pass on this value</span>
-            <span class="c"># to avoid blowing up</span>
+            <span class="c1"># value is likely None</span>
+            <span class="c1"># we'll pass on this value</span>
+            <span class="c1"># to avoid blowing up</span>
             <span class="k">continue</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">fixer</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
@@ -243,23 +243,25 @@ the problem is with the file, Python or TinyTag). An&nbsp;example:</p>
                 <span class="k">pass</span>
         <span class="nb">setattr</span><span class="p">(</span><span class="n">track</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
-    <span class="c"># TODO: need to make this mutable</span>
-    <span class="c"># for now, it's hardcoded as TinyTag</span>
-    <span class="c"># stores duration as a float</span>
+    <span class="c1"># TODO: need to make this mutable</span>
+    <span class="c1"># for now, it's hardcoded as TinyTag</span>
+    <span class="c1"># stores duration as a float</span>
     <span class="n">track</span><span class="o">.</span><span class="n">duration</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">track</span><span class="o">.</span><span class="n">duration</span><span class="p">)</span>
 
-    <span class="c"># returning the track allows us</span>
-    <span class="c"># to be flexible in application</span>
-    <span class="c"># of this function</span>
+    <span class="c1"># returning the track allows us</span>
+    <span class="c1"># to be flexible in application</span>
+    <span class="c1"># of this function</span>
     <span class="k">return</span> <span class="n">track</span>
 
 <span class="n">nzp</span> <span class="o">=</span> <span class="n">fix_track</span><span class="p">(</span><span class="n">nzp</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s">'After Fixing: '</span><span class="p">,</span> <span class="s">' - '</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">nzp</span><span class="o">.</span><span class="n">artist</span><span class="p">,</span> <span class="n">nzp</span><span class="o">.</span><span class="n">album</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">nzp</span><span class="o">.</span><span class="n">track</span><span class="p">),</span> <span class="n">nzp</span><span class="o">.</span><span class="n">title</span><span class="p">]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'After Fixing: '</span><span class="p">,</span> <span class="s1">' - '</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">nzp</span><span class="o">.</span><span class="n">artist</span><span class="p">,</span> <span class="n">nzp</span><span class="o">.</span><span class="n">album</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">nzp</span><span class="o">.</span><span class="n">track</span><span class="p">),</span> <span class="n">nzp</span><span class="o">.</span><span class="n">title</span><span class="p">]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">nzp</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 Expected:      At the Drive-In - Relationship of Command - 11 - Non-Zero Possibility
 Actual:        At the DriveâIn - Relationship of Command - 11 - NonâZero Possibility
 After Fixing:  At the Drive‐In - Relationship of Command - 11 - Non‐Zero Possibility
+{'track_total': 11, 'title': 'Non‐Zero Possibility', 'filesize': 5382993, 'artist': 'At the Drive‐In', 'album': 'Relationship of Command', 'track': 11, 'audio_offset': 2058, 'bitrate': 128.0, 'year': 2000, 'samplerate': 44100, 'duration': 336}
 </pre>
 <p>As you can see, encoding issues are <em>painful</em>. This bandage is the best
 I can come up with until I can actually track down and address the
@@ -284,50 +286,49 @@ reference left. Meaning if we created a bunch of Artist objects, stuffed
 them into permanent storage somewhere and then deleted the objects (and
 all their &#8220;strong&#8221; references), Python can come clean up some memory for
 us. Which is incredibly useful when dealing with a lot of data at&nbsp;once.</p>
-<pre class="code python literal-block">
-<span class="kn">import</span> <span class="nn">itertools</span> <span class="kn">as</span> <span class="nn">it</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span><span class="p">,</span> <span class="n">total_ordering</span>
-<span class="kn">from</span> <span class="nn">weakref</span> <span class="kn">import</span> <span class="n">WeakValueDictionary</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">import</span> <span class="nn">itertools</span> <span class="k">as</span> <span class="nn">it</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">wraps</span>
+<span class="kn">from</span> <span class="nn">weakref</span> <span class="k">import</span> <span class="n">WeakValueDictionary</span>
 
-<span class="c"># Too lazy to spend time manipulating</span>
-<span class="c"># __new__ or making a metaclass</span>
-<span class="c"># (actually, I spent a lot of time being frustrated at them)</span>
-<span class="c"># to handle this so there's this hack</span>
+<span class="c1"># Too lazy to spend time manipulating</span>
+<span class="c1"># __new__ or making a metaclass</span>
+<span class="c1"># (actually, I spent a lot of time being frustrated at them)</span>
+<span class="c1"># to handle this so there's this hack</span>
 <span class="k">def</span> <span class="nf">cache</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
     <span class="sd">'''Helper caching and identification methods.'''</span>
     <span class="n">_registry</span> <span class="o">=</span> <span class="n">WeakValueDictionary</span><span class="p">()</span>
     <span class="n">_ids</span> <span class="o">=</span> <span class="n">it</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">by_name</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">_registry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_registry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
     <span class="nd">&#64;wraps</span><span class="p">(</span><span class="n">cls</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">nonlocal</span> <span class="n">_registry</span><span class="p">,</span> <span class="n">_ids</span>
+        <span class="k">nonlocal</span> <span class="n">_registry</span><span class="p">,</span> <span class="n">_ids</span>
 
         <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_registry</span><span class="p">:</span>
-            <span class="c"># create a new instance of the class</span>
+            <span class="c1"># create a new instance of the class</span>
             <span class="n">instance</span> <span class="o">=</span> <span class="n">cls</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-            <span class="c"># generate id for the instance</span>
+            <span class="c1"># generate id for the instance</span>
             <span class="n">instance</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">_ids</span><span class="p">)</span>
 
-            <span class="c"># register the instance</span>
+            <span class="c1"># register the instance</span>
             <span class="n">_registry</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">instance</span>
 
-        <span class="c">#reuturn the instance</span>
+        <span class="c1">#reuturn the instance</span>
         <span class="k">return</span> <span class="n">_registry</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
     <span class="n">wrapper</span><span class="o">.</span><span class="n">by_name</span> <span class="o">=</span> <span class="n">by_name</span>
     <span class="k">return</span> <span class="n">wrapper</span>
 
-<span class="nd">&#64;total_ordering</span>
 <span class="k">class</span> <span class="nc">ComparableMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">_compare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">method</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">method</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cmpkey</span><span class="p">(),</span> <span class="n">other</span><span class="o">.</span><span class="n">_cmpkey</span><span class="p">())</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
-            <span class="c"># _cmpkey not implemented, or return different type,</span>
-            <span class="c"># so I can't compare with &quot;other&quot;.</span>
+            <span class="c1"># _cmpkey not implemented, or return different type,</span>
+            <span class="c1"># so I can't compare with &quot;other&quot;.</span>
             <span class="k">return</span> <span class="bp">NotImplemented</span>
 
     <span class="k">def</span> <span class="nf">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -336,22 +337,34 @@ us. Which is incredibly useful when dealing with a lot of data at&nbsp;once.</p>
     <span class="k">def</span> <span class="nf">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compare</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">:</span> <span class="n">s</span> <span class="o">&lt;</span> <span class="n">o</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">__le__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compare</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">:</span> <span class="n">s</span> <span class="o">&lt;=</span> <span class="n">o</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compare</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">:</span> <span class="n">s</span> <span class="o">==</span> <span class="n">o</span><span class="p">)</span>
+       <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compare</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">:</span> <span class="n">s</span> <span class="o">==</span> <span class="n">o</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__ge__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compare</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">:</span> <span class="n">s</span> <span class="o">&gt;=</span> <span class="n">o</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__gt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compare</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">:</span> <span class="n">s</span> <span class="o">&gt;</span> <span class="n">o</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compare</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">,</span><span class="n">o</span><span class="p">:</span> <span class="n">s</span> <span class="o">!=</span> <span class="n">o</span><span class="p">)</span>
 
 <span class="nd">&#64;cache</span>
 <span class="k">class</span> <span class="nc">Artist</span><span class="p">(</span><span class="n">ComparableMixin</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">albums</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">albums</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-        <span class="c"># albums should be a list of albums</span>
-        <span class="c"># but it becomes a dictionary</span>
-        <span class="c"># probably shouldn't actually do this</span>
+        <span class="c1"># albums should be a list of albums</span>
+        <span class="c1"># but it becomes a dictionary</span>
+        <span class="c1"># probably shouldn't actually do this</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">albums</span> <span class="o">=</span> <span class="n">albums</span> <span class="ow">or</span> <span class="p">{}</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">albums</span><span class="p">:</span>
             <span class="n">albums</span> <span class="o">=</span> <span class="p">[</span><span class="n">Album</span><span class="o">.</span><span class="n">by_name</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">albums</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">albums</span> <span class="o">=</span> <span class="p">{</span><span class="n">a</span><span class="o">.</span><span class="n">name</span><span class="p">:</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">albums</span> <span class="k">if</span> <span class="n">a</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">albums</span> <span class="o">=</span> <span class="p">{</span><span class="n">a</span><span class="o">.</span><span class="n">name</span><span class="p">:</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">albums</span> <span class="k">if</span> <span class="n">a</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">_cmpkey</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">'''This key is used by ComparableMixin for ordering.
@@ -361,24 +374,24 @@ us. Which is incredibly useful when dealing with a lot of data at&nbsp;once.</p>
         in a hashtable.
         '''</span>
 
-        <span class="c"># tuples compare across like this:</span>
-        <span class="c"># self[0] op other[0] ... self[n] op other[n]</span>
-        <span class="c"># until the tuples don't match</span>
-        <span class="c"># then Python sorts them accordingly</span>
-        <span class="c"># meaning often the whole tuple doesn't get</span>
-        <span class="c"># compared to another tuple</span>
-        <span class="c"># this is helpful when you want a default</span>
-        <span class="c"># multivalue sort</span>
+        <span class="c1"># tuples compare across like this:</span>
+        <span class="c1"># self[0] op other[0] ... self[n] op other[n]</span>
+        <span class="c1"># until the tuples don't match</span>
+        <span class="c1"># then Python sorts them accordingly</span>
+        <span class="c1"># meaning often the whole tuple doesn't get</span>
+        <span class="c1"># compared to another tuple</span>
+        <span class="c1"># this is helpful when you want a default</span>
+        <span class="c1"># multivalue sort</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s">&quot;&lt;Artist name={} id={}&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;Artist name=</span><span class="si">{}</span><span class="s2"> id=</span><span class="si">{}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
 
 <span class="nd">&#64;cache</span>
 <span class="k">class</span> <span class="nc">Album</span><span class="p">(</span><span class="n">ComparableMixin</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">artist</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">tracks</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">artist</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tracks</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">artist</span> <span class="o">=</span> <span class="n">Artist</span><span class="o">.</span><span class="n">by_name</span><span class="p">(</span><span class="n">artist</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span> <span class="o">=</span> <span class="n">tracks</span> <span class="ow">or</span> <span class="p">[]</span>
@@ -388,23 +401,23 @@ us. Which is incredibly useful when dealing with a lot of data at&nbsp;once.</p>
 
         <span class="k">if</span> <span class="n">tracks</span><span class="p">:</span>
             <span class="n">tracks</span> <span class="o">=</span> <span class="p">[</span><span class="n">Track</span><span class="o">.</span><span class="n">by_name</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tracks</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tracks</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">t</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tracks</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">t</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">_cmpkey</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">artist</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">artist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">artist</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">artist</span> <span class="k">else</span> <span class="s">&quot;&lt;BLANK&gt;&quot;</span>
-        <span class="k">return</span> <span class="s">&quot;&lt;Album name={} artist={} id={}&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">artist</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="n">artist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">artist</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">artist</span> <span class="k">else</span> <span class="s2">&quot;&lt;BLANK&gt;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;Album name=</span><span class="si">{}</span><span class="s2"> artist=</span><span class="si">{}</span><span class="s2"> id=</span><span class="si">{}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">artist</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
 
 <span class="nd">&#64;cache</span>
 <span class="k">class</span> <span class="nc">Track</span><span class="p">(</span><span class="n">ComparableMixin</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">track</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">artist</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">album</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">track</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">artist</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">album</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">track</span> <span class="o">=</span> <span class="n">track</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">=</span> <span class="n">length</span> <span class="c"># in seconds</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">=</span> <span class="n">length</span> <span class="c1"># in seconds</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">artist</span> <span class="o">=</span> <span class="n">Artist</span><span class="o">.</span><span class="n">by_name</span><span class="p">(</span><span class="n">artist</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">album</span> <span class="o">=</span> <span class="n">Album</span><span class="o">.</span><span class="n">by_name</span><span class="p">(</span><span class="n">album</span><span class="p">)</span>
 
@@ -415,23 +428,23 @@ us. Which is incredibly useful when dealing with a lot of data at&nbsp;once.</p>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">album</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">track</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">album</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">album</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">album</span> <span class="k">else</span> <span class="s">&quot;&lt;BLANK&gt;&quot;</span>
-        <span class="n">artist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">artist</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">artist</span> <span class="k">else</span> <span class="s">&quot;&lt;BLANK&gt;&quot;</span>
+        <span class="n">album</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">album</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">album</span> <span class="k">else</span> <span class="s2">&quot;&lt;BLANK&gt;&quot;</span>
+        <span class="n">artist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">artist</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">artist</span> <span class="k">else</span> <span class="s2">&quot;&lt;BLANK&gt;&quot;</span>
 
-        <span class="k">return</span> <span class="s">&quot;&lt;Track artist={} album={} track={} name={} id={}&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">artist</span><span class="p">,</span> <span class="n">album</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">track</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;Track artist=</span><span class="si">{}</span><span class="s2"> album=</span><span class="si">{}</span><span class="s2"> track=</span><span class="si">{}</span><span class="s2"> name=</span><span class="si">{}</span><span class="s2"> id=</span><span class="si">{}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">artist</span><span class="p">,</span> <span class="n">album</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">track</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
 
-<span class="c"># Mini unit tests ;)</span>
-<span class="c"># gorguts = Artist(name='Gorguts')</span>
-<span class="c"># obscura = Album(name='Obscura', artist='Gorguts')</span>
-<span class="c"># obscura_track = Track(name=&quot;Obscura&quot;, track=1, length=244, artist=&quot;Gorguts&quot;, album=&quot;Obscura&quot;)</span>
-<span class="c"># assert obscura.artist is gorguts</span>
-<span class="c"># assert obscura.name in gorguts.albums</span>
-<span class="c"># assert obscura_track in obscura.tracks</span>
-<span class="c"># assert obscura == gorguts.albums['Obscura']</span>
-<span class="c"># assert Artist.by_name('blank') is None</span>
-<span class="c"># assert Artist(name='test').id == 2</span>
-<span class="c"># assert Artist(name='Gorguts') is gorguts</span>
-<span class="c"># print(gorguts, obscura, obscura_track)</span>
+<span class="c1"># Mini unit tests ;)</span>
+<span class="c1"># gorguts = Artist(name='Gorguts')</span>
+<span class="c1"># obscura = Album(name='Obscura', artist='Gorguts')</span>
+<span class="c1"># obscura_track = Track(name=&quot;Obscura&quot;, track=1, length=244, artist=&quot;Gorguts&quot;, album=&quot;Obscura&quot;)</span>
+<span class="c1"># assert obscura.artist is gorguts</span>
+<span class="c1"># assert obscura.name in gorguts.albums</span>
+<span class="c1"># assert obscura_track in obscura.tracks</span>
+<span class="c1"># assert obscura == gorguts.albums['Obscura']</span>
+<span class="c1"># assert Artist.by_name('blank') is None</span>
+<span class="c1"># assert Artist(name='test').id == 2</span>
+<span class="c1"># assert Artist(name='Gorguts') is gorguts</span>
+<span class="c1"># print(gorguts, obscura, obscura_track)</span>
 </pre>
 <p>So much hard work taken care of for us with a little magic. The little
 unittest at the end is to assure us everything is working as intended.
@@ -445,23 +458,23 @@ a <tt class="docutils literal">HashableMixin</tt>, there&#8217;s already a <em>t
 frame, I decided another class would just add to the&nbsp;noise.</p>
 <p>Now, we need to massage our list of Acid Bath tracks into these models.
 You didn&#8217;t think I forgot about them, did&nbsp;you?</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span>
 
 <span class="n">tracks</span> <span class="o">=</span> <span class="p">[</span><span class="n">fix_track</span><span class="p">(</span><span class="n">track</span><span class="p">)</span> <span class="k">for</span> <span class="n">track</span> <span class="ow">in</span> <span class="n">tracks</span><span class="p">]</span>
 
-<span class="c"># our sort and groupby key function</span>
-<span class="n">key</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s">'key'</span><span class="p">,</span> <span class="p">[</span><span class="s">'artist'</span><span class="p">,</span> <span class="s">'album'</span><span class="p">,</span> <span class="s">'track'</span><span class="p">])</span>
+<span class="c1"># our sort and groupby key function</span>
+<span class="n">key</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">'key'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'artist'</span><span class="p">,</span> <span class="s1">'album'</span><span class="p">,</span> <span class="s1">'track'</span><span class="p">])</span>
 <span class="n">compare</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">key</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">artist</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">album</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">track</span><span class="p">)</span>
 
-<span class="c"># named after the pattern</span>
-<span class="n">adaptor</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="p">{</span><span class="s">'artist'</span><span class="p">:</span><span class="n">t</span><span class="o">.</span><span class="n">artist</span><span class="p">,</span> <span class="s">'album'</span><span class="p">:</span><span class="n">t</span><span class="o">.</span><span class="n">album</span><span class="p">,</span> <span class="s">'length'</span><span class="p">:</span><span class="n">t</span><span class="o">.</span><span class="n">duration</span><span class="p">,</span> <span class="s">'name'</span><span class="p">:</span><span class="n">t</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="s">'track'</span><span class="p">:</span><span class="n">t</span><span class="o">.</span><span class="n">track</span><span class="p">}</span>
+<span class="c1"># named after the pattern</span>
+<span class="n">adaptor</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="p">{</span><span class="s1">'artist'</span><span class="p">:</span><span class="n">t</span><span class="o">.</span><span class="n">artist</span><span class="p">,</span> <span class="s1">'album'</span><span class="p">:</span><span class="n">t</span><span class="o">.</span><span class="n">album</span><span class="p">,</span> <span class="s1">'length'</span><span class="p">:</span><span class="n">t</span><span class="o">.</span><span class="n">duration</span><span class="p">,</span> <span class="s1">'name'</span><span class="p">:</span><span class="n">t</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="s1">'track'</span><span class="p">:</span><span class="n">t</span><span class="o">.</span><span class="n">track</span><span class="p">}</span>
 
 <span class="n">tracks</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">compare</span><span class="p">)</span>
 
-<span class="c"># this keeps us from creating a big list</span>
-<span class="c"># with the same artist, albums and tracks</span>
-<span class="c"># over and over by accident</span>
+<span class="c1"># this keeps us from creating a big list</span>
+<span class="c1"># with the same artist, albums and tracks</span>
+<span class="c1"># over and over by accident</span>
 <span class="n">artists</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 <span class="n">albums</span>  <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 <span class="n">_tracks</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
@@ -476,50 +489,55 @@ You didn&#8217;t think I forgot about them, did&nbsp;you?</p>
 <span class="n">albums</span>  <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">albums</span><span class="p">)</span>
 <span class="n">tracks</span>  <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">_tracks</span><span class="p">)</span>
 
-<span class="c"># no hanger ons!</span>
+<span class="c1"># no hanger ons!</span>
 <span class="k">del</span> <span class="n">_tracks</span>
 
-<span class="k">print</span><span class="p">(</span><span class="s">&quot;Artists: &quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">artists</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">Albums: &quot;</span><span class="p">,</span> <span class="o">*</span><span class="nb">sorted</span><span class="p">(</span><span class="n">albums</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">Tracks: &quot;</span><span class="p">,</span> <span class="o">*</span><span class="nb">sorted</span><span class="p">(</span><span class="n">tracks</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Artists: &quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">artists</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Albums: &quot;</span><span class="p">,</span> <span class="o">*</span><span class="nb">sorted</span><span class="p">(</span><span class="n">albums</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Tracks: &quot;</span><span class="p">,</span> <span class="o">*</span><span class="nb">sorted</span><span class="p">(</span><span class="n">tracks</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
----------------------------------------------------------------------------
+Artists:
+&lt;Artist name=Acid Bath id=1&gt;
 
-AttributeError                            Traceback (most recent call last)
+Albums:
+&lt;Album name=Paegan Terrorism Tactics artist=Acid Bath id=1&gt;
+&lt;Album name=When the Kite String Pops artist=Acid Bath id=2&gt;
 
-&lt;ipython-input-9-2ec183945278&gt; in &lt;module&gt;()
-      1 from collections import namedtuple
-      2
-----&gt; 3 tracks = [fix_track(track) for track in tracks]
-      4
-      5 # our sort and groupby key function
-
-
-&lt;ipython-input-9-2ec183945278&gt; in &lt;listcomp&gt;(.0)
-      1 from collections import namedtuple
-      2
-----&gt; 3 tracks = [fix_track(track) for track in tracks]
-      4
-      5 # our sort and groupby key function
-
-
-&lt;ipython-input-5-9b75dc42f80b&gt; in fix_track(track, fixer, fields, int_convert)
-     48     '''
-     49     for f in fields:
----&gt; 50         value = getattr(track, f)
-     51         if not value:
-     52             # value is likely None
-
-
-AttributeError: 'Track' object has no attribute 'title'
+Tracks:
+&lt;Track artist=Acid Bath album=Paegan Terrorism Tactics track=1 name=Paegan Love Song id=1&gt;
+&lt;Track artist=Acid Bath album=Paegan Terrorism Tactics track=2 name=Bleed Me an Ocean id=2&gt;
+&lt;Track artist=Acid Bath album=Paegan Terrorism Tactics track=3 name=Graveflower id=3&gt;
+&lt;Track artist=Acid Bath album=Paegan Terrorism Tactics track=4 name=Diäb Soulé id=4&gt;
+&lt;Track artist=Acid Bath album=Paegan Terrorism Tactics track=5 name=Locust Spawning id=5&gt;
+&lt;Track artist=Acid Bath album=Paegan Terrorism Tactics track=6 name=Old Skin id=6&gt;
+&lt;Track artist=Acid Bath album=Paegan Terrorism Tactics track=7 name=New Death Sensation id=7&gt;
+&lt;Track artist=Acid Bath album=Paegan Terrorism Tactics track=8 name=Venus Blue id=8&gt;
+&lt;Track artist=Acid Bath album=Paegan Terrorism Tactics track=9 name=13 Fingers id=9&gt;
+&lt;Track artist=Acid Bath album=Paegan Terrorism Tactics track=10 name=New Corpse id=10&gt;
+&lt;Track artist=Acid Bath album=Paegan Terrorism Tactics track=11 name=Dead Girl id=11&gt;
+&lt;Track artist=Acid Bath album=Paegan Terrorism Tactics track=12 name=Ode of the Peagan id=12&gt;
+&lt;Track artist=Acid Bath album=When the Kite String Pops track=1 name=The Blue id=13&gt;
+&lt;Track artist=Acid Bath album=When the Kite String Pops track=2 name=Tranquilized id=14&gt;
+&lt;Track artist=Acid Bath album=When the Kite String Pops track=3 name=Cheap Vodka id=15&gt;
+&lt;Track artist=Acid Bath album=When the Kite String Pops track=4 name=Finger Paintings of the Insane id=16&gt;
+&lt;Track artist=Acid Bath album=When the Kite String Pops track=5 name=Jezebel id=17&gt;
+&lt;Track artist=Acid Bath album=When the Kite String Pops track=6 name=Scream of the Butterfly id=18&gt;
+&lt;Track artist=Acid Bath album=When the Kite String Pops track=7 name=Dr. Seuss Is Dead id=19&gt;
+&lt;Track artist=Acid Bath album=When the Kite String Pops track=8 name=Dope Fiend id=20&gt;
+&lt;Track artist=Acid Bath album=When the Kite String Pops track=9 name=Toubabo Koomi id=21&gt;
+&lt;Track artist=Acid Bath album=When the Kite String Pops track=10 name=God Machine id=22&gt;
+&lt;Track artist=Acid Bath album=When the Kite String Pops track=11 name=The Morticians Flame id=23&gt;
+&lt;Track artist=Acid Bath album=When the Kite String Pops track=12 name=What Color Is Death id=24&gt;
+&lt;Track artist=Acid Bath album=When the Kite String Pops track=13 name=The Bones of Baby Dolls id=25&gt;
+&lt;Track artist=Acid Bath album=When the Kite String Pops track=14 name=Cassie Eats Cockroaches id=26&gt;
 </pre>
 <p>Of course to avoid dealing with &#8220;hanger on&#8221; variables as I like to call
 them, this logic (as well as the logic to take a directory and extract
 it&#8217;s subdirectories and finally the music files in it) could be stored
 in a function that&#8217;d be callable again and again. Something like&nbsp;this:</p>
-<pre class="code python literal-block">
-<span class="k">def</span> <span class="nf">get_music_files</span><span class="p">(</span><span class="n">basedir</span><span class="p">,</span> <span class="n">valid_types</span><span class="o">=</span><span class="p">(</span><span class="s">'mp3'</span><span class="p">,</span> <span class="s">'ogg'</span><span class="p">,</span> <span class="s">'oga'</span><span class="p">,</span> <span class="s">'wav'</span><span class="p">,</span> <span class="s">'flac'</span><span class="p">),</span> <span class="n">ignore</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<pre class="code ipython3 literal-block">
+<span class="k">def</span> <span class="nf">get_music_files</span><span class="p">(</span><span class="n">basedir</span><span class="p">,</span> <span class="n">valid_types</span><span class="o">=</span><span class="p">(</span><span class="s1">'mp3'</span><span class="p">,</span> <span class="s1">'ogg'</span><span class="p">,</span> <span class="s1">'oga'</span><span class="p">,</span> <span class="s1">'wav'</span><span class="p">,</span> <span class="s1">'flac'</span><span class="p">),</span> <span class="n">ignore</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">'''Walks the base directory to extract album directories from it.
     Then walks each album directory to extract valid audio files from it.
 
@@ -545,7 +563,7 @@ in a function that&#8217;d be callable again and again. Something like&nbsp;this
 
     <span class="k">return</span> <span class="n">tracks</span>
 
-<span class="k">def</span> <span class="nf">convert_tinytags</span><span class="p">(</span><span class="n">tracks</span><span class="p">,</span> <span class="n">key_fields</span><span class="o">=</span><span class="p">(</span><span class="s">'artist'</span><span class="p">,</span> <span class="s">'album'</span><span class="p">,</span> <span class="s">'track'</span><span class="p">),</span> <span class="n">adaptor</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">convert_tinytags</span><span class="p">(</span><span class="n">tracks</span><span class="p">,</span> <span class="n">key_fields</span><span class="o">=</span><span class="p">(</span><span class="s1">'artist'</span><span class="p">,</span> <span class="s1">'album'</span><span class="p">,</span> <span class="s1">'track'</span><span class="p">),</span> <span class="n">adaptor</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">'''Accepts an iterable of TinyTag objects (or similar) and parses them
     into Artist, Album and Track objects.
 
@@ -555,7 +573,7 @@ in a function that&#8217;d be callable again and again. Something like&nbsp;this
         track objects to create the new track objects
     '''</span>
 
-    <span class="n">key</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s">'key'</span><span class="p">,</span> <span class="n">key_fields</span><span class="p">)</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">'key'</span><span class="p">,</span> <span class="n">key_fields</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">compare</span><span class="p">(</span><span class="n">track</span><span class="p">):</span>
         <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
@@ -564,12 +582,12 @@ in a function that&#8217;d be callable again and again. Something like&nbsp;this
         <span class="k">return</span> <span class="n">key</span><span class="p">(</span><span class="o">*</span><span class="n">values</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">adaptor</span><span class="p">:</span>
-        <span class="n">adaptor</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="p">{</span><span class="s">'artist'</span><span class="p">:</span><span class="n">t</span><span class="o">.</span><span class="n">artist</span><span class="p">,</span> <span class="s">'album'</span><span class="p">:</span><span class="n">t</span><span class="o">.</span><span class="n">album</span><span class="p">,</span> <span class="s">'length'</span><span class="p">:</span><span class="n">t</span><span class="o">.</span><span class="n">duration</span><span class="p">,</span> <span class="s">'name'</span><span class="p">:</span><span class="n">t</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="s">'track'</span><span class="p">:</span><span class="n">t</span><span class="o">.</span><span class="n">track</span><span class="p">}</span>
+        <span class="n">adaptor</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="p">{</span><span class="s1">'artist'</span><span class="p">:</span><span class="n">t</span><span class="o">.</span><span class="n">artist</span><span class="p">,</span> <span class="s1">'album'</span><span class="p">:</span><span class="n">t</span><span class="o">.</span><span class="n">album</span><span class="p">,</span> <span class="s1">'length'</span><span class="p">:</span><span class="n">t</span><span class="o">.</span><span class="n">duration</span><span class="p">,</span> <span class="s1">'name'</span><span class="p">:</span><span class="n">t</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="s1">'track'</span><span class="p">:</span><span class="n">t</span><span class="o">.</span><span class="n">track</span><span class="p">}</span>
 
     <span class="n">tracks</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">compare</span><span class="p">)</span>
 
-    <span class="c"># this keeps us from creating a big list</span>
-    <span class="c"># with the same artist and albums over and over</span>
+    <span class="c1"># this keeps us from creating a big list</span>
+    <span class="c1"># with the same artist and albums over and over</span>
     <span class="n">artists</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
     <span class="n">albums</span>  <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
     <span class="n">_tracks</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
@@ -582,18 +600,18 @@ in a function that&#8217;d be callable again and again. Something like&nbsp;this
 
     <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">artists</span><span class="p">),</span> <span class="nb">list</span><span class="p">(</span><span class="n">albums</span><span class="p">),</span> <span class="nb">list</span><span class="p">(</span><span class="n">_tracks</span><span class="p">)</span>
 
-<span class="n">tracks</span> <span class="o">=</span> <span class="n">get_music_files</span><span class="p">(</span><span class="s">'/home/justanr/Music/At the Drive‐In/'</span><span class="p">)</span>
+<span class="n">tracks</span> <span class="o">=</span> <span class="n">get_music_files</span><span class="p">(</span><span class="s1">'/home/justanr/Music/At the Drive‐In/'</span><span class="p">)</span>
 <span class="n">tracks</span> <span class="o">=</span> <span class="p">[</span><span class="n">TinyTag</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tracks</span><span class="p">]</span>
 <span class="n">tracks</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">fix_track</span><span class="p">,</span> <span class="n">tracks</span><span class="p">))</span>
 <span class="n">artists</span><span class="p">,</span> <span class="n">albums</span><span class="p">,</span> <span class="n">tracks</span> <span class="o">=</span> <span class="n">convert_tinytags</span><span class="p">(</span><span class="n">tracks</span><span class="p">)</span>
 
-<span class="c"># of course you could just:</span>
-<span class="c"># artists, albums, tracks = convert_tinytags([fix_track(TinyTag.get(t)) for t in get_music_files(...)])</span>
-<span class="c"># But that's also pretty hard to read, too</span>
+<span class="c1"># of course you could just:</span>
+<span class="c1"># artists, albums, tracks = convert_tinytags([fix_track(TinyTag.get(t)) for t in get_music_files(...)])</span>
+<span class="c1"># But that's also pretty hard to read, too</span>
 
-<span class="k">print</span><span class="p">(</span><span class="s">&quot;Artists: &quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">artists</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">Albums: &quot;</span><span class="p">,</span> <span class="o">*</span><span class="nb">sorted</span><span class="p">(</span><span class="n">albums</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">Tracks: &quot;</span><span class="p">,</span> <span class="o">*</span><span class="nb">sorted</span><span class="p">(</span><span class="n">tracks</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Artists: &quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">artists</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Albums: &quot;</span><span class="p">,</span> <span class="o">*</span><span class="nb">sorted</span><span class="p">(</span><span class="n">albums</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Tracks: &quot;</span><span class="p">,</span> <span class="o">*</span><span class="nb">sorted</span><span class="p">(</span><span class="n">tracks</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 Artists:
@@ -625,16 +643,16 @@ Tracks:
 </pre>
 <p>Of course, we could generalize <tt class="docutils literal">get_music_files</tt> to recursively walk
 the base Music directory so it&#8217;s not confined to my organizational&nbsp;scheme.</p>
-<pre class="code python literal-block">
-<span class="k">def</span> <span class="nf">r_get_music_files</span><span class="p">(</span><span class="n">basedir</span><span class="p">,</span> <span class="n">valid_types</span><span class="o">=</span><span class="p">(</span><span class="s">'mp3'</span><span class="p">,</span> <span class="s">'ogg'</span><span class="p">,</span> <span class="s">'oga'</span><span class="p">,</span> <span class="s">'wav'</span><span class="p">,</span> <span class="s">'flac'</span><span class="p">),</span> <span class="n">ignore</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<pre class="code ipython3 literal-block">
+<span class="k">def</span> <span class="nf">r_get_music_files</span><span class="p">(</span><span class="n">basedir</span><span class="p">,</span> <span class="n">valid_types</span><span class="o">=</span><span class="p">(</span><span class="s1">'mp3'</span><span class="p">,</span> <span class="s1">'ogg'</span><span class="p">,</span> <span class="s1">'oga'</span><span class="p">,</span> <span class="s1">'wav'</span><span class="p">,</span> <span class="s1">'flac'</span><span class="p">),</span> <span class="n">ignore</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">tracks</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">basedir</span><span class="p">):</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">basedir</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
-        <span class="c"># we can now filter both directories and files</span>
-        <span class="c"># passing the full path will even allow</span>
-        <span class="c"># ignore to filter based on if `f` is</span>
-        <span class="c"># a directory or file</span>
+        <span class="c1"># we can now filter both directories and files</span>
+        <span class="c1"># passing the full path will even allow</span>
+        <span class="c1"># ignore to filter based on if `f` is</span>
+        <span class="c1"># a directory or file</span>
         <span class="k">if</span> <span class="n">ignore</span> <span class="ow">and</span> <span class="n">ignore</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
             <span class="k">continue</span>
         <span class="k">elif</span> <span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
@@ -642,22 +660,22 @@ the base Music directory so it&#8217;s not confined to my organizational&nbsp;sc
         <span class="k">elif</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">valid_types</span><span class="p">):</span>
             <span class="k">continue</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="c"># must be a file we're looking for</span>
+            <span class="c1"># must be a file we're looking for</span>
             <span class="n">tracks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">tracks</span>
 
-<span class="c"># only going to point this at a artist directory</span>
-<span class="c"># the `An Awesome Wave` album is a directory in here</span>
-<span class="c"># just to demonstrate that this does in fact work as intended</span>
-<span class="n">tracks</span> <span class="o">=</span> <span class="n">r_get_music_files</span><span class="p">(</span><span class="s">'/home/justanr/Music/Alt-J/'</span><span class="p">)</span>
+<span class="c1"># only going to point this at a artist directory</span>
+<span class="c1"># the `An Awesome Wave` album is a directory in here</span>
+<span class="c1"># just to demonstrate that this does in fact work as intended</span>
+<span class="n">tracks</span> <span class="o">=</span> <span class="n">r_get_music_files</span><span class="p">(</span><span class="s1">'/home/justanr/Music/Alt-J/'</span><span class="p">)</span>
 <span class="n">tracks</span> <span class="o">=</span> <span class="p">[</span><span class="n">TinyTag</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tracks</span><span class="p">]</span>
 <span class="n">tracks</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">fix_track</span><span class="p">,</span> <span class="n">tracks</span><span class="p">))</span>
 <span class="n">artists</span><span class="p">,</span> <span class="n">albums</span><span class="p">,</span> <span class="n">tracks</span> <span class="o">=</span> <span class="n">convert_tinytags</span><span class="p">(</span><span class="n">tracks</span><span class="p">)</span>
 
-<span class="k">print</span><span class="p">(</span><span class="s">&quot;Artists: &quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">artists</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">Albums: &quot;</span><span class="p">,</span> <span class="o">*</span><span class="nb">sorted</span><span class="p">(</span><span class="n">albums</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">Tracks: &quot;</span><span class="p">,</span> <span class="o">*</span><span class="nb">sorted</span><span class="p">(</span><span class="n">tracks</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Artists: &quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">artists</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Albums: &quot;</span><span class="p">,</span> <span class="o">*</span><span class="nb">sorted</span><span class="p">(</span><span class="n">albums</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Tracks: &quot;</span><span class="p">,</span> <span class="o">*</span><span class="nb">sorted</span><span class="p">(</span><span class="n">tracks</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 Artists:
@@ -698,57 +716,57 @@ parse that before getting to what we want. We could also use glob for
 this &#8212; iglob uses an iterator &#8212; but that delves into using regular
 expressions. There&#8217;s <tt class="docutils literal">pathlib</tt> in 3.4, but I&#8217;m ultimately unfamilar
 with&nbsp;it.</p>
-<pre class="code python literal-block">
-<span class="k">def</span> <span class="nf">walk</span><span class="p">(</span><span class="n">basedir</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<pre class="code ipython3 literal-block">
+<span class="k">def</span> <span class="nf">walk</span><span class="p">(</span><span class="n">basedir</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">basedir</span><span class="p">)):</span>
-        <span class="c"># store fullpath separately so we can</span>
-        <span class="c"># easily pass it if needed</span>
+        <span class="c1"># store fullpath separately so we can</span>
+        <span class="c1"># easily pass it if needed</span>
         <span class="n">fp</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">basedir</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">ignore</span> <span class="ow">and</span> <span class="n">ignore</span><span class="p">(</span><span class="n">basedir</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
             <span class="k">continue</span>
         <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">fp</span><span class="p">):</span>
-            <span class="c"># to quote Dave Beazley:</span>
-            <span class="c"># &quot;Yield from is the ultimate not my problem.</span>
-            <span class="c"># It just says, 'Here's some generator, you deal with it.'&quot;</span>
+            <span class="c1"># to quote Dave Beazley:</span>
+            <span class="c1"># &quot;Yield from is the ultimate not my problem.</span>
+            <span class="c1"># It just says, 'Here's some generator, you deal with it.'&quot;</span>
             <span class="k">yield from</span> <span class="n">walk</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="c"># must be a file we're looking for</span>
+            <span class="c1"># must be a file we're looking for</span>
             <span class="k">yield</span> <span class="n">fp</span>
 
-<span class="k">def</span> <span class="nf">ignore</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">valid_types</span><span class="o">=</span><span class="p">(</span><span class="s">'.mp3'</span><span class="p">,</span> <span class="s">'.ogg'</span><span class="p">,</span> <span class="s">'.oga'</span><span class="p">,</span> <span class="s">'.wav'</span><span class="p">,</span> <span class="s">'.flac'</span><span class="p">)):</span>
+<span class="k">def</span> <span class="nf">ignore</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">valid_types</span><span class="o">=</span><span class="p">(</span><span class="s1">'.mp3'</span><span class="p">,</span> <span class="s1">'.ogg'</span><span class="p">,</span> <span class="s1">'.oga'</span><span class="p">,</span> <span class="s1">'.wav'</span><span class="p">,</span> <span class="s1">'.flac'</span><span class="p">)):</span>
     <span class="sd">'''Example ignore function.'''</span>
     <span class="n">fp</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
-    <span class="c"># ignore 'hidden' files and directories</span>
-    <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">'.'</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">True</span>
-    <span class="c"># filter actual files based on their extension</span>
+    <span class="c1"># ignore 'hidden' files and directories</span>
+    <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'.'</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="c1"># filter actual files based on their extension</span>
     <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">valid_types</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">True</span>
-    <span class="c"># got here, so we return False to *not* ignore this file</span>
-    <span class="c"># a little confusing</span>
-    <span class="c"># also, I don't like if/elif without a else</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="c1"># got here, so we return False to *not* ignore this file</span>
+    <span class="c1"># a little confusing</span>
+    <span class="c1"># also, I don't like if/elif without a else</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">return</span> <span class="kc">False</span>
 
-<span class="c"># breaking the adaptor fully out into it's own function as well</span>
-<span class="c"># even though for this example we're dealing exclusively with</span>
-<span class="c"># TinyTag, I did give links to several other metadata libraries</span>
-<span class="c"># maybe you're dealing with one of those?</span>
-<span class="n">adaptor</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="p">{</span><span class="s">'artist'</span><span class="p">:</span><span class="n">t</span><span class="o">.</span><span class="n">artist</span><span class="p">,</span> <span class="s">'album'</span><span class="p">:</span><span class="n">t</span><span class="o">.</span><span class="n">album</span><span class="p">,</span> <span class="s">'length'</span><span class="p">:</span><span class="n">t</span><span class="o">.</span><span class="n">duration</span><span class="p">,</span> <span class="s">'name'</span><span class="p">:</span><span class="n">t</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="s">'track'</span><span class="p">:</span><span class="n">t</span><span class="o">.</span><span class="n">track</span><span class="p">}</span>
+<span class="c1"># breaking the adaptor fully out into it's own function as well</span>
+<span class="c1"># even though for this example we're dealing exclusively with</span>
+<span class="c1"># TinyTag, I did give links to several other metadata libraries</span>
+<span class="c1"># maybe you're dealing with one of those?</span>
+<span class="n">adaptor</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="p">{</span><span class="s1">'artist'</span><span class="p">:</span><span class="n">t</span><span class="o">.</span><span class="n">artist</span><span class="p">,</span> <span class="s1">'album'</span><span class="p">:</span><span class="n">t</span><span class="o">.</span><span class="n">album</span><span class="p">,</span> <span class="s1">'length'</span><span class="p">:</span><span class="n">t</span><span class="o">.</span><span class="n">duration</span><span class="p">,</span> <span class="s1">'name'</span><span class="p">:</span><span class="n">t</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="s1">'track'</span><span class="p">:</span><span class="n">t</span><span class="o">.</span><span class="n">track</span><span class="p">}</span>
 
 <span class="k">def</span> <span class="nf">convert_track</span><span class="p">(</span><span class="n">track</span><span class="p">,</span> <span class="n">adaptor</span><span class="p">):</span>
     <span class="n">info</span> <span class="o">=</span> <span class="n">adaptor</span><span class="p">(</span><span class="n">track</span><span class="p">)</span>
-    <span class="n">artist</span> <span class="o">=</span> <span class="n">Artist</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">info</span><span class="p">[</span><span class="s">'artist'</span><span class="p">])</span>
-    <span class="n">album</span> <span class="o">=</span> <span class="n">Album</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">info</span><span class="p">[</span><span class="s">'album'</span><span class="p">],</span> <span class="n">artist</span><span class="o">=</span><span class="n">info</span><span class="p">[</span><span class="s">'artist'</span><span class="p">])</span>
+    <span class="n">artist</span> <span class="o">=</span> <span class="n">Artist</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">info</span><span class="p">[</span><span class="s1">'artist'</span><span class="p">])</span>
+    <span class="n">album</span> <span class="o">=</span> <span class="n">Album</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">info</span><span class="p">[</span><span class="s1">'album'</span><span class="p">],</span> <span class="n">artist</span><span class="o">=</span><span class="n">info</span><span class="p">[</span><span class="s1">'artist'</span><span class="p">])</span>
     <span class="n">track</span> <span class="o">=</span> <span class="n">Track</span><span class="p">(</span><span class="o">**</span><span class="n">info</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">artist</span><span class="p">,</span> <span class="n">album</span><span class="p">,</span> <span class="n">track</span>
 
-<span class="o">%</span><span class="n">timeit</span> <span class="o">-</span><span class="n">n</span> <span class="mi">100</span> <span class="o">-</span><span class="n">r</span> <span class="mi">5</span> <span class="nb">next</span><span class="p">(</span><span class="n">walk</span><span class="p">(</span><span class="s">'/home/justanr/Music/'</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="n">ignore</span><span class="p">))</span>
-<span class="o">%</span><span class="n">timeit</span> <span class="o">-</span><span class="n">n</span> <span class="mi">100</span> <span class="o">-</span><span class="n">r</span> <span class="mi">5</span> <span class="nb">next</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="s">'/home/justanr/Music'</span><span class="p">))</span>
-<span class="n">track</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">walk</span><span class="p">(</span><span class="s">'/home/justanr/Music/'</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="n">ignore</span><span class="p">))</span>
+<span class="o">%</span><span class="k">timeit</span> -n 100 -r 5 next(walk('/home/justanr/Music/', ignore=ignore))
+<span class="o">%</span><span class="k">timeit</span> -n 100 -r 5 next(os.walk('/home/justanr/Music'))
+<span class="n">track</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">walk</span><span class="p">(</span><span class="s1">'/home/justanr/Music/'</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="n">ignore</span><span class="p">))</span>
 <span class="n">track</span> <span class="o">=</span> <span class="n">TinyTag</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">track</span><span class="p">)</span>
 <span class="n">track</span> <span class="o">=</span> <span class="n">fix_track</span><span class="p">(</span><span class="n">track</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="o">*</span><span class="n">convert_track</span><span class="p">(</span><span class="n">track</span><span class="p">,</span> <span class="n">adaptor</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="o">*</span><span class="n">convert_track</span><span class="p">(</span><span class="n">track</span><span class="p">,</span> <span class="n">adaptor</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 100 loops, best of 5: 295 µs per loop
@@ -820,11 +838,14 @@ processing through files, I think I&#8217;ll end&nbsp;here.</p>
             <h4>Published</h4>
             <time pubdate="pubdate" datetime="2014-08-24T00:00:00-04:00">Aug 24, 2014</time>
             <h4>Category</h4>
-            <a class="category-link" href="/categories.html#tutorial-ref">tutorial</a> 
+            <a class="category-link" href="/categories.html#tutorials-ref">tutorials</a> 
             <h4>Tags</h4>
             <ul class="list-of-tags tags-in-article"> 
                 <li><a href="/tags.html#data-processing-ref">data processing
                     <span>1</span>
+</a></li>
+                <li><a href="/tags.html#python-ref">python
+                    <span>15</span>
 </a></li>
             </ul>
 

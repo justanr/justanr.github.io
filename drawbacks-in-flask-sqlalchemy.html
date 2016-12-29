@@ -105,13 +105,13 @@ either get the desired object <em>or</em> calls <tt class="docutils literal">fla
 about that. Your database call is either going to find the right result
 or make routing call into your&nbsp;application.</p>
 <p>If you used these, how would you test that a non-existent user causes a&nbsp;404?</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">mock</span>
-<span class="kn">from</span> <span class="nn">myapp.users.views</span> <span class="kn">import</span> <span class="n">user_profile</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="k">import</span> <span class="n">mock</span>
+<span class="kn">from</span> <span class="nn">myapp.users.views</span> <span class="k">import</span> <span class="n">user_profile</span>
 
 <span class="k">def</span> <span class="nf">test_non_existent_user_causes_404</span><span class="p">():</span>
-    <span class="k">with</span> <span class="n">mock</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s">'flask_sqlalchemy.abort'</span><span class="p">)</span> <span class="k">as</span> <span class="n">aborter</span><span class="p">:</span> <span class="c"># red flag!!!</span>
-        <span class="n">user_profile</span><span class="p">(</span><span class="s">'idontexist'</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">mock</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s1">'flask_sqlalchemy.abort'</span><span class="p">)</span> <span class="k">as</span> <span class="n">aborter</span><span class="p">:</span> <span class="c1"># red flag!!!</span>
+        <span class="n">user_profile</span><span class="p">(</span><span class="s1">'idontexist'</span><span class="p">)</span>
 
     <span class="k">assert</span> <span class="n">aborter</span><span class="o">.</span><span class="n">called</span>
 </pre>
@@ -139,15 +139,15 @@ represents and what <tt class="docutils literal">session.query(User)</tt> repres
 exist any more. Instead of requiring data access to go through a session
 object, Flask-SQLAlchemy places a <tt class="docutils literal">query</tt> object on the models and
 allows us to do stuff&nbsp;like:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">permission_level</span> <span class="o">&gt;=</span> <span class="n">PermissionLevels</span><span class="o">.</span><span class="n">MODERATOR</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
 </pre>
 <p>This also encourages adding complex queries onto the model itself,
 further blurring the line. For example, the query above might be used
 often and so we create a query method on the User&nbsp;object:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">User</span><span class="p">:</span>
-    <span class="c">#...</span>
+    <span class="c1">#...</span>
 
     <span class="nd">&#64;classmethod</span>
     <span class="k">def</span> <span class="nf">find_by_permission_level</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">permission</span><span class="p">):</span>
@@ -156,10 +156,10 @@ often and so we create a query method on the User&nbsp;object:</p>
 <p>That&#8217;s pretty handy. But does it make sense? I don&#8217;t think it does. Even
 more so when you consider that the query property and these methods are
 available on actual instances of&nbsp;User.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="n">me</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">me</span><span class="o">.</span><span class="n">find_by_permission_level</span><span class="p">(</span><span class="n">PermissionLevel</span><span class="o">.</span><span class="n">MODERATOR</span><span class="p">)</span>
-<span class="n">me</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">username</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">'just'</span><span class="p">))</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+<span class="n">me</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">username</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'just'</span><span class="p">))</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
 </pre>
 <p>And even scarier is that often model instances are passed directly to
 templates. It isn&#8217;t common, but if you allowed users to provide their
@@ -181,8 +181,8 @@ returning them off to the templates. Marshmallow is good for this, but
 will return dictionaries instead of objects. However, that&#8217;s easily
 fixed by providing a <tt class="docutils literal">post_dump</tt> method that transforms the result
 into something with dotted&nbsp;access:</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">marshmallow</span> <span class="kn">import</span> <span class="n">Schema</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">marshmallow</span> <span class="k">import</span> <span class="n">Schema</span>
 
 <span class="k">class</span> <span class="nc">dottedict</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
@@ -192,10 +192,10 @@ into something with dotted&nbsp;access:</p>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__setitem__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">UserSchema</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
-    <span class="c"># fields here</span>
+    <span class="c1"># fields here</span>
 
-    <span class="nd">&#64;post_dump</span> <span class="c"># note this is Marshmallow &gt;= 2.0.0a1</span>
-    <span class="k">def</span> <span class="nf">dottify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="nd">&#64;post_dump</span> <span class="c1"># note this is Marshmallow &gt;= 2.0.0a1</span>
+    <span class="k">def</span> <span class="nf">dottify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">many</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">dotteddict</span><span class="p">(</span><span class="o">**</span><span class="n">datum</span><span class="p">)</span> <span class="k">for</span> <span class="n">datum</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">dotteddict</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
@@ -216,7 +216,7 @@ you&#8217;re accessing or persisting data, but this adds a certain amount of&nbs
 <p>Using this approach also solves the issue of <tt class="docutils literal">first_or_404</tt>, we can
 simply define our own <tt class="docutils literal">first()</tt> method on the repository that throws
 an&nbsp;exception:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">UserRepository</span><span class="p">:</span>
 
     <span class="k">def</span> <span class="nf">first</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -255,8 +255,8 @@ models if having the default query class on relationships and dynamic
 queries isn&#8217;t an&nbsp;issue.</p>
 <p>Alternatively, we could do some horrible stuff to
 <tt class="docutils literal">flask_sqlalchemy.BaseQuery</tt> directly:</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">flask_sqlalchemy</span> <span class="kn">import</span> <span class="n">BaseQuery</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">flask_sqlalchemy</span> <span class="k">import</span> <span class="n">BaseQuery</span>
 
 <span class="k">def</span> <span class="nf">first_or_raise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exception</span><span class="p">):</span>
     <span class="n">rv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
@@ -348,7 +348,7 @@ just&nbsp;bikeshedding.</p>
             <h4>Tags</h4>
             <ul class="list-of-tags tags-in-article"> 
                 <li><a href="/tags.html#flask-ref">flask
-                    <span>3</span>
+                    <span>4</span>
 </a></li>
                 <li><a href="/tags.html#sqlalchemy-ref">sqlalchemy
                     <span>2</span>

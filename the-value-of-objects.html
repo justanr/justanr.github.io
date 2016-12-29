@@ -89,22 +89,22 @@ Obession</a> &#8212; the idea that
 <a class="reference external" href="http://www.jamesshore.com/Blog/PrimitiveObsession.html">Why should I make an age class when we have
 int?</a>&#8221;</p>
 <p>Consider an <span class="caps">IP</span>&nbsp;address:</p>
-<pre class="code python literal-block">
-<span class="n">myip</span> <span class="o">=</span> <span class="s">'127.0.0.1'</span>
+<pre class="code ipython3 literal-block">
+<span class="n">myip</span> <span class="o">=</span> <span class="s1">'127.0.0.1'</span>
 </pre>
 <p>Unless this is on the boundary between two systems, this string actually
 loses a tremendous amount of information. Every time we&#8217;ll want to know
 something about it, we&#8217;ll need to parse&nbsp;it.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">get_ip_network</span><span class="p">(</span><span class="n">ip_str</span><span class="p">):</span>
-    <span class="k">return</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ip_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">'.'</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]]</span>
+    <span class="k">return</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ip_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]]</span>
 
 <span class="k">def</span> <span class="nf">get_ip_host</span><span class="p">(</span><span class="n">ip_str</span><span class="p">):</span>
-    <span class="k">return</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ip_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">'.'</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]]</span>
+    <span class="k">return</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ip_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]]</span>
 </pre>
-<pre class="code python literal-block">
-<span class="k">print</span><span class="p">(</span><span class="n">get_ip_network</span><span class="p">(</span><span class="n">myip</span><span class="p">))</span>
-<span class="k">print</span><span class="p">(</span><span class="n">get_ip_host</span><span class="p">(</span><span class="n">myip</span><span class="p">))</span>
+<pre class="code ipython3 literal-block">
+<span class="nb">print</span><span class="p">(</span><span class="n">get_ip_network</span><span class="p">(</span><span class="n">myip</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">get_ip_host</span><span class="p">(</span><span class="n">myip</span><span class="p">))</span>
 </pre>
 <pre class="literal-block">
 [127, 0]
@@ -117,14 +117,14 @@ no semantics. They have no attributes and the only methods on them
 related to transforming the collection of characters into a different
 collection of characters (or a collection of a collection of&nbsp;characters).</p>
 <p>Instead, what if had something that represented the concept of an <span class="caps">IP</span>&nbsp;Address:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">IPAddress</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">pass</span>
 </pre>
 <p>And we could pass in the parts of the ip to&nbsp;it:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">IPAddress</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">subnet</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">subnet</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">network</span> <span class="o">=</span> <span class="n">network</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">subnet</span> <span class="o">=</span> <span class="n">subnet</span>
@@ -132,22 +132,22 @@ collection of characters (or a collection of a collection of&nbsp;characters).</
 <p>This doesn&#8217;t do us any good when we already have a string representation
 of the <span class="caps">IP</span>, to avoid parsing that and passing it in every time we get an
 <span class="caps">IP</span> Address, let&#8217;s add an alternative&nbsp;constructor:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">IPAddress</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">subnet</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">subnet</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">network</span> <span class="o">=</span> <span class="n">network</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">subnet</span> <span class="o">=</span> <span class="n">subnet</span>
 
     <span class="nd">&#64;classmethod</span>
     <span class="k">def</span> <span class="nf">fromstr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">ipstr</span><span class="p">):</span>
-        <span class="k">if</span> <span class="s">'/'</span> <span class="ow">in</span> <span class="n">ipstr</span><span class="p">:</span>
-            <span class="n">ip</span><span class="p">,</span> <span class="n">subnet</span> <span class="o">=</span> <span class="n">ipstr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">'/'</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">'/'</span> <span class="ow">in</span> <span class="n">ipstr</span><span class="p">:</span>
+            <span class="n">ip</span><span class="p">,</span> <span class="n">subnet</span> <span class="o">=</span> <span class="n">ipstr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'/'</span><span class="p">)</span>
             <span class="n">subnet</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">subnet</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">ip</span><span class="p">,</span> <span class="n">subnet</span> <span class="o">=</span> <span class="n">ipstr</span><span class="p">,</span> <span class="bp">None</span>
+            <span class="n">ip</span><span class="p">,</span> <span class="n">subnet</span> <span class="o">=</span> <span class="n">ipstr</span><span class="p">,</span> <span class="kc">None</span>
 
-        <span class="n">divided</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ip</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">'.'</span><span class="p">)]</span>
+        <span class="n">divided</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ip</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)]</span>
         <span class="n">network</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">divided</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
         <span class="n">host</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">divided</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span>
 
@@ -155,58 +155,58 @@ of the <span class="caps">IP</span>, to avoid parsing that and passing it in eve
 
 <span class="n">MyIP</span> <span class="o">=</span> <span class="n">IPAddress</span><span class="o">.</span><span class="n">fromstr</span><span class="p">(</span><span class="n">myip</span><span class="p">)</span>
 
-<span class="k">print</span><span class="p">(</span><span class="n">MyIP</span><span class="o">.</span><span class="n">network</span><span class="p">,</span> <span class="n">MyIP</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="n">MyIP</span><span class="o">.</span><span class="n">subnet</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">MyIP</span><span class="o">.</span><span class="n">network</span><span class="p">,</span> <span class="n">MyIP</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="n">MyIP</span><span class="o">.</span><span class="n">subnet</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 (127, 0) (0, 1) None
 </pre>
 <p>But it could helpful to &#8220;unparse&#8221; this as well. Let&#8217;s add <tt class="docutils literal">__str__</tt>
 and <tt class="docutils literal">__repr__</tt> methods as those are part of the Python&nbsp;protocol:</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">chain</span>
 
 <span class="k">class</span> <span class="nc">IPAddress</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">subnet</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">subnet</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">network</span> <span class="o">=</span> <span class="n">network</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">subnet</span> <span class="o">=</span> <span class="n">subnet</span>
 
     <span class="nd">&#64;classmethod</span>
     <span class="k">def</span> <span class="nf">fromstr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">ipstr</span><span class="p">):</span>
-        <span class="k">if</span> <span class="s">'/'</span> <span class="ow">in</span> <span class="n">ipstr</span><span class="p">:</span>
-            <span class="n">ip</span><span class="p">,</span> <span class="n">subnet</span> <span class="o">=</span> <span class="n">ipstr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">'/'</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">'/'</span> <span class="ow">in</span> <span class="n">ipstr</span><span class="p">:</span>
+            <span class="n">ip</span><span class="p">,</span> <span class="n">subnet</span> <span class="o">=</span> <span class="n">ipstr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'/'</span><span class="p">)</span>
             <span class="n">subnet</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">subnet</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">ip</span><span class="p">,</span> <span class="n">subnet</span> <span class="o">=</span> <span class="n">ipstr</span><span class="p">,</span> <span class="bp">None</span>
+            <span class="n">ip</span><span class="p">,</span> <span class="n">subnet</span> <span class="o">=</span> <span class="n">ipstr</span><span class="p">,</span> <span class="kc">None</span>
 
-        <span class="n">divided</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ip</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">'.'</span><span class="p">)]</span>
+        <span class="n">divided</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ip</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)]</span>
         <span class="n">network</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">divided</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
         <span class="n">host</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">divided</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span>
 
         <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">subnet</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">pattern</span> <span class="o">=</span> <span class="s">'{}.{}.{}.{}'</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="s1">'</span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">'</span>
         <span class="n">ip</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">chain</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">subnet</span><span class="p">:</span>
-            <span class="n">ip</span> <span class="o">+=</span> <span class="s">'/{}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subnet</span><span class="p">)</span>
+            <span class="n">ip</span> <span class="o">+=</span> <span class="s1">'/</span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subnet</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">ip</span>
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s">'{}(network={!r}, host={!r}, subnet={!r})'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="k">return</span> <span class="s1">'</span><span class="si">{}</span><span class="s1">(network=</span><span class="si">{!r}</span><span class="s1">, host=</span><span class="si">{!r}</span><span class="s1">, subnet=</span><span class="si">{!r}</span><span class="s1">)'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">subnet</span>
         <span class="p">)</span>
 </pre>
-<pre class="code python literal-block">
-<span class="n">ip</span> <span class="o">=</span> <span class="n">IPAddress</span><span class="o">.</span><span class="n">fromstr</span><span class="p">(</span><span class="s">'127.0.0.1/24'</span><span class="p">)</span>
+<pre class="code ipython3 literal-block">
+<span class="n">ip</span> <span class="o">=</span> <span class="n">IPAddress</span><span class="o">.</span><span class="n">fromstr</span><span class="p">(</span><span class="s1">'127.0.0.1/24'</span><span class="p">)</span>
 
-<span class="k">print</span><span class="p">(</span><span class="s">'As str:  '</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">ip</span><span class="p">))</span>
-<span class="k">print</span><span class="p">(</span><span class="s">'As repr: '</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="n">ip</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'As str:  '</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">ip</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'As repr: '</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="n">ip</span><span class="p">))</span>
 </pre>
 <pre class="literal-block">
 As str:   127.0.0.1/24
@@ -227,37 +227,37 @@ data, you looked at <em>why</em> and <em>how</em> you were doing that and wrappe
 up into an object and gave it a name. Consider <a class="reference external" href="https://gist.github.com/justanr/3df4ac627939e0029fec">a money
 object</a> &#8212;
 sorry to link off, it&#8217;s like a hundred&nbsp;lines.</p>
-<pre class="code python literal-block">
-<span class="n">Money</span><span class="o">.</span><span class="n">fromstr</span><span class="p">(</span><span class="s">'$5.99'</span><span class="p">)</span>
+<pre class="code ipython3 literal-block">
+<span class="n">Money</span><span class="o">.</span><span class="n">fromstr</span><span class="p">(</span><span class="s1">'$5.99'</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 Money(symbol='$', amount=Decimal('5.99'))
 </pre>
-<pre class="code python literal-block">
-<span class="n">Money</span><span class="p">(</span><span class="s">'$'</span><span class="p">,</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s">'5.99'</span><span class="p">))</span> <span class="o">+</span> <span class="n">Money</span><span class="p">(</span><span class="s">'$'</span><span class="p">,</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s">'2.99'</span><span class="p">))</span>
+<pre class="code ipython3 literal-block">
+<span class="n">Money</span><span class="p">(</span><span class="s1">'$'</span><span class="p">,</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s1">'5.99'</span><span class="p">))</span> <span class="o">+</span> <span class="n">Money</span><span class="p">(</span><span class="s1">'$'</span><span class="p">,</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s1">'2.99'</span><span class="p">))</span>
 </pre>
 <pre class="literal-block">
 Money(symbol='$', amount=Decimal('8.98'))
 </pre>
-<pre class="code python literal-block">
-<span class="n">Money</span><span class="p">(</span><span class="s">'$'</span><span class="p">,</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s">'6.00'</span><span class="p">))</span> <span class="o">*</span> <span class="mf">4.444</span>
+<pre class="code ipython3 literal-block">
+<span class="n">Money</span><span class="p">(</span><span class="s1">'$'</span><span class="p">,</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s1">'6.00'</span><span class="p">))</span> <span class="o">*</span> <span class="mf">4.444</span>
 </pre>
 <pre class="literal-block">
 Money(symbol='$', amount=Decimal('26.64'))
 </pre>
-<pre class="code python literal-block">
-<span class="n">a</span> <span class="o">=</span> <span class="n">Money</span><span class="p">(</span><span class="s">'$'</span><span class="p">,</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s">'4'</span><span class="p">))</span>
-<span class="n">b</span> <span class="o">=</span> <span class="n">Money</span><span class="p">(</span><span class="s">'$'</span><span class="p">,</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s">'5'</span><span class="p">))</span>
+<pre class="code ipython3 literal-block">
+<span class="n">a</span> <span class="o">=</span> <span class="n">Money</span><span class="p">(</span><span class="s1">'$'</span><span class="p">,</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s1">'4'</span><span class="p">))</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">Money</span><span class="p">(</span><span class="s1">'$'</span><span class="p">,</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s1">'5'</span><span class="p">))</span>
 
-<span class="k">print</span><span class="p">(</span><span class="s">'Is {!s} less than {!s}?'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">),</span> <span class="n">a</span> <span class="o">&lt;</span> <span class="n">b</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s">'Is {!s} greater than {!s}?'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">),</span> <span class="n">b</span> <span class="o">&gt;</span> <span class="n">a</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'Is </span><span class="si">{!s}</span><span class="s1"> less than </span><span class="si">{!s}</span><span class="s1">?'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">),</span> <span class="n">a</span> <span class="o">&lt;</span> <span class="n">b</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'Is </span><span class="si">{!s}</span><span class="s1"> greater than </span><span class="si">{!s}</span><span class="s1">?'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">),</span> <span class="n">b</span> <span class="o">&gt;</span> <span class="n">a</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 Is $4 less than $5? True
 Is $5 greater than $4? True
 </pre>
-<pre class="code python literal-block">
-<span class="n">Money</span><span class="p">(</span><span class="s">'$'</span><span class="p">,</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s">'4'</span><span class="p">))</span> <span class="o">+</span> <span class="n">Money</span><span class="p">(</span><span class="s">'PY'</span><span class="p">,</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s">'4'</span><span class="p">))</span>
+<pre class="code ipython3 literal-block">
+<span class="n">Money</span><span class="p">(</span><span class="s1">'$'</span><span class="p">,</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s1">'4'</span><span class="p">))</span> <span class="o">+</span> <span class="n">Money</span><span class="p">(</span><span class="s1">'PY'</span><span class="p">,</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s1">'4'</span><span class="p">))</span>
 </pre>
 <pre class="literal-block">
 ---------------------------------------------------------------------------
@@ -286,8 +286,8 @@ TypeError                                 Traceback (most recent call last)
 
 TypeError: Can't compare across monetary types
 </pre>
-<pre class="code python literal-block">
-<span class="n">Money</span><span class="p">(</span><span class="s">'$'</span><span class="p">,</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s">'5.00'</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="mi">2j</span><span class="p">)</span>
+<pre class="code ipython3 literal-block">
+<span class="n">Money</span><span class="p">(</span><span class="s1">'$'</span><span class="p">,</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s1">'5.00'</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="mi">2</span><span class="n">j</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 ---------------------------------------------------------------------------
@@ -325,9 +325,9 @@ multiplying and dividing amounts of money by a real number. If
 is in it&#8217;s subnet&nbsp;mask.</p>
 <p>But value objects are predominantly related to <em>being</em> rather than
 <em>doing</em>. And they&#8217;re very useful as things being passed into&nbsp;methods:</p>
-<pre class="code python literal-block">
-<span class="n">cc</span> <span class="o">=</span> <span class="n">CreditCard</span><span class="p">(</span><span class="s">'4474...'</span><span class="p">)</span>
-<span class="n">cc</span><span class="o">.</span><span class="n">charge</span><span class="p">(</span><span class="n">Money</span><span class="o">.</span><span class="n">fromstr</span><span class="p">(</span><span class="s">'$5.99'</span><span class="p">)</span>
+<pre class="code ipython3 literal-block">
+<span class="n">cc</span> <span class="o">=</span> <span class="n">CreditCard</span><span class="p">(</span><span class="s1">'4474...'</span><span class="p">)</span>
+<span class="n">cc</span><span class="o">.</span><span class="n">charge</span><span class="p">(</span><span class="n">Money</span><span class="o">.</span><span class="n">fromstr</span><span class="p">(</span><span class="s1">'$5.99'</span><span class="p">)</span>
 </pre>
 </div>
 <div class="section" id="they-re-generally-immutable">
@@ -344,8 +344,8 @@ go about changing attributes. Consenting adults and all&nbsp;that.</p>
 <div class="section" id="that-make-the-implicit-explicit">
 <h3>That make the implicit&nbsp;explicit</h3>
 <p>What&#8217;s clearer about its&nbsp;purpose?</p>
-<pre class="code python literal-block">
-<span class="s">'127.0.0.1/24'</span>
+<pre class="code ipython3 literal-block">
+<span class="s1">'127.0.0.1/24'</span>
 <span class="n">IPAddress</span><span class="p">((</span><span class="mi">127</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mi">24</span><span class="p">)</span>
 </pre>
 <p>Pycharm, Jupyter and vim plugins (and I guess other editors) will
@@ -356,7 +356,7 @@ to print it out to see the&nbsp;details.</p>
 happens. <tt class="docutils literal">$3 * $5</tt> doesn&#8217;t make any sense no matter how long you stare
 at it.† So you can get really strict type checking if needed as well; if
 you&#8217;re on Python 3, combine this with type annotations as&nbsp;well:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Money</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">amount</span><span class="p">:</span><span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">):</span>
         <span class="o">...</span>
@@ -370,16 +370,16 @@ your&nbsp;types.</p>
 application is telling you to name that thing. Generally, my first stop
 is to upgrade a regular tuple to a namedtuple. And this goes a long way
 towards upgrading the semantics of my application. Instead&nbsp;of:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="p">((</span><span class="mi">127</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mi">24</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 ((127, 0), (0, 1), 24)
 </pre>
 <p>I now&nbsp;have:</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
-<span class="n">IP</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s">'IP'</span><span class="p">,</span> <span class="p">[</span><span class="s">'network'</span><span class="p">,</span> <span class="s">'host'</span><span class="p">,</span> <span class="s">'subnet'</span><span class="p">])</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span>
+<span class="n">IP</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">'IP'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'network'</span><span class="p">,</span> <span class="s1">'host'</span><span class="p">,</span> <span class="s1">'subnet'</span><span class="p">])</span>
 <span class="n">IP</span><span class="p">((</span><span class="mi">127</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mi">24</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
@@ -422,15 +422,15 @@ our intent? For example, in the money example, normally to set a local
 context with decimals, you need to&nbsp;do:</p>
 <pre class="code python literal-block">
 <span class="k">with</span> <span class="n">decimal</span><span class="o">.</span><span class="n">localcontext</span><span class="p">(</span><span class="n">my_context</span><span class="p">)</span> <span class="k">as</span> <span class="n">c</span><span class="p">:</span>
-    <span class="n">c</span><span class="o">.</span><span class="n">prec</span> <span class="o">=</span> <span class="mi">2</span> <span class="c"># if you need to adjust it</span>
-    <span class="c"># operations</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">prec</span> <span class="o">=</span> <span class="mi">2</span> <span class="c1"># if you need to adjust it</span>
+    <span class="c1"># operations</span>
 </pre>
 <p>But, since we&#8217;re not afraid of objects, we&#8217;ll just wrap up the Context
 in our own context manager (confusing much) that we can just use&nbsp;like:‡</p>
 <pre class="code python literal-block">
 <span class="k">with</span> <span class="n">Context</span><span class="p">(</span><span class="n">prec</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="k">as</span> <span class="n">c</span><span class="p">:</span>
-    <span class="c"># if we *really* need to modify c we can</span>
-    <span class="c"># operations</span>
+    <span class="c1"># if we *really* need to modify c we can</span>
+    <span class="c1"># operations</span>
 </pre>
 </div>
 <div class="section" id="but-sometimes-you-don-t-need-a-class">
@@ -443,20 +443,20 @@ template rendering. It just further simplifies a common case.</blockquote>
 of our domain as well. If you&#8217;ve ever used Redis as a cache, you&#8217;ve
 probably set timeouts so keys and values aren&#8217;t just hanging out
 forever. So, you&#8217;ve probably go things like this hanging out in the&nbsp;code:</p>
-<pre class="code python literal-block">
-<span class="n">cache</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span> <span class="c"># 5 minutes</span>
+<pre class="code ipython3 literal-block">
+<span class="n">cache</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span> <span class="c1"># 5 minutes</span>
 </pre>
 <p>I noticed this at work and it kinda bugged me. There&#8217;s code and then a
 very descriptive comment right next to it that is screaming the intent.
 Why not marry those&nbsp;two?</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timedelta</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">timedelta</span>
 
 <span class="k">def</span> <span class="nf">as_seconds</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">timedelta</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">())</span>
 </pre>
 <p>Now we can use that&nbsp;instead:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="n">cache</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">as_seconds</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>
 </pre>
 <p>I found this one change did three&nbsp;things:</p>
@@ -545,7 +545,7 @@ just advertise it some&nbsp;more.</p>
             <h4>Tags</h4>
             <ul class="list-of-tags tags-in-article"> 
                 <li><a href="/tags.html#design-ref">design
-                    <span>8</span>
+                    <span>7</span>
 </a></li>
             </ul>
 

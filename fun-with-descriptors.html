@@ -85,7 +85,7 @@ a lot of&nbsp;fun.</p>
 <p>I recently found myself needing to set an instance of a class as a class
 attribute on the class in question. I&#8217;m not crazy, I swear. It&#8217;s for
 pynads&#8217; implementation of Monoids. However, doing&nbsp;this:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Thing</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">mempty</span> <span class="o">=</span> <span class="n">Thing</span><span class="p">()</span>
 </pre>
@@ -107,7 +107,7 @@ NameError                                 Traceback (most recent call last)
 NameError: name 'Thing' is not defined
 </pre>
 <p>Doesn&#8217;t work. Wah wah wah. So my brain began turning, and I first tried&nbsp;this:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Thing</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="nd">&#64;classmethod</span>
     <span class="nd">&#64;property</span>
@@ -120,7 +120,7 @@ NameError: name 'Thing' is not defined
 &lt;bound method type.? of &lt;class '__main__.Thing'&gt;&gt;
 </pre>
 <p>At least that didn&#8217;t blow up&#8230;, what if I swapped&nbsp;them?</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Thing</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="nd">&#64;property</span>
     <span class="nd">&#64;classmethod</span>
@@ -137,7 +137,7 @@ NameError: name 'Thing' is not defined
 would magically infer what I wanted. However, Python does no such thing,
 unsurprisingly. So, what if I made my <em>own</em> <tt class="docutils literal">classproperty</tt>
 descriptor?</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">classproperty</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">method</span>
@@ -159,13 +159,13 @@ that three line use was repeated at least three times in pynads. I&#8217;m not
 sure about you, but I hate repeating myself. I&#8217;m gonna make a mistake
 somewhere (and did with List). Mainly because I was caching the instance
 like&nbsp;this:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Thing</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="n">_mempty</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">_mempty</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="nd">&#64;classproperty</span>
     <span class="k">def</span> <span class="nf">mempty</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">cls</span><span class="o">.</span><span class="n">_mempty</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">cls</span><span class="o">.</span><span class="n">_mempty</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">cls</span><span class="o">.</span><span class="n">_mempty</span> <span class="o">=</span> <span class="n">cls</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">_mempty</span>
 
@@ -175,7 +175,7 @@ like&nbsp;this:</p>
 line longer than the implementation. ): After the benadryl wore off and
 I was able to think straight, what if I just moved the boiler plate into
 the&nbsp;descriptor?</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Instance</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">cls</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">cls</span><span class="p">()</span>
@@ -183,8 +183,8 @@ the&nbsp;descriptor?</p>
 <span class="k">class</span> <span class="nc">Thing</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">mempty</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">()</span>
 
-<span class="k">print</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">Thing</span><span class="o">.</span><span class="n">mempty</span><span class="p">))</span>
-<span class="k">print</span><span class="p">(</span><span class="n">Thing</span><span class="o">.</span><span class="n">mempty</span> <span class="ow">is</span> <span class="n">Thing</span><span class="o">.</span><span class="n">mempty</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">Thing</span><span class="o">.</span><span class="n">mempty</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Thing</span><span class="o">.</span><span class="n">mempty</span> <span class="ow">is</span> <span class="n">Thing</span><span class="o">.</span><span class="n">mempty</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 &lt;__main__.Thing object at 0x7fd39c166e80&gt;
@@ -192,12 +192,12 @@ False
 </pre>
 <p>Awesome. That&#8217;s a much nicer use of it. The caching can also be moved
 into the descriptor&nbsp;too:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Instance</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_inst</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_inst</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">cls</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inst</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inst</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_inst</span> <span class="o">=</span> <span class="n">cls</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inst</span>
 
@@ -207,22 +207,22 @@ into the descriptor&nbsp;too:</p>
 <span class="k">assert</span> <span class="n">Thing</span><span class="o">.</span><span class="n">mempty</span> <span class="ow">is</span> <span class="n">Thing</span><span class="o">.</span><span class="n">mempty</span>
 </pre>
 <p>And, if needed, a specific instance can be created and&nbsp;cached:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Instance</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_inst</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_inst</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
     <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">cls</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inst</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inst</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_inst</span> <span class="o">=</span> <span class="n">cls</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inst</span>
 
 <span class="k">class</span> <span class="nc">Thing</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="n">mempty</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">hello</span><span class="o">=</span><span class="s">'world'</span><span class="p">)</span>
+    <span class="n">mempty</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">hello</span><span class="o">=</span><span class="s1">'world'</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hello</span><span class="p">):</span>
-        <span class="k">print</span><span class="p">(</span><span class="n">hello</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">hello</span><span class="p">)</span>
 
 <span class="n">Thing</span><span class="o">.</span><span class="n">mempty</span>
 </pre>
@@ -233,7 +233,7 @@ world
 &lt;__main__.Thing at 0x7fd39c1f5e10&gt;
 </pre>
 <p>And to show it&#8217;s&nbsp;cached:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="n">Thing</span><span class="o">.</span><span class="n">mempty</span>
 </pre>
 <pre class="literal-block">
@@ -305,7 +305,7 @@ world
                     <span>3</span>
 </a></li>
                 <li><a href="/tags.html#pynads-ref">pynads
-                    <span>2</span>
+                    <span>3</span>
 </a></li>
             </ul>
 

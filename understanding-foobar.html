@@ -115,19 +115,19 @@ with how Python 3 handles them. Python 2 is slightly&nbsp;different.</p>
 objects, we should first write a class. It so basic as to wonder why
 we&#8217;re doing it. The point is, rather than examine some fictional class
 or object, why not have one of our own to open up and poke&nbsp;at?</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Baz</span><span class="p">:</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">thing</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">thing</span> <span class="o">=</span> <span class="n">thing</span>
 
     <span class="k">def</span> <span class="nf">bar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">thing</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">thing</span><span class="p">)</span>
 </pre>
 <p>That&#8217;s an extremely basic object. The initalizer takes a single argument
 a method that prints it out. Of course, we need to instantiate it for us
 to get use out of&nbsp;it.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="n">foo</span> <span class="o">=</span> <span class="n">Baz</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre>
 <p>Already, there&#8217;s some mechanisms at work for us. I don&#8217;t want to get too
@@ -151,9 +151,9 @@ descriptors and <tt class="docutils literal">__getattribute__</tt> and what they
 <p>All classes in Python have an underlying <tt class="docutils literal">__dict__</tt> and nearly every
 instance does as well. The first step to <tt class="docutils literal">foo.bar()</tt> is understanding
 that methods live at the class&nbsp;level.</p>
-<pre class="code python literal-block">
-<span class="k">print</span><span class="p">(</span><span class="s">'bar'</span> <span class="ow">in</span> <span class="n">Baz</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s">'bar'</span> <span class="ow">in</span> <span class="n">foo</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+<pre class="code ipython3 literal-block">
+<span class="nb">print</span><span class="p">(</span><span class="s1">'bar'</span> <span class="ow">in</span> <span class="n">Baz</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'bar'</span> <span class="ow">in</span> <span class="n">foo</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 True
@@ -163,12 +163,12 @@ False
 the instance&#8217;s. Because of this, most Python objects can remain
 relatively small, they simply store their state rather than all of their
 available methods as well. What does this method look like in the&nbsp;dictionary?</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">isfunction</span><span class="p">,</span> <span class="n">ismethod</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">inspect</span> <span class="k">import</span> <span class="n">isfunction</span><span class="p">,</span> <span class="n">ismethod</span>
 
-<span class="k">print</span><span class="p">(</span><span class="n">isfunction</span><span class="p">(</span><span class="n">Baz</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">'bar'</span><span class="p">]))</span>
-<span class="k">print</span><span class="p">(</span><span class="n">ismethod</span><span class="p">(</span><span class="n">Baz</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">'bar'</span><span class="p">]))</span>
-<span class="k">print</span><span class="p">(</span><span class="n">Baz</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">'bar'</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">isfunction</span><span class="p">(</span><span class="n">Baz</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s1">'bar'</span><span class="p">]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ismethod</span><span class="p">(</span><span class="n">Baz</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s1">'bar'</span><span class="p">]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Baz</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s1">'bar'</span><span class="p">])</span>
 </pre>
 <pre class="literal-block">
 True
@@ -179,8 +179,8 @@ False
 functions and not as methods. It&#8217;s reasonable to infer that methods are
 actually functions that operate on class instances. From here, we can
 imagine that behind the&nbsp;scenes</p>
-<pre class="code python literal-block">
-<span class="n">Baz</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">'bar'</span><span class="p">](</span><span class="n">foo</span><span class="p">)</span>
+<pre class="code ipython3 literal-block">
+<span class="n">Baz</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s1">'bar'</span><span class="p">](</span><span class="n">foo</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 1
@@ -210,7 +210,7 @@ there and&nbsp;extrapolate.</p>
 on instances and <tt class="docutils literal">__getattribute__</tt> is an implicit transformation from
 attribute to dictionary look up, we can infer that method calls look
 like this behind the&nbsp;scenes:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="n">Baz</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
@@ -223,9 +223,9 @@ like this behind the&nbsp;scenes:</p>
 burning question of how the heck is <tt class="docutils literal">self</tt> (or rather <tt class="docutils literal">foo</tt>) being
 passed to our methods. If we examine <tt class="docutils literal">Baz.bar</tt> and <tt class="docutils literal">foo.bar</tt> both,
 we can see there&#8217;s a transformation going on&nbsp;somewhere.</p>
-<pre class="code python literal-block">
-<span class="k">print</span><span class="p">(</span><span class="n">Baz</span><span class="o">.</span><span class="n">bar</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">foo</span><span class="o">.</span><span class="n">bar</span><span class="p">)</span>
+<pre class="code ipython3 literal-block">
+<span class="nb">print</span><span class="p">(</span><span class="n">Baz</span><span class="o">.</span><span class="n">bar</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">foo</span><span class="o">.</span><span class="n">bar</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 &lt;function Baz.bar at 0x7f1d05a87ea0&gt;
@@ -245,24 +245,24 @@ defines the special <tt class="docutils literal">__get__</tt> method. The way de
 intercepting lookup of specific&nbsp;attributes.</p>
 <p>The Descriptor likely has a passing resemblance to this (of course,
 implemented in&nbsp;C):</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">MethodType</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">types</span> <span class="k">import</span> <span class="n">MethodType</span>
 
 <span class="k">class</span> <span class="nc">MethodDescriptor</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">method</span>
 
     <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">cls</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">instance</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">instance</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span>
         <span class="k">return</span> <span class="n">MethodType</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="p">,</span> <span class="n">instance</span><span class="p">)</span>
 </pre>
 <p>So, our initial thought of what <tt class="docutils literal">foo.bar()</tt> looks like under the
 covers was wrong. It more accurately&nbsp;resembles:</p>
-<pre class="code python literal-block">
-<span class="n">Baz</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">'bar'</span><span class="p">]</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">foo</span><span class="p">,</span> <span class="n">Baz</span><span class="p">)()</span>
-<span class="c"># if we inspect it we see the truth</span>
-<span class="k">print</span><span class="p">(</span><span class="n">Baz</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">'bar'</span><span class="p">]</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">foo</span><span class="p">,</span> <span class="n">Baz</span><span class="p">))</span>
+<pre class="code ipython3 literal-block">
+<span class="n">Baz</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s1">'bar'</span><span class="p">]</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">foo</span><span class="p">,</span> <span class="n">Baz</span><span class="p">)()</span>
+<span class="c1"># if we inspect it we see the truth</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Baz</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s1">'bar'</span><span class="p">]</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">foo</span><span class="p">,</span> <span class="n">Baz</span><span class="p">))</span>
 </pre>
 <pre class="literal-block">
 1
@@ -270,23 +270,23 @@ covers was wrong. It more accurately&nbsp;resembles:</p>
 </pre>
 <p>And in fact, if we put our imitation method descriptor into action, it
 works similarly to how object methods&nbsp;do.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">monty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">Spam</span><span class="p">:</span>
     <span class="n">eggs</span> <span class="o">=</span> <span class="n">MethodDescriptor</span><span class="p">(</span><span class="n">monty</span><span class="p">)</span>
 
-    <span class="c">##of course, it's also useable as a decorator</span>
+    <span class="c1">##of course, it's also useable as a decorator</span>
     <span class="nd">&#64;MethodDescriptor</span>
     <span class="k">def</span> <span class="nf">bar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="mi">4</span>
 
-<span class="n">ham</span> <span class="o">=</span> <span class="n">Spam</span><span class="p">()</span> <span class="c"># a lie if I ever saw one</span>
-<span class="k">print</span><span class="p">(</span><span class="n">Spam</span><span class="o">.</span><span class="n">eggs</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">ham</span><span class="o">.</span><span class="n">eggs</span><span class="p">)</span>
+<span class="n">ham</span> <span class="o">=</span> <span class="n">Spam</span><span class="p">()</span> <span class="c1"># a lie if I ever saw one</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Spam</span><span class="o">.</span><span class="n">eggs</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ham</span><span class="o">.</span><span class="n">eggs</span><span class="p">)</span>
 <span class="n">ham</span><span class="o">.</span><span class="n">eggs</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">ham</span><span class="o">.</span><span class="n">bar</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ham</span><span class="o">.</span><span class="n">bar</span><span class="p">())</span>
 </pre>
 <pre class="literal-block">
 &lt;function monty at 0x7f1d045cef28&gt;
@@ -357,7 +357,7 @@ and decided that it should simply return the function&nbsp;itself.</p>
                     <span>2</span>
 </a></li>
                 <li><a href="/tags.html#python-ref">python
-                    <span>12</span>
+                    <span>15</span>
 </a></li>
             </ul>
 

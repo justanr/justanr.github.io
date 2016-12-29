@@ -18,8 +18,8 @@
         <![endif]-->
 
 
-<meta name="keywords" content="design, haskell, python, monads, tutorials, " />
-        <title>I wrote a monad tutorial for some&nbsp;reason&#8230; - from alec.thoughts import *
+<meta name="keywords" content="python, design, haskell, monads, tutorials, " />
+        <title>I wrote a monad tutorial for some&nbsp;reason… - from alec.thoughts import *
 </title>
         <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
@@ -73,7 +73,7 @@
 <article>
 <div class="row-fluid">
     <header class="page_header span10 offset2">
-    <h1><a href="http://justanr.github.io/i-wrote-a-monad-tutorial-for-some-reason"> I wrote a monad tutorial for some&nbsp;reason&#8230;  </a></h1>
+    <h1><a href="http://justanr.github.io/i-wrote-a-monad-tutorial-for-some-reason"> I wrote a monad tutorial for some&nbsp;reason…  </a></h1>
     </header>
 </div>
 
@@ -126,24 +126,24 @@ to certain monads. Monads in general only deal with how to combine&nbsp;expressi
 <h2>But Python doesn&#8217;t have&nbsp;monads</h2>
 <p>Eh. It all depends on how you want to look at it. Sure, it doesn&#8217;t have
 Haskell style monads. But it doesn&#8217;t need to. Let&#8217;s look at&nbsp;something:</p>
-<pre class="code python literal-block">
-<span class="n">x</span> <span class="o">=</span> <span class="n">y</span> <span class="o">=</span> <span class="s">'     Fred</span><span class="se">\n</span><span class="s"> Thompson '</span>
+<pre class="code ipython3 literal-block">
+<span class="n">x</span> <span class="o">=</span> <span class="n">y</span> <span class="o">=</span> <span class="s1">'     Fred</span><span class="se">\n</span><span class="s1"> Thompson '</span>
 </pre>
 <p>I have that input. But I need output that looks like this:
 <tt class="docutils literal">&quot;<span class="caps">JACK</span> <span class="caps">THOMPSON</span>&quot;</tt>. The obvious way is doing it&nbsp;imperatively:</p>
-<pre class="code python literal-block">
-<span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">'Fred'</span><span class="p">,</span> <span class="s">'Jack'</span><span class="p">)</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">,</span> <span class="s">''</span><span class="p">)</span>
+<pre class="code ipython3 literal-block">
+<span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'Fred'</span><span class="p">,</span> <span class="s1">'Jack'</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">,</span> <span class="s1">''</span><span class="p">)</span>
 <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
-<span class="k">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 JACK THOMPSON
 </pre>
 <p>And it works. Or I could just chain all those operations&nbsp;together:</p>
-<pre class="code python literal-block">
-<span class="k">print</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">'Fred'</span><span class="p">,</span> <span class="s">'Jack'</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">,</span> <span class="s">''</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
+<pre class="code ipython3 literal-block">
+<span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'Fred'</span><span class="p">,</span> <span class="s1">'Jack'</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">,</span> <span class="s1">''</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
 </pre>
 <pre class="literal-block">
 JACK THOMPSON
@@ -164,36 +164,36 @@ to define them ourselves. I like using Maybe as an example because it&#8217;s
 simple enough to explain but addresses a real world problem: Null
 Pointer Exceptions.&nbsp;(:</p>
 <p>We usually avoid this sort of thing with this pattern in&nbsp;Python:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">sqrt</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">None</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
     <span class="k">return</span> <span class="n">x</span><span class="o">**.</span><span class="mi">5</span>
 
-<span class="k">print</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
-<span class="k">print</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">None</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="kc">None</span><span class="p">))</span>
 </pre>
 <pre class="literal-block">
 2.0
 None
 </pre>
 <p>We can use this to process information from <span class="caps">STDIN</span> (for&nbsp;example):</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">int_from_stdin</span><span class="p">():</span>
     <span class="n">x</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span>
-    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span> <span class="k">else</span> <span class="bp">None</span>
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span> <span class="k">else</span> <span class="kc">None</span>
 </pre>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="n">maybe_int</span> <span class="o">=</span> <span class="n">int_from_stdin</span><span class="p">()</span>
-<span class="k">print</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="n">maybe_int</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="n">maybe_int</span><span class="p">))</span>
 </pre>
 <pre class="literal-block">
 a
 None
 </pre>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="n">maybe_int</span> <span class="o">=</span> <span class="n">int_from_stdin</span><span class="p">()</span>
-<span class="k">print</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="n">maybe_int</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="n">maybe_int</span><span class="p">))</span>
 </pre>
 <pre class="literal-block">
 4
@@ -223,7 +223,7 @@ onus to return a Maybe is on whatever function we bind to. This puts the
 power in our hands to decide if we have a failure at any given point in
 the&nbsp;operation.</p>
 <p>In Python, a simplified version looks a lot like&nbsp;this:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Maybe</span><span class="p">:</span>
     <span class="nd">&#64;staticmethod</span>
     <span class="k">def</span> <span class="nf">unit</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
@@ -238,7 +238,7 @@ the&nbsp;operation.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">v</span>
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s">'Just {!r}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">'Just </span><span class="si">{!r}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">bind</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bindee</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">bindee</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
@@ -249,11 +249,11 @@ the&nbsp;operation.</p>
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s">'Nothing'</span>
+        <span class="k">return</span> <span class="s1">'Nothing'</span>
 </pre>
 <p>And we can use this to reimplement our <tt class="docutils literal">int_from_stdin</tt> and <tt class="docutils literal">sqrt</tt>
 functions&nbsp;above:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">int_from_stdin</span><span class="p">():</span>
     <span class="n">x</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">Just</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span> <span class="k">else</span> <span class="n">Nothing</span><span class="p">()</span>
@@ -262,7 +262,7 @@ functions&nbsp;above:</p>
     <span class="k">return</span> <span class="n">Just</span><span class="p">(</span><span class="n">x</span><span class="o">**.</span><span class="mi">5</span><span class="p">)</span>
 </pre>
 <p>And chain them together like&nbsp;this:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="n">int_from_stdin</span><span class="p">()</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">sqrt</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
@@ -271,7 +271,7 @@ functions&nbsp;above:</p>
 <pre class="literal-block">
 Just 2.0
 </pre>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="n">int_from_stdin</span><span class="p">()</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">sqrt</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
@@ -291,7 +291,7 @@ point if we even want to continue with the computation or bail out
 completely. Let&#8217;s say we have something against even numbers. Perhaps
 it&#8217;s that only one of them is Prime. But we like odds. So if we get an
 even number from <span class="caps">STDIN</span>, we&#8217;ll just bail&nbsp;out.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">only_odds</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">Just</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span><span class="o">&amp;</span><span class="mi">1</span> <span class="k">else</span> <span class="n">Nothing</span><span class="p">()</span>
 
@@ -303,7 +303,7 @@ even number from <span class="caps">STDIN</span>, we&#8217;ll just bail&nbsp;out
 <pre class="literal-block">
 Nothing
 </pre>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="n">int_from_stdin</span><span class="p">()</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">only_odds</span><span class="p">)</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">sqrt</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
@@ -345,9 +345,9 @@ universal function call syntax from D.
 <a class="reference external" href="http://www.reddit.com/r/Python/comments/33qzzf/what_features_should_python_steal_from_other/cqo1ic6">/u/AMorpork</a>
 proposed simply creating a monad where <tt class="docutils literal">__getattr__</tt> is the sequencing
 operation (reproduced&nbsp;here):</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">islice</span>
-<span class="kn">import</span> <span class="nn">builtins</span> <span class="kn">as</span> <span class="nn">__builtin__</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">islice</span>
+<span class="kn">import</span> <span class="nn">builtins</span> <span class="k">as</span> <span class="nn">__builtin__</span>
 
 <span class="k">def</span> <span class="nf">take</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">it</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">islice</span><span class="p">(</span><span class="n">it</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
@@ -375,29 +375,29 @@ operation (reproduced&nbsp;here):</p>
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span>
 </pre>
-<pre class="code python literal-block">
-<span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="s">'#3.462289264065068'</span><span class="p">,</span>
-     <span class="s">'4.283990003510465'</span><span class="p">,</span>
-     <span class="s">'#1.7285949138067824'</span><span class="p">,</span>
-     <span class="s">'#2.6009019446392987'</span><span class="p">,</span>
-     <span class="s">'5.089491698891653'</span><span class="p">,</span>
-     <span class="s">'3.854140130424576'</span><span class="p">,</span>
-     <span class="s">'4.118846086899804'</span><span class="p">,</span>
-     <span class="s">'5.110436429053362'</span><span class="p">,</span>
-     <span class="s">'9.044631493138326'</span><span class="p">,</span>
-     <span class="s">'5.503343391187907'</span><span class="p">,</span>
-     <span class="s">'1.4415742971795897'</span><span class="p">,</span>
-     <span class="s">'2.7162342709197618'</span><span class="p">,</span>
-     <span class="s">'9.438995804377226'</span><span class="p">,</span>
-     <span class="s">'1.8698624486908322'</span><span class="p">,</span>
-     <span class="s">'4.008599242523804'</span><span class="p">,</span>
-     <span class="s">'8.914062382096017'</span><span class="p">,</span>
-     <span class="s">'4.120213633898632'</span><span class="p">,</span>
-     <span class="s">'6.9189185117106975'</span><span class="p">,</span>
-     <span class="c"># more were included, but removed here</span>
+<pre class="code ipython3 literal-block">
+<span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'#3.462289264065068'</span><span class="p">,</span>
+     <span class="s1">'4.283990003510465'</span><span class="p">,</span>
+     <span class="s1">'#1.7285949138067824'</span><span class="p">,</span>
+     <span class="s1">'#2.6009019446392987'</span><span class="p">,</span>
+     <span class="s1">'5.089491698891653'</span><span class="p">,</span>
+     <span class="s1">'3.854140130424576'</span><span class="p">,</span>
+     <span class="s1">'4.118846086899804'</span><span class="p">,</span>
+     <span class="s1">'5.110436429053362'</span><span class="p">,</span>
+     <span class="s1">'9.044631493138326'</span><span class="p">,</span>
+     <span class="s1">'5.503343391187907'</span><span class="p">,</span>
+     <span class="s1">'1.4415742971795897'</span><span class="p">,</span>
+     <span class="s1">'2.7162342709197618'</span><span class="p">,</span>
+     <span class="s1">'9.438995804377226'</span><span class="p">,</span>
+     <span class="s1">'1.8698624486908322'</span><span class="p">,</span>
+     <span class="s1">'4.008599242523804'</span><span class="p">,</span>
+     <span class="s1">'8.914062382096017'</span><span class="p">,</span>
+     <span class="s1">'4.120213633898632'</span><span class="p">,</span>
+     <span class="s1">'6.9189185117106975'</span><span class="p">,</span>
+     <span class="c1"># more were included, but removed here</span>
      <span class="p">]</span>
 
-<span class="n">UFCS</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span> <span class="ow">and</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&quot;#&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">sorted</span><span class="p">()</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">list</span><span class="p">()</span><span class="o">.</span><span class="k">print</span><span class="p">()</span>
+<span class="n">UFCS</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span> <span class="ow">and</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;#&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">sorted</span><span class="p">()</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">list</span><span class="p">()</span><span class="o">.</span><span class="n">print</span><span class="p">()</span>
 </pre>
 <pre class="literal-block">
 [1.4415742971795897, 1.8698624486908322, 2.7162342709197618, 3.854140130424576, 4.008599242523804, 4.118846086899804, 4.120213633898632, 4.283990003510465, 5.089491698891653, 5.110436429053362]
@@ -468,7 +468,7 @@ and I&#8217;ll be happy to go into further&nbsp;detail.</p>
             <h4>Tags</h4>
             <ul class="list-of-tags tags-in-article"> 
                 <li><a href="/tags.html#design-ref">design
-                    <span>8</span>
+                    <span>7</span>
 </a></li>
                 <li><a href="/tags.html#haskell-ref">haskell
                     <span>3</span>
@@ -477,7 +477,7 @@ and I&#8217;ll be happy to go into further&nbsp;detail.</p>
                     <span>1</span>
 </a></li>
                 <li><a href="/tags.html#python-ref">python
-                    <span>12</span>
+                    <span>15</span>
 </a></li>
             </ul>
 

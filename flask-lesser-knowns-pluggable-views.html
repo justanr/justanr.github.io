@@ -18,7 +18,7 @@
         <![endif]-->
 
 
-<meta name="keywords" content="python, design, tips and tricks, " />
+<meta name="keywords" content="python, design, flask, tips and tricks, " />
         <title>Flask Lesser Knowns: Pluggable&nbsp;Views - from alec.thoughts import *
 </title>
         <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
@@ -81,12 +81,12 @@
         <div class="span8 offset2 article-content">
 
             <p>Flask gets quite a bit of attention, which is awesome. However all the
-tutorials and guides can&#8217;t touch on every aspect of Flask, even if it is
-small. There&#8217;s a ton of cool stuff that just doesn&#8217;t get shown&nbsp;often.</p>
+tutorials and guides can’t touch on every aspect of Flask, even if it is
+small. There’s a ton of cool stuff that just doesn’t get shown&nbsp;often.</p>
 <div class="section" id="the-views-module">
-<h2>The views&nbsp;Module</h2>
+<h2>The <tt class="docutils literal">views</tt> Module</h2>
 <p>Flask comes with a <tt class="docutils literal">views</tt> module that contains two classes: <tt class="docutils literal">View</tt>
-and <tt class="docutils literal">MethodView</tt> &#8212; these are often referred to as &#8220;Pluggable Views&#8221;
+and <tt class="docutils literal">MethodView</tt> — these are often referred to as “Pluggable Views”
 The idea behind these classes is&nbsp;simple:</p>
 <ul class="simple">
 <li>You have complex view&nbsp;logic.</li>
@@ -96,16 +96,16 @@ The idea behind these classes is&nbsp;simple:</p>
 <p><tt class="docutils literal">View</tt> can handle this for you. One thing I really enjoy using
 <tt class="docutils literal">View</tt> for is wrapping my actual views in it to attach rendering
 behavior. It looks like&nbsp;this:</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">flask.views</span> <span class="kn">import</span> <span class="n">View</span>
-<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">render_template</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">flask.views</span> <span class="k">import</span> <span class="n">View</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">render_template</span>
 
 <span class="k">class</span> <span class="nc">RenderableView</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">template</span> <span class="o">=</span> <span class="n">template</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span> <span class="o">=</span> <span class="n">view</span>
 
-    <span class="c"># this is the magic sauce that needs to be implemented</span>
+    <span class="c1"># this is the magic sauce that needs to be implemented</span>
     <span class="k">def</span> <span class="nf">dispatch_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">resp</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">headers</span> <span class="o">=</span> <span class="n">unpack_response</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="p">,</span> <span class="o">**</span><span class="n">resp</span><span class="p">),</span> <span class="n">code</span><span class="p">,</span> <span class="n">headers</span>
@@ -126,17 +126,18 @@ method was added, <tt class="docutils literal">as_view</tt> which is a classmeth
 does is create a function that creates an instance of the class and then
 returns the result of <tt class="docutils literal">dispatch_method</tt>, and updates some metadata as
 well. It also applies any decorators provided to the function as&nbsp;well.</p>
-<p><tt class="docutils literal">as_view</tt> requires just one argument: <tt class="docutils literal">name</tt>, which becomes the
+<p><tt class="docutils literal">as_view</tt> requires just one argument: name, which becomes the
 <tt class="docutils literal">__name__</tt> of the returned function. It also allows providing
 arguments to initialize the class view as well. For example, if we had
-an <tt class="docutils literal">index</tt> view we wanted to wrap with this class, we&#8217;d call
+an <tt class="docutils literal">index</tt> view we wanted to wrap with this class, we’d call
 <tt class="docutils literal"><span class="pre">RenderableView.as_view(name=&quot;index&quot;,</span> <span class="pre">template=&quot;index.html&quot;,</span> view=index_func)</tt>
 and the class is instantiated with that template name and view&nbsp;function.</p>
+</div>
 <div class="section" id="how-do-we-provide-decorators">
-<h3>How do we provide&nbsp;decorators?</h3>
+<h2>How do we provide&nbsp;decorators?</h2>
 <p>Applying decorators is super easy, just create a class level attribute
 called <tt class="docutils literal">decorators</tt> and attach them&nbsp;there.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">DecoratedView</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
     <span class="n">decorators</span> <span class="o">=</span> <span class="p">[</span><span class="n">cache</span><span class="p">,</span> <span class="n">etag</span><span class="p">,</span> <span class="n">admin_required</span><span class="p">]</span>
 </pre>
@@ -144,95 +145,81 @@ called <tt class="docutils literal">decorators</tt> and attach them&nbsp;there.<
 resulting function. Which is really&nbsp;nice.</p>
 </div>
 <div class="section" id="registering-a-view">
-<h3>Registering a&nbsp;View</h3>
+<h2>Registering a&nbsp;View</h2>
 <p><tt class="docutils literal">app.route</tt> is a nice high level way of registering functions to
 routes. However, by using pluggable views, we sacrifice this high level
 ability in exchange for the flexibility that the class based views. But
 we still need to get it onto an&nbsp;endpoint.</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">app</span> <span class="kn">import</span> <span class="n">app</span>
-
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
-    <span class="k">return</span> <span class="p">{</span><span class="s">'username'</span><span class="p">:</span> <span class="s">'justanr'</span><span class="p">}</span>
-
-<span class="n">app</span><span class="o">.</span><span class="n">add_url_rule</span><span class="p">(</span><span class="n">rule</span><span class="o">=</span><span class="s">'/index'</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="s">'index'</span><span class="p">,</span>
-                 <span class="n">view_func</span><span class="o">=</span><span class="n">RenderableView</span><span class="o">.</span><span class="n">as_view</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">'index'</span><span class="p">,</span> <span class="n">template</span><span class="o">=</span><span class="s">'index.html'</span><span class="p">,</span> <span class="n">view</span><span class="o">=</span><span class="n">index</span><span class="p">))</span>
-</pre>
-<p><tt class="docutils literal">app.route</tt> is actually a really nice abstraction over this. And I&#8217;m
-sure someone has an equivalent class decorator for this as well.
-However, for the time being, I prefer to register my class based views
-like this because it&#8217;s less magic, I separate my view classes from their
-instantiation and I can locate all my registration in one&nbsp;area.</p>
-</div>
 </div>
 <div class="section" id="what-about-methodview">
 <h2>What about&nbsp;MethodView?</h2>
-<p>Let&#8217;s say you have an endpoint that accepts <span class="caps">GET</span> and <span class="caps">POST</span> requests but
-don&#8217;t really share a lot of logic between them. So you&#8217;re route ends up
-looking like&nbsp;this:</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">request</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">url_for</span>
+<p>Let’s say you have an endpoint that accepts <tt class="docutils literal"><span class="caps">GET</span></tt> and <tt class="docutils literal"><span class="caps">POST</span></tt>
+requests but don’t really share a lot of logic between them. So you’re
+route ends up looking like&nbsp;this:</p>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">request</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">url_for</span>
 
-<span class="nd">&#64;app.route</span><span class="p">(</span><span class="s">'/someplace'</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">'GET'</span><span class="p">,</span> <span class="s">'POST'</span><span class="p">])</span>
+<span class="nd">&#64;app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">'/someplace'</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">'GET'</span><span class="p">,</span> <span class="s1">'POST'</span><span class="p">])</span>
 <span class="k">def</span> <span class="nf">do_something</span><span class="p">():</span>
-    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s">'POST'</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">'POST'</span><span class="p">:</span>
         <span class="n">update_the_datastore</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s">'do_something'</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">'do_something'</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">form</span> <span class="o">=</span> <span class="n">SomeAwesomeForm</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s">'do_something.html'</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">'do_something.html'</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
 </pre>
-<p>How can we separate the two? That&#8217;s where MethodView comes&nbsp;in.</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">flask.views</span> <span class="kn">import</span> <span class="n">MethodView</span>
+<p>How can we separate the two? That’s where MethodView comes&nbsp;in.</p>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">flask.views</span> <span class="k">import</span> <span class="n">MethodView</span>
 
 <span class="k">class</span> <span class="nc">DoSomethingView</span><span class="p">(</span><span class="n">MethodView</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">form</span> <span class="o">=</span> <span class="n">SomeAwesomeForm</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s">'do_something.html'</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">'do_something.html'</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">update_the_datastore</span><span class="p">()</span>
-        <span class="c"># we don't know the endpoint a head of time</span>
-        <span class="c"># but the request contains it</span>
-        <span class="c"># alternatively we could inject the redirect point</span>
+        <span class="c1"># we don't know the endpoint a head of time</span>
+        <span class="c1"># but the request contains it</span>
+        <span class="c1"># alternatively we could inject the redirect point</span>
         <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">endpoint</span><span class="p">))</span>
 </pre>
-<p>With <tt class="docutils literal">MethodView</tt> we don&#8217;t need to provide a <tt class="docutils literal">dispatch_request</tt>
-because it&#8217;s implemented for us. The implementation looks for a method
+<p>With <tt class="docutils literal">MethodView</tt> we don’t need to provide a <tt class="docutils literal">dispatch_request</tt>
+because it’s implemented for us. The implementation looks for a method
 on the class that matches the <span class="caps">HTTP</span> Method (so <tt class="docutils literal"><span class="caps">GET</span></tt> is mapped to
-<tt class="docutils literal">DoSomethingView.get</tt>) and calls it. If there isn&#8217;t a matching method,
+<tt class="docutils literal">DoSomethingView.get</tt>) and calls it. If there isn’t a matching method,
 an exception is raised saying as such. The exception being <tt class="docutils literal"><span class="caps">HEAD</span></tt>
 which will invoke <tt class="docutils literal"><span class="caps">GET</span></tt> if it&nbsp;exists.</p>
+</div>
 <div class="section" id="when-methodview-is-good">
-<h3>When MethodView is&nbsp;good</h3>
-<p><tt class="docutils literal">MethodView</tt> is <em>fantastic</em> for building RESTful APIs. Since RESTful
+<h2>When MethodView is&nbsp;good</h2>
+<p><tt class="docutils literal">MethodView</tt> is fantastic for building RESTful APIs. Since RESTful
 APIs are build around using the different <span class="caps">HTTP</span> methods for performing
 actions and MethodView dispatches based on <span class="caps">HTTP</span> Method, the two are a
 perfect match. In fact,
-<a class="reference external" href="https://github.com/flask-restful/flask-restful">Flask-RESTful</a> &#8212; a
-popular <span class="caps">API</span> toolkit &#8212; uses MethodView behind the scenes for their
+<a class="reference external" href="https://github.com/flask-restful/flask-restful">Flask-RESTful</a> — a
+popular <span class="caps">API</span> toolkit — uses MethodView behind the scenes for their
 Resource&nbsp;class.</p>
 <p>Another good use is processing forms. Typically, a form endpoint looks
 like&nbsp;this:</p>
-<pre class="code python literal-block">
-<span class="nd">&#64;app.route</span><span class="p">(</span><span class="s">'/form'</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">'GET'</span><span class="p">,</span> <span class="s">'POST'</span><span class="p">])</span>
+<pre class="code ipython3 literal-block">
+<span class="nd">&#64;app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">'/form'</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">'GET'</span><span class="p">,</span> <span class="s1">'POST'</span><span class="p">])</span>
 <span class="k">def</span> <span class="nf">process_form</span><span class="p">():</span>
-    <span class="c"># there's all sorts of reasons why we use</span>
-    <span class="c"># the `_get_current_object` method</span>
-    <span class="c"># see this reddit convo for more details</span>
-    <span class="c"># https://www.reddit.com/r/flask/comments/3hd8j2/current_app_vs_current_app_get_current_object/</span>
+    <span class="c1"># there's all sorts of reasons why we use</span>
+    <span class="c1"># the `_get_current_object` method</span>
+    <span class="c1"># see this reddit convo for more details</span>
+    <span class="c1"># https://www.reddit.com/r/flask/comments/3hd8j2/current_app_vs_current_app_get_current_object/</span>
     <span class="n">user</span> <span class="o">=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">_get_current_object</span><span class="p">()</span>
     <span class="n">form</span> <span class="o">=</span> <span class="n">UserForm</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">validate_on_submit</span><span class="p">():</span>
         <span class="n">user</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">username</span><span class="o">.</span><span class="n">data</span>
         <span class="n">user</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">password</span><span class="o">.</span><span class="n">data</span>
         <span class="n">update_user</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s">'process_form'</span><span class="p">),</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s">'user_form.html'</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">'process_form'</span><span class="p">),</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">'user_form.html'</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
 </pre>
 <p>However, we could simply split this into two routes easily with&nbsp;MethodView:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">ProcessFormView</span><span class="p">(</span><span class="n">MethodView</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">form</span><span class="p">,</span> <span class="n">redirect_to</span><span class="p">,</span> <span class="n">template</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">form</span> <span class="o">=</span> <span class="n">form</span><span class="p">()</span>
@@ -249,83 +236,75 @@ like&nbsp;this:</p>
             <span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">password</span><span class="o">.</span><span class="n">data</span>
             <span class="n">update_user</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">redirect_to</span><span class="p">))</span>
-        <span class="c"># in this case, the form was submitted but was invalid</span>
-        <span class="c"># so rerender the template including the form with the errors</span>
+        <span class="c1"># in this case, the form was submitted but was invalid</span>
+        <span class="c1"># so rerender the template including the form with the errors</span>
         <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="p">)</span>
 
-<span class="n">app</span><span class="o">.</span><span class="n">add_url_rule</span><span class="p">(</span><span class="s">'/methodviewform'</span><span class="p">,</span> <span class="s">'process_form_view'</span><span class="p">,</span>
-                 <span class="n">ProcessFormView</span><span class="o">.</span><span class="n">as_view</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">'user_form'</span><span class="p">,</span>
+<span class="n">app</span><span class="o">.</span><span class="n">add_url_rule</span><span class="p">(</span><span class="s1">'/methodviewform'</span><span class="p">,</span> <span class="s1">'process_form_view'</span><span class="p">,</span>
+                 <span class="n">ProcessFormView</span><span class="o">.</span><span class="n">as_view</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'user_form'</span><span class="p">,</span>
                                          <span class="n">form</span><span class="o">=</span><span class="n">UserForm</span><span class="p">,</span>
-                                         <span class="n">redirect_to</span><span class="o">=</span><span class="s">'process_form_view'</span><span class="p">,</span>
-                                         <span class="n">template</span><span class="o">=</span><span class="s">'user_form.html'</span><span class="p">))</span>
+                                         <span class="n">redirect_to</span><span class="o">=</span><span class="s1">'process_form_view'</span><span class="p">,</span>
+                                         <span class="n">template</span><span class="o">=</span><span class="s1">'user_form.html'</span><span class="p">))</span>
 </pre>
-</div>
 </div>
 <div class="section" id="combining-view-classes">
 <h2>Combining View&nbsp;classes</h2>
-<p>The real power of View classes is when you beginning combinging them
+<p>The real power of <tt class="docutils literal">View</tt> classes is when you beginning combinging them
 together. For example, you might have an <tt class="docutils literal">ETagView</tt> that generates
 etags like&nbsp;this:</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">hashlib</span> <span class="kn">import</span> <span class="n">md5</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">hashlib</span> <span class="k">import</span> <span class="n">md5</span>
 
 <span class="k">class</span> <span class="nc">ETagView</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">dispatch_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">resp</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">headers</span> <span class="o">=</span> <span class="n">unpack_response</span><span class="p">(</span><span class="nb">super</span><span class="p">(</span><span class="n">ETagView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">dispatch_request</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
 
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="s">'encode'</span><span class="p">):</span>
-            <span class="c"># I'm running Python3</span>
-            <span class="c"># So I need to convert unicode to bytestring</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="s1">'encode'</span><span class="p">):</span>
+            <span class="c1"># I'm running Python3</span>
+            <span class="c1"># So I need to convert unicode to bytestring</span>
             <span class="n">resp</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
 
-        <span class="n">headers</span><span class="p">[</span><span class="s">'ETag'</span><span class="p">]</span> <span class="o">=</span> <span class="n">md5</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+        <span class="n">headers</span><span class="p">[</span><span class="s1">'ETag'</span><span class="p">]</span> <span class="o">=</span> <span class="n">md5</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">resp</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">headers</span>
 </pre>
 <p>You could trivially combine them together like&nbsp;this:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">RenderableETagView</span><span class="p">(</span><span class="n">ETagView</span><span class="p">,</span> <span class="n">RenderableView</span><span class="p">):</span>
     <span class="k">pass</span>
 
-<span class="n">view</span> <span class="o">=</span> <span class="n">RenderableETagView</span><span class="p">(</span><span class="n">template</span><span class="o">=</span><span class="s">'index.html'</span><span class="p">,</span> <span class="n">view</span><span class="o">=</span><span class="n">index</span><span class="p">)</span>
+<span class="n">view</span> <span class="o">=</span> <span class="n">RenderableETagView</span><span class="p">(</span><span class="n">template</span><span class="o">=</span><span class="s1">'index.html'</span><span class="p">,</span> <span class="n">view</span><span class="o">=</span><span class="n">index</span><span class="p">)</span>
 
 <span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">app_context</span><span class="p">():</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">dispatch_request</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">dispatch_request</span><span class="p">())</span>
 </pre>
-<pre class="literal-block">
-(b'Welcome justanr', 200, {'ETag': '585c3d5dae44e9a41472bfd87f7df625'})
-</pre>
-<p>And something else that&#8217;s really nice is many things that work as mixins
+<p>And something else that’s really nice is many things that work as mixins
 for View can also be used with MethodView as&nbsp;well.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">ETagMethodView</span><span class="p">(</span><span class="n">ETagView</span><span class="p">,</span> <span class="n">MethodView</span><span class="p">):</span>
     <span class="k">pass</span>
 
 <span class="k">class</span> <span class="nc">MyETagMethodView</span><span class="p">(</span><span class="n">ETagMethodView</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s">'Awesome get!'</span>
+        <span class="k">return</span> <span class="s1">'Awesome get!'</span>
     <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s">'Awesome post!'</span>
+        <span class="k">return</span> <span class="s1">'Awesome post!'</span>
 
-<span class="n">view</span> <span class="o">=</span> <span class="n">MyETagMethodView</span><span class="o">.</span><span class="n">as_view</span><span class="p">(</span><span class="s">'awesome'</span><span class="p">)</span>
+<span class="n">view</span> <span class="o">=</span> <span class="n">MyETagMethodView</span><span class="o">.</span><span class="n">as_view</span><span class="p">(</span><span class="s1">'awesome'</span><span class="p">)</span>
 
 <span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">test_request_context</span><span class="p">():</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">view</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">view</span><span class="p">())</span>
 
-<span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">test_request_context</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s">'POST'</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">view</span><span class="p">())</span>
-</pre>
-<pre class="literal-block">
-(b'Awesome get!', 200, {'ETag': '62cc020199b154e268258ddafc311f94'})
-(b'Awesome post!', 200, {'ETag': '45e808bc20cec7ec94b1093e3274d37f'})
+<span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">test_request_context</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">'POST'</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">view</span><span class="p">())</span>
 </pre>
 <p>You just need to be a little aware of how the two differ and possibly
 adapt for&nbsp;MethodView.</p>
 </div>
 <div class="section" id="fin">
 <h2>Fin</h2>
-<p>Hopefully this has explained Flask&#8217;s pluggable views a little more.
-They&#8217;re woefully under represented in tutorials and guides for Flask but
-they&#8217;re amazing powerful&nbsp;tools.</p>
+<p>Hopefully this has explained Flask’s pluggable views a little more.
+They’re woefully under represented in tutorials and guides for Flask but
+they’re amazing powerful&nbsp;tools.</p>
 </div>
 
             <aside>
@@ -382,10 +361,13 @@ they&#8217;re amazing powerful&nbsp;tools.</p>
             <h4>Tags</h4>
             <ul class="list-of-tags tags-in-article"> 
                 <li><a href="/tags.html#design-ref">design
-                    <span>8</span>
+                    <span>7</span>
+</a></li>
+                <li><a href="/tags.html#flask-ref">flask
+                    <span>4</span>
 </a></li>
                 <li><a href="/tags.html#python-ref">python
-                    <span>12</span>
+                    <span>15</span>
 </a></li>
             </ul>
 

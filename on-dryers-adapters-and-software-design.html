@@ -109,9 +109,9 @@ terrible instead? More often than I care to admit,&nbsp;honestly.</p>
 <p>Let&#8217;s look at an example. Something of a trivial example, but it
 suffices for a blog post. Let&#8217;s pretend that we&#8217;ve developed an app that
 can send a user an authentication token for some&nbsp;purpose.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">send_user_auth_token</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">notifier</span><span class="p">):</span>
-    <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Your access code is {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Your access code is </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">notifier</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">msg</span><span class="p">)</span>
 </pre>
 <p>The actual business logic here doesn&#8217;t even do anything (well, it
@@ -127,22 +127,22 @@ fact that the notifier we pass it implements some <tt class="docutils literal">n
 will handle the actual notifying given the user and the token we&nbsp;provide.</p>
 <p>Let&#8217;s implement a simple notifier that we can use as an inspiration, as
 well as a user model and something to generate&nbsp;tokens.</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
-<span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">SystemRandom</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span>
+<span class="kn">from</span> <span class="nn">random</span> <span class="k">import</span> <span class="n">SystemRandom</span>
 
-<span class="n">User</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s">&quot;User&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s">&quot;username&quot;</span><span class="p">,</span> <span class="s">&quot;email&quot;</span><span class="p">,</span> <span class="s">&quot;phone_number&quot;</span><span class="p">])</span>
+<span class="n">User</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;User&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;username&quot;</span><span class="p">,</span> <span class="s2">&quot;email&quot;</span><span class="p">,</span> <span class="s2">&quot;phone_number&quot;</span><span class="p">])</span>
 
 <span class="k">def</span> <span class="nf">generate_token</span><span class="p">(</span><span class="n">random_source</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">random_source</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">100000</span><span class="p">,</span> <span class="mi">999999</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">PrintingNotifier</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&quot;{0.username}: {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">message</span><span class="p">))</span>
-        <span class="k">return</span> <span class="bp">True</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0.username}</span><span class="s2">: </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">message</span><span class="p">))</span>
+        <span class="k">return</span> <span class="kc">True</span>
 
 <span class="n">print_notifier</span> <span class="o">=</span> <span class="n">PrintingNotifier</span><span class="p">()</span>
-<span class="n">justanr</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="s">&quot;justanr&quot;</span><span class="p">,</span> <span class="s">&quot;justanr&#64;service.com&quot;</span><span class="p">,</span> <span class="s">&quot;9015555555&quot;</span><span class="p">)</span>
+<span class="n">justanr</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="s2">&quot;justanr&quot;</span><span class="p">,</span> <span class="s2">&quot;justanr&#64;service.com&quot;</span><span class="p">,</span> <span class="s2">&quot;9015555555&quot;</span><span class="p">)</span>
 <span class="n">token</span> <span class="o">=</span> <span class="n">generate_token</span><span class="p">(</span><span class="n">SystemRandom</span><span class="p">())</span>
 
 <span class="n">send_user_auth_token</span><span class="p">(</span><span class="n">justanr</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">print_notifier</span><span class="p">)</span>
@@ -157,16 +157,16 @@ True
 with something that sends a text message. Twilio&#8217;s cool, let&#8217;s use
 that&#8230;but there&#8217;s a problem. The code to send an <span class="caps">SMS</span> with Twilio looks
 like&nbsp;this:</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">twilio.rest</span> <span class="kn">import</span> <span class="n">TwilioRestClient</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">twilio.rest</span> <span class="k">import</span> <span class="n">TwilioRestClient</span>
 
 <span class="n">client</span> <span class="o">=</span> <span class="n">TwilioRestClient</span><span class="p">(</span><span class="n">account_sid</span><span class="p">,</span> <span class="n">auth_token</span><span class="p">)</span>
-<span class="n">message</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">to</span><span class="o">=</span><span class="s">'...'</span><span class="p">,</span> <span class="n">from_</span><span class="o">=</span><span class="s">'...'</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="s">'...'</span><span class="p">)</span>
+<span class="n">message</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">to</span><span class="o">=</span><span class="s1">'...'</span><span class="p">,</span> <span class="n">from_</span><span class="o">=</span><span class="s1">'...'</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="s1">'...'</span><span class="p">)</span>
 </pre>
 <p>We <em>can&#8217;t</em> just drop that in&#8230;unless we modify the original&nbsp;function:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">polymorphic_notify_user</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">notifier</span><span class="p">):</span>
-    <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Your access code is {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Your access code is </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">notifier</span><span class="p">,</span> <span class="n">PrintingNotifier</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">notifier</span><span class="o">.</span><span class="n">notifier</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">notifier</span><span class="p">,</span> <span class="n">TwilioRestClient</span><span class="p">):</span>
@@ -195,9 +195,9 @@ and every&nbsp;function.</p>
 <p>I know because I&#8217;ve been there and I&#8217;ve done that and I handled it be
 just not writing code for a long&nbsp;time.</p>
 <p>No, no, no, let&#8217;s back up to the original&nbsp;function.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">send_user_auth_token</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">notifier</span><span class="p">):</span>
-    <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Your access code is {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Your access code is </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">notifier</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">msg</span><span class="p">)</span>
 </pre>
 <p>This, I like this. It&#8217;s simple. It&#8217;s expressive. It does exactly what
@@ -208,7 +208,7 @@ interface that looks anything like&nbsp;this.</p>
 <p>The same way we go from a grounded three prong plug to an ungrounded two
 prong outlet (and the correct answer is <em>not</em> tear the ground pin out
 despite what my power strips say), we use an&nbsp;adapter!</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">TwilioSMSNotifier</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">twilio_client</span><span class="p">,</span> <span class="n">sender_number</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">twilio_client</span> <span class="o">=</span> <span class="n">twilio_client</span>
@@ -219,20 +219,20 @@ despite what my power strips say), we use an&nbsp;adapter!</p>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">twilio_client</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">to</span><span class="o">=</span><span class="n">reciever</span><span class="p">,</span> <span class="n">from_</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sender_number</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">TwilioRestException</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">False</span>
+            <span class="k">return</span> <span class="kc">False</span>
 </pre>
 <p>We could probably handle that failure case better. But that&#8217;s not the
 point here. We&#8217;ve taken an interface that&#8217;s <em>completely different</em> and
 changed it by wrapping it in a class that implements our interface. If
 we wanted to send an email, we could simply create a new&nbsp;implementation:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">EmailNotifer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">email_client</span><span class="p">,</span> <span class="n">to_html</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">email_client</span><span class="p">,</span> <span class="n">to_html</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">email_client</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">to_html</span> <span class="o">=</span> <span class="n">to_html</span>
 
     <span class="k">def</span> <span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
-        <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Two Factor Auth Code&quot;</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Two Factor Auth Code&quot;</span>
         <span class="n">body</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">encode_to_html</span><span class="p">(</span><span class="n">message</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_html</span> <span class="k">else</span> <span class="n">message</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
 
@@ -242,14 +242,14 @@ we wanted to send an email, we could simply create a new&nbsp;implementation:</p
         <span class="bp">self</span><span class="o">.</span><span class="n">sender</span> <span class="o">=</span> <span class="n">sender</span>
 
     <span class="k">def</span> <span class="nf">encode_to_html</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s">'&lt;p&gt;{0}&lt;/p&gt;'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">'&lt;p&gt;</span><span class="si">{0}</span><span class="s1">&lt;/p&gt;'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">receiver</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">body</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s">'title'</span><span class="p">:</span> <span class="n">title</span><span class="p">,</span> <span class="s">'receiver'</span><span class="p">:</span> <span class="n">receiver</span><span class="p">,</span> <span class="s">'body'</span><span class="p">:</span> <span class="n">body</span><span class="p">}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">'title'</span><span class="p">:</span> <span class="n">title</span><span class="p">,</span> <span class="s1">'receiver'</span><span class="p">:</span> <span class="n">receiver</span><span class="p">,</span> <span class="s1">'body'</span><span class="p">:</span> <span class="n">body</span><span class="p">}</span>
 
 
-<span class="n">email_client</span> <span class="o">=</span> <span class="n">EmailClient</span><span class="p">(</span><span class="s">'admin&#64;service.com'</span><span class="p">)</span>
-<span class="n">email_notifier</span> <span class="o">=</span> <span class="n">EmailNotifer</span><span class="p">(</span><span class="n">email_client</span><span class="p">,</span> <span class="n">to_html</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">email_client</span> <span class="o">=</span> <span class="n">EmailClient</span><span class="p">(</span><span class="s1">'admin&#64;service.com'</span><span class="p">)</span>
+<span class="n">email_notifier</span> <span class="o">=</span> <span class="n">EmailNotifer</span><span class="p">(</span><span class="n">email_client</span><span class="p">,</span> <span class="n">to_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">send_user_auth_token</span><span class="p">(</span><span class="n">justanr</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">email_notifier</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
@@ -280,7 +280,7 @@ for a different design&nbsp;pattern.</p>
 pattern. Rather than changing the interface to an object or connecting
 two interfaces together, the decorator patterns adds additional
 funtionality to an object by using the&nbsp;interface.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">MultiNotifier</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">notifiers</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">notifiers</span> <span class="o">=</span> <span class="n">notifiers</span>
@@ -307,27 +307,27 @@ More concretely, a plug would be the EmailClient and an Outlet is the
 <p>And, a very happy side effect is that <tt class="docutils literal">send_user_auth_token</tt> is very
 testable. It doesn&#8217;t actually do anything, so there&#8217;s nothing to mock
 out. We just pass it exactly what we want it to&nbsp;use.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">TestEmailNotifier</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s">'user_email'</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">,</span> <span class="s">'body'</span><span class="p">:</span> <span class="n">message</span><span class="p">}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">'user_email'</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">,</span> <span class="s1">'body'</span><span class="p">:</span> <span class="n">message</span><span class="p">}</span>
 
 <span class="k">def</span> <span class="nf">test_send_auth_token_to_email</span><span class="p">():</span>
     <span class="n">token</span> <span class="o">=</span> <span class="mi">123456</span>
-    <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="s">'justanr'</span><span class="p">,</span> <span class="s">'justanr&#64;service.com'</span><span class="p">,</span> <span class="s">'5555555555'</span><span class="p">)</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="s1">'justanr'</span><span class="p">,</span> <span class="s1">'justanr&#64;service.com'</span><span class="p">,</span> <span class="s1">'5555555555'</span><span class="p">)</span>
     <span class="n">resp</span> <span class="o">=</span> <span class="n">send_user_auth_token</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">TestEmailNotifier</span><span class="p">())</span>
-    <span class="k">assert</span> <span class="n">resp</span> <span class="o">==</span> <span class="p">{</span><span class="s">'user_email'</span><span class="p">:</span> <span class="s">'justanr&#64;service.com'</span><span class="p">,</span> <span class="s">'body'</span><span class="p">:</span> <span class="s">'Your access code is 123456'</span><span class="p">}</span>
+    <span class="k">assert</span> <span class="n">resp</span> <span class="o">==</span> <span class="p">{</span><span class="s1">'user_email'</span><span class="p">:</span> <span class="s1">'justanr&#64;service.com'</span><span class="p">,</span> <span class="s1">'body'</span><span class="p">:</span> <span class="s1">'Your access code is 123456'</span><span class="p">}</span>
 
 <span class="n">test_send_auth_token_to_email</span><span class="p">()</span>
 </pre>
 <p>Imagine if we had hardcoded all the actual sending logic. What does the
 test look like&nbsp;then?</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">mock</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="k">import</span> <span class="n">mock</span>
 
-<span class="nd">&#64;mock.patch</span><span class="p">(</span><span class="s">'myapp.utils.send_user_email_token'</span><span class="p">,</span> <span class="n">return_value</span><span class="o">=</span><span class="p">{</span><span class="o">...</span><span class="p">})</span>
-<span class="nd">&#64;mock.patch</span><span class="p">(</span><span class="s">'myapp.utils.find_user_by_id'</span><span class="p">,</span> <span class="n">return_value</span><span class="o">=</span><span class="p">{</span><span class="o">...</span><span class="p">})</span>
-<span class="nd">&#64;mock.patch</span><span class="p">(</span><span class="s">'myapp.utils.generate_random_token'</span><span class="p">,</span> <span class="n">return_value</span><span class="o">=</span><span class="mi">123456</span><span class="p">)</span>
+<span class="nd">&#64;mock</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s1">'myapp.utils.send_user_email_token'</span><span class="p">,</span> <span class="n">return_value</span><span class="o">=</span><span class="p">{</span><span class="o">...</span><span class="p">})</span>
+<span class="nd">&#64;mock</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s1">'myapp.utils.find_user_by_id'</span><span class="p">,</span> <span class="n">return_value</span><span class="o">=</span><span class="p">{</span><span class="o">...</span><span class="p">})</span>
+<span class="nd">&#64;mock</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s1">'myapp.utils.generate_random_token'</span><span class="p">,</span> <span class="n">return_value</span><span class="o">=</span><span class="mi">123456</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">test_send_user_auth_token</span><span class="p">():</span>
     <span class="k">assert</span> <span class="n">send_user_auth_token</span><span class="p">()</span> <span class="o">=</span> <span class="p">{</span><span class="o">...</span><span class="p">}</span>
 </pre>
@@ -336,22 +336,22 @@ Instead, with the decoupled version we can test that our business logic
 &#8212; given a user, a token and a notifier, send the user the token &#8212;
 <em>works</em>.</p>
 <p>We can also test if our adapters work,&nbsp;too.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">test_email_adapter_translates_correctly</span><span class="p">():</span>
     <span class="n">email_client</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">create_autospec</span><span class="p">(</span><span class="n">EmailClient</span><span class="p">)</span>
     <span class="n">notifier</span> <span class="o">=</span> <span class="n">EmailNotifer</span><span class="p">(</span><span class="n">email_client</span><span class="p">)</span>
-    <span class="n">notifier</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">User</span><span class="p">(</span><span class="s">'justanr'</span><span class="p">,</span> <span class="s">'alec&#64;service.com'</span><span class="p">,</span> <span class="s">'5555555555'</span><span class="p">),</span> <span class="mi">123456</span><span class="p">)</span>
+    <span class="n">notifier</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">User</span><span class="p">(</span><span class="s1">'justanr'</span><span class="p">,</span> <span class="s1">'alec&#64;service.com'</span><span class="p">,</span> <span class="s1">'5555555555'</span><span class="p">),</span> <span class="mi">123456</span><span class="p">)</span>
     <span class="k">assert</span> <span class="n">email_client</span><span class="o">.</span><span class="n">send</span><span class="o">.</span><span class="n">called</span> <span class="ow">and</span> \
-        <span class="n">email_client</span><span class="o">.</span><span class="n">send</span><span class="o">.</span><span class="n">call_args</span> <span class="o">==</span> <span class="n">mock</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s">'alec&#64;service.com'</span><span class="p">,</span> <span class="s">'Two Factor Auth Code'</span><span class="p">,</span> <span class="mi">123456</span><span class="p">)</span>
+        <span class="n">email_client</span><span class="o">.</span><span class="n">send</span><span class="o">.</span><span class="n">call_args</span> <span class="o">==</span> <span class="n">mock</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">'alec&#64;service.com'</span><span class="p">,</span> <span class="s1">'Two Factor Auth Code'</span><span class="p">,</span> <span class="mi">123456</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">test_email_adapter_can_send_html_email</span><span class="p">():</span>
     <span class="n">email_client</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">create_autospec</span><span class="p">(</span><span class="n">EmailClient</span><span class="p">)</span>
-    <span class="n">email_client</span><span class="o">.</span><span class="n">encode_to_html</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="s">'&lt;p&gt;123456&lt;/p&gt;'</span>
-    <span class="n">notifier</span> <span class="o">=</span> <span class="n">EmailNotifer</span><span class="p">(</span><span class="n">email_client</span><span class="p">,</span> <span class="n">to_html</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-    <span class="n">notifier</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">User</span><span class="p">(</span><span class="s">'justanr'</span><span class="p">,</span> <span class="s">'alec&#64;service.com'</span><span class="p">,</span> <span class="s">'5555555555'</span><span class="p">),</span> <span class="mi">123456</span><span class="p">)</span>
+    <span class="n">email_client</span><span class="o">.</span><span class="n">encode_to_html</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="s1">'&lt;p&gt;123456&lt;/p&gt;'</span>
+    <span class="n">notifier</span> <span class="o">=</span> <span class="n">EmailNotifer</span><span class="p">(</span><span class="n">email_client</span><span class="p">,</span> <span class="n">to_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">notifier</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">User</span><span class="p">(</span><span class="s1">'justanr'</span><span class="p">,</span> <span class="s1">'alec&#64;service.com'</span><span class="p">,</span> <span class="s1">'5555555555'</span><span class="p">),</span> <span class="mi">123456</span><span class="p">)</span>
     <span class="k">assert</span> <span class="n">email_client</span><span class="o">.</span><span class="n">send</span><span class="o">.</span><span class="n">called</span> <span class="ow">and</span> \
-        <span class="n">email_client</span><span class="o">.</span><span class="n">send</span><span class="o">.</span><span class="n">call_args</span> <span class="o">==</span> <span class="n">mock</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s">'alec&#64;service.com'</span><span class="p">,</span> <span class="s">'Two Factor Auth Code'</span><span class="p">,</span> <span class="s">'&lt;p&gt;123456&lt;/p&gt;'</span><span class="p">)</span>
+        <span class="n">email_client</span><span class="o">.</span><span class="n">send</span><span class="o">.</span><span class="n">call_args</span> <span class="o">==</span> <span class="n">mock</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">'alec&#64;service.com'</span><span class="p">,</span> <span class="s1">'Two Factor Auth Code'</span><span class="p">,</span> <span class="s1">'&lt;p&gt;123456&lt;/p&gt;'</span><span class="p">)</span>
 
 <span class="n">test_email_adapter_translates_correctly</span><span class="p">()</span>
 <span class="n">test_email_adapter_can_send_html_email</span><span class="p">()</span>
@@ -369,27 +369,27 @@ these email service providers.&#8221; Instead we say, &#8220;You can use any
 provider you like <em>as long as you implement this interface.</em>&#8221;</p>
 <p>You change a few lines of code in a procedure that doesn&#8217;t affect the
 actual logic of <tt class="docutils literal">send_user_auth_token</tt>. Maybe it&#8217;s a Flask end&nbsp;point?</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">render_template</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">flash</span>
-<span class="kn">from</span> <span class="nn">flask.views</span> <span class="kn">import</span> <span class="n">MethodView</span>
-<span class="kn">from</span> <span class="nn">myapp.logging</span> <span class="kn">import</span> <span class="n">MasterLogger</span>
-<span class="kn">from</span> <span class="nn">myapp.auth.forms</span> <span class="kn">import</span> <span class="n">ChooseTokenNotifierForm</span>
-<span class="kn">from</span> <span class="nn">myapp.notifiers</span> <span class="kn">import</span> <span class="n">LoggingNotifier</span><span class="p">,</span> <span class="n">NotifierRepository</span>
-<span class="kn">from</span> <span class="nn">myapp.models</span> <span class="kn">import</span> <span class="n">User</span><span class="p">,</span> <span class="n">Token</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">render_template</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">flash</span>
+<span class="kn">from</span> <span class="nn">flask.views</span> <span class="k">import</span> <span class="n">MethodView</span>
+<span class="kn">from</span> <span class="nn">myapp.logging</span> <span class="k">import</span> <span class="n">MasterLogger</span>
+<span class="kn">from</span> <span class="nn">myapp.auth.forms</span> <span class="k">import</span> <span class="n">ChooseTokenNotifierForm</span>
+<span class="kn">from</span> <span class="nn">myapp.notifiers</span> <span class="k">import</span> <span class="n">LoggingNotifier</span><span class="p">,</span> <span class="n">NotifierRepository</span>
+<span class="kn">from</span> <span class="nn">myapp.models</span> <span class="k">import</span> <span class="n">User</span><span class="p">,</span> <span class="n">Token</span>
 
 <span class="k">class</span> <span class="nc">SendUserAuthToken</span><span class="p">(</span><span class="n">MethodView</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force_token_reset</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force_token_reset</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">form</span> <span class="o">=</span> <span class="n">ChooseTokenNotifierForm</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">force_token_reset</span> <span class="o">=</span> <span class="n">force_token_reset</span>
 
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="p">):</span>
         <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">process_notify_options</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s">'auth/send_auth_token.html'</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">'auth/send_auth_token.html'</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">validate_on_form</span><span class="p">():</span>
-            <span class="c"># find the most appropriate notifier given the user's choice</span>
+            <span class="c1"># find the most appropriate notifier given the user's choice</span>
             <span class="n">notifier</span> <span class="o">=</span> <span class="n">NotifierRepository</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">notifiers</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
             <span class="n">log_notifier</span> <span class="o">=</span> <span class="n">LoggingNotifer</span><span class="p">(</span><span class="n">MasterLogger</span><span class="p">,</span> <span class="n">notifier</span><span class="p">)</span>
 
@@ -401,13 +401,13 @@ actual logic of <tt class="docutils literal">send_user_auth_token</tt>. Maybe it
 
             <span class="n">did_token_send</span> <span class="o">=</span> <span class="n">send_user_auth_token</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">active_token</span><span class="o">.</span><span class="n">token</span><span class="p">,</span> <span class="n">log_notifier</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">did_token_send</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s">'auth.verify_auth_token'</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">'auth.verify_auth_token'</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">remove_notifier_option</span><span class="p">(</span><span class="n">notifier</span><span class="p">)</span>
-                <span class="n">flash</span><span class="p">(</span><span class="s">&quot;Are you sure that information is correct? Please contact customer service.&quot;</span><span class="p">,</span> <span class="s">&quot;warning&quot;</span><span class="p">)</span>
+                <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Are you sure that information is correct? Please contact customer service.&quot;</span><span class="p">,</span> <span class="s2">&quot;warning&quot;</span><span class="p">)</span>
 
-        <span class="c"># form didn't validate, so re-render and probably display errors</span>
-        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s">'auth/send_auth_token.html'</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="p">)</span>
+        <span class="c1"># form didn't validate, so re-render and probably display errors</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">'auth/send_auth_token.html'</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="p">)</span>
 </pre>
 <p>And like that, almost by accident, we&#8217;ve stumbled upon something very
 important: We&#8217;ve decoupled our business logic &#8212; send the user the token
@@ -536,10 +536,10 @@ software&nbsp;design.</li>
             <h4>Tags</h4>
             <ul class="list-of-tags tags-in-article"> 
                 <li><a href="/tags.html#design-ref">design
-                    <span>8</span>
+                    <span>7</span>
 </a></li>
                 <li><a href="/tags.html#python-ref">python
-                    <span>12</span>
+                    <span>15</span>
 </a></li>
             </ul>
 

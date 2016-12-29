@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>from alec.thoughts import *</title><link href="http://justanr.github.io/" rel="alternate"></link><link href="http://justanr.github.io/feeds/music.atom.xml" rel="self"></link><id>http://justanr.github.io/</id><updated>2015-07-07T00:00:00-04:00</updated><entry><title>Demon Hunter - Demon Hunter Review</title><link href="http://justanr.github.io/demon-hunter-demon-hunter-review" rel="alternate"></link><updated>2015-07-07T00:00:00-04:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2015-07-07:demon-hunter-demon-hunter-review</id><summary type="html">&lt;pre class="code python literal-block"&gt;
-&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;IPython.display&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;YouTubeVideo&lt;/span&gt;
-&lt;span class="n"&gt;YouTubeVideo&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;6zFC6tv667c&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>from alec.thoughts import * - music</title><link href="http://justanr.github.io/" rel="alternate"></link><link href="http://justanr.github.io/feeds/music.atom.xml" rel="self"></link><id>http://justanr.github.io/</id><updated>2015-07-07T00:00:00-04:00</updated><entry><title>Demon Hunter - Demon Hunter Review</title><link href="http://justanr.github.io/demon-hunter-demon-hunter-review" rel="alternate"></link><published>2015-07-07T00:00:00-04:00</published><updated>2015-07-07T00:00:00-04:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2015-07-07:/demon-hunter-demon-hunter-review</id><summary type="html">&lt;pre class="code ipython3 literal-block"&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;IPython.display&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;YouTubeVideo&lt;/span&gt;
+&lt;span class="n"&gt;YouTubeVideo&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;6zFC6tv667c&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+&lt;iframe
+    width="400"
+    height="300"
+    src="https://www.youtube.com/embed/6zFC6tv667c"
+    frameborder="0"
+    allowfullscreen
+&gt;&lt;/iframe&gt;&lt;p&gt;This was an album that changed the direction of my musical tastes in a
+very big way. I was fourteen, a pretty straight laced Christian kid. My
+beard hadn&amp;#8217;t manifested by then, so I was clean cut and baby faced
+still. At …&lt;/p&gt;</summary><content type="html">&lt;pre class="code ipython3 literal-block"&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;IPython.display&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;YouTubeVideo&lt;/span&gt;
+&lt;span class="n"&gt;YouTubeVideo&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;6zFC6tv667c&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;
 &lt;iframe
     width="400"
@@ -55,4 +68,4 @@ is about the only band I haven&amp;#8217;t revisited outside of&amp;nbsp;nostalg
 &lt;p&gt;Despite all that, I do have fond memories of this album because it was
 ultimately responsible for my interest in metal, though not the album
 that made me truly&amp;nbsp;heavy.&lt;/p&gt;
-</summary><category term="metal"></category><category term="review"></category></entry></feed>
+</content><category term="metal"></category><category term="review"></category></entry></feed>

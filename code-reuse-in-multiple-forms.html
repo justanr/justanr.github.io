@@ -117,7 +117,7 @@ post isn&#8217;t meant to be an exhaustive list&nbsp;either.</p>
 executed the same way. This could be as simple a small expression like
 <tt class="docutils literal">(a + b) * x</tt> or something that performs a complicated piece of logic.
 Functions are the most basic form of code reuse in&nbsp;Python.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">calc</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Our business crucial algorithm&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span>
@@ -132,7 +132,7 @@ Functions are the most basic form of code reuse in&nbsp;Python.</p>
 statements in them. A lot of them time, they serve as basic callbacks or
 as key functions for a sort or group method. The syntax is simple and
 the return value is the outcome of the&nbsp;expression.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="nb">sorted</span><span class="p">([(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)],</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 </pre>
 <pre class="literal-block">
@@ -153,7 +153,7 @@ because that&#8217;s what they essentially are in&nbsp;Python.</p>
 composition, which I&#8217;ll briefly touch upon here. For now, a simple
 example will suffice: take our business critical algorithm and turn it
 into a spreadsheet&nbsp;row</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">SpreadsheetRow</span><span class="p">:</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
@@ -165,7 +165,7 @@ into a spreadsheet&nbsp;row</p>
         <span class="k">return</span> <span class="n">calc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
 
 <span class="n">row</span> <span class="o">=</span> <span class="n">SpreadsheetRow</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">calc</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">calc</span><span class="p">())</span>
 </pre>
 <pre class="literal-block">
 9
@@ -185,15 +185,15 @@ one that does this for&nbsp;us.</p>
 <p>Accessing information in the inherited class is done through
 <tt class="docutils literal">super()</tt>, I won&#8217;t delve into it&#8217;s details here but it is <a class="reference external" href="http://rhettinger.wordpress.com/2011/05/26/super-considered-super/">quite
 super</a>.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">LabeledSpreadsheetRow</span><span class="p">(</span><span class="n">SpreadsheetRow</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="n">label</span>
 
-<span class="n">row</span> <span class="o">=</span> <span class="n">LabeledSpreadsheetRow</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s">'1'</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s">&quot;The total for {} is {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">calc</span><span class="p">()))</span>
+<span class="n">row</span> <span class="o">=</span> <span class="n">LabeledSpreadsheetRow</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">'1'</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The total for </span><span class="si">{}</span><span class="s2"> is </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">calc</span><span class="p">()))</span>
 </pre>
 <pre class="literal-block">
 The total for 1 is 9
@@ -210,18 +210,18 @@ placing it in a single location. Mixins are also classes that aren&#8217;t
 meant to be instantiated on their own either, since they represent a
 small piece of a puzzle rather than the whole picture. A common problem
 I use mixins for is creating a generic <tt class="docutils literal">__repr__</tt> method for&nbsp;objects.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">ReprMixin</span><span class="p">:</span>
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span>
-        <span class="n">attrs</span> <span class="o">=</span> <span class="s">', '</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s">&quot;{}={}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
-        <span class="k">return</span> <span class="s">&quot;&lt;{} {}&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
+        <span class="n">attrs</span> <span class="o">=</span> <span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">Row</span><span class="p">(</span><span class="n">LabeledSpreadsheetRow</span><span class="p">,</span> <span class="n">ReprMixin</span><span class="p">):</span>
     <span class="k">pass</span>
 
-<span class="n">row</span> <span class="o">=</span> <span class="n">Row</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s">'1'</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">row</span> <span class="o">=</span> <span class="n">Row</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">'1'</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 <span class="nb">repr</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
@@ -245,7 +245,7 @@ using other objects, in other words: composing them from parts. It&#8217;s a
 similar idea to inheritance, but instead the objects we&#8217;re using are
 stored as attributes on the main object. We have spreadsheet rows, why
 not a spreadsheet to hold&nbsp;them?</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Spreadsheet</span><span class="p">(</span><span class="n">ReprMixin</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
@@ -254,15 +254,15 @@ not a spreadsheet to hold&nbsp;them?</p>
 
     <span class="k">def</span> <span class="nf">show_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">:</span>
-            <span class="k">print</span><span class="p">(</span><span class="s">&quot;The total for {} is {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">calc</span><span class="p">()))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The total for </span><span class="si">{}</span><span class="s2"> is </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">calc</span><span class="p">()))</span>
 
     <span class="k">def</span> <span class="nf">total</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">calc</span><span class="p">()</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">)</span>
 
-<span class="n">sheet</span> <span class="o">=</span> <span class="n">Spreadsheet</span><span class="p">(</span><span class="s">&quot;alec's totals&quot;</span><span class="p">)</span>
+<span class="n">sheet</span> <span class="o">=</span> <span class="n">Spreadsheet</span><span class="p">(</span><span class="s2">&quot;alec's totals&quot;</span><span class="p">)</span>
 <span class="n">sheet</span><span class="o">.</span><span class="n">rows</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">Row</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span> <span class="n">Row</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">8</span><span class="p">)])</span>
 <span class="n">sheet</span><span class="o">.</span><span class="n">show_all</span><span class="p">()</span>
-<span class="k">print</span><span class="p">(</span><span class="n">sheet</span><span class="o">.</span><span class="n">total</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sheet</span><span class="o">.</span><span class="n">total</span><span class="p">())</span>
 <span class="nb">repr</span><span class="p">(</span><span class="n">sheet</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
@@ -292,8 +292,8 @@ other is the <tt class="docutils literal">property</tt> decorator which allows u
 function as if it were an attribute (via the <a class="reference external" href="http://justanr.blogspot.com/2014/09/descriptor-day.html">descriptor
 protocol</a>
 which is a fantastic code reuse ability that I won&#8217;t explore&nbsp;here).</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">total_ordering</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">total_ordering</span>
 
 <span class="nd">&#64;total_ordering</span>
 <span class="k">class</span> <span class="nc">ComparableRow</span><span class="p">(</span><span class="n">Row</span><span class="p">):</span>
@@ -309,7 +309,7 @@ which is a fantastic code reuse ability that I won&#8217;t explore&nbsp;here).</
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__key</span> <span class="o">&lt;</span> <span class="n">other</span><span class="o">.</span><span class="n">__key</span>
 
 <span class="n">rows</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="n">ComparableRow</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">8</span><span class="p">),</span> <span class="n">ComparableRow</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">3</span><span class="p">)])</span>
-<span class="k">print</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 [&lt;ComparableRow b=2, x=3, a=1, label=2&gt;, &lt;ComparableRow b=5, x=8, a=3, label=1&gt;]
@@ -330,17 +330,17 @@ anything you do in pairs should be a candidate for context&nbsp;managers.</p>
 <p>Writing context managers is pretty easy, depending on which method you
 go about. I&#8217;ll likely explore them in a future post. For now, I&#8217;m going
 to stick to using the generator context manager form as an&nbsp;example:</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">contextmanager</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">contextlib</span> <span class="k">import</span> <span class="n">contextmanager</span>
 
 <span class="nd">&#64;contextmanager</span>
-<span class="k">def</span> <span class="nf">greeting</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Before the greeting.&quot;</span><span class="p">)</span>
-    <span class="k">yield</span> <span class="s">&quot;Hello {!s}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">&quot;After the greeting.&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">greeting</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Before the greeting.&quot;</span><span class="p">)</span>
+    <span class="k">yield</span> <span class="s2">&quot;Hello </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;After the greeting.&quot;</span><span class="p">)</span>
 
-<span class="k">with</span> <span class="n">greeting</span><span class="p">(</span><span class="s">&quot;Alec&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">greet</span><span class="p">:</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">greet</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">greeting</span><span class="p">(</span><span class="s2">&quot;Alec&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">greet</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">greet</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 Before the greeting.
@@ -354,8 +354,8 @@ way. These are especially handy if you find yourself occasionally
 creating an object under certain conditions. Consider <tt class="docutils literal">dict.fromkeys</tt>
 which lets you fill a dictionary with keys from an iterable that all
 have the same&nbsp;value:</p>
-<pre class="code python literal-block">
-<span class="k">print</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span> <span class="bp">None</span><span class="p">))</span>
+<pre class="code ipython3 literal-block">
+<span class="nb">print</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span> <span class="kc">None</span><span class="p">))</span>
 </pre>
 <pre class="literal-block">
 {0: None, 1: None, 2: None, 3: None, 4: None}
@@ -363,7 +363,7 @@ have the same&nbsp;value:</p>
 <p>In our case, we&#8217;ll probably want to draw our information from a <span class="caps">CSV</span> file
 occasionally. If we do it often enough, writing the setup logic could
 become tedious to rewrite all over the&nbsp;place.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="kn">import</span> <span class="nn">csv</span>
 
 <span class="k">class</span> <span class="nc">CSVSpreadsheet</span><span class="p">(</span><span class="n">Spreadsheet</span><span class="p">):</span>
@@ -377,7 +377,7 @@ become tedious to rewrite all over the&nbsp;place.</p>
 
         <span class="k">return</span> <span class="n">sheet</span>
 
-<span class="n">sheet</span> <span class="o">=</span> <span class="n">CSVSpreadsheet</span><span class="o">.</span><span class="n">from_csv</span><span class="p">(</span><span class="s">'awesome'</span><span class="p">,</span> <span class="s">'row.csv'</span><span class="p">)</span>
+<span class="n">sheet</span> <span class="o">=</span> <span class="n">CSVSpreadsheet</span><span class="o">.</span><span class="n">from_csv</span><span class="p">(</span><span class="s1">'awesome'</span><span class="p">,</span> <span class="s1">'row.csv'</span><span class="p">)</span>
 <span class="n">sheet</span><span class="o">.</span><span class="n">show_all</span><span class="p">()</span>
 </pre>
 <pre class="literal-block">
@@ -446,10 +446,10 @@ Maybe you&#8217;ll write your own crappy spreadsheet object as&nbsp;well.</p>
             <h4>Tags</h4>
             <ul class="list-of-tags tags-in-article"> 
                 <li><a href="/tags.html#design-ref">design
-                    <span>8</span>
+                    <span>7</span>
 </a></li>
                 <li><a href="/tags.html#python-ref">python
-                    <span>12</span>
+                    <span>15</span>
 </a></li>
             </ul>
 

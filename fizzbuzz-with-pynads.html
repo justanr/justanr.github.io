@@ -18,7 +18,7 @@
         <![endif]-->
 
 
-<meta name="keywords" content="design, haskell, monad, python3, libraries, " />
+<meta name="keywords" content="python, pynads, haskell, libraries, " />
         <title>Fizzbuzz With&nbsp;Pynads! - from alec.thoughts import *
 </title>
         <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
@@ -80,20 +80,20 @@
 <div class="row-fluid">
         <div class="span8 offset2 article-content">
 
-            <pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">pynads</span> <span class="kn">import</span> <span class="n">Writer</span>
-<span class="kn">from</span> <span class="nn">pynads.funcs</span> <span class="kn">import</span> <span class="n">multibind</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">repeat</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+            <pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">pynads</span> <span class="k">import</span> <span class="n">Writer</span>
+<span class="kn">from</span> <span class="nn">pynads.funcs</span> <span class="k">import</span> <span class="n">multibind</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">repeat</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">partial</span>
 
-<span class="n">pairs</span> <span class="o">=</span> <span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="s">'fizz'</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s">'buzz'</span><span class="p">))</span>
+<span class="n">pairs</span> <span class="o">=</span> <span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="s1">'fizz'</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s1">'buzz'</span><span class="p">))</span>
 
 <span class="k">def</span> <span class="nf">fizzer</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">pairs</span><span class="p">):</span>
-    <span class="n">fizzed</span> <span class="o">=</span> <span class="s">''</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">buzz</span> <span class="k">for</span> <span class="n">fizz</span><span class="p">,</span> <span class="n">buzz</span> <span class="ow">in</span> <span class="n">pairs</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">n</span> <span class="o">%</span> <span class="n">fizz</span><span class="p">])</span> <span class="ow">or</span> <span class="n">n</span>
+    <span class="n">fizzed</span> <span class="o">=</span> <span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">buzz</span> <span class="k">for</span> <span class="n">fizz</span><span class="p">,</span> <span class="n">buzz</span> <span class="ow">in</span> <span class="n">pairs</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">n</span> <span class="o">%</span> <span class="n">fizz</span><span class="p">])</span> <span class="ow">or</span> <span class="n">n</span>
     <span class="k">return</span> <span class="n">Writer</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="p">{</span><span class="n">n</span><span class="p">:</span><span class="n">fizzed</span><span class="p">})</span>
 
 <span class="n">res</span> <span class="o">=</span> <span class="n">multibind</span><span class="p">(</span><span class="n">Writer</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">{}),</span> <span class="o">*</span><span class="n">repeat</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="n">fizzer</span><span class="p">,</span> <span class="n">pairs</span><span class="o">=</span><span class="n">pairs</span><span class="p">),</span> <span class="mi">15</span><span class="p">))</span>
-<span class="k">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 Writer(16, {1: 1, 2: 2, 3: 'buzz', 4: 4, 5: 'fizz', 6: 'buzz', 7: 7, 8: 8, 9: 'buzz', 10: 'fizz', 11: 11, 12: 'buzz', 13: 13, 14: 14, 15: 'fizzbuzz'})
@@ -138,22 +138,22 @@ of a&nbsp;container.</p>
 <p>For most subclasses of Container, the provided <tt class="docutils literal">__init__</tt> is fine, but
 it&#8217;s a-ok to override it as well as the only setup that happens is
 setting a single attribute <tt class="docutils literal">_v</tt>.</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">pynads</span> <span class="kn">import</span> <span class="n">Container</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">pynads</span> <span class="k">import</span> <span class="n">Container</span>
 
 <span class="k">class</span> <span class="nc">Person</span><span class="p">(</span><span class="n">Container</span><span class="p">):</span>
-    <span class="n">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s">'name'</span><span class="p">,</span> <span class="s">'age'</span><span class="p">)</span>
+    <span class="n">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'name'</span><span class="p">,</span> <span class="s1">'age'</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">age</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">age</span> <span class="o">=</span> <span class="n">age</span>
 
     <span class="k">def</span> <span class="nf">_get_val</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s">'name'</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">'age'</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">age</span><span class="p">}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">'age'</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">age</span><span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s">&quot;Person(name={!s}, age={!s})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">age</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;Person(name=</span><span class="si">{!s}</span><span class="s2">, age=</span><span class="si">{!s}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">age</span><span class="p">)</span>
 
-<span class="k">print</span><span class="p">(</span><span class="n">Person</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;Alec&quot;</span><span class="p">,</span> <span class="n">age</span><span class="o">=</span><span class="mi">26</span><span class="p">)</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Person</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Alec&quot;</span><span class="p">,</span> <span class="n">age</span><span class="o">=</span><span class="mi">26</span><span class="p">)</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 {'age': 26, 'name': 'Alec'}
@@ -164,15 +164,15 @@ setting a single attribute <tt class="docutils literal">_v</tt>.</p>
 <p>Functors are data types that can be mapped over with the <tt class="docutils literal">fmap</tt>
 method. But calling methods isn&#8217;t very Haskell like, so there&#8217;s an
 operator that does the same thing: <tt class="docutils literal">%</tt>.</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">pynads</span> <span class="kn">import</span> <span class="n">Functor</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">pynads</span> <span class="k">import</span> <span class="n">Functor</span>
 
 <span class="k">class</span> <span class="nc">FmapPerson</span><span class="p">(</span><span class="n">Person</span><span class="p">,</span> <span class="n">Functor</span><span class="p">):</span>
     <span class="n">__slots__</span> <span class="o">=</span> <span class="p">()</span>
     <span class="k">def</span> <span class="nf">fmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">age</span><span class="p">)</span>
 
-<span class="k">print</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">upper</span> <span class="o">%</span> <span class="n">FmapPerson</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;Alec&quot;</span><span class="p">,</span> <span class="n">age</span><span class="o">=</span><span class="mi">26</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">upper</span> <span class="o">%</span> <span class="n">FmapPerson</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Alec&quot;</span><span class="p">,</span> <span class="n">age</span><span class="o">=</span><span class="mi">26</span><span class="p">))</span>
 </pre>
 <pre class="literal-block">
 Person(name=ALEC, age=26)
@@ -181,10 +181,10 @@ Person(name=ALEC, age=26)
 Haskellic. <tt class="docutils literal">pynads</tt> also exports a <tt class="docutils literal">funcs</tt> name space that contains
 functional shortcuts to some of these (though <tt class="docutils literal">f % functor</tt> doesn&#8217;t
 get much shorter). In this case, there&#8217;s&nbsp;also:</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">pynads</span> <span class="kn">import</span> <span class="n">funcs</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">pynads</span> <span class="k">import</span> <span class="n">funcs</span>
 
-<span class="k">print</span><span class="p">(</span><span class="n">funcs</span><span class="o">.</span><span class="n">fmap</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">upper</span><span class="p">,</span> <span class="n">FmapPerson</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;Alec&quot;</span><span class="p">,</span> <span class="n">age</span><span class="o">=</span><span class="mi">26</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">funcs</span><span class="o">.</span><span class="n">fmap</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">upper</span><span class="p">,</span> <span class="n">FmapPerson</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Alec&quot;</span><span class="p">,</span> <span class="n">age</span><span class="o">=</span><span class="mi">26</span><span class="p">)))</span>
 </pre>
 <pre class="literal-block">
 Person(name=ALEC, age=26)
@@ -197,10 +197,10 @@ Person(name=ALEC, age=26)
 <p>Applicative Functors are functors that hold functions and can then be
 applied to other Applicatives/Functors. Every class (except for
 <tt class="docutils literal">Mempty</tt>) in <tt class="docutils literal">pynads.concrete</tt> is also an&nbsp;Applicative!</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">pynads</span> <span class="kn">import</span> <span class="n">Just</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">pynads</span> <span class="k">import</span> <span class="n">Just</span>
 
-<span class="k">print</span><span class="p">(</span><span class="n">Just</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">Just</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Just</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">Just</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
 </pre>
 <pre class="literal-block">
 Just 4
@@ -209,8 +209,8 @@ Just 4
 dropped the angle brackets because Python doesn&#8217;t let you define custom
 operators (easily). It also combines nicely with <tt class="docutils literal">%</tt> because they have
 the same precedence&nbsp;level!</p>
-<pre class="code python literal-block">
-<span class="k">print</span><span class="p">((</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">)</span> <span class="o">%</span> <span class="n">Just</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="o">*</span> <span class="n">Just</span><span class="p">(</span><span class="mi">6</span><span class="p">))</span>
+<pre class="code ipython3 literal-block">
+<span class="nb">print</span><span class="p">((</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">)</span> <span class="o">%</span> <span class="n">Just</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="o">*</span> <span class="n">Just</span><span class="p">(</span><span class="mi">6</span><span class="p">))</span>
 </pre>
 <pre class="literal-block">
 Just 10
@@ -225,10 +225,10 @@ put a value in a minimal&nbsp;context.</p>
 Just and now you don&#8217;t want to write out
 <tt class="docutils literal">just_f * just_v1 * just_v2 ...</tt>. Sure, you could think &#8220;Well, what if
 I used <tt class="docutils literal">reduce(operator.mul, *justs)</tt>&#8221; But I thought of that&nbsp;already.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="n">add_three_together</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">z</span><span class="p">:</span> <span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="o">+</span><span class="n">z</span>
 
-<span class="k">print</span><span class="p">(</span><span class="n">funcs</span><span class="o">.</span><span class="n">multiapply</span><span class="p">(</span><span class="n">Just</span><span class="p">(</span><span class="n">add_three_together</span><span class="p">),</span> <span class="o">*</span><span class="p">[</span><span class="n">Just</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">)]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">funcs</span><span class="o">.</span><span class="n">multiapply</span><span class="p">(</span><span class="n">Just</span><span class="p">(</span><span class="n">add_three_together</span><span class="p">),</span> <span class="o">*</span><span class="p">[</span><span class="n">Just</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">)]))</span>
 </pre>
 <pre class="literal-block">
 Just 6
@@ -243,12 +243,12 @@ compute things. It&#8217;s a glorified container with a special method. You
 have a value in a monad, a function that takes a regular value and
 returns a monad and you bind them together. That&#8217;s it. Literally all
 there is to&nbsp;it.</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">pynads</span> <span class="kn">import</span> <span class="n">Nothing</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">pynads</span> <span class="k">import</span> <span class="n">Nothing</span>
 
 <span class="n">inc_if_odd_else_nothing</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">Just</span><span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">x</span><span class="o">&amp;</span><span class="mi">1</span> <span class="k">else</span> <span class="n">Nothing</span>
 
-<span class="k">print</span><span class="p">(</span><span class="n">Just</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">inc_if_odd_else_nothing</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Just</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">inc_if_odd_else_nothing</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 Just 3
@@ -257,14 +257,14 @@ Just 3
 basically a glorified if expression. That&#8217;s it! The bind operation will
 detect if you have a failure in your computation and short circuit it.
 It&#8217;s essentially an abstraction over&nbsp;this:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">safe_func</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">None</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">x</span><span class="o">+</span><span class="mi">1</span>
 
-<span class="k">print</span><span class="p">(</span><span class="n">safe_func</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">safe_func</span><span class="p">(</span><span class="bp">None</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">safe_func</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">safe_func</span><span class="p">(</span><span class="kc">None</span><span class="p">))</span>
 </pre>
 <pre class="literal-block">
 2 None
@@ -277,8 +277,8 @@ extraspecialsauce because it&#8217;s a singleton. It&#8217;s basically a monadic
 None. Actually, it <em>is</em> a monadic None because it represents&#8230;well,&nbsp;Nothing.</p>
 <p>If you&#8217;ve got more binds than editor columns, then there&#8217;s something for
 you as&nbsp;well!</p>
-<pre class="code python literal-block">
-<span class="k">print</span><span class="p">(</span><span class="n">multibind</span><span class="p">(</span><span class="n">Just</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="o">*</span><span class="n">repeat</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">Just</span><span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="mi">5</span><span class="p">)))</span>
+<pre class="code ipython3 literal-block">
+<span class="nb">print</span><span class="p">(</span><span class="n">multibind</span><span class="p">(</span><span class="n">Just</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="o">*</span><span class="n">repeat</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">Just</span><span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="mi">5</span><span class="p">)))</span>
 </pre>
 <pre class="literal-block">
 Just 6
@@ -328,11 +328,11 @@ not in this fashion). Just inherit from <tt class="docutils literal">pynads.Mono
 <tt class="docutils literal">mempty</tt> attribute (it won&#8217;t let you without it through <tt class="docutils literal">__new__</tt>
 hackery) and the <tt class="docutils literal">mappend</tt> method for combining two instances of your
 monoid. Let&#8217;s assume we want a <em>real</em> tuple Monoid. We&#8217;d do it like&nbsp;this:</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">pynads</span> <span class="kn">import</span> <span class="n">Monoid</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">pynads</span> <span class="k">import</span> <span class="n">Monoid</span>
 
-<span class="c"># also inherits from Container</span>
-<span class="c"># so we get all the Container goodness for free</span>
+<span class="c1"># also inherits from Container</span>
+<span class="c1"># so we get all the Container goodness for free</span>
 <span class="k">class</span> <span class="nc">MTuple</span><span class="p">(</span><span class="n">Monoid</span><span class="p">):</span>
     <span class="n">mempty</span> <span class="o">=</span> <span class="p">()</span>
 
@@ -340,16 +340,16 @@ monoid. Let&#8217;s assume we want a <em>real</em> tuple Monoid. We&#8217;d do i
         <span class="nb">super</span><span class="p">(</span><span class="n">MTuple</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">vs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">mappend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="c"># type checking optional</span>
+        <span class="c1"># type checking optional</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">MTuple</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Can only mappend MTuple with MTuple&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Can only mappend MTuple with MTuple&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">MTuple</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">v</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s">&quot;MTuple{!r}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;MTuple</span><span class="si">{!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
 </pre>
-<pre class="code python literal-block">
-<span class="k">print</span><span class="p">(</span><span class="n">MTuple</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span> <span class="o">+</span> <span class="n">MTuple</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">))</span>
+<pre class="code ipython3 literal-block">
+<span class="nb">print</span><span class="p">(</span><span class="n">MTuple</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span> <span class="o">+</span> <span class="n">MTuple</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">))</span>
 </pre>
 <pre class="literal-block">
 MTuple(4, 5, 6, 7)
@@ -358,8 +358,8 @@ MTuple(4, 5, 6, 7)
 That&#8217;s all well and good, but <em>why</em> other than have a unified way of
 combining values?! Because we get a way to reduce a list of monoids into
 a single value for&nbsp;free!</p>
-<pre class="code python literal-block">
-<span class="k">print</span><span class="p">(</span><span class="n">MTuple</span><span class="o">.</span><span class="n">mconcat</span><span class="p">(</span><span class="n">MTuple</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">MTuple</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">MTuple</span><span class="p">(</span><span class="mi">3</span><span class="p">)))</span>
+<pre class="code ipython3 literal-block">
+<span class="nb">print</span><span class="p">(</span><span class="n">MTuple</span><span class="o">.</span><span class="n">mconcat</span><span class="p">(</span><span class="n">MTuple</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">MTuple</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">MTuple</span><span class="p">(</span><span class="mi">3</span><span class="p">)))</span>
 </pre>
 <pre class="literal-block">
 MTuple(1, 2, 3)
@@ -368,8 +368,8 @@ MTuple(1, 2, 3)
 essentially looks like <tt class="docutils literal">reduce(cls.mappend, monoids)</tt>. That&#8217;s it.
 That&#8217;s all there is. But you can define your own <tt class="docutils literal">mconcat</tt> to get
 performace bonuses if you need&nbsp;to.</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">chain</span>
 
 <span class="k">class</span> <span class="nc">CMTuple</span><span class="p">(</span><span class="n">MTuple</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -379,8 +379,8 @@ performace bonuses if you need&nbsp;to.</p>
     <span class="k">def</span> <span class="nf">mconcat</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">MTuples</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">CMTuple</span><span class="p">(</span><span class="o">*</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">MTuples</span><span class="p">))</span>
 </pre>
-<pre class="code python literal-block">
-<span class="k">print</span><span class="p">(</span><span class="n">CMTuple</span><span class="o">.</span><span class="n">mconcat</span><span class="p">(</span><span class="n">CMTuple</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">CMTuple</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">CMTuple</span><span class="p">(</span><span class="mi">3</span><span class="p">)))</span>
+<pre class="code ipython3 literal-block">
+<span class="nb">print</span><span class="p">(</span><span class="n">CMTuple</span><span class="o">.</span><span class="n">mconcat</span><span class="p">(</span><span class="n">CMTuple</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">CMTuple</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">CMTuple</span><span class="p">(</span><span class="mi">3</span><span class="p">)))</span>
 </pre>
 <pre class="literal-block">
 MTuple(1, 2, 3)
@@ -398,13 +398,13 @@ this is because I didn&#8217;t want to add a special case &#8212; special cases
 beget special&nbsp;cases).</p>
 <p>This is done through introspection of types and abstract base classes
 (to make the type introspection [<span class="caps">STRIKEOUT</span>:more acceptable] less&nbsp;painful).</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">pynads.funcs</span> <span class="kn">import</span> <span class="n">monoid</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">pynads.funcs</span> <span class="k">import</span> <span class="n">monoid</span>
 
-<span class="k">print</span><span class="p">(</span><span class="n">monoid</span><span class="o">.</span><span class="n">mempty</span><span class="p">(</span><span class="nb">list</span><span class="p">()))</span>
-<span class="k">print</span><span class="p">(</span><span class="n">monoid</span><span class="o">.</span><span class="n">mappend</span><span class="p">({</span><span class="s">'a'</span><span class="p">:</span><span class="mi">10</span><span class="p">},</span> <span class="p">{</span><span class="s">'b'</span><span class="p">:</span> <span class="mi">7</span><span class="p">}))</span>
-<span class="k">print</span><span class="p">(</span><span class="n">monoid</span><span class="o">.</span><span class="n">mconcat</span><span class="p">(</span><span class="s">&quot;hello&quot;</span><span class="p">,</span> <span class="s">&quot; &quot;</span><span class="p">,</span> <span class="s">&quot;world&quot;</span><span class="p">))</span>
-<span class="k">print</span><span class="p">(</span><span class="n">monoid</span><span class="o">.</span><span class="n">is_monoid</span><span class="p">(</span><span class="nb">set</span><span class="p">()))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">monoid</span><span class="o">.</span><span class="n">mempty</span><span class="p">(</span><span class="nb">list</span><span class="p">()))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">monoid</span><span class="o">.</span><span class="n">mappend</span><span class="p">({</span><span class="s1">'a'</span><span class="p">:</span><span class="mi">10</span><span class="p">},</span> <span class="p">{</span><span class="s1">'b'</span><span class="p">:</span> <span class="mi">7</span><span class="p">}))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">monoid</span><span class="o">.</span><span class="n">mconcat</span><span class="p">(</span><span class="s2">&quot;hello&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;world&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">monoid</span><span class="o">.</span><span class="n">is_monoid</span><span class="p">(</span><span class="nb">set</span><span class="p">()))</span>
 </pre>
 <pre class="literal-block">
 []
@@ -439,12 +439,12 @@ do the right thing already. However, we have to teach Python how to use
 a placeholder and silently step it out of the way when a real value
 comes along. I suspect that this is similar, maybe, to how Haskell
 handles it, but I&#8217;ve not dug at&nbsp;all.</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">pynads</span> <span class="kn">import</span> <span class="n">Mempty</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">pynads</span> <span class="k">import</span> <span class="n">Mempty</span>
 
-<span class="k">print</span><span class="p">(</span><span class="n">monoid</span><span class="o">.</span><span class="n">mempty</span><span class="p">(</span><span class="n">Mempty</span><span class="p">))</span>
-<span class="k">print</span><span class="p">(</span><span class="n">Mempty</span> <span class="o">+</span> <span class="mi">4</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">monoid</span><span class="o">.</span><span class="n">mconcat</span><span class="p">(</span><span class="n">Mempty</span><span class="p">,</span> <span class="p">{</span><span class="mi">4</span><span class="p">},</span> <span class="p">{</span><span class="mi">5</span><span class="p">},</span> <span class="n">Mempty</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">monoid</span><span class="o">.</span><span class="n">mempty</span><span class="p">(</span><span class="n">Mempty</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Mempty</span> <span class="o">+</span> <span class="mi">4</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">monoid</span><span class="o">.</span><span class="n">mconcat</span><span class="p">(</span><span class="n">Mempty</span><span class="p">,</span> <span class="p">{</span><span class="mi">4</span><span class="p">},</span> <span class="p">{</span><span class="mi">5</span><span class="p">},</span> <span class="n">Mempty</span><span class="p">))</span>
 </pre>
 <pre class="literal-block">
 Mempty
@@ -532,17 +532,14 @@ knows what&nbsp;else.</p>
             <a class="category-link" href="/categories.html#libraries-ref">libraries</a> 
             <h4>Tags</h4>
             <ul class="list-of-tags tags-in-article"> 
-                <li><a href="/tags.html#design-ref">design
-                    <span>8</span>
-</a></li>
                 <li><a href="/tags.html#haskell-ref">haskell
                     <span>3</span>
 </a></li>
-                <li><a href="/tags.html#monad-ref">monad
-                    <span>1</span>
-</a></li>
-                <li><a href="/tags.html#python3-ref">python3
+                <li><a href="/tags.html#pynads-ref">pynads
                     <span>3</span>
+</a></li>
+                <li><a href="/tags.html#python-ref">python
+                    <span>15</span>
 </a></li>
             </ul>
 

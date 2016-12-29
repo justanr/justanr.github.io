@@ -18,7 +18,7 @@
         <![endif]-->
 
 
-<meta name="keywords" content="don't do this at home, pynads, python, Miscellaneous, " />
+<meta name="keywords" content="python, don't do this at home, pynads, Miscellaneous, " />
         <title>Crazy Ideas and&nbsp;I - from alec.thoughts import *
 </title>
         <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
@@ -92,11 +92,11 @@ type signatures with some of my functions. The reason why is because I
 <em>like</em> Haskell&#8217;s type signatures. They stay out of the way of my actual
 function&nbsp;signatures.</p>
 <p>Here&#8217;s the current way Python 3 annotates&nbsp;functions:</p>
-<pre class="code python literal-block">
-<span class="k">def</span> <span class="nf">my_func</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s">'hello'</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<pre class="code ipython3 literal-block">
+<span class="k">def</span> <span class="nf">my_func</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'hello'</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
 
-<span class="n">my_func</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">'wut'</span><span class="p">)</span>
+<span class="n">my_func</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'wut'</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 (1, 'wut')
@@ -111,7 +111,7 @@ myFunc a b = (a, b)
 </pre>
 <p>That type signature is both helpful <span class="caps">AND</span> out of the way. However, there&#8217;s
 one really nice thing that Python does with these&nbsp;annotations:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="n">my_func</span><span class="o">.</span><span class="n">__annotations__</span>
 </pre>
 <pre class="literal-block">
@@ -119,16 +119,16 @@ one really nice thing that Python does with these&nbsp;annotations:</p>
 </pre>
 <p>Nice. We retain that information in a dictionary out of the way. What if
 we could combine these two&nbsp;things?</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">pynads.utils.decorators</span> <span class="kn">import</span> <span class="n">annotate</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">pynads.utils.decorators</span> <span class="k">import</span> <span class="n">annotate</span>
 
-<span class="nd">&#64;annotate</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s">&quot;Int -&gt; String -&gt; (Int, String)&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">my_func</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="s">'hello'</span><span class="p">):</span>
+<span class="nd">&#64;annotate</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;Int -&gt; String -&gt; (Int, String)&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">my_func</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="s1">'hello'</span><span class="p">):</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
 </pre>
 <p>I like this. It stays out of the way, it uses a decorator (never enough
 decorators). Let&#8217;s checkout the <tt class="docutils literal">__annotations__</tt> dict:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="n">my_func</span><span class="o">.</span><span class="n">__annotations__</span>
 </pre>
 <pre class="literal-block">
@@ -136,8 +136,8 @@ decorators). Let&#8217;s checkout the <tt class="docutils literal">__annotations
 </pre>
 <p>Uh&#8230;.Well, it didn&#8217;t fill anything in. What did it do? Well, it
 attaches the signature to the&nbsp;docstring&#8230;</p>
-<pre class="code python literal-block">
-<span class="k">print</span><span class="p">(</span><span class="n">my_func</span><span class="o">.</span><span class="n">__doc__</span><span class="p">)</span>
+<pre class="code ipython3 literal-block">
+<span class="nb">print</span><span class="p">(</span><span class="n">my_func</span><span class="o">.</span><span class="n">__doc__</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 my_func :: Int -&gt; String -&gt; (Int, String)
@@ -147,10 +147,10 @@ currently. But wouldn&#8217;t it be cool? (this is a phrase that only preceeds
 michief and trouble). Wouldn&#8217;t it be cool if that Haskell type was
 somehow transformed into a Python annotations dictionary and on the
 other end we&#8217;d be able to inspect the annotation and get&nbsp;this:</p>
-<pre class="code python literal-block">
-<span class="p">{</span><span class="s">'a'</span><span class="p">:</span> <span class="s">'Int'</span><span class="p">,</span>
- <span class="s">'b'</span><span class="p">:</span> <span class="s">'String'</span><span class="p">,</span>
- <span class="s">'returns'</span><span class="p">:</span> <span class="s">'(Int, String)'</span>
+<pre class="code ipython3 literal-block">
+<span class="p">{</span><span class="s1">'a'</span><span class="p">:</span> <span class="s1">'Int'</span><span class="p">,</span>
+ <span class="s1">'b'</span><span class="p">:</span> <span class="s1">'String'</span><span class="p">,</span>
+ <span class="s1">'returns'</span><span class="p">:</span> <span class="s1">'(Int, String)'</span>
  <span class="p">}</span>
 </pre>
 <pre class="literal-block">
@@ -209,9 +209,9 @@ Here&#8217;s the thing, it works&#8230;except with the <tt class="docutils liter
 need to repeatedly call the bound function and then flatten the list
 out. Except with this implementation, it hits <tt class="docutils literal">mreturn</tt> and the whole
 thing blows up. Wah wah wah. But I like this&nbsp;style:</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">pynads.do</span> <span class="kn">import</span> <span class="n">do</span><span class="p">,</span> <span class="n">mreturn</span>
-<span class="kn">from</span> <span class="nn">pynads</span> <span class="kn">import</span> <span class="n">List</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">pynads.do</span> <span class="k">import</span> <span class="n">do</span><span class="p">,</span> <span class="n">mreturn</span>
+<span class="kn">from</span> <span class="nn">pynads</span> <span class="k">import</span> <span class="n">List</span>
 
 <span class="nd">&#64;do</span><span class="p">(</span><span class="n">monad</span><span class="o">=</span><span class="n">List</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">chessboard</span><span class="p">(</span><span class="n">ranks</span><span class="p">,</span> <span class="n">files</span><span class="p">):</span>
@@ -219,16 +219,16 @@ thing blows up. Wah wah wah. But I like this&nbsp;style:</p>
     <span class="n">f</span> <span class="o">=</span> <span class="k">yield</span> <span class="n">List</span><span class="p">(</span><span class="o">*</span><span class="n">files</span><span class="p">)</span>
     <span class="n">mreturn</span><span class="p">((</span><span class="n">r</span><span class="p">,</span><span class="n">f</span><span class="p">))</span>
 
-<span class="c">#chessboard('abcdefgh', range(1,9))</span>
+<span class="c1">#chessboard('abcdefgh', range(1,9))</span>
 </pre>
 <p>Oops. But this&nbsp;works:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">chessboard</span><span class="p">(</span><span class="n">ranks</span><span class="p">,</span> <span class="n">files</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">List</span><span class="p">(</span><span class="o">*</span><span class="n">ranks</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">r</span><span class="p">:</span>
            <span class="n">List</span><span class="p">(</span><span class="o">*</span><span class="n">files</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">f</span><span class="p">:</span>
            <span class="n">List</span><span class="o">.</span><span class="n">unit</span><span class="p">((</span><span class="n">r</span><span class="p">,</span><span class="n">f</span><span class="p">))</span>        <span class="p">))</span>
 
-<span class="n">chessboard</span><span class="p">(</span><span class="s">'abcdefgh'</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">9</span><span class="p">))</span>
+<span class="n">chessboard</span><span class="p">(</span><span class="s1">'abcdefgh'</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">9</span><span class="p">))</span>
 </pre>
 <pre class="literal-block">
 List(('a', 1), ('a', 2), ('a', 3), ('a', 4), ('a', 5), '...54 more...', ('h', 4), ('h', 5), ('h', 6), ('h', 7), ('h', 8))
@@ -334,10 +334,10 @@ someone&#8217;s using, why not break something I&#8217;ll be the only one&nbsp;c
                     <span>1</span>
 </a></li>
                 <li><a href="/tags.html#pynads-ref">pynads
-                    <span>2</span>
+                    <span>3</span>
 </a></li>
                 <li><a href="/tags.html#python-ref">python
-                    <span>12</span>
+                    <span>15</span>
 </a></li>
             </ul>
 

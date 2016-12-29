@@ -104,8 +104,8 @@ Things like os.remove are rarely stand alone things, they&#8217;re often
 paired with stuff like &#8220;Format this file name.&#8221;, &#8220;Join this path.&#8221;
 &#8220;Can I find the file?&#8221;, &#8220;Do I have permission to remove the file.&#8221;</blockquote>
 <p>As well as these code&nbsp;samples:</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">abc</span> <span class="k">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
 <span class="k">class</span> <span class="nc">ReportRemover</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
@@ -122,11 +122,11 @@ paired with stuff like &#8220;Format this file name.&#8221;, &#8220;Join this pa
         <span class="n">filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_removable</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
             <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-            <span class="k">return</span> <span class="bp">True</span>
-        <span class="k">return</span> <span class="bp">False</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="nf">_format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-        <span class="n">filename</span> <span class="o">=</span> <span class="s">'{}.{}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ext</span><span class="p">)</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="s1">'</span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ext</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_is_removable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
@@ -137,34 +137,34 @@ multiple contexts to remove a &#8220;report&#8221; &#8212; maybe it&#8217;s gene
 database, maybe it&#8217;s on S3, maybe I&#8217;m running a test and don&#8217;t even have
 an actual report to remove. Conversely, I also offered this sample that
 I might use if I&#8217;m only going to have reports on the local&nbsp;filesystem:</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
-<span class="n">Settings</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s">'Settings'</span><span class="p">,</span> <span class="p">[</span><span class="s">'DEFAULT_REPORT_PATH'</span><span class="p">,</span> <span class="s">'DEFAULT_REPORT_EXT'</span><span class="p">])</span>
-<span class="n">SETTINGS</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">(</span><span class="s">'path/to/reports'</span><span class="p">,</span> <span class="s">'html'</span><span class="p">)</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span>
+<span class="n">Settings</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">'Settings'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'DEFAULT_REPORT_PATH'</span><span class="p">,</span> <span class="s1">'DEFAULT_REPORT_EXT'</span><span class="p">])</span>
+<span class="n">SETTINGS</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">(</span><span class="s1">'path/to/reports'</span><span class="p">,</span> <span class="s1">'html'</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">remove_report</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">SETTINGS</span><span class="o">.</span><span class="n">DEFAULT_REPORT_PATH</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="n">SETTINGS</span><span class="o">.</span><span class="n">DEFAULT_REPORT_EXT</span><span class="p">):</span>
-    <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s">'{}.{}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">ext</span><span class="p">))</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">'</span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">ext</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
         <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">True</span>
-    <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span>
 </pre>
 <p>Which was met with the question of, &#8220;Well how do you test that?&#8221; And
 this sort of astonished me. And maybe that&#8217;s because of my growth as a
 developer. But the answer seemed obvious to me, &#8220;Create a directory, put
 a file named test.report in it, run remove_report, assert that the
 directory is&nbsp;empty.&#8221;</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="kn">import</span> <span class="nn">pytest</span>
-<span class="kn">from</span> <span class="nn">things.reports</span> <span class="kn">import</span> <span class="n">remove_report</span>
+<span class="kn">from</span> <span class="nn">things.reports</span> <span class="k">import</span> <span class="n">remove_report</span>
 
 <span class="k">def</span> <span class="nf">test_remove_report_deletes_file_report</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">):</span>
-    <span class="n">report_dir</span> <span class="o">=</span> <span class="n">tmpdir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="s">'delete_report'</span><span class="p">)</span>
-    <span class="n">report</span> <span class="o">=</span> <span class="n">report_dir</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s">'test.report'</span><span class="p">)</span>
-    <span class="n">report</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">''</span><span class="p">)</span> <span class="c">#needed to &quot;create&quot; the file</span>
+    <span class="n">report_dir</span> <span class="o">=</span> <span class="n">tmpdir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="s1">'delete_report'</span><span class="p">)</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="n">report_dir</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">'test.report'</span><span class="p">)</span>
+    <span class="n">report</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">''</span><span class="p">)</span> <span class="c1">#needed to &quot;create&quot; the file</span>
 
-    <span class="n">remove_report</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">'test'</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="s">'report'</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">report_dir</span><span class="o">.</span><span class="n">strpath</span><span class="p">)</span>
+    <span class="n">remove_report</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'test'</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="s1">'report'</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">report_dir</span><span class="o">.</span><span class="n">strpath</span><span class="p">)</span>
 
     <span class="k">assert</span> <span class="n">report_dir</span><span class="o">.</span><span class="n">listdir</span><span class="p">()</span> <span class="o">==</span> <span class="p">[]</span>
 </pre>
@@ -173,22 +173,22 @@ FileReportRemover and run <tt class="docutils literal">FileReportRemove.remove_r
 instance of it instead. Maybe this person was under the impression that
 unit tests are the <em>only</em> type of test, or maybe the only <em>valuable</em>
 test. But what is the value of this&nbsp;test:</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">mock</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="k">import</span> <span class="n">mock</span>
 
-<span class="nd">&#64;mock.patch</span><span class="p">(</span><span class="s">'os.path'</span><span class="p">)</span>
-<span class="nd">&#64;mock.patch</span><span class="p">(</span><span class="s">'os.remove'</span><span class="p">)</span>
+<span class="nd">&#64;mock</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s1">'os.path'</span><span class="p">)</span>
+<span class="nd">&#64;mock</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s1">'os.remove'</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">test_remove_report_deletes_file_report</span><span class="p">(</span><span class="n">osremove</span><span class="p">,</span> <span class="n">ospath</span><span class="p">):</span>
-    <span class="n">ospath</span><span class="o">.</span><span class="n">join</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="s">'path/test.report'</span>
-    <span class="n">ospath</span><span class="o">.</span><span class="n">isfile</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="bp">True</span>
-    <span class="n">ospath</span><span class="o">.</span><span class="n">exists</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="n">ospath</span><span class="o">.</span><span class="n">join</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="s1">'path/test.report'</span>
+    <span class="n">ospath</span><span class="o">.</span><span class="n">isfile</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">ospath</span><span class="o">.</span><span class="n">exists</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="n">remove_report</span><span class="p">(</span><span class="s">'test'</span><span class="p">,</span> <span class="s">'report'</span><span class="p">,</span> <span class="s">'path'</span><span class="p">)</span>
+    <span class="n">remove_report</span><span class="p">(</span><span class="s1">'test'</span><span class="p">,</span> <span class="s1">'report'</span><span class="p">,</span> <span class="s1">'path'</span><span class="p">)</span>
 
-    <span class="k">assert</span> <span class="n">ospath</span><span class="o">.</span><span class="n">join</span><span class="o">.</span><span class="n">call_args</span> <span class="o">==</span> <span class="p">((</span><span class="s">'path'</span><span class="p">,</span> <span class="s">'test.report'</span><span class="p">),)</span>
+    <span class="k">assert</span> <span class="n">ospath</span><span class="o">.</span><span class="n">join</span><span class="o">.</span><span class="n">call_args</span> <span class="o">==</span> <span class="p">((</span><span class="s1">'path'</span><span class="p">,</span> <span class="s1">'test.report'</span><span class="p">),)</span>
     <span class="k">assert</span> <span class="n">ospath</span><span class="o">.</span><span class="n">isfile</span><span class="o">.</span><span class="n">called</span>
     <span class="k">assert</span> <span class="n">ospath</span><span class="o">.</span><span class="n">exists</span><span class="o">.</span><span class="n">called</span>
-    <span class="k">assert</span> <span class="n">osremove</span><span class="o">.</span><span class="n">call_args</span> <span class="o">==</span> <span class="p">((</span><span class="s">'path/test.report'</span><span class="p">),</span> <span class="p">)</span>
+    <span class="k">assert</span> <span class="n">osremove</span><span class="o">.</span><span class="n">call_args</span> <span class="o">==</span> <span class="p">((</span><span class="s1">'path/test.report'</span><span class="p">),</span> <span class="p">)</span>
 </pre>
 <p>There&#8217;s so much noise in this test. We&#8217;re setting up mocks, there&#8217;s
 strings all over, multiple asserts &#8212; which isn&#8217;t necessarily bad, but
@@ -217,25 +217,25 @@ implementation&nbsp;is.</p>
 is, &#8220;Any time I need to test that <tt class="docutils literal">remove_report</tt> did something but I
 don&#8217;t actually need to remove a report.&#8221; I offered the concept of a
 report&nbsp;sweeper:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">test_report_sweeper_ignores_os_error</span><span class="p">():</span>
-    <span class="n">remover</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">Mock</span><span class="p">(</span><span class="n">side_effect</span><span class="o">=</span><span class="ne">OSError</span><span class="p">(</span><span class="s">&quot;You shouldn't see me&quot;</span><span class="p">))</span>
-    <span class="n">reports</span> <span class="o">=</span> <span class="p">[</span><span class="s">'foo'</span><span class="p">,</span> <span class="s">'bar'</span><span class="p">,</span> <span class="s">'baz'</span><span class="p">]</span>
+    <span class="n">remover</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">Mock</span><span class="p">(</span><span class="n">side_effect</span><span class="o">=</span><span class="ne">OSError</span><span class="p">(</span><span class="s2">&quot;You shouldn't see me&quot;</span><span class="p">))</span>
+    <span class="n">reports</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'foo'</span><span class="p">,</span> <span class="s1">'bar'</span><span class="p">,</span> <span class="s1">'baz'</span><span class="p">]</span>
 
     <span class="n">report_sweeper</span><span class="p">(</span><span class="n">reports</span><span class="p">,</span> <span class="n">remover</span><span class="o">=</span><span class="n">remover</span><span class="p">)</span>
 
-    <span class="k">assert</span> <span class="n">remover</span><span class="o">.</span><span class="n">call_args_list</span> <span class="o">==</span> <span class="p">[</span><span class="n">mock</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s">'foo'</span><span class="p">),</span> <span class="n">mock</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s">'bar'</span><span class="p">),</span> <span class="n">mock</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s">'baz'</span><span class="p">)]</span>
+    <span class="k">assert</span> <span class="n">remover</span><span class="o">.</span><span class="n">call_args_list</span> <span class="o">==</span> <span class="p">[</span><span class="n">mock</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">),</span> <span class="n">mock</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">'bar'</span><span class="p">),</span> <span class="n">mock</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">'baz'</span><span class="p">)]</span>
 </pre>
 <p>Because <em>I</em> own the interface to report_remover, I can comfortably mock
 that dependency. An alternative approach avoids mocking&nbsp;altogether:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">test_report_sweeper_ignores_os_error_oddly</span><span class="p">():</span>
     <span class="n">call_count</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">reports</span> <span class="o">=</span> <span class="p">[</span><span class="s">'foo'</span><span class="p">,</span> <span class="s">'bar'</span><span class="p">,</span> <span class="s">'baz'</span><span class="p">]</span>
-    <span class="k">def</span> <span class="nf">remover</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="n">nonlocal</span> <span class="n">call_count</span>
+    <span class="n">reports</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'foo'</span><span class="p">,</span> <span class="s1">'bar'</span><span class="p">,</span> <span class="s1">'baz'</span><span class="p">]</span>
+    <span class="k">def</span> <span class="nf">remover</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">nonlocal</span> <span class="n">call_count</span>
         <span class="n">call_count</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="s">&quot;You shouldn't see me&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="s2">&quot;You shouldn't see me&quot;</span><span class="p">)</span>
 
     <span class="n">report_sweeper</span><span class="p">(</span><span class="n">reports</span><span class="p">,</span> <span class="n">remover</span><span class="o">=</span><span class="n">remover</span><span class="p">)</span>
 
@@ -247,7 +247,7 @@ does, but it&#8217;s such a useful thing to know that I&#8217;d rather someone l
 it up than understand the oddness that is the locally defined remover.
 But in either case, you can imagine what the implementation of
 <tt class="docutils literal">report_sweeper</tt> looks&nbsp;like:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">report_sweeper</span><span class="p">(</span><span class="n">reports</span><span class="p">,</span> <span class="n">remover</span><span class="o">=</span><span class="n">remove_report</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">report</span> <span class="ow">in</span> <span class="n">reports</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
@@ -289,18 +289,18 @@ I call something that calls that for me. And this applies to <em>all</em>
 external collaborators. If you use <tt class="docutils literal">requests</tt> to get some information,
 don&#8217;t call <tt class="docutils literal">requests.get</tt> directly &#8212; have an adapter that manages all
 of that for you. I know this sounds crazy, but which is more descriptive&nbsp;read:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">get_some_data</span><span class="p">(</span><span class="nb">id</span><span class="p">):</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">'http://somedatasource.com/things/{}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="p">))</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'http://somedatasource.com/things/</span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="p">))</span>
     <span class="n">data</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
     <span class="n">serializer</span> <span class="o">=</span> <span class="n">SomeSerializer</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
-    <span class="n">serializer</span><span class="o">.</span><span class="n">is_valid</span><span class="p">(</span><span class="n">raise_exception</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">serializer</span><span class="o">.</span><span class="n">is_valid</span><span class="p">(</span><span class="n">raise_exception</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">serializer</span><span class="o">.</span><span class="n">data</span>
 </pre>
 <p>Or:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">get_some_data</span><span class="p">(</span><span class="nb">id</span><span class="p">):</span>
-    <span class="n">external</span> <span class="o">=</span> <span class="n">ExternalHelper</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s">'https://somedatasource.com/things/{}'</span><span class="p">,</span> <span class="n">serializer</span><span class="o">=</span><span class="n">SomeSerializer</span><span class="p">)</span>
+    <span class="n">external</span> <span class="o">=</span> <span class="n">ExternalHelper</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s1">'https://somedatasource.com/things/</span><span class="si">{}</span><span class="s1">'</span><span class="p">,</span> <span class="n">serializer</span><span class="o">=</span><span class="n">SomeSerializer</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">external</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
 </pre>
 <p>Even better is if <tt class="docutils literal">get_some_data</tt> is actually a method on an object
@@ -342,7 +342,7 @@ only add enough support code to get the test to&nbsp;finish.</p>
 <p>There&#8217;s generally very little logic in something that only serves to
 translate inputs and outputs from Domain A to Domain B. It&#8217;s usually
 things like&nbsp;this:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Notifier</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
     <span class="nd">&#64;abstractmethod</span>
     <span class="k">def</span> <span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recipient</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
@@ -364,11 +364,11 @@ come from <em>actually</em> sending a text message with a&nbsp;test.</p>
 test suite, especially if you&#8217;re not poking something related to this
 wrapper. Luckily, <tt class="docutils literal">py.test</tt> provides a very helpful marker module and
 a way to specify when to run these&nbsp;markers:</p>
-<pre class="code python literal-block">
-<span class="c"># tests/.../test_twilio_wrapper.py</span>
+<pre class="code ipython3 literal-block">
+<span class="c1"># tests/.../test_twilio_wrapper.py</span>
 
-<span class="nd">&#64;pytest.mark.costs_money</span>
-<span class="nd">&#64;pytest.mark.integration</span>
+<span class="nd">&#64;pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">costs_money</span>
+<span class="nd">&#64;pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">integration</span>
 <span class="k">class</span> <span class="nc">TestTwilioWrapperSuite</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">pass</span>
 </pre>

@@ -111,16 +111,16 @@ Java and <span class="caps">PHP</span> (or at least as of the last time I seriou
 Essentially, the idea is to <em>always</em> expect to interact with a method
 instead of an attribute itself. There&#8217;s nothing wrong with this if it&#8217;s
 what your language of choice supports and you need to control&nbsp;access.</p>
-<pre class="code python literal-block">
-<span class="c"># it's a contrived example</span>
-<span class="c"># but bear with me here</span>
-<span class="c"># pretend this is *important business logic*</span>
+<pre class="code ipython3 literal-block">
+<span class="c1"># it's a contrived example</span>
+<span class="c1"># but bear with me here</span>
+<span class="c1"># pretend this is *important business logic*</span>
 <span class="k">def</span> <span class="nf">to_lower</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
 <span class="k">class</span> <span class="nc">Person</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__name</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__name</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -129,10 +129,10 @@ what your language of choice supports and you need to control&nbsp;access.</p>
     <span class="k">def</span> <span class="nf">set_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__name</span> <span class="o">=</span> <span class="n">to_lower</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 
-<span class="n">monty</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;John Cleese&quot;</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">monty</span><span class="o">.</span><span class="n">get_name</span><span class="p">())</span>
-<span class="n">monty</span><span class="o">.</span><span class="n">set_name</span><span class="p">(</span><span class="s">&quot;Eric Idle&quot;</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">monty</span><span class="o">.</span><span class="n">get_name</span><span class="p">())</span>
+<span class="n">monty</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;John Cleese&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">monty</span><span class="o">.</span><span class="n">get_name</span><span class="p">())</span>
+<span class="n">monty</span><span class="o">.</span><span class="n">set_name</span><span class="p">(</span><span class="s2">&quot;Eric Idle&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">monty</span><span class="o">.</span><span class="n">get_name</span><span class="p">())</span>
 </pre>
 <pre class="literal-block">
 john cleese
@@ -146,25 +146,25 @@ in my opinion, handles this&nbsp;better.</p>
 <p>The real way you&#8217;d write this in Python is by using <tt class="docutils literal">&#64;property</tt>. Which
 is a decorator, which we are familiar with. I won&#8217;t go into details
 about what&#8217;s going on behind the scenes&nbsp;yet.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Person</span><span class="p">:</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__name</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__name</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
 
     <span class="nd">&#64;property</span>
     <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__name</span>
 
-    <span class="nd">&#64;name.setter</span>
+    <span class="nd">&#64;name</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__name</span> <span class="o">=</span> <span class="n">to_lower</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 
-<span class="n">monty</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;Graham Chapman&quot;</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">monty</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-<span class="n">monty</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;Terry Gilliam&quot;</span>
-<span class="k">print</span><span class="p">(</span><span class="n">monty</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+<span class="n">monty</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Graham Chapman&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">monty</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+<span class="n">monty</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Terry Gilliam&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">monty</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 graham chapman
@@ -187,13 +187,13 @@ need to control one attribute in a specific way. But imagine if we had
 to ensure two or three attributes were all lower case? You might be
 tempted to replicate the code all the way down. You don&#8217;t mind a little
 repitition, do&nbsp;you?</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Person</span><span class="p">:</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">email</span><span class="p">,</span> <span class="n">firstname</span><span class="p">,</span> <span class="n">lastname</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__f_name</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__l_name</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__email</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__f_name</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__l_name</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__email</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">f_name</span> <span class="o">=</span> <span class="n">firstname</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">l_name</span> <span class="o">=</span> <span class="n">lastname</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="n">email</span>
@@ -202,7 +202,7 @@ repitition, do&nbsp;you?</p>
     <span class="k">def</span> <span class="nf">f_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__f_name</span>
 
-    <span class="nd">&#64;f_name.setter</span>
+    <span class="nd">&#64;f_name</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">f_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__f_name</span> <span class="o">=</span> <span class="n">to_lower</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
@@ -210,7 +210,7 @@ repitition, do&nbsp;you?</p>
     <span class="k">def</span> <span class="nf">l_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__l_name</span>
 
-    <span class="nd">&#64;l_name.setter</span>
+    <span class="nd">&#64;l_name</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">l_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__l_name</span> <span class="o">=</span> <span class="n">to_lower</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
@@ -218,12 +218,12 @@ repitition, do&nbsp;you?</p>
     <span class="k">def</span> <span class="nf">email</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__email</span>
 
-    <span class="nd">&#64;email.setter</span>
+    <span class="nd">&#64;email</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">email</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__email</span> <span class="o">=</span> <span class="n">to_lower</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
-<span class="n">monty</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">firstname</span><span class="o">=</span><span class="s">'Michael'</span><span class="p">,</span> <span class="n">lastname</span><span class="o">=</span><span class="s">'Palin'</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s">'MichaelPalin&#64;montypython.com'</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">monty</span><span class="o">.</span><span class="n">f_name</span><span class="p">,</span> <span class="n">monty</span><span class="o">.</span><span class="n">l_name</span><span class="p">,</span> <span class="n">monty</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
+<span class="n">monty</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">firstname</span><span class="o">=</span><span class="s1">'Michael'</span><span class="p">,</span> <span class="n">lastname</span><span class="o">=</span><span class="s1">'Palin'</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s1">'MichaelPalin&#64;montypython.com'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">monty</span><span class="o">.</span><span class="n">f_name</span><span class="p">,</span> <span class="n">monty</span><span class="o">.</span><span class="n">l_name</span><span class="p">,</span> <span class="n">monty</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 michael palin <a class="reference external" href="mailto:michaelpalin&#64;montypython.com">michaelpalin&#64;montypython.com</a>
@@ -283,8 +283,8 @@ there I&#8217;m not 100% sure&nbsp;of).</p>
 <p>That sixth point is the most pertinent to us. An object that defines a
 <tt class="docutils literal">__get__</tt> method is known as a descriptor. <tt class="docutils literal">property</tt> is actually an
 object that does this. In effect, it&#8217;s <tt class="docutils literal">__get__</tt> method resembles&nbsp;this:</p>
-<pre class="code python literal-block">
-<span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<pre class="code ipython3 literal-block">
+<span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fget</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
 </pre>
 <p>Similarly, the resolution for setting an attribute looks like&nbsp;this:</p>
@@ -294,7 +294,7 @@ object that does this. In effect, it&#8217;s <tt class="docutils literal">__get_
 <li>Stuff the value into the object&#8217;s&nbsp;dict</li>
 </ol>
 <p>So, property&#8217;s <tt class="docutils literal">__set__</tt> looks like&nbsp;this:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">fset</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 </pre>
@@ -313,14 +313,14 @@ that defines at least one of these methods is a&nbsp;descriptor.</p>
 <p>The best way to dissect a descriptor is provide an example
 implementation. This example isn&#8217;t actually going to do anything except
 emulate regular attribute&nbsp;access.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Descriptor</span><span class="p">:</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
 
     <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">cls</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">instance</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">instance</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="n">instance</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
@@ -329,19 +329,19 @@ emulate regular attribute&nbsp;access.</p>
         <span class="k">del</span> <span class="n">instance</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
 
 <span class="k">class</span> <span class="nc">Thing</span><span class="p">:</span>
-    <span class="n">frob</span> <span class="o">=</span> <span class="n">Descriptor</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">'frob'</span><span class="p">)</span>
+    <span class="n">frob</span> <span class="o">=</span> <span class="n">Descriptor</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'frob'</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frob</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">frob</span> <span class="o">=</span> <span class="n">frob</span>
 
 <span class="n">t</span> <span class="o">=</span> <span class="n">Thing</span><span class="p">(</span><span class="n">frob</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">frob</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">frob</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 4
 </pre>
 <div class="section" id="get">
-<h4><strong>get</strong></h4>
+<h4><tt class="docutils literal">__get__</tt></h4>
 <pre class="literal-block">
 def __get__(self, instance, type):
 </pre>
@@ -366,7 +366,7 @@ of, this could be valuable&nbsp;information.</p>
 like, but Python&#8217;s data model will handle this for&nbsp;us.</p>
 </div>
 <div class="section" id="set">
-<h4><strong>set</strong></h4>
+<h4><tt class="docutils literal">__set__</tt></h4>
 <pre class="literal-block">
 def __set__(self, instance, value):
 </pre>
@@ -382,7 +382,7 @@ information to <tt class="docutils literal">Thing.frob.__set__</tt>, the informa
 instance of <tt class="docutils literal">Thing</tt> and the value we&#8217;re&nbsp;setting.</p>
 </div>
 <div class="section" id="delete">
-<h4><strong>delete</strong></h4>
+<h4><tt class="docutils literal">__delete__</tt></h4>
 <pre class="literal-block">
 def __delete__(self, instance):
 </pre>
@@ -428,10 +428,10 @@ explore some of the power these put at our finger&nbsp;tips.</p>
 <p>So far, we know a descriptor needs to define <em>at least</em> one of
 <tt class="docutils literal">__get__</tt>, <tt class="docutils literal">__set__</tt>, or <tt class="docutils literal">__delete__</tt>. Let&#8217;s try our hand at
 building a <tt class="docutils literal">LowerString</tt> descriptor.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">LowerString</span><span class="p">:</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">cls</span><span class="p">):</span>
@@ -450,8 +450,8 @@ building a <tt class="docutils literal">LowerString</tt> descriptor.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">l_name</span> <span class="o">=</span> <span class="n">lastname</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="n">email</span>
 
-<span class="n">monty</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">firstname</span><span class="o">=</span><span class="s">&quot;Terry&quot;</span><span class="p">,</span> <span class="n">lastname</span><span class="o">=</span><span class="s">&quot;Jones&quot;</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s">&quot;TerryJONES&#64;montyPython.com&quot;</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">monty</span><span class="o">.</span><span class="n">f_name</span><span class="p">,</span> <span class="n">monty</span><span class="o">.</span><span class="n">l_name</span><span class="p">,</span> <span class="n">monty</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
+<span class="n">monty</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">firstname</span><span class="o">=</span><span class="s2">&quot;Terry&quot;</span><span class="p">,</span> <span class="n">lastname</span><span class="o">=</span><span class="s2">&quot;Jones&quot;</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s2">&quot;TerryJONES&#64;montyPython.com&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">monty</span><span class="o">.</span><span class="n">f_name</span><span class="p">,</span> <span class="n">monty</span><span class="o">.</span><span class="n">l_name</span><span class="p">,</span> <span class="n">monty</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 terry jones <a class="reference external" href="mailto:terryjones&#64;montypython.com">terryjones&#64;montypython.com</a>
@@ -460,10 +460,10 @@ terry jones <a class="reference external" href="mailto:terryjones&#64;montypytho
 lot prettier than using a series of <tt class="docutils literal">property</tt> decorators and way
 nicer than defining explicit getters and setters. However, there&#8217;s a big
 issue here. If you can&#8217;t spot it, I&#8217;ll point it&nbsp;out.</p>
-<pre class="code python literal-block">
-<span class="n">me</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">firstname</span><span class="o">=</span><span class="s">&quot;Alec&quot;</span><span class="p">,</span> <span class="n">lastname</span><span class="o">=</span><span class="s">&quot;Reiter&quot;</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s">&quot;alecreiter&#64;fake.com&quot;</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">f_name</span><span class="p">,</span> <span class="n">me</span><span class="o">.</span><span class="n">l_name</span><span class="p">,</span> <span class="n">me</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">monty</span><span class="o">.</span><span class="n">f_name</span><span class="p">,</span> <span class="n">monty</span><span class="o">.</span><span class="n">l_name</span><span class="p">,</span> <span class="n">monty</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
+<pre class="code ipython3 literal-block">
+<span class="n">me</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">firstname</span><span class="o">=</span><span class="s2">&quot;Alec&quot;</span><span class="p">,</span> <span class="n">lastname</span><span class="o">=</span><span class="s2">&quot;Reiter&quot;</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s2">&quot;alecreiter&#64;fake.com&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">f_name</span><span class="p">,</span> <span class="n">me</span><span class="o">.</span><span class="n">l_name</span><span class="p">,</span> <span class="n">me</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">monty</span><span class="o">.</span><span class="n">f_name</span><span class="p">,</span> <span class="n">monty</span><span class="o">.</span><span class="n">l_name</span><span class="p">,</span> <span class="n">monty</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 alec reiter <a class="reference external" href="mailto:alecreiter&#64;fake.com">alecreiter&#64;fake.com</a>
@@ -479,9 +479,9 @@ Person object composed of <tt class="docutils literal">Job</tt>, <tt class="docu
 instances), we compose a class out of object&nbsp;instances.</p>
 <p>If we examine the <tt class="docutils literal">__dict__</tt> for both the class and the instance, it
 becomes apparent where Python finds these values&nbsp;at:</p>
-<pre class="code python literal-block">
-<span class="k">print</span><span class="p">(</span><span class="n">Person</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">monty</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+<pre class="code ipython3 literal-block">
+<span class="nb">print</span><span class="p">(</span><span class="n">Person</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">monty</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 {'__doc__': None, '__weakref__': &lt;attribute '__weakref__' of 'Person' objects&gt;, '__init__': &lt;function Person.__init__ at 0x7f337e2e58c8&gt;, 'f_name': &lt;__main__.LowerString object at 0x7f337ce4a5c0&gt;, 'l_name': &lt;__main__.LowerString object at 0x7f337ce4a550&gt;, 'email': &lt;__main__.LowerString object at 0x7f337ce4a630&gt;, '__module__': '__main__', '__dict__': &lt;attribute '__dict__' of 'Person' objects&gt;}
@@ -493,7 +493,7 @@ requesting, sees it&#8217;s a descriptor and then calls the <tt class="docutils 
 method.</p>
 <p>If you attempt to attach these descriptors at the instance level
 instead, you end up with&nbsp;this:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Person</span><span class="p">:</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">firstname</span><span class="p">,</span> <span class="n">lastname</span><span class="p">,</span> <span class="n">email</span><span class="p">):</span>
@@ -501,8 +501,8 @@ instead, you end up with&nbsp;this:</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">l_name</span> <span class="o">=</span> <span class="n">LowerString</span><span class="p">(</span><span class="n">lastname</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="n">LowerString</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
 
-<span class="n">me</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">firstname</span><span class="o">=</span><span class="s">&quot;Alec&quot;</span><span class="p">,</span> <span class="n">lastname</span><span class="o">=</span><span class="s">&quot;Reiter&quot;</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s">&quot;alecreiter&#64;fake.com&quot;</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">f_name</span><span class="p">,</span> <span class="n">me</span><span class="o">.</span><span class="n">l_name</span><span class="p">,</span> <span class="n">me</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
+<span class="n">me</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">firstname</span><span class="o">=</span><span class="s2">&quot;Alec&quot;</span><span class="p">,</span> <span class="n">lastname</span><span class="o">=</span><span class="s2">&quot;Reiter&quot;</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s2">&quot;alecreiter&#64;fake.com&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">f_name</span><span class="p">,</span> <span class="n">me</span><span class="o">.</span><span class="n">l_name</span><span class="p">,</span> <span class="n">me</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 &lt;__main__.LowerString object at 0x7f337ce4e390&gt; &lt;__main__.LowerString object at 0x7f337ce4e400&gt; &lt;__main__.LowerString object at 0x7f337ce4e438&gt;
@@ -510,7 +510,7 @@ instead, you end up with&nbsp;this:</p>
 <p>So explicitly attaching them to the instances won&#8217;t work. But remember,
 Python passes the instance <em>for us</em> automatically. Let&#8217;s try storing the
 value on the underlying object by accessing it&#8217;s <tt class="docutils literal">__dict__</tt> attribute:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">LowerString</span><span class="p">:</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
@@ -523,17 +523,17 @@ value on the underlying object by accessing it&#8217;s <tt class="docutils liter
         <span class="n">instance</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_lower</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">Person</span><span class="p">:</span>
-    <span class="n">f_name</span> <span class="o">=</span> <span class="n">LowerString</span><span class="p">(</span><span class="s">'f_name'</span><span class="p">)</span>
-    <span class="n">l_name</span> <span class="o">=</span> <span class="n">LowerString</span><span class="p">(</span><span class="s">'l_name'</span><span class="p">)</span>
-    <span class="n">email</span> <span class="o">=</span> <span class="n">LowerString</span><span class="p">(</span><span class="s">'email'</span><span class="p">)</span>
+    <span class="n">f_name</span> <span class="o">=</span> <span class="n">LowerString</span><span class="p">(</span><span class="s1">'f_name'</span><span class="p">)</span>
+    <span class="n">l_name</span> <span class="o">=</span> <span class="n">LowerString</span><span class="p">(</span><span class="s1">'l_name'</span><span class="p">)</span>
+    <span class="n">email</span> <span class="o">=</span> <span class="n">LowerString</span><span class="p">(</span><span class="s1">'email'</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">firstname</span><span class="p">,</span> <span class="n">lastname</span><span class="p">,</span> <span class="n">email</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">f_name</span> <span class="o">=</span> <span class="n">firstname</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">l_name</span> <span class="o">=</span> <span class="n">lastname</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="n">email</span>
 
-<span class="n">monty</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">firstname</span><span class="o">=</span><span class="s">&quot;Carol&quot;</span><span class="p">,</span> <span class="n">lastname</span><span class="o">=</span><span class="s">&quot;Cleaveland&quot;</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s">&quot;seventh&#64;montypython.com&quot;</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">monty</span><span class="o">.</span><span class="n">f_name</span><span class="p">,</span> <span class="n">monty</span><span class="o">.</span><span class="n">l_name</span><span class="p">,</span> <span class="n">monty</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
+<span class="n">monty</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">firstname</span><span class="o">=</span><span class="s2">&quot;Carol&quot;</span><span class="p">,</span> <span class="n">lastname</span><span class="o">=</span><span class="s2">&quot;Cleaveland&quot;</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s2">&quot;seventh&#64;montypython.com&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">monty</span><span class="o">.</span><span class="n">f_name</span><span class="p">,</span> <span class="n">monty</span><span class="o">.</span><span class="n">l_name</span><span class="p">,</span> <span class="n">monty</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 carol cleaveland <a class="reference external" href="mailto:seventh&#64;montypython.com">seventh&#64;montypython.com</a>
@@ -543,10 +543,10 @@ ourselves again. It&#8217;d be nice if we could simply do something to
 automatically fill in the label for us. David Beazley addressed this
 problem in the <a class="reference external" href="http://www.amazon.com/Python-Cookbook-David-Beazley/dp/1449340377">3rd Edition of the Python
 Cookbook</a>.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">checkedmeta</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">clsname</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">methods</span><span class="p">):</span>
-        <span class="c"># Attach attribute names to the descriptors</span>
+        <span class="c1"># Attach attribute names to the descriptors</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">methods</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Descriptor</span><span class="p">):</span>
                 <span class="n">value</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">key</span>
@@ -555,15 +555,15 @@ Cookbook</a>.</p>
 <p>Of course this means, we need to make two small changes to our
 descriptor: changing <tt class="docutils literal">label</tt> to <tt class="docutils literal">name</tt> and inheriting from a base
 <tt class="docutils literal">Descriptor</tt> class.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Descriptor</span><span class="p">:</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
 
 <span class="k">class</span> <span class="nc">LowerString</span><span class="p">(</span><span class="n">Descriptor</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">cls</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">cls</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">instance</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
@@ -579,8 +579,8 @@ descriptor: changing <tt class="docutils literal">label</tt> to <tt class="docut
         <span class="bp">self</span><span class="o">.</span><span class="n">l_name</span> <span class="o">=</span> <span class="n">lastname</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="n">email</span>
 
-<span class="n">monty</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">firstname</span><span class="o">=</span><span class="s">&quot;Carol&quot;</span><span class="p">,</span> <span class="n">lastname</span><span class="o">=</span><span class="s">&quot;Cleaveland&quot;</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s">&quot;seventh&#64;montypython.com&quot;</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">monty</span><span class="o">.</span><span class="n">f_name</span><span class="p">,</span> <span class="n">monty</span><span class="o">.</span><span class="n">l_name</span><span class="p">,</span> <span class="n">monty</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
+<span class="n">monty</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">firstname</span><span class="o">=</span><span class="s2">&quot;Carol&quot;</span><span class="p">,</span> <span class="n">lastname</span><span class="o">=</span><span class="s2">&quot;Cleaveland&quot;</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s2">&quot;seventh&#64;montypython.com&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">monty</span><span class="o">.</span><span class="n">f_name</span><span class="p">,</span> <span class="n">monty</span><span class="o">.</span><span class="n">l_name</span><span class="p">,</span> <span class="n">monty</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 carol cleaveland <a class="reference external" href="mailto:seventh&#64;montypython.com">seventh&#64;montypython.com</a>
@@ -594,9 +594,9 @@ biggest gripes with <tt class="docutils literal">property</tt> is that a <tt cla
 <em>even if I&#8217;m only interested in the setter</em>. If you set <tt class="docutils literal">fget</tt> to
 None, you end up getting an attribute error that says it&#8217;s write only.
 If we examine our current implementation, we&#8217;ll notice something else as&nbsp;well:</p>
-<pre class="code python literal-block">
-<span class="k">print</span><span class="p">(</span><span class="n">Person</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">monty</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+<pre class="code ipython3 literal-block">
+<span class="nb">print</span><span class="p">(</span><span class="n">Person</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">monty</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 {'__doc__': None, '__weakref__': &lt;attribute '__weakref__' of 'Person' objects&gt;, '__init__': &lt;function Person.__init__ at 0x7f337ce38c80&gt;, 'f_name': &lt;__main__.LowerString object at 0x7f337ce31588&gt;, 'l_name': &lt;__main__.LowerString object at 0x7f337ce31550&gt;, 'email': &lt;__main__.LowerString object at 0x7f337ce316a0&gt;, '__module__': '__main__', '__dict__': &lt;attribute '__dict__' of 'Person' objects&gt;}
@@ -605,18 +605,18 @@ If we examine our current implementation, we&#8217;ll notice something else as&n
 <p>There&#8217;s now the descriptors living at the class level and the values
 living at the instance level. Let&#8217;s add some &#8220;debugging&#8221; print calls to
 see what&#8217;s happening on the&nbsp;inside.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">LowerString</span><span class="p">(</span><span class="n">Descriptor</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
 
-    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">cls</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&quot;Calling LowerString.__get__&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">cls</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Calling LowerString.__get__&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">instance</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&quot;Calling LowerString.__set__&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Calling LowerString.__set__&quot;</span><span class="p">)</span>
         <span class="n">instance</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_lower</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">Person</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">checkedmeta</span><span class="p">):</span>
@@ -629,8 +629,8 @@ see what&#8217;s happening on the&nbsp;inside.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">l_name</span> <span class="o">=</span> <span class="n">lastname</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="n">email</span>
 
-<span class="n">monty</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">firstname</span><span class="o">=</span><span class="s">&quot;Carol&quot;</span><span class="p">,</span> <span class="n">lastname</span><span class="o">=</span><span class="s">&quot;Cleaveland&quot;</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s">&quot;seventh&#64;montypython.com&quot;</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">monty</span><span class="o">.</span><span class="n">f_name</span><span class="p">,</span> <span class="n">monty</span><span class="o">.</span><span class="n">l_name</span><span class="p">,</span> <span class="n">monty</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
+<span class="n">monty</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">firstname</span><span class="o">=</span><span class="s2">&quot;Carol&quot;</span><span class="p">,</span> <span class="n">lastname</span><span class="o">=</span><span class="s2">&quot;Cleaveland&quot;</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s2">&quot;seventh&#64;montypython.com&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">monty</span><span class="o">.</span><span class="n">f_name</span><span class="p">,</span> <span class="n">monty</span><span class="o">.</span><span class="n">l_name</span><span class="p">,</span> <span class="n">monty</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 Calling LowerString.__set__
@@ -649,14 +649,14 @@ providing a lazy calculation, it&#8217;s simply aping what
 <tt class="docutils literal">Person.__getattribute__</tt> would do in the first place: Find the value
 in the object&#8217;s dictionary. If we remove this, then we&#8217;re left with
 <em>only</em> a setter, which is what we really wanted in the first&nbsp;place:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">LowerString</span><span class="p">(</span><span class="n">Descriptor</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
 
     <span class="k">def</span> <span class="nf">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&quot;Calling LowerString.__set__&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Calling LowerString.__set__&quot;</span><span class="p">)</span>
         <span class="n">instance</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_lower</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">Person</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">checkedmeta</span><span class="p">):</span>
@@ -669,10 +669,10 @@ in the object&#8217;s dictionary. If we remove this, then we&#8217;re left with
         <span class="bp">self</span><span class="o">.</span><span class="n">l_name</span> <span class="o">=</span> <span class="n">lastname</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="n">email</span>
 
-<span class="n">monty</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">firstname</span><span class="o">=</span><span class="s">&quot;Carol&quot;</span><span class="p">,</span> <span class="n">lastname</span><span class="o">=</span><span class="s">&quot;Cleaveland&quot;</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s">&quot;seventh&#64;montypython.com&quot;</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">monty</span><span class="o">.</span><span class="n">f_name</span><span class="p">,</span> <span class="n">monty</span><span class="o">.</span><span class="n">l_name</span><span class="p">,</span> <span class="n">monty</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
-<span class="n">monty</span><span class="o">.</span><span class="n">f_name</span> <span class="o">=</span> <span class="s">&quot;Cheryl&quot;</span>
-<span class="k">print</span><span class="p">(</span><span class="n">monty</span><span class="o">.</span><span class="n">f_name</span><span class="p">)</span>
+<span class="n">monty</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">firstname</span><span class="o">=</span><span class="s2">&quot;Carol&quot;</span><span class="p">,</span> <span class="n">lastname</span><span class="o">=</span><span class="s2">&quot;Cleaveland&quot;</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s2">&quot;seventh&#64;montypython.com&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">monty</span><span class="o">.</span><span class="n">f_name</span><span class="p">,</span> <span class="n">monty</span><span class="o">.</span><span class="n">l_name</span><span class="p">,</span> <span class="n">monty</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
+<span class="n">monty</span><span class="o">.</span><span class="n">f_name</span> <span class="o">=</span> <span class="s2">&quot;Cheryl&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">monty</span><span class="o">.</span><span class="n">f_name</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 Calling LowerString.__set__
@@ -688,9 +688,9 @@ what we want in the first place. However, when we access the attribute,
 it sees there&#8217;s an entry in the object&#8217;s <tt class="docutils literal">__dict__</tt> and the class&#8217;s
 <tt class="docutils literal">__dict__</tt> but the latter doesn&#8217;t have a <tt class="docutils literal">__get__</tt> method, which
 causes it to default back to the object&#8217;s&nbsp;entry.</p>
-<pre class="code python literal-block">
-<span class="k">print</span><span class="p">(</span><span class="n">Person</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">monty</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+<pre class="code ipython3 literal-block">
+<span class="nb">print</span><span class="p">(</span><span class="n">Person</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">monty</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 {'__doc__': None, '__weakref__': &lt;attribute '__weakref__' of 'Person' objects&gt;, '__init__': &lt;function Person.__init__ at 0x7f337ce43730&gt;, 'f_name': &lt;__main__.LowerString object at 0x7f337ce55710&gt;, 'l_name': &lt;__main__.LowerString object at 0x7f337ce55748&gt;, 'email': &lt;__main__.LowerString object at 0x7f337ce55780&gt;, '__module__': '__main__', '__dict__': &lt;attribute '__dict__' of 'Person' objects&gt;}
@@ -787,7 +787,7 @@ work?](<a class="reference external" href="http://stackoverflow.com/questions/17
                     <span>3</span>
 </a></li>
                 <li><a href="/tags.html#python-ref">python
-                    <span>12</span>
+                    <span>15</span>
 </a></li>
             </ul>
 

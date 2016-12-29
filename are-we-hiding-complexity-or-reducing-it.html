@@ -81,27 +81,27 @@
         <div class="span8 offset2 article-content">
 
             <p>Consider this seemingly innocuous Flask&nbsp;endpoint.</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">myapp.token</span> <span class="kn">import</span> <span class="n">TokenGenerator</span>
-<span class="kn">from</span> <span class="nn">myapp.decorators</span> <span class="kn">import</span> <span class="n">email</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">myapp.token</span> <span class="k">import</span> <span class="n">TokenGenerator</span>
+<span class="kn">from</span> <span class="nn">myapp.decorators</span> <span class="k">import</span> <span class="n">email</span>
 
-<span class="nd">&#64;app.route</span><span class="p">(</span><span class="s">'/send-reset-password-token/&lt;username&gt;'</span><span class="p">)</span>
+<span class="nd">&#64;app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">'/send-reset-password-token/&lt;username&gt;'</span><span class="p">)</span>
 <span class="nd">&#64;email</span>
 <span class="k">def</span> <span class="nf">generate_auth_token_and_send_it</span><span class="p">(</span><span class="n">username</span><span class="p">):</span>
     <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">)</span><span class="o">.</span><span class="n">first_or_404</span><span class="p">()</span>
-    <span class="n">token</span> <span class="o">=</span> <span class="n">TokenGenerator</span><span class="p">(</span><span class="n">secret_key</span><span class="o">=</span><span class="n">current_app</span><span class="o">.</span><span class="n">secret_key</span><span class="p">)</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s">'op'</span><span class="p">:</span> <span class="s">'reset-token'</span><span class="p">,</span> <span class="s">'username'</span><span class="p">:</span><span class="n">user</span><span class="o">.</span><span class="n">username</span><span class="p">})</span>
-    <span class="n">html_body</span> <span class="o">=</span> <span class="n">render_template</span><span class="p">(</span><span class="s">'token-reset-email.html'</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="n">TokenGenerator</span><span class="p">(</span><span class="n">secret_key</span><span class="o">=</span><span class="n">current_app</span><span class="o">.</span><span class="n">secret_key</span><span class="p">)</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">'op'</span><span class="p">:</span> <span class="s1">'reset-token'</span><span class="p">,</span> <span class="s1">'username'</span><span class="p">:</span><span class="n">user</span><span class="o">.</span><span class="n">username</span><span class="p">})</span>
+    <span class="n">html_body</span> <span class="o">=</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">'token-reset-email.html'</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">Message</span><span class="p">(</span><span class="n">body</span><span class="o">=</span><span class="n">html_body</span><span class="p">,</span> <span class="n">receiver</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
 </pre>
 <p>And, let&#8217;s pretend the <tt class="docutils literal">email</tt> decorator looks like&nbsp;this:</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">myapp.extensions</span> <span class="kn">import</span> <span class="n">emailer</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">myapp.extensions</span> <span class="k">import</span> <span class="n">emailer</span>
 
 <span class="k">def</span> <span class="nf">email</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">message</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">emailer</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">sender</span><span class="o">=</span><span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">'ADMIN_EMAIL'</span><span class="p">])</span>
-        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s">'front.homepage'</span><span class="p">)</span>
+        <span class="n">emailer</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">sender</span><span class="o">=</span><span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">'ADMIN_EMAIL'</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">'front.homepage'</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">decorator</span>
 </pre>
 <p>We might look at that and think, &#8220;Hey! That&#8217;s pretty cool, sending the
@@ -141,18 +141,18 @@ it from happening&nbsp;again?&#8221;</p>
 <h2>How can we fix&nbsp;it?</h2>
 <p>Before we touch anything, we should create a test harness (something I&#8217;m
 trying to force myself to do&nbsp;lately).</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">mock</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="k">import</span> <span class="n">mock</span>
 <span class="kn">import</span> <span class="nn">pytest</span>
-<span class="kn">from</span> <span class="nn">myapp</span> <span class="kn">import</span> <span class="n">create_app</span>
-<span class="kn">from</span> <span class="nn">myapp.auth.views</span> <span class="kn">import</span> <span class="n">generate_auth_token_and_send_it</span>
+<span class="kn">from</span> <span class="nn">myapp</span> <span class="k">import</span> <span class="n">create_app</span>
+<span class="kn">from</span> <span class="nn">myapp.auth.views</span> <span class="k">import</span> <span class="n">generate_auth_token_and_send_it</span>
 
-<span class="nd">&#64;pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s">&quot;session&quot;</span><span class="p">)</span>
+<span class="nd">&#64;pytest</span><span class="o">.</span><span class="n">fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s2">&quot;session&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">app</span><span class="p">():</span>
-    <span class="k">return</span> <span class="n">create_app</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="s">'test'</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">create_app</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="s1">'test'</span><span class="p">)</span>
 
 
-<span class="nd">&#64;pytest.yield_fixture</span>
+<span class="nd">&#64;pytest</span><span class="o">.</span><span class="n">yield_fixture</span>
 <span class="k">def</span> <span class="nf">app_context</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
     <span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">app_context</span><span class="p">():</span>
         <span class="k">yield</span> <span class="n">app</span>
@@ -170,40 +170,40 @@ It&#8217;s much quicker to set up and teardown application contexts than a
 whole application, which makes&nbsp;sense.</p>
 <p>Next, we&#8217;ll want to batter our endpoint with tests. This part is <em>no
 fun</em> because we need to essentially test the endpoint through the <span class="caps">UI</span>.</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">myapp.models</span> <span class="kn">import</span> <span class="n">User</span><span class="p">,</span> <span class="n">db</span>
-<span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">unwrap</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">myapp.models</span> <span class="k">import</span> <span class="n">User</span><span class="p">,</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">inspect</span> <span class="k">import</span> <span class="n">unwrap</span>
 
 <span class="k">def</span> <span class="nf">test_generate_auth_token_and_send_it_calls_emailer</span><span class="p">(</span><span class="n">app_context</span><span class="p">):</span>
-    <span class="n">fred</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s">'fred'</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s">'fred&#64;fred.fred'</span><span class="p">)</span>
+    <span class="n">fred</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s1">'fred'</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s1">'fred&#64;fred.fred'</span><span class="p">)</span>
     <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">fred</span><span class="p">)</span>
     <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
 
-    <span class="k">with</span> <span class="n">mock</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s">'myapp.decorators.emailer.send'</span><span class="p">)</span> <span class="k">as</span> <span class="n">sender</span><span class="p">:</span>
-        <span class="n">generate_auth_token_and_send_it</span><span class="p">(</span><span class="s">'fred'</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">mock</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s1">'myapp.decorators.emailer.send'</span><span class="p">)</span> <span class="k">as</span> <span class="n">sender</span><span class="p">:</span>
+        <span class="n">generate_auth_token_and_send_it</span><span class="p">(</span><span class="s1">'fred'</span><span class="p">)</span>
 
     <span class="k">assert</span> <span class="n">sender</span><span class="o">.</span><span class="n">called</span>
 
 <span class="k">def</span> <span class="nf">test_expected_response_from_generate_auth_token_and_send_it</span><span class="p">(</span><span class="n">app_context</span><span class="p">):</span>
     <span class="n">actual_function</span> <span class="o">=</span> <span class="n">unwrap</span><span class="p">(</span><span class="n">generate_auth_token_and_send_it</span><span class="p">)</span>
 
-    <span class="n">fred</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s">'fred'</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s">'fred&#64;fred.fred'</span><span class="p">)</span>
+    <span class="n">fred</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s1">'fred'</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s1">'fred&#64;fred.fred'</span><span class="p">)</span>
     <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">fred</span><span class="p">)</span>
     <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
 
-    <span class="n">message</span> <span class="o">=</span> <span class="n">actual_function</span><span class="p">(</span><span class="s">'fred'</span><span class="p">)</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="n">actual_function</span><span class="p">(</span><span class="s1">'fred'</span><span class="p">)</span>
 
-    <span class="k">assert</span> <span class="s">'Your user token is'</span> <span class="ow">in</span> <span class="n">message</span><span class="o">.</span><span class="n">body</span>
+    <span class="k">assert</span> <span class="s1">'Your user token is'</span> <span class="ow">in</span> <span class="n">message</span><span class="o">.</span><span class="n">body</span>
     <span class="k">assert</span> <span class="n">fred</span><span class="o">.</span><span class="n">email</span> <span class="o">==</span> <span class="n">message</span><span class="o">.</span><span class="n">receiver</span>
 
 
 <span class="k">def</span> <span class="nf">test_failure_with_nonexistent_user</span><span class="p">(</span><span class="n">app_context</span><span class="p">):</span>
     <span class="n">actual_function</span> <span class="o">=</span> <span class="n">unwrap</span><span class="p">(</span><span class="n">generate_auth_token_and_send_it</span><span class="p">)</span>
 
-    <span class="c"># first_or_404 calls abort,</span>
-    <span class="c"># intercepting that is easier than mocking the query</span>
-    <span class="k">with</span> <span class="n">mock</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s">'flask_sqlalchemy.abort'</span><span class="p">)</span> <span class="k">as</span> <span class="n">aborter</span><span class="p">:</span>
-        <span class="n">actual_function</span><span class="p">(</span><span class="s">'no freds'</span><span class="p">)</span>
+    <span class="c1"># first_or_404 calls abort,</span>
+    <span class="c1"># intercepting that is easier than mocking the query</span>
+    <span class="k">with</span> <span class="n">mock</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s1">'flask_sqlalchemy.abort'</span><span class="p">)</span> <span class="k">as</span> <span class="n">aborter</span><span class="p">:</span>
+        <span class="n">actual_function</span><span class="p">(</span><span class="s1">'no freds'</span><span class="p">)</span>
 
     <span class="k">assert</span> <span class="n">aborter</span><span class="o">.</span><span class="n">called</span>
 </pre>
@@ -239,15 +239,15 @@ implementing <tt class="docutils literal">unwrap</tt> ourselves, which brings ou
 <h2>How to fix&nbsp;it.</h2>
 <p>The first step is to stop hiding the complexity. And to me, that means
 bringing the emailer <em>back</em> into the&nbsp;endpoint.</p>
-<pre class="code python literal-block">
-<span class="nd">&#64;app.route</span><span class="p">(</span><span class="s">'/send-reset-password-token/&lt;username&gt;'</span><span class="p">)</span>
+<pre class="code ipython3 literal-block">
+<span class="nd">&#64;app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">'/send-reset-password-token/&lt;username&gt;'</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">generate_auth_token_and_send_it</span><span class="p">(</span><span class="n">username</span><span class="p">):</span>
     <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">)</span><span class="o">.</span><span class="n">first_or_404</span><span class="p">()</span>
-    <span class="n">token</span> <span class="o">=</span> <span class="n">TokenGenerator</span><span class="p">(</span><span class="n">secret_key</span><span class="o">=</span><span class="n">current_app</span><span class="o">.</span><span class="n">secret_key</span><span class="p">)</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s">'op'</span><span class="p">:</span> <span class="s">'reset-token'</span><span class="p">,</span> <span class="s">'username'</span><span class="p">:</span><span class="n">user</span><span class="o">.</span><span class="n">username</span><span class="p">})</span>
-    <span class="n">html_body</span> <span class="o">=</span> <span class="n">render_template</span><span class="p">(</span><span class="s">'token-reset-email.html'</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="n">TokenGenerator</span><span class="p">(</span><span class="n">secret_key</span><span class="o">=</span><span class="n">current_app</span><span class="o">.</span><span class="n">secret_key</span><span class="p">)</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">'op'</span><span class="p">:</span> <span class="s1">'reset-token'</span><span class="p">,</span> <span class="s1">'username'</span><span class="p">:</span><span class="n">user</span><span class="o">.</span><span class="n">username</span><span class="p">})</span>
+    <span class="n">html_body</span> <span class="o">=</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">'token-reset-email.html'</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
     <span class="n">msg</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span><span class="n">body</span><span class="o">=</span><span class="n">html_body</span><span class="p">,</span> <span class="n">receiver</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
-    <span class="n">emailer</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">sender</span><span class="o">=</span><span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">'ADMIN_EMAIL'</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s">'index.homepage'</span><span class="p">)</span>
+    <span class="n">emailer</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">sender</span><span class="o">=</span><span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">'ADMIN_EMAIL'</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">'index.homepage'</span><span class="p">)</span>
 </pre>
 <p>The reason for this is that <tt class="docutils literal">msg = <span class="pre">Message(...)</span></tt> and
 <tt class="docutils literal"><span class="pre">emailer.send(...)</span></tt> form a logical unit. They want to be near to each
@@ -279,56 +279,56 @@ resets for the&nbsp;user</li>
 <li>If the endpoint can&#8217;t find the user, it redirects to an error&nbsp;page</li>
 </ul>
 <p>By doing this, we can completely pull the actual logic out into it&#8217;s own&nbsp;function:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">send_user_reset_token</span><span class="p">(</span><span class="n">user</span><span class="p">):</span>
-    <span class="n">token</span> <span class="o">=</span> <span class="n">TokenGenerator</span><span class="p">(</span><span class="n">secret_key</span><span class="o">=</span><span class="n">current_app</span><span class="o">.</span><span class="n">secret_key</span><span class="p">)</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s">'op'</span><span class="p">:</span> <span class="s">'reset-token'</span><span class="p">,</span> <span class="s">'username'</span><span class="p">:</span><span class="n">user</span><span class="o">.</span><span class="n">username</span><span class="p">})</span>
-    <span class="n">html_body</span> <span class="o">=</span> <span class="n">render_template</span><span class="p">(</span><span class="s">'token-reset-email.html'</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="n">TokenGenerator</span><span class="p">(</span><span class="n">secret_key</span><span class="o">=</span><span class="n">current_app</span><span class="o">.</span><span class="n">secret_key</span><span class="p">)</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">'op'</span><span class="p">:</span> <span class="s1">'reset-token'</span><span class="p">,</span> <span class="s1">'username'</span><span class="p">:</span><span class="n">user</span><span class="o">.</span><span class="n">username</span><span class="p">})</span>
+    <span class="n">html_body</span> <span class="o">=</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">'token-reset-email.html'</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
     <span class="n">msg</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span><span class="n">body</span><span class="o">=</span><span class="n">html_body</span><span class="p">,</span> <span class="n">receiver</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">emailer</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">sender</span><span class="o">=</span><span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">'ADMIN_EMAIL'</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">emailer</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">sender</span><span class="o">=</span><span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">'ADMIN_EMAIL'</span><span class="p">])</span>
 
-<span class="nd">&#64;app.route</span><span class="p">(</span><span class="s">'/send-reset-password-token/&lt;username&gt;'</span><span class="p">)</span>
+<span class="nd">&#64;app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">'/send-reset-password-token/&lt;username&gt;'</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">generate_auth_token_and_send_it</span><span class="p">(</span><span class="n">username</span><span class="p">):</span>
     <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">)</span><span class="o">.</span><span class="n">first_or_404</span><span class="p">()</span>
     <span class="n">send_user_reset_token</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s">'index.homepage'</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">'index.homepage'</span><span class="p">)</span>
 </pre>
 <p>That&#8217;s even better. Our test through the <span class="caps">UI</span> can be replaced with
 something a little&nbsp;simpler:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">test_do_we_send_the_token</span><span class="p">(</span><span class="n">app_context</span><span class="p">):</span>
-    <span class="n">fred</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s">'fred'</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s">'fred&#64;fred.fred'</span><span class="p">)</span>
+    <span class="n">fred</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s1">'fred'</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s1">'fred&#64;fred.fred'</span><span class="p">)</span>
     <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">fred</span><span class="p">)</span>
     <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
 
-    <span class="k">with</span> <span class="n">mock</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s">'myapp.auth.view.send_user_reset_token'</span><span class="p">)</span> <span class="k">as</span> <span class="n">sender</span><span class="p">:</span>
-        <span class="n">generate_auth_token_and_send_it</span><span class="p">(</span><span class="s">'fred'</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">mock</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s1">'myapp.auth.view.send_user_reset_token'</span><span class="p">)</span> <span class="k">as</span> <span class="n">sender</span><span class="p">:</span>
+        <span class="n">generate_auth_token_and_send_it</span><span class="p">(</span><span class="s1">'fred'</span><span class="p">)</span>
 
     <span class="k">assert</span> <span class="n">sender</span><span class="o">.</span><span class="n">called</span>
 </pre>
 <p>I&#8217;m not completely happy with this test, but it&#8217;s okay. However, before
 we completely divert our attention from the endpoint test, let&#8217;s fix the
 second test where we mock <tt class="docutils literal">flask_sqlalchemy.abort</tt>:</p>
-<pre class="code python literal-block">
-<span class="nd">&#64;app.route</span><span class="p">(</span><span class="s">'/send-reset-password-token/&lt;username&gt;'</span><span class="p">)</span>
+<pre class="code ipython3 literal-block">
+<span class="nd">&#64;app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">'/send-reset-password-token/&lt;username&gt;'</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">generate_auth_token_and_send_it</span><span class="p">(</span><span class="n">username</span><span class="p">):</span>
     <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="p">:</span>
-        <span class="n">flash</span><span class="p">(</span><span class="s">'Username not found'</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s">'generate_auth_token_and_send_it'</span><span class="p">)</span>
+        <span class="n">flash</span><span class="p">(</span><span class="s1">'Username not found'</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">'generate_auth_token_and_send_it'</span><span class="p">)</span>
 
     <span class="n">send_user_reset_token</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s">'index.homepage'</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">'index.homepage'</span><span class="p">)</span>
 
-<span class="c"># in the tests</span>
-<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">get_flashed_messages</span>
+<span class="c1"># in the tests</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">get_flashed_messages</span>
 
 <span class="k">def</span> <span class="nf">test_failure_with_nonexistent_user</span><span class="p">(</span><span class="n">app_context</span><span class="p">):</span>
-    <span class="k">with</span> <span class="n">mock</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s">'myapp.auth.view.send_user_reset_token'</span><span class="p">)</span> <span class="k">as</span> <span class="n">sender</span><span class="p">:</span>
-        <span class="n">generate_auth_token_and_send_it</span><span class="p">(</span><span class="s">'fred'</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">mock</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s1">'myapp.auth.view.send_user_reset_token'</span><span class="p">)</span> <span class="k">as</span> <span class="n">sender</span><span class="p">:</span>
+        <span class="n">generate_auth_token_and_send_it</span><span class="p">(</span><span class="s1">'fred'</span><span class="p">)</span>
 
     <span class="k">assert</span> <span class="ow">not</span> <span class="n">aborter</span><span class="o">.</span><span class="n">called</span>
-    <span class="k">assert</span> <span class="s">'Username not found'</span> <span class="ow">in</span> <span class="n">get_flashed_messages</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="s1">'Username not found'</span> <span class="ow">in</span> <span class="n">get_flashed_messages</span><span class="p">()</span>
 </pre>
 <p>We still need to spin up Flask to run these tests, but they&#8217;re simpler.
 The negative assertion in this test can be dangerous, but it&#8217;s paired
@@ -344,46 +344,46 @@ we just build an interface we want to use and pass the implementation
 in. We&#8217;ll do the same for the token generator. The <tt class="docutils literal">dumps</tt>/<tt class="docutils literal">loads</tt>
 interface is pretty common, so we could even subsitute the regular
 <tt class="docutils literal">json</tt> module for it. So the actual logic really&nbsp;becomes:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">send_user_reset_token</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">notifier</span><span class="p">):</span>
-    <span class="n">token</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s">'op'</span><span class="p">:</span> <span class="s">'reset-token'</span><span class="p">,</span> <span class="s">'username'</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">username</span><span class="p">})</span>
-    <span class="n">payload</span> <span class="o">=</span> <span class="s">'Your reset token is {0}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">'op'</span><span class="p">:</span> <span class="s1">'reset-token'</span><span class="p">,</span> <span class="s1">'username'</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">username</span><span class="p">})</span>
+    <span class="n">payload</span> <span class="o">=</span> <span class="s1">'Your reset token is </span><span class="si">{0}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">notifier</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">token</span><span class="p">)</span>
 
-<span class="nd">&#64;app.route</span><span class="p">(</span><span class="s">'/send-reset-password-token/&lt;username&gt;'</span><span class="p">)</span>
+<span class="nd">&#64;app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">'/send-reset-password-token/&lt;username&gt;'</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">generate_auth_token_and_send_it</span><span class="p">(</span><span class="n">username</span><span class="p">):</span>
     <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="p">:</span>
-        <span class="n">flash</span><span class="p">(</span><span class="s">'Username not found'</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s">'generate_auth_token_and_send_it'</span><span class="p">)</span>
+        <span class="n">flash</span><span class="p">(</span><span class="s1">'Username not found'</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">'generate_auth_token_and_send_it'</span><span class="p">)</span>
 
-    <span class="n">notifier</span> <span class="o">=</span> <span class="n">EmailNotifier</span><span class="p">(</span><span class="n">sender</span><span class="o">=</span><span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">'ADMIN_EMAIL'</span><span class="p">],</span> <span class="n">as_html</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">notifier</span> <span class="o">=</span> <span class="n">EmailNotifier</span><span class="p">(</span><span class="n">sender</span><span class="o">=</span><span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">'ADMIN_EMAIL'</span><span class="p">],</span> <span class="n">as_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">tokenizer</span> <span class="o">=</span> <span class="n">TokenGenerator</span><span class="p">(</span><span class="n">secret_key</span><span class="o">=</span><span class="n">current_app</span><span class="o">.</span><span class="n">secret_key</span><span class="p">)</span>
 
     <span class="n">send_user_reset_token</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">notifier</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s">'index.homepage'</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">'index.homepage'</span><span class="p">)</span>
 </pre>
 <p>And our tests against the <em>actual</em> logic become really&nbsp;easy.</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span>
 
 <span class="k">def</span> <span class="nf">send_user_reset_token</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">notifier</span><span class="p">):</span>
-    <span class="n">token</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s">'op'</span><span class="p">:</span> <span class="s">'reset-token'</span><span class="p">,</span> <span class="s">'username'</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">username</span><span class="p">})</span>
-    <span class="n">payload</span> <span class="o">=</span> <span class="s">'Your reset token is {0}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">'op'</span><span class="p">:</span> <span class="s1">'reset-token'</span><span class="p">,</span> <span class="s1">'username'</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">username</span><span class="p">})</span>
+    <span class="n">payload</span> <span class="o">=</span> <span class="s1">'Your reset token is </span><span class="si">{0}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">notifier</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">token</span><span class="p">)</span>
 
-<span class="n">DummyUser</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s">'DummyUser'</span><span class="p">,</span> <span class="p">[</span><span class="s">'username'</span><span class="p">,</span> <span class="s">'email'</span><span class="p">])</span>
-<span class="n">DummyNotifier</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s">'DummyNotifier'</span><span class="p">,</span> <span class="p">[</span><span class="s">'notify'</span><span class="p">])</span>
-<span class="n">DummyTokenizer</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s">'DummyTokenizer'</span><span class="p">,</span> <span class="p">[</span><span class="s">'dumps'</span><span class="p">,</span> <span class="s">'loads'</span><span class="p">])</span>
+<span class="n">DummyUser</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">'DummyUser'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'username'</span><span class="p">,</span> <span class="s1">'email'</span><span class="p">])</span>
+<span class="n">DummyNotifier</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">'DummyNotifier'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'notify'</span><span class="p">])</span>
+<span class="n">DummyTokenizer</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">'DummyTokenizer'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'dumps'</span><span class="p">,</span> <span class="s1">'loads'</span><span class="p">])</span>
 
 <span class="k">def</span> <span class="nf">test_send_user_reset_token</span><span class="p">():</span>
-    <span class="n">user</span> <span class="o">=</span> <span class="n">DummyUser</span><span class="p">(</span><span class="s">'fred'</span><span class="p">,</span> <span class="s">'fred&#64;fred.fred'</span><span class="p">)</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">DummyUser</span><span class="p">(</span><span class="s1">'fred'</span><span class="p">,</span> <span class="s1">'fred&#64;fred.fred'</span><span class="p">)</span>
     <span class="n">notifier</span> <span class="o">=</span> <span class="n">DummyNotifier</span><span class="p">(</span><span class="k">lambda</span> <span class="n">user</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">token</span><span class="p">))</span>
     <span class="n">tokenizer</span> <span class="o">=</span> <span class="n">DummyTokenizer</span><span class="p">(</span><span class="n">loads</span><span class="o">=</span><span class="k">lambda</span> <span class="n">data</span><span class="p">:</span> <span class="n">data</span><span class="p">,</span> <span class="n">dumps</span><span class="o">=</span><span class="k">lambda</span> <span class="n">data</span><span class="p">:</span> <span class="n">data</span><span class="p">)</span>
 
     <span class="n">result</span> <span class="o">=</span> <span class="n">send_user_reset_token</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">notifier</span><span class="p">)</span>
-    <span class="k">assert</span> <span class="n">result</span> <span class="o">==</span> <span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="p">{</span><span class="s">'op'</span><span class="p">:</span> <span class="s">'reset-token'</span><span class="p">,</span> <span class="s">'username'</span><span class="p">:</span> <span class="s">'fred'</span><span class="p">})</span>
+    <span class="k">assert</span> <span class="n">result</span> <span class="o">==</span> <span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="p">{</span><span class="s1">'op'</span><span class="p">:</span> <span class="s1">'reset-token'</span><span class="p">,</span> <span class="s1">'username'</span><span class="p">:</span> <span class="s1">'fred'</span><span class="p">})</span>
 </pre>
 <p>This is a <em>collaboration test</em> not a <em>unit test</em> because our
 <tt class="docutils literal">send_user_reset_token</tt> relies on the behavior of others, but it&#8217;s

@@ -84,10 +84,10 @@
 access away completely using the repository pattern. Before I get into
 the meat of this post, let&#8217;s look at a basic user repository, this one
 uses dictionary to simulate a primary key index in a&nbsp;database.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">UserNotFound</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="s">&quot;User {0} not found&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">username</span><span class="p">))</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="s2">&quot;User </span><span class="si">{0}</span><span class="s2"> not found&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">username</span><span class="p">))</span>
 
 <span class="k">class</span> <span class="nc">UserRepository</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -101,13 +101,13 @@ uses dictionary to simulate a primary key index in a&nbsp;database.</p>
             <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">users</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">users</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">users</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">UserNotFound</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+            <span class="k">raise</span> <span class="n">UserNotFound</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">None</span>
 </pre>
 <p>There&#8217;s a few things missing, like ordering and slicing but it works for
 what I&#8217;m about to get into. One of the biggest issues with the
@@ -124,7 +124,7 @@ for every potential query we&#8217;ve thought of and there&#8217;s still more&nb
 class that would accept the <em>idea</em> of what we were looking for and just
 magically do the right thing. That&#8217;s what criteria are. The method would
 probably look like&nbsp;this:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">criteria</span><span class="p">):</span>
     <span class="n">query</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">users</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
 
@@ -135,14 +135,14 @@ probably look like&nbsp;this:</p>
 </pre>
 <p>Well, that&#8217;s interesting, Alec, but how does it work? What&#8217;s with that
 <tt class="docutils literal">type(self)</tt> in the criterion call? Well, first let&#8217;s look at an&nbsp;example.</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span>
 
-<span class="n">User</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s">&quot;User&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s">&quot;id&quot;</span><span class="p">,</span> <span class="s">&quot;username&quot;</span><span class="p">,</span> <span class="s">&quot;permission_level&quot;</span><span class="p">,</span> <span class="s">&quot;groups&quot;</span><span class="p">])</span>
+<span class="n">User</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;User&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;username&quot;</span><span class="p">,</span> <span class="s2">&quot;permission_level&quot;</span><span class="p">,</span> <span class="s2">&quot;groups&quot;</span><span class="p">])</span>
 
 <span class="n">users</span> <span class="o">=</span> <span class="n">UserRepository</span><span class="p">()</span>
-<span class="n">users</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">User</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;HannahBanna&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="s">'Admins'</span><span class="p">]),</span>
-             <span class="n">User</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&quot;FredHead&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="s">'Commenters'</span><span class="p">]))</span>
+<span class="n">users</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">User</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;HannahBanna&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="s1">'Admins'</span><span class="p">]),</span>
+             <span class="n">User</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;FredHead&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="s1">'Commenters'</span><span class="p">]))</span>
 
 <span class="n">IsAdmin</span> <span class="o">=</span> <span class="n">PermissionLevel</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
@@ -152,11 +152,11 @@ probably look like&nbsp;this:</p>
 [User(id=1, username='HannahBanna', permission_level=1, groups=['Admins'])]
 </pre>
 <p>Whoa&#8230;what? It gets more&nbsp;interesting&#8230;</p>
-<pre class="code python literal-block">
-<span class="n">Group</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s">&quot;Group&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s">'id'</span><span class="p">,</span> <span class="s">'name'</span><span class="p">,</span> <span class="s">'perm_level'</span><span class="p">])</span>
+<pre class="code ipython3 literal-block">
+<span class="n">Group</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;Group&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s1">'id'</span><span class="p">,</span> <span class="s1">'name'</span><span class="p">,</span> <span class="s1">'perm_level'</span><span class="p">])</span>
 
 <span class="n">groups</span> <span class="o">=</span> <span class="n">GroupRepository</span><span class="p">()</span>
-<span class="n">groups</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">Group</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">'Admins'</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">Group</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">'Commenters'</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="n">groups</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">Group</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'Admins'</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">Group</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">'Commenters'</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 
 <span class="nb">list</span><span class="p">(</span><span class="n">groups</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">IsAdmin</span><span class="p">))</span>
 </pre>
@@ -174,15 +174,15 @@ just three&nbsp;pieces:</p>
 <li>A base class [&nbsp;]</li>
 </ul>
 <p>Let&#8217;s start with the metaclass as it&#8217;s really the heart of this&nbsp;all:</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">singledispatch</span>
-<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABCMeta</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">singledispatch</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="k">import</span> <span class="n">ABCMeta</span><span class="p">,</span> <span class="n">abstractmethod</span>
 
 <span class="k">class</span> <span class="nc">CriterionMeta</span><span class="p">(</span><span class="n">ABCMeta</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="n">mcls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
-        <span class="n">dispatcher</span> <span class="o">=</span> <span class="n">singledispatch</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s">'_default'</span><span class="p">])</span>
-        <span class="n">attrs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s">'_dispatcher'</span><span class="p">:</span> <span class="n">dispatcher</span><span class="p">,</span> <span class="s">'register'</span><span class="p">:</span> <span class="n">dispatcher</span><span class="o">.</span><span class="n">register</span><span class="p">})</span>
+        <span class="n">dispatcher</span> <span class="o">=</span> <span class="n">singledispatch</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'_default'</span><span class="p">])</span>
+        <span class="n">attrs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">'_dispatcher'</span><span class="p">:</span> <span class="n">dispatcher</span><span class="p">,</span> <span class="s1">'register'</span><span class="p">:</span> <span class="n">dispatcher</span><span class="o">.</span><span class="n">register</span><span class="p">})</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">CriterionMeta</span><span class="p">,</span> <span class="n">mcls</span><span class="p">)</span><span class="o">.</span><span class="n">__new__</span><span class="p">(</span><span class="n">mcls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
 </pre>
 <p>Basically, when ever a new class is created using this metaclass it
@@ -198,7 +198,7 @@ going into a metaclass is that the dispatcher needs to be unique for
 every class but shared between all instances of that class. Putting this
 into a metaclass allows us to provide a default implementation for the
 single dispatch. We&#8217;ll see this in a&nbsp;minute.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Criterion</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">CriterionMeta</span><span class="p">):</span>
     <span class="nd">&#64;abstractmethod</span>
     <span class="k">def</span> <span class="nf">_default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_query</span><span class="p">):</span>
@@ -214,7 +214,7 @@ As an allowance, we need to provide the type of repository being used
 with the criterion as well as the &#8220;current query&#8221;. The current query is
 really anything that&#8217;ll fit into the implementation we&nbsp;find.</p>
 <p>Finally, let&#8217;s implement the PermissionLevel criterion I showcased&nbsp;above.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="kn">import</span> <span class="nn">operator</span>
 
 <span class="k">class</span> <span class="nc">PermissionLevel</span><span class="p">(</span><span class="n">Criterion</span><span class="p">):</span>
@@ -233,8 +233,8 @@ But because of the <tt class="docutils literal">Criterion</tt> class and the met
 implement <em>other</em> ways that this criterion works. For example, our
 <tt class="docutils literal">Group</tt> class doesn&#8217;t have <tt class="docutils literal">permission_level</tt> attribute, but a
 <tt class="docutils literal">perm_level</tt> (someone got lazy!), however this is easy to&nbsp;fix:</p>
-<pre class="code python literal-block">
-<span class="nd">&#64;PermissionLevel.register</span><span class="p">(</span><span class="n">GroupRepository</span><span class="p">)</span>
+<pre class="code ipython3 literal-block">
+<span class="nd">&#64;PermissionLevel</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">GroupRepository</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">group_permission_critera</span><span class="p">(</span><span class="n">criterion</span><span class="p">,</span> <span class="n">cq</span><span class="p">):</span>
     <span class="k">return</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">obj</span><span class="p">:</span> <span class="n">criterion</span><span class="o">.</span><span class="n">op</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">perm_level</span><span class="p">,</span> <span class="n">criterion</span><span class="o">.</span><span class="n">permission_level</span><span class="p">),</span> <span class="n">cq</span><span class="p">)</span>
 </pre>
@@ -246,11 +246,11 @@ decoupling, but it doesn&#8217;t feel kosher to me&nbsp;though.</p>
 <p>However, we can use this same criterion with our UserRepository and
 GroupRepository. If in production, we ran with SQLAlchemy, obviously
 we&#8217;ll want to adapt this to fit there,&nbsp;too.</p>
-<pre class="code python literal-block">
-<span class="c"># myapp/repositories/sqla.py</span>
-<span class="kn">from</span> <span class="nn">myapp.criteria</span> <span class="kn">import</span> <span class="n">PermissionLevel</span>
+<pre class="code ipython3 literal-block">
+<span class="c1"># myapp/repositories/sqla.py</span>
+<span class="kn">from</span> <span class="nn">myapp.criteria</span> <span class="k">import</span> <span class="n">PermissionLevel</span>
 
-<span class="nd">&#64;PermissionLevel.register</span><span class="p">(</span><span class="n">SQLAUserRepository</span><span class="p">)</span>
+<span class="nd">&#64;PermissionLevel</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">SQLAUserRepository</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">sqla_perm_level_filter</span><span class="p">(</span><span class="n">criterion</span><span class="p">,</span> <span class="n">current_query</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">current_query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">criterion</span><span class="o">.</span><span class="n">op</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">permission_level</span><span class="p">,</span> <span class="n">criterion</span><span class="o">.</span><span class="n">permission_level</span><span class="p">))</span>
 </pre>
@@ -273,12 +273,12 @@ are all named the same, you could simply set up a loop that registers a
 lambda for each one (just be sure to keep Python&#8217;s late binding rules in
 mind!). For example, if our User and Group both had the actual
 <tt class="docutils literal">permission_level</tt> attribute, this is&nbsp;possible:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">for</span> <span class="n">repo</span><span class="p">,</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[(</span><span class="n">SQLAUserRepo</span> <span class="n">UserModel</span><span class="p">),</span> <span class="p">(</span><span class="n">SQLAGroupRepo</span><span class="p">,</span> <span class="n">GroupModel</span><span class="p">)]:</span>
     <span class="n">PermissionLevel</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
             <span class="n">repo</span><span class="p">,</span>
             <span class="k">lambda</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">current_query</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">:</span> <span class="n">criterion</span><span class="o">.</span><span class="n">op</span><span class="p">(</span>
-                <span class="nb">getattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s">'permission_level'</span><span class="p">),</span> <span class="n">criterion</span><span class="o">.</span><span class="n">permission_level</span><span class="p">)</span>
+                <span class="nb">getattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s1">'permission_level'</span><span class="p">),</span> <span class="n">criterion</span><span class="o">.</span><span class="n">permission_level</span><span class="p">)</span>
             <span class="p">)</span>
 </pre>
 <p>There&#8217;s still other issues I&#8217;ve yet to resolve. For example, the thing
@@ -286,8 +286,8 @@ returned by default is a <tt class="docutils literal">filter</tt> but it&#8217;d
 something that could support further operations. So something like
 SQLAlchemy&#8217;s query object, but only sort of. It&#8217;d be nice to do
 something&nbsp;like:</p>
-<pre class="code python literal-block">
-<span class="n">users</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">IsAdmin</span> <span class="o">&amp;</span> <span class="n">NameBeginsWith</span><span class="p">(</span><span class="s">'j'</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">NameEndsWith</span><span class="p">(</span><span class="s">'r'</span><span class="p">))</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="k">lambda</span> <span class="n">user</span><span class="p">:</span> <span class="n">username</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<pre class="code ipython3 literal-block">
+<span class="n">users</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">IsAdmin</span> <span class="o">&amp;</span> <span class="n">NameBeginsWith</span><span class="p">(</span><span class="s1">'j'</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">NameEndsWith</span><span class="p">(</span><span class="s1">'r'</span><span class="p">))</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="k">lambda</span> <span class="n">user</span><span class="p">:</span> <span class="n">username</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
 </pre>
 <p>But at that point, how thin is the abstraction? I&#8217;m still mulling this
 over and wondering if this is viable beyond an intriguing&nbsp;thing.</p>
@@ -346,10 +346,10 @@ over and wondering if this is viable beyond an intriguing&nbsp;thing.</p>
             <h4>Tags</h4>
             <ul class="list-of-tags tags-in-article"> 
                 <li><a href="/tags.html#design-ref">design
-                    <span>8</span>
+                    <span>7</span>
 </a></li>
                 <li><a href="/tags.html#python-ref">python
-                    <span>12</span>
+                    <span>15</span>
 </a></li>
             </ul>
 

@@ -110,11 +110,11 @@ application is at the bottom of the post as well if you&#8217;d rather peek&nbsp
 <tt class="docutils literal">run.py</tt>. <tt class="docutils literal">app.py</tt> is where we&#8217;ll obviously be building Quotly. The
 <tt class="docutils literal">run.py</tt> will simply run the debug server on the side, just set that
 one up to look like&nbsp;this:</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">app</span> <span class="kn">import</span> <span class="n">app</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">app</span> <span class="k">import</span> <span class="n">app</span>
 
-<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
-    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="nb">reload</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">reload</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre>
 <div class="section" id="step-zero-needed-packages">
 <h3>Step Zero: Needed&nbsp;packages</h3>
@@ -138,37 +138,37 @@ older&nbsp;version.</p>
 say quotes. And that&#8217;s really about it. We could use a list of
 dictionaries for this, but since we&#8217;ll eventually involve SQLAlchemy
 which returns objects, lets use namedtuple&nbsp;instead.</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span>
 
-<span class="c"># basic quote object</span>
-<span class="c"># can also use to represent many with [Quote(person..., quote=...)[,...]]</span>
-<span class="n">Quote</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s">'Quote'</span><span class="p">,</span> <span class="p">[</span><span class="s">'person'</span><span class="p">,</span> <span class="s">'quote'</span><span class="p">])</span>
+<span class="c1"># basic quote object</span>
+<span class="c1"># can also use to represent many with [Quote(person..., quote=...)[,...]]</span>
+<span class="n">Quote</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">'Quote'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'person'</span><span class="p">,</span> <span class="s1">'quote'</span><span class="p">])</span>
 
-<span class="c"># Let's prepopulate an example quote list</span>
+<span class="c1"># Let's prepopulate an example quote list</span>
 <span class="n">quotes</span> <span class="o">=</span> <span class="p">[</span><span class="n">Quote</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">q</span> <span class="ow">in</span> <span class="p">[</span>
-        <span class="p">(</span><span class="s">&quot;Herbert West&quot;</span><span class="p">,</span> <span class="s">&quot;I was busy pushing bodies around as you well know &quot;</span>
-         <span class="s">&quot;and what would a note say, Dan? 'Cat dead, details later'?&quot;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s">&quot;Jack Burton&quot;</span><span class="p">,</span> <span class="s">&quot;You remember what ol' Jack Burton always says at a time like that: &quot;</span>
-         <span class="s">&quot;'Have ya paid your dues, Jack?' 'Yessir, the check is in the mail.'&quot;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s">&quot;Igor&quot;</span><span class="p">,</span> <span class="s">&quot;Well, why isn't it Froaderick Fronkensteen?&quot;</span><span class="p">)</span>
+        <span class="p">(</span><span class="s2">&quot;Herbert West&quot;</span><span class="p">,</span> <span class="s2">&quot;I was busy pushing bodies around as you well know &quot;</span>
+         <span class="s2">&quot;and what would a note say, Dan? 'Cat dead, details later'?&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;Jack Burton&quot;</span><span class="p">,</span> <span class="s2">&quot;You remember what ol' Jack Burton always says at a time like that: &quot;</span>
+         <span class="s2">&quot;'Have ya paid your dues, Jack?' 'Yessir, the check is in the mail.'&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;Igor&quot;</span><span class="p">,</span> <span class="s2">&quot;Well, why isn't it Froaderick Fronkensteen?&quot;</span><span class="p">)</span>
 <span class="p">]]</span>
 </pre>
 <p>I wouldn&#8217;t blame you if you took a break to track down one of these
 movies and turned it on the&nbsp;background.</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Image</span>
-<span class="n">Image</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s">&quot;http://i.imgur.com/9VeIbMZ.gif&quot;</span><span class="p">)</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="k">import</span> <span class="n">Image</span>
+<span class="n">Image</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s2">&quot;http://i.imgur.com/9VeIbMZ.gif&quot;</span><span class="p">)</span>
 </pre>
 <img src="http://i.imgur.com/9VeIbMZ.gif"/></div>
 <div class="section" id="step-two-serializing-to-json">
 <h3>Step Two: Serializing to <span class="caps">JSON</span></h3>
 <p>Assumuing you&#8217;ve not been distracted, let&#8217;s see about taking these quote
 objects and turning them into <span class="caps">JSON</span>.</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="kn">import</span> <span class="nn">json</span>
 
-<span class="k">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">quotes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">quotes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
 </pre>
 <pre class="literal-block">
 [
@@ -182,9 +182,9 @@ them into <span class="caps">JSON</span>&#8217;s nearest relation: lists. Howeve
 nicer to have key-value pairs pop out the otherside. Of course, we could
 <em>just</em> use a dictionary, or write a <tt class="docutils literal">namedtuple_to_dict</tt> function
 that&#8217;ll do it&nbsp;ourselves:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="n">namedtuple_to_dict</span> <span class="o">=</span> <span class="nb">vars</span>
-<span class="k">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">namedtuple_to_dict</span><span class="p">(</span><span class="n">quotes</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">namedtuple_to_dict</span><span class="p">(</span><span class="n">quotes</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
 </pre>
 <pre class="literal-block">
 {
@@ -199,17 +199,17 @@ them are just variations on a <tt class="docutils literal">__json__</tt> method 
 subclassing <tt class="docutils literal">json.JSONEncoder</tt> to just invoke that when it encounters
 something it can&#8217;t serialize. Plus, it still wouldn&#8217;t work for
 namedtuple since it <em>can</em> be serialized to a&nbsp;list.</p>
-<pre class="code python literal-block">
-<span class="n">Image</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s">&quot;http://i.imgur.com/mWU6lP6.gif&quot;</span><span class="p">)</span>
+<pre class="code ipython3 literal-block">
+<span class="n">Image</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s2">&quot;http://i.imgur.com/mWU6lP6.gif&quot;</span><span class="p">)</span>
 </pre>
 <img src="http://i.imgur.com/mWU6lP6.gif"/><p>Rather than hacking some function or a mixin together and making the
 object responsible for knowing how to transform itself into a
 dictionary, why not use a robust, well tested object serializer library?
 No, not pickle &#8212; pickles are unsafe and too vinegary for me. My sweet
 tooth is craving&nbsp;Marshmallows.</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">marshmallow</span> <span class="kn">import</span> <span class="n">Schema</span><span class="p">,</span> <span class="n">pprint</span>
-<span class="kn">from</span> <span class="nn">marshmallow.fields</span> <span class="kn">import</span> <span class="n">String</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">marshmallow</span> <span class="k">import</span> <span class="n">Schema</span><span class="p">,</span> <span class="n">pprint</span>
+<span class="kn">from</span> <span class="nn">marshmallow.fields</span> <span class="k">import</span> <span class="n">String</span>
 
 <span class="k">class</span> <span class="nc">QuoteSchema</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
     <span class="n">person</span> <span class="o">=</span> <span class="n">String</span><span class="p">()</span>
@@ -224,10 +224,10 @@ tooth is craving&nbsp;Marshmallows.</p>
 </pre>
 <p>&#8230;wait, is really that easy? Five lines, including the imports? It
 seems like it shouldn&#8217;t be, but it is. Actually it can even be&nbsp;easier:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">QuoteSchema</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
     <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
-        <span class="n">additional</span> <span class="o">=</span> <span class="p">(</span><span class="s">'person'</span><span class="p">,</span> <span class="s">'quote'</span><span class="p">)</span>
+        <span class="n">additional</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'person'</span><span class="p">,</span> <span class="s1">'quote'</span><span class="p">)</span>
 
 <span class="n">pprint</span><span class="p">(</span><span class="n">QuoteSchema</span><span class="p">()</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">quotes</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 </pre>
@@ -240,8 +240,8 @@ seems like it shouldn&#8217;t be, but it is. Actually it can even be&nbsp;easier
 <p>Marshmallow is smart enough to know how to serialize built-in types
 without us saying, &#8220;This is a string.&#8221; Which is fantastic. We can take
 that schema and <tt class="docutils literal">json.dumps</tt> and produce what we actually&nbsp;wanted:</p>
-<pre class="code python literal-block">
-<span class="k">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">QuoteSchema</span><span class="p">()</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">quotes</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+<pre class="code ipython3 literal-block">
+<span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">QuoteSchema</span><span class="p">()</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">quotes</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
 </pre>
 <pre class="literal-block">
 {
@@ -251,8 +251,8 @@ that schema and <tt class="docutils literal">json.dumps</tt> and produce what we
 </pre>
 <p>And unlike many other solutions, Marshmallow will also allow us to
 serialize a collection of objects as&nbsp;well:</p>
-<pre class="code python literal-block">
-<span class="n">pprint</span><span class="p">(</span><span class="n">QuoteSchema</span><span class="p">(</span><span class="n">many</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">quotes</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+<pre class="code ipython3 literal-block">
+<span class="n">pprint</span><span class="p">(</span><span class="n">QuoteSchema</span><span class="p">(</span><span class="n">many</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">quotes</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 [{'person': 'Herbert West',
@@ -270,20 +270,20 @@ an array), Flask will only allow objects at the root level to prevent
 this</a>.
 However, asking a schema to create a dictionary if it serializes a
 collection isn&#8217;t hard to do at&nbsp;all:</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">marshmallow</span> <span class="kn">import</span> <span class="n">post_dump</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">marshmallow</span> <span class="k">import</span> <span class="n">post_dump</span>
 
 <span class="k">class</span> <span class="nc">QuoteSchema</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
     <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
-        <span class="n">additional</span> <span class="o">=</span> <span class="p">(</span><span class="s">'person'</span><span class="p">,</span> <span class="s">'quote'</span><span class="p">)</span>
+        <span class="n">additional</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'person'</span><span class="p">,</span> <span class="s1">'quote'</span><span class="p">)</span>
 
-    <span class="nd">&#64;post_dump</span><span class="p">(</span><span class="n">raw</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">wrap_if_many</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="nd">&#64;post_dump</span><span class="p">(</span><span class="n">raw</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrap_if_many</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">many</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">{</span><span class="s">'quotes'</span><span class="p">:</span> <span class="n">data</span><span class="p">}</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">'quotes'</span><span class="p">:</span> <span class="n">data</span><span class="p">}</span>
         <span class="k">return</span> <span class="n">data</span>
 
-<span class="n">pprint</span><span class="p">(</span><span class="n">QuoteSchema</span><span class="p">(</span><span class="n">many</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">quotes</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+<span class="n">pprint</span><span class="p">(</span><span class="n">QuoteSchema</span><span class="p">(</span><span class="n">many</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">quotes</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 {'quotes': [{'person': 'Herbert West',
@@ -297,27 +297,27 @@ collection isn&#8217;t hard to do at&nbsp;all:</p>
             {'person': 'Igor',
              'quote': &quot;Well, why isn't it Froaderick Fronkensteen?&quot;}]}
 </pre>
-<pre class="code python literal-block">
-<span class="n">Image</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s">&quot;http://i.imgur.com/BUtt2Jd.gif&quot;</span><span class="p">)</span>
+<pre class="code ipython3 literal-block">
+<span class="n">Image</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s2">&quot;http://i.imgur.com/BUtt2Jd.gif&quot;</span><span class="p">)</span>
 </pre>
 <img src="http://i.imgur.com/BUtt2Jd.gif"/></div>
 <div class="section" id="step-three-briefly-flask">
 <h3>Step Three: Briefly&nbsp;Flask</h3>
 <p>Now that the Quote objects can be correctly serialized to <span class="caps">JSON</span>, feeding
 it from Flask is easy&nbsp;peasy.</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">jsonify</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">jsonify</span>
 
-<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="s">'notebooks'</span><span class="p">)</span>
-<span class="c"># reuse the same QuoteSchema instance rather than creating new with each request</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="s1">'notebooks'</span><span class="p">)</span>
+<span class="c1"># reuse the same QuoteSchema instance rather than creating new with each request</span>
 <span class="n">QuoteSerializer</span> <span class="o">=</span> <span class="n">QuoteSchema</span><span class="p">()</span>
 
-<span class="nd">&#64;app.route</span><span class="p">(</span><span class="s">'/quote/&lt;int:id&gt;'</span><span class="p">)</span>
+<span class="nd">&#64;app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">'/quote/&lt;int:id&gt;'</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">single_quote</span><span class="p">(</span><span class="n">idx</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">quotes</span><span class="p">):</span>
-        <span class="c"># flask allows return a tuple of data, status code, headers (dict)</span>
-        <span class="c"># status code is 200 by default</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s">'error'</span><span class="p">:</span> <span class="s">'quote out of range'</span><span class="p">},</span> <span class="mi">400</span>
+        <span class="c1"># flask allows return a tuple of data, status code, headers (dict)</span>
+        <span class="c1"># status code is 200 by default</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'error'</span><span class="p">:</span> <span class="s1">'quote out of range'</span><span class="p">},</span> <span class="mi">400</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">QuoteSerializer</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">quote</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span><span class="o">.</span><span class="n">data</span>
     <span class="k">return</span> <span class="n">data</span>
@@ -330,18 +330,18 @@ to create new Quote objects from <span class="caps">JSON</span>? This is pretty 
 with Flask&#8217;s <tt class="docutils literal">request</tt> object (note: the <tt class="docutils literal">request.get_json</tt> method
 is currently the recommended method for plucking <span class="caps">JSON</span> out of the request
 rather than using the <tt class="docutils literal">request.json</tt> attribute):</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">request</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">request</span>
 
-<span class="nd">&#64;app.route</span><span class="p">(</span><span class="s">'/quote/'</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">'POST'</span><span class="p">])</span>
+<span class="nd">&#64;app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">'/quote/'</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">'POST'</span><span class="p">])</span>
 <span class="k">def</span> <span class="nf">make_new_quote</span><span class="p">():</span>
-    <span class="c"># get_json returns dict or None on failure</span>
+    <span class="c1"># get_json returns dict or None on failure</span>
     <span class="n">json</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">json</span> <span class="ow">and</span> <span class="s">'quote'</span> <span class="ow">in</span> <span class="n">json</span><span class="p">:</span>
-        <span class="n">quotes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Quote</span><span class="p">(</span><span class="n">person</span><span class="o">=</span><span class="n">json</span><span class="p">[</span><span class="s">'person'</span><span class="p">],</span> <span class="n">quote</span><span class="o">=</span><span class="n">json</span><span class="p">[</span><span class="s">'quote'</span><span class="p">]))</span>
-        <span class="n">msg</span> <span class="o">=</span> <span class="p">{</span><span class="s">'success'</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> <span class="s">'msg'</span><span class="p">:</span> <span class="s">'Added quote.'</span><span class="p">}</span>
+    <span class="k">if</span> <span class="n">json</span> <span class="ow">and</span> <span class="s1">'quote'</span> <span class="ow">in</span> <span class="n">json</span><span class="p">:</span>
+        <span class="n">quotes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Quote</span><span class="p">(</span><span class="n">person</span><span class="o">=</span><span class="n">json</span><span class="p">[</span><span class="s1">'person'</span><span class="p">],</span> <span class="n">quote</span><span class="o">=</span><span class="n">json</span><span class="p">[</span><span class="s1">'quote'</span><span class="p">]))</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'success'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'msg'</span><span class="p">:</span> <span class="s1">'Added quote.'</span><span class="p">}</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">msg</span> <span class="o">=</span> <span class="p">{</span><span class="s">'success'</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span> <span class="s">'msg'</span><span class="p">:</span> <span class="s">'must specify quote in JSON request'</span><span class="p">},</span> <span class="mi">400</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'success'</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">'msg'</span><span class="p">:</span> <span class="s1">'must specify quote in JSON request'</span><span class="p">},</span> <span class="mi">400</span>
     <span class="k">return</span> <span class="n">msg</span>
 </pre>
 <p>However, if we&#8217;re deserializing complex objects, say a tracklist that
@@ -350,32 +350,32 @@ objects. Pretty soon manually deserializing an object becomes
 quite&#8230;messy. However, there is a better way. Marshmallow not only
 serializes objects, but will also handle deserialization if we give it a
 little bit of&nbsp;help:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">QuoteSchema</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
     <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
-        <span class="n">additional</span> <span class="o">=</span> <span class="p">(</span><span class="s">'person'</span><span class="p">,</span> <span class="s">'quote'</span><span class="p">)</span>
+        <span class="n">additional</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'person'</span><span class="p">,</span> <span class="s1">'quote'</span><span class="p">)</span>
 
-    <span class="nd">&#64;post_dump</span><span class="p">(</span><span class="n">raw</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">wrap_if_many</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="nd">&#64;post_dump</span><span class="p">(</span><span class="n">raw</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrap_if_many</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">many</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">{</span><span class="s">'quotes'</span><span class="p">:</span> <span class="n">data</span><span class="p">}</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">'quotes'</span><span class="p">:</span> <span class="n">data</span><span class="p">}</span>
         <span class="k">return</span> <span class="n">data</span>
 
     <span class="k">def</span> <span class="nf">make_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="k">assert</span> <span class="s">'person'</span> <span class="ow">in</span> <span class="n">data</span> <span class="ow">and</span> <span class="s">'quote'</span> <span class="ow">in</span> <span class="n">data</span><span class="p">,</span> <span class="s">&quot;Must specify person and quote in request&quot;</span>
-        <span class="k">return</span> <span class="n">Quote</span><span class="p">(</span><span class="n">person</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'person'</span><span class="p">],</span> <span class="n">quote</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'quote'</span><span class="p">])</span>
+        <span class="k">assert</span> <span class="s1">'person'</span> <span class="ow">in</span> <span class="n">data</span> <span class="ow">and</span> <span class="s1">'quote'</span> <span class="ow">in</span> <span class="n">data</span><span class="p">,</span> <span class="s2">&quot;Must specify person and quote in request&quot;</span>
+        <span class="k">return</span> <span class="n">Quote</span><span class="p">(</span><span class="n">person</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">'person'</span><span class="p">],</span> <span class="n">quote</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">'quote'</span><span class="p">])</span>
 
-<span class="n">QuoteSchema</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">({</span><span class="s">&quot;person&quot;</span><span class="p">:</span> <span class="s">&quot;Ash&quot;</span><span class="p">,</span> <span class="s">&quot;quote&quot;</span><span class="p">:</span> <span class="s">&quot;Good. Bad. I'm the guy with the gun.&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">data</span>
+<span class="n">QuoteSchema</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">({</span><span class="s2">&quot;person&quot;</span><span class="p">:</span> <span class="s2">&quot;Ash&quot;</span><span class="p">,</span> <span class="s2">&quot;quote&quot;</span><span class="p">:</span> <span class="s2">&quot;Good. Bad. I'm the guy with the gun.&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">data</span>
 </pre>
 <pre class="literal-block">
 Quote(person='Ash', quote=&quot;Good. Bad. I'm the guy with the gun.&quot;)
 </pre>
 <p>Just the opposite of what we had before. Dictionary in, Object out. We
 can also deserialize a collection as&nbsp;well:</p>
-<pre class="code python literal-block">
-<span class="n">QuoteSchema</span><span class="p">(</span><span class="n">many</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span><span class="o">.</span><span class="n">load</span><span class="p">([</span>
-        <span class="p">{</span><span class="s">'person'</span><span class="p">:</span><span class="s">'Ash'</span><span class="p">,</span> <span class="s">'quote'</span><span class="p">:</span><span class="s">&quot;Good. Bad. I'm the guy with the gun.&quot;</span><span class="p">},</span>
-        <span class="p">{</span><span class="s">'person'</span><span class="p">:</span> <span class="s">'Shaun'</span><span class="p">,</span> <span class="s">'quote'</span><span class="p">:</span> <span class="s">&quot;You've got red on you.&quot;</span><span class="p">}</span>
+<pre class="code ipython3 literal-block">
+<span class="n">QuoteSchema</span><span class="p">(</span><span class="n">many</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">load</span><span class="p">([</span>
+        <span class="p">{</span><span class="s1">'person'</span><span class="p">:</span><span class="s1">'Ash'</span><span class="p">,</span> <span class="s1">'quote'</span><span class="p">:</span><span class="s2">&quot;Good. Bad. I'm the guy with the gun.&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">'person'</span><span class="p">:</span> <span class="s1">'Shaun'</span><span class="p">,</span> <span class="s1">'quote'</span><span class="p">:</span> <span class="s2">&quot;You've got red on you.&quot;</span><span class="p">}</span>
 <span class="p">])</span><span class="o">.</span><span class="n">data</span>
 </pre>
 <pre class="literal-block">
@@ -387,8 +387,8 @@ receiving simple <span class="caps">JSON</span> objects is apparent. With 11 lin
 object and cast it to a dictionary and we can take a dictionary with
 certain keys and build an object with it. Sure, we&#8217;re just serializing
 and deserializing a namedtuple&#8230;&#8221;But that&#8217;s how it always begins. Very&nbsp;small.&#8221;</p>
-<pre class="code python literal-block">
-<span class="n">Image</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s">&quot;http://i.imgur.com/zvv3ymL.gif&quot;</span><span class="p">)</span>
+<pre class="code ipython3 literal-block">
+<span class="n">Image</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s2">&quot;http://i.imgur.com/zvv3ymL.gif&quot;</span><span class="p">)</span>
 </pre>
 <img src="http://i.imgur.com/zvv3ymL.gif"/></div>
 <div class="section" id="step-five-routing-with-flask-restful">
@@ -406,47 +406,47 @@ from vanilla Flask routing to class based is a little weird at first,
 but it quickly becomes very&nbsp;intuitive.</p>
 <p>And, since the methods for deserialization are in place, let&#8217;s also
 handle accepting <span class="caps">JSON</span> and appending quotes to our little&nbsp;list.</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">flask.ext.restful</span> <span class="kn">import</span> <span class="n">Resource</span>
-<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">request</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">flask.ext.restful</span> <span class="k">import</span> <span class="n">Resource</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">request</span>
 
 <span class="k">class</span> <span class="nc">SingleQuote</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">idx</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">quotes</span><span class="p">):</span>
-            <span class="c"># flask-restful also allows data, status code, header tuples</span>
+            <span class="c1"># flask-restful also allows data, status code, header tuples</span>
             <span class="k">return</span> <span class="n">QuoteSerializer</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">quotes</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span><span class="o">.</span><span class="n">data</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s">'error'</span><span class="p">:</span> <span class="s">'quote index out of range'</span><span class="p">},</span> <span class="mi">400</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">'error'</span><span class="p">:</span> <span class="s1">'quote index out of range'</span><span class="p">},</span> <span class="mi">400</span>
 
 <span class="k">class</span> <span class="nc">ListQuote</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">QuoteSerializer</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">quotes</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
+        <span class="k">return</span> <span class="n">QuoteSerializer</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">quotes</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
 
     <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">json</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">json</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">{</span><span class="s">&quot;success&quot;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span> <span class="s">&quot;msg&quot;</span><span class="p">:</span> <span class="s">&quot;malformed request&quot;</span><span class="p">},</span> <span class="mi">400</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;malformed request&quot;</span><span class="p">},</span> <span class="mi">400</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="s">'quote'</span> <span class="ow">in</span> <span class="n">json</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">{</span><span class="s">&quot;success&quot;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span> <span class="s">&quot;msg&quot;</span><span class="p">:</span> <span class="s">&quot;must specify quote in request&quot;</span><span class="p">},</span> <span class="mi">400</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="s1">'quote'</span> <span class="ow">in</span> <span class="n">json</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;must specify quote in request&quot;</span><span class="p">},</span> <span class="mi">400</span>
 
         <span class="k">else</span><span class="p">:</span>
-            <span class="c"># remember QuoteSchema.make_object causes an assert</span>
+            <span class="c1"># remember QuoteSchema.make_object causes an assert</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">q</span> <span class="o">=</span> <span class="n">QuoteSerializer</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">request</span><span class="p">[</span><span class="s">'json'</span><span class="p">])</span><span class="o">.</span><span class="n">data</span>
+                <span class="n">q</span> <span class="o">=</span> <span class="n">QuoteSerializer</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">request</span><span class="p">[</span><span class="s1">'json'</span><span class="p">])</span><span class="o">.</span><span class="n">data</span>
             <span class="k">except</span> <span class="ne">AssertionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="k">return</span> <span class="p">{</span><span class="s">'success'</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span> <span class="s">'msg'</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)},</span> <span class="mi">400</span>
+                <span class="k">return</span> <span class="p">{</span><span class="s1">'success'</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">'msg'</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)},</span> <span class="mi">400</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">quotes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
-                <span class="k">return</span> <span class="p">{</span><span class="s">&quot;success&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> <span class="s">&quot;msg&quot;</span><span class="p">:</span> <span class="s">&quot;Quote added.&quot;</span><span class="p">}</span>
+                <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;Quote added.&quot;</span><span class="p">}</span>
 </pre>
 <p>And then we simply register these resources on an <span class="caps">API</span> object that&#8217;s
 hooked up to our&nbsp;application:</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">flask.ext.restful</span> <span class="kn">import</span> <span class="n">Api</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">flask.ext.restful</span> <span class="k">import</span> <span class="n">Api</span>
 
 <span class="n">api</span> <span class="o">=</span> <span class="n">Api</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
-<span class="n">api</span><span class="o">.</span><span class="n">register_resource</span><span class="p">(</span><span class="n">SingleQuote</span><span class="p">,</span> <span class="s">'/quote/&lt;int:id&gt;'</span><span class="p">)</span>
-<span class="n">api</span><span class="o">.</span><span class="n">register_resource</span><span class="p">(</span><span class="n">ListQuote</span><span class="p">,</span> <span class="s">'/quotes'</span><span class="p">)</span>
+<span class="n">api</span><span class="o">.</span><span class="n">register_resource</span><span class="p">(</span><span class="n">SingleQuote</span><span class="p">,</span> <span class="s1">'/quote/&lt;int:id&gt;'</span><span class="p">)</span>
+<span class="n">api</span><span class="o">.</span><span class="n">register_resource</span><span class="p">(</span><span class="n">ListQuote</span><span class="p">,</span> <span class="s1">'/quotes'</span><span class="p">)</span>
 </pre>
 </div>
 <div class="section" id="step-six-persistence-with-sqla">
@@ -456,16 +456,16 @@ session runs. If we need to restart, we lose it all except for the
 preloaded quotes. To achieve real persistence, we should shake up with a
 database. SQLite is a good choice for this, plus bindings come native
 with&nbsp;Python.</p>
-<pre class="code python literal-block">
-<span class="kn">from</span> <span class="nn">flask.ext.sqlalchemy</span> <span class="kn">import</span> <span class="n">SQLAlchemy</span>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">flask.ext.sqlalchemy</span> <span class="k">import</span> <span class="n">SQLAlchemy</span>
 
-<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">'SQLALCHEMY_DATABASE_URI'</span><span class="p">]</span> <span class="o">=</span> <span class="s">'sqlite:///quotes.db'</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">'SQLALCHEMY_DATABASE_URI'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'sqlite:///quotes.db'</span>
 
 <span class="n">db</span> <span class="o">=</span> <span class="n">SQLAlchemy</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">Quote</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
 
-    <span class="nb">id</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">person</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Unicode</span><span class="p">(</span><span class="mi">50</span><span class="p">))</span>
     <span class="n">quote</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">UnicodeText</span><span class="p">)</span>
 </pre>
@@ -474,41 +474,40 @@ we&#8217;re passing a namedtuple or a <span class="caps">SQLA</span> model, just
 attributes. This is great because we can write many quick tests with
 something like <tt class="docutils literal">namedtuple</tt> to verify our schema behaves correctly and
 then just a few integration tests with the&nbsp;models.</p>
-<pre class="code python literal-block">
-<span class="n">Image</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s">&quot;http://i.imgur.com/mudwVxd.gif&quot;</span><span class="p">)</span>
+<pre class="code ipython3 literal-block">
+<span class="n">Image</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s2">&quot;http://i.imgur.com/mudwVxd.gif&quot;</span><span class="p">)</span>
 </pre>
 <img src="http://i.imgur.com/mudwVxd.gif"/><p>However, our resource end points do need to change some, though. Since
 we&#8217;re dealing with <span class="caps">SQLA</span> models now and not just simple lists. The
 changes are&nbsp;trivial:</p>
-<pre class="code python literal-block">
+<pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">SingleQuote</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">idx</span><span class="p">:</span>
-            <span class="n">quote</span> <span class="o">=</span> <span class="n">Quote</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">QuoteSerializer</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">quote</span><span class="p">)</span><span class="o">.</span><span class="n">data</span> <span class="k">if</span> <span class="n">quote</span> <span class="k">else</span> <span class="p">{</span><span class="s">&quot;error&quot;</span><span class="p">:</span> <span class="s">&quot;quote does not exist&quot;</span><span class="p">}</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s">'error'</span><span class="p">:</span> <span class="s">'must specify quote id'</span><span class="p">}</span>
+            <span class="k">return</span> <span class="n">Quote</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{</span><span class="s1">'error'</span><span class="p">:</span> <span class="s1">'quote does not exist'</span><span class="p">}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">'error'</span><span class="p">:</span> <span class="s1">'must specify quote id'</span><span class="p">}</span>
 
 <span class="k">class</span> <span class="nc">ListQuote</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">QuoteSerializer</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">quotes</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
+        <span class="k">return</span> <span class="n">QuoteSerializer</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">quotes</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
 
     <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">json</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">json</span><span class="p">:</span> <span class="c"># get_json will return a dict or None</span>
-            <span class="k">return</span> <span class="p">{</span><span class="s">&quot;success&quot;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span> <span class="s">&quot;msg&quot;</span><span class="p">:</span> <span class="s">&quot;malformed request&quot;</span><span class="p">},</span> <span class="mi">400</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">json</span><span class="p">:</span> <span class="c1"># get_json will return a dict or None</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;malformed request&quot;</span><span class="p">},</span> <span class="mi">400</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="s">'quote'</span> <span class="ow">in</span> <span class="n">json</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">{</span><span class="s">&quot;success&quot;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span> <span class="s">&quot;msg&quot;</span><span class="p">:</span> <span class="s">&quot;must specify quote in request&quot;</span><span class="p">},</span> <span class="mi">400</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="s1">'quote'</span> <span class="ow">in</span> <span class="n">json</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;must specify quote in request&quot;</span><span class="p">},</span> <span class="mi">400</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">q</span> <span class="o">=</span> <span class="n">QuoteSerializer</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">request</span><span class="p">[</span><span class="s">'json'</span><span class="p">])</span><span class="o">.</span><span class="n">data</span>
+                <span class="n">q</span> <span class="o">=</span> <span class="n">QuoteSerializer</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">request</span><span class="p">[</span><span class="s1">'json'</span><span class="p">])</span><span class="o">.</span><span class="n">data</span>
             <span class="k">except</span> <span class="ne">AssertionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="k">return</span> <span class="p">{</span><span class="s">'success'</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span> <span class="s">'msg'</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)},</span> <span class="mi">400</span>
+                <span class="k">return</span> <span class="p">{</span><span class="s1">'success'</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">'msg'</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)},</span> <span class="mi">400</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
                 <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
-                <span class="k">return</span> <span class="p">{</span><span class="s">&quot;success&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> <span class="s">&quot;msg&quot;</span><span class="p">:</span> <span class="s">&quot;Quote added.&quot;</span><span class="p">}</span>
+                <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;Quote added.&quot;</span><span class="p">}</span>
 </pre>
 <p>Just two simple changes to go from list to <span class="caps">SQLA</span> models. Be sure to run
 <tt class="docutils literal">db.create_all()</tt> somewhere before and load up initial quotes and
@@ -521,9 +520,9 @@ for&nbsp;everyone.</p>
 simple <span class="caps">REST</span> <span class="caps">API</span> with Flask and its little ecosystem, I hope it&#8217;s been
 enlightening. I&#8217;ve included the whole application in <a class="reference external" href="https://gist.github.com/justanr/60f34a300ff4535c95fc">this
 gist</a> for
-reference. If you see a bug or have questions, hit me up on
-<a class="reference external" href="https://twitter.com/just_anr">twitter</a> or on
-<a class="reference external" href="https://github.com/justanr">github</a>.</p>
+reference. If you see a bug or have questions, hit me up on twitter
+([&#64;just_anr](<a class="reference external" href="https://twitter.com/just_anr">https://twitter.com/just_anr</a>)) or on github
+(<a class="reference external" href="https://github.com/justanr">justanr</a>).</p>
 </div>
 </div>
 
@@ -531,7 +530,7 @@ reference. If you see a bug or have questions, hit me up on
             <nav>
             <ul class="articles_timeline">
  
-                <li class="previous_article">« <a href="http://justanr.github.io/i-wrote-a-monad-tutorial-for-some-reason" title="Previous: I wrote a monad tutorial for some&nbsp;reason&#8230;">I wrote a monad tutorial for some&nbsp;reason&#8230;</a></li>
+                <li class="previous_article">« <a href="http://justanr.github.io/i-wrote-a-monad-tutorial-for-some-reason" title="Previous: I wrote a monad tutorial for some&nbsp;reason…">I wrote a monad tutorial for some&nbsp;reason…</a></li>
  
                 <li class="next_article"><a href="http://justanr.github.io/currying-and-memoizing-metaclasses" title="Next: Currying and Memoizing&nbsp;Metaclasses">Currying and Memoizing&nbsp;Metaclasses</a> »</li>
             </ul>
@@ -584,7 +583,7 @@ reference. If you see a bug or have questions, hit me up on
                     <span>1</span>
 </a></li>
                 <li><a href="/tags.html#flask-ref">flask
-                    <span>3</span>
+                    <span>4</span>
 </a></li>
                 <li><a href="/tags.html#marshmallow-ref">marshmallow
                     <span>1</span>
