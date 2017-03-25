@@ -19,7 +19,7 @@
 
 
 <meta name="keywords" content="my-journey-through-tdd, testing, " />
-        <title>On&nbsp;Testing - from alec.thoughts import *
+        <title>On Testing - from alec.thoughts import *
 </title>
         <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
@@ -73,37 +73,39 @@
 <article>
 <div class="row-fluid">
     <header class="page_header span10 offset2">
-    <h1><a href="http://justanr.github.io/on-testing"> On&nbsp;Testing  </a></h1>
+    <h1><a href="http://justanr.github.io/on-testing"> On Testing  </a></h1>
     </header>
 </div>
 
 <div class="row-fluid">
         <div class="span8 offset2 article-content">
 
-            <p>I had the pleasure of being involved in a discussion on reddit &#8212; which
-is not something a person usually says. But the gist of it was this &#8212;
+            <p>I had the pleasure of being involved in a discussion on reddit -- which
+is not something a person usually says. But the gist of it was this --
 comments are shortened, vote totals are approximate, and the names have
 been changed to protect the involved parties. To add context, this was a
-discussion on the topic of using <tt class="docutils literal">unittest.mock</tt> to make testing&nbsp;easier.</p>
+discussion on the topic of using <tt class="docutils literal">unittest.mock</tt> to make testing
+easier.</p>
 <blockquote>
-<p>/u/User1 [-1] &#8220;Don&#8217;t mock what you don&#8217;t&nbsp;own.&#8221;</p>
-<p>/u/User2 [+5] &#8220;You don&#8217;t think mocking something like os.remove is a
-good&nbsp;move?&#8221;</p>
-<p>/u/User1 [-6] &#8220;No, I think it&#8217;s bad&nbsp;architecture.&#8221;</p>
-<p>/u/User2 [+7] &#8220;You&#8217;re insane then.&nbsp;:)&#8221;</p>
+<p>/u/User1 [-1] &quot;Don't mock what you don't own.&quot;</p>
+<p>/u/User2 [+5] &quot;You don't think mocking something like os.remove is a
+good move?&quot;</p>
+<p>/u/User1 [-6] &quot;No, I think it's bad architecture.&quot;</p>
+<p>/u/User2 [+7] &quot;You're insane then. :)&quot;</p>
 </blockquote>
-<p>This exchange has lead me to conclude two&nbsp;things:</p>
+<p>This exchange has lead me to conclude two things:</p>
 <ol class="arabic simple">
-<li>The phrase &#8220;unit test&#8221; is&nbsp;meaningless.</li>
-<li>Mocks are poorly understood and&nbsp;abused.</li>
+<li>The phrase &quot;unit test&quot; is meaningless.</li>
+<li>Mocks are poorly understood and abused.</li>
 </ol>
 <p>I offered this case for not mocking something like <tt class="docutils literal">os.remove</tt>, with a
-bit of a text dump &#8212; something I&#8217;m often guilty of doing for better or&nbsp;worse.</p>
+bit of a text dump -- something I'm often guilty of doing for better or
+worse.</p>
 <blockquote>
-Things like os.remove are rarely stand alone things, they&#8217;re often
-paired with stuff like &#8220;Format this file name.&#8221;, &#8220;Join this path.&#8221;
-&#8220;Can I find the file?&#8221;, &#8220;Do I have permission to remove the file.&#8221;</blockquote>
-<p>As well as these code&nbsp;samples:</p>
+Things like os.remove are rarely stand alone things, they're often
+paired with stuff like &quot;Format this file name.&quot;, &quot;Join this path.&quot;
+&quot;Can I find the file?&quot;, &quot;Do I have permission to remove the file.&quot;</blockquote>
+<p>As well as these code samples:</p>
 <pre class="code ipython3 literal-block">
 <span class="kn">from</span> <span class="nn">abc</span> <span class="k">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
 <span class="kn">import</span> <span class="nn">os</span>
@@ -132,11 +134,11 @@ paired with stuff like &#8220;Format this file name.&#8221;, &#8220;Join this pa
     <span class="k">def</span> <span class="nf">_is_removable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 </pre>
-<p>And caveated that with I&#8217;d offer that rich class interface when I have
-multiple contexts to remove a &#8220;report&#8221; &#8212; maybe it&#8217;s generated from a
-database, maybe it&#8217;s on S3, maybe I&#8217;m running a test and don&#8217;t even have
+<p>And caveated that with I'd offer that rich class interface when I have
+multiple contexts to remove a &quot;report&quot; -- maybe it's generated from a
+database, maybe it's on S3, maybe I'm running a test and don't even have
 an actual report to remove. Conversely, I also offered this sample that
-I might use if I&#8217;m only going to have reports on the local&nbsp;filesystem:</p>
+I might use if I'm only going to have reports on the local filesystem:</p>
 <pre class="code ipython3 literal-block">
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span>
 <span class="n">Settings</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">'Settings'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'DEFAULT_REPORT_PATH'</span><span class="p">,</span> <span class="s1">'DEFAULT_REPORT_EXT'</span><span class="p">])</span>
@@ -150,11 +152,11 @@ I might use if I&#8217;m only going to have reports on the local&nbsp;filesystem
         <span class="k">return</span> <span class="kc">True</span>
     <span class="k">return</span> <span class="kc">False</span>
 </pre>
-<p>Which was met with the question of, &#8220;Well how do you test that?&#8221; And
-this sort of astonished me. And maybe that&#8217;s because of my growth as a
-developer. But the answer seemed obvious to me, &#8220;Create a directory, put
+<p>Which was met with the question of, &quot;Well how do you test that?&quot; And
+this sort of astonished me. And maybe that's because of my growth as a
+developer. But the answer seemed obvious to me, &quot;Create a directory, put
 a file named test.report in it, run remove_report, assert that the
-directory is&nbsp;empty.&#8221;</p>
+directory is empty.&quot;</p>
 <pre class="code ipython3 literal-block">
 <span class="kn">import</span> <span class="nn">pytest</span>
 <span class="kn">from</span> <span class="nn">things.reports</span> <span class="k">import</span> <span class="n">remove_report</span>
@@ -172,7 +174,7 @@ directory is&nbsp;empty.&#8221;</p>
 FileReportRemover and run <tt class="docutils literal">FileReportRemove.remove_report</tt> with an
 instance of it instead. Maybe this person was under the impression that
 unit tests are the <em>only</em> type of test, or maybe the only <em>valuable</em>
-test. But what is the value of this&nbsp;test:</p>
+test. But what is the value of this test:</p>
 <pre class="code ipython3 literal-block">
 <span class="kn">from</span> <span class="nn">unittest</span> <span class="k">import</span> <span class="n">mock</span>
 
@@ -190,33 +192,33 @@ test. But what is the value of this&nbsp;test:</p>
     <span class="k">assert</span> <span class="n">ospath</span><span class="o">.</span><span class="n">exists</span><span class="o">.</span><span class="n">called</span>
     <span class="k">assert</span> <span class="n">osremove</span><span class="o">.</span><span class="n">call_args</span> <span class="o">==</span> <span class="p">((</span><span class="s1">'path/test.report'</span><span class="p">),</span> <span class="p">)</span>
 </pre>
-<p>There&#8217;s so much noise in this test. We&#8217;re setting up mocks, there&#8217;s
-strings all over, multiple asserts &#8212; which isn&#8217;t necessarily bad, but
+<p>There's so much noise in this test. We're setting up mocks, there's
+strings all over, multiple asserts -- which isn't necessarily bad, but
 can be symptomatic of a poorly designed test. In fairness, there are
 three lines of setup in the other test, but I find that the setup is
 <em>much</em> clearer: We create a directory and put a file in it. In this one,
-we&#8217;re setting up mock return values. And we need to mock an entire
-submodule of os.path, otherwise the test will&nbsp;explode.</p>
-<p>More over, it doesn&#8217;t get to the heart of the point of a test: are we
-actually removing a file from the file system. And it&#8217;s fragile, if the
-interface of <tt class="docutils literal">os</tt> changes &#8212; unlikely, but that&#8217;s besides the point &#8212;
+we're setting up mock return values. And we need to mock an entire
+submodule of os.path, otherwise the test will explode.</p>
+<p>More over, it doesn't get to the heart of the point of a test: are we
+actually removing a file from the file system. And it's fragile, if the
+interface of <tt class="docutils literal">os</tt> changes -- unlikely, but that's besides the point --
 the test will still pass. Using the <tt class="docutils literal">autospec</tt> feature of mock will
-ease this pain, but I think that&#8217;s an anti-pattern in this case. We&#8217;re
-still creating a bunch of noise in the&nbsp;test.</p>
-<p>And the worst part is this sets a precedence of mocking anything that&#8217;s
-inconvenient. All of the tests will look like this. Meaning, you&#8217;ll have
+ease this pain, but I think that's an anti-pattern in this case. We're
+still creating a bunch of noise in the test.</p>
+<p>And the worst part is this sets a precedence of mocking anything that's
+inconvenient. All of the tests will look like this. Meaning, you'll have
 to examine every piece of code under test to understand it. At that
-point, why even have tests? I&#8217;m being serious. I should be able to read
+point, why even have tests? I'm being serious. I should be able to read
 the tests for some code and have a decent idea of what the
-implementation&nbsp;is.</p>
+implementation is.</p>
 <div class="figure">
 <img alt="The Incredibles, © Disney 2004" src="http://i.imgur.com/765mGJo.jpg" />
-<p class="caption">The Incredibles, © Disney&nbsp;2004</p>
+<p class="caption">The Incredibles, © Disney 2004</p>
 </div>
-<p>Of course, I got asked, &#8220;When would you mock?&#8221; And the answer to that
-is, &#8220;Any time I need to test that <tt class="docutils literal">remove_report</tt> did something but I
-don&#8217;t actually need to remove a report.&#8221; I offered the concept of a
-report&nbsp;sweeper:</p>
+<p>Of course, I got asked, &quot;When would you mock?&quot; And the answer to that
+is, &quot;Any time I need to test that <tt class="docutils literal">remove_report</tt> did something but I
+don't actually need to remove a report.&quot; I offered the concept of a
+report sweeper:</p>
 <pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">test_report_sweeper_ignores_os_error</span><span class="p">():</span>
     <span class="n">remover</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">Mock</span><span class="p">(</span><span class="n">side_effect</span><span class="o">=</span><span class="ne">OSError</span><span class="p">(</span><span class="s2">&quot;You shouldn't see me&quot;</span><span class="p">))</span>
@@ -227,7 +229,7 @@ report&nbsp;sweeper:</p>
     <span class="k">assert</span> <span class="n">remover</span><span class="o">.</span><span class="n">call_args_list</span> <span class="o">==</span> <span class="p">[</span><span class="n">mock</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">),</span> <span class="n">mock</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">'bar'</span><span class="p">),</span> <span class="n">mock</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">'baz'</span><span class="p">)]</span>
 </pre>
 <p>Because <em>I</em> own the interface to report_remover, I can comfortably mock
-that dependency. An alternative approach avoids mocking&nbsp;altogether:</p>
+that dependency. An alternative approach avoids mocking altogether:</p>
 <pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">test_report_sweeper_ignores_os_error_oddly</span><span class="p">():</span>
     <span class="n">call_count</span> <span class="o">=</span> <span class="mi">0</span>
@@ -241,12 +243,12 @@ that dependency. An alternative approach avoids mocking&nbsp;altogether:</p>
 
     <span class="k">assert</span> <span class="n">call_count</span> <span class="o">==</span> <span class="mi">3</span>
 </pre>
-<p>I&#8217;ll be honest, I like the mock approach here <em>more</em> because it&#8217;s less
+<p>I'll be honest, I like the mock approach here <em>more</em> because it's less
 noise. There is the mental overhead of knowing what <tt class="docutils literal">Mock.side_effect</tt>
-does, but it&#8217;s such a useful thing to know that I&#8217;d rather someone look
+does, but it's such a useful thing to know that I'd rather someone look
 it up than understand the oddness that is the locally defined remover.
 But in either case, you can imagine what the implementation of
-<tt class="docutils literal">report_sweeper</tt> looks&nbsp;like:</p>
+<tt class="docutils literal">report_sweeper</tt> looks like:</p>
 <pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">report_sweeper</span><span class="p">(</span><span class="n">reports</span><span class="p">,</span> <span class="n">remover</span><span class="o">=</span><span class="n">remove_report</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">report</span> <span class="ow">in</span> <span class="n">reports</span><span class="p">:</span>
@@ -256,39 +258,41 @@ But in either case, you can imagine what the implementation of
             <span class="k">pass</span>
 </pre>
 <p>This is what a true unit test is. We want to assert that in the case of
-an OSError, <tt class="docutils literal">report_sweeper</tt> ignores it. You don&#8217;t bother with fiddly
+an OSError, <tt class="docutils literal">report_sweeper</tt> ignores it. You don't bother with fiddly
 details like, add a file to the system but give it the wrong permissions
-or just don&#8217;t add a file to your system, or whatever. Do we want an
-integration test? Maybe, but given an OSError is an OSError, maybe&nbsp;not.</p>
+or just don't add a file to your system, or whatever. Do we want an
+integration test? Maybe, but given an OSError is an OSError, maybe not.</p>
 <div class="section" id="deeper-lessons">
-<h2>Deeper&nbsp;Lessons</h2>
+<h2>Deeper Lessons</h2>
 <p>Going back to the original exchange that prompted this whole thing, I
-think there&#8217;s more important lessons to learn &#8212; or rather unlearn &#8212;
-about&nbsp;testing.</p>
+think there's more important lessons to learn -- or rather unlearn --
+about testing.</p>
 <div class="section" id="unit-tests-aren-t-the-end-all-be-all">
-<h3>Unit Tests Aren&#8217;t The End All Be&nbsp;All</h3>
+<h3>Unit Tests Aren't The End All Be All</h3>
 <p>I love unit tests. I love being able to spin up a tiny portion of my
-application and make assertions about a laser focused behavior. &#8220;Given I
+application and make assertions about a laser focused behavior. &quot;Given I
 want to remove some reports, when an OSError occures, then the sweeper
-ignores it.&#8221; That says nothing about what a report is, where they live
-or even how I&#8217;m removing&nbsp;it.</p>
+ignores it.&quot; That says nothing about what a report is, where they live
+or even how I'm removing it.</p>
 <p>But on the other end, I need to be able to test that I can actually
-remove a report. And you <em>can&#8217;t</em> unit test this. It&#8217;s inherently tied to
-an external system &#8212; the file system, a database, the network. Maybe
-it&#8217;s tied to <em>several</em> of these external systems &#8212; we keep a list of
-reports in the database but they live in S3&nbsp;buckets.</p>
+remove a report. And you <em>can't</em> unit test this. It's inherently tied to
+an external system -- the file system, a database, the network. Maybe
+it's tied to <em>several</em> of these external systems -- we keep a list of
+reports in the database but they live in S3 buckets.</p>
 </div>
 <div class="section" id="indirection-is-invaluable">
-<h3>Indirection is&nbsp;Invaluable</h3>
-<p>Because I want to be able to unit test my <tt class="docutils literal">report_sweeper</tt>, I don&#8217;t
+<h3>Indirection is Invaluable</h3>
+<p>Because I want to be able to unit test my <tt class="docutils literal">report_sweeper</tt>, I don't
 want to tie that to these external systems. Instead I want to tie it to
 a contract with my report remover: If you give me a name of a report,
-I&#8217;ll handle the orchestration of removing it and let you know if it&nbsp;succeeded.</p>
+I'll handle the orchestration of removing it and let you know if it
+succeeded.</p>
 <p>The indirection is not directly calling into the <tt class="docutils literal">os</tt> module, instead
 I call something that calls that for me. And this applies to <em>all</em>
 external collaborators. If you use <tt class="docutils literal">requests</tt> to get some information,
-don&#8217;t call <tt class="docutils literal">requests.get</tt> directly &#8212; have an adapter that manages all
-of that for you. I know this sounds crazy, but which is more descriptive&nbsp;read:</p>
+don't call <tt class="docutils literal">requests.get</tt> directly -- have an adapter that manages all
+of that for you. I know this sounds crazy, but which is more descriptive
+read:</p>
 <pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">get_some_data</span><span class="p">(</span><span class="nb">id</span><span class="p">):</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'http://somedatasource.com/things/</span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="p">))</span>
@@ -304,44 +308,44 @@ of that for you. I know this sounds crazy, but which is more descriptive&nbsp;re
     <span class="k">return</span> <span class="n">external</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
 </pre>
 <p>Even better is if <tt class="docutils literal">get_some_data</tt> is actually a method on an object
-that lists <tt class="docutils literal">ExternalHelper</tt> as a&nbsp;dependency.</p>
+that lists <tt class="docutils literal">ExternalHelper</tt> as a dependency.</p>
 </div>
 <div class="section" id="patching-is-a-symptom">
-<h3>Patching Is A&nbsp;Symptom</h3>
-<p>If you find yourself monkey patching stuff, step back and think, &#8220;Why?&#8221;
-Why are you patching that? It could be because you&#8217;ve tightly coupled
+<h3>Patching Is A Symptom</h3>
+<p>If you find yourself monkey patching stuff, step back and think, &quot;Why?&quot;
+Why are you patching that? It could be because you've tightly coupled
 your logic to <tt class="docutils literal">requests</tt> (or any other external package). In that
-case, you should wrap up that communication. If you&#8217;re patching in that
-adapter, it could be because you&#8217;re testing a specific failure that&#8217;s
-hard to emulate &#8212; and generally, I&#8217;m okay with that. But it&#8217;s best to
-run that test as a live integration against that external&nbsp;system.</p>
-<p>But if you find yourself patching parts of the object you&#8217;re actively
+case, you should wrap up that communication. If you're patching in that
+adapter, it could be because you're testing a specific failure that's
+hard to emulate -- and generally, I'm okay with that. But it's best to
+run that test as a live integration against that external system.</p>
+<p>But if you find yourself patching parts of the object you're actively
 testing, you need to stop and find out what you need to do to ease that
-relationship. By patching that method, you&#8217;re only going to bake in the
-badness and cause tremendous pain down the&nbsp;road.</p>
+relationship. By patching that method, you're only going to bake in the
+badness and cause tremendous pain down the road.</p>
 </div>
 <div class="section" id="unit-test-logic">
-<h3>Unit Test&nbsp;Logic</h3>
-<p>If there&#8217;s logic, test it. Test it every way you can think, and then get
+<h3>Unit Test Logic</h3>
+<p>If there's logic, test it. Test it every way you can think, and then get
 the nearest child to give it input and fix any holes they find. This
 will generally involve using stubs and fakes for expensive collaborators
-&#8212; things that do I/O, system calls and <span class="caps">CPU</span> warmers. But if you don&#8217;t
-need to fake something, don&#8217;t. Just use the real thing. It&#8217;s&nbsp;okay.</p>
+-- things that do I/O, system calls and CPU warmers. But if you don't
+need to fake something, don't. Just use the real thing. It's okay.</p>
 </div>
 <div class="section" id="boundary-test-relationships">
-<h3>Boundary Test&nbsp;Relationships</h3>
-<p>This makes the assumption you wrap up external dependencies. When you&#8217;re
+<h3>Boundary Test Relationships</h3>
+<p>This makes the assumption you wrap up external dependencies. When you're
 testing relationships, you want to make sure Subject A talks to Subject
-B correctly, and vice versa. You&#8217;re testing things like, &#8220;Given I want
-Frob 314, Then I ask FrobRepository to fetch with 314 as the argument.&#8221;
+B correctly, and vice versa. You're testing things like, &quot;Given I want
+Frob 314, Then I ask FrobRepository to fetch with 314 as the argument.&quot;
 You want to test that the right arguments get to the right things and
-only add enough support code to get the test to&nbsp;finish.</p>
+only add enough support code to get the test to finish.</p>
 </div>
 <div class="section" id="integration-test-wrappers">
-<h3>Integration Test&nbsp;Wrappers</h3>
-<p>There&#8217;s generally very little logic in something that only serves to
-translate inputs and outputs from Domain A to Domain B. It&#8217;s usually
-things like&nbsp;this:</p>
+<h3>Integration Test Wrappers</h3>
+<p>There's generally very little logic in something that only serves to
+translate inputs and outputs from Domain A to Domain B. It's usually
+things like this:</p>
 <pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Notifier</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
     <span class="nd">&#64;abstractmethod</span>
@@ -356,14 +360,14 @@ things like&nbsp;this:</p>
     <span class="k">def</span> <span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recipient</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">to</span><span class="o">=</span><span class="n">recipient</span><span class="o">.</span><span class="n">phone_number</span><span class="p">,</span> <span class="n">from_</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sender</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
 </pre>
-<p>You&#8217;ll recieve <em>no value</em> from all the mocking and patching in the world
-with this. You&#8217;ll derive some value from boundary testing this by
+<p>You'll recieve <em>no value</em> from all the mocking and patching in the world
+with this. You'll derive some value from boundary testing this by
 supplying a fake client that records its inputs. But the most value will
-come from <em>actually</em> sending a text message with a&nbsp;test.</p>
-<p>Now, you&#8217;ll not want to always send a text message when you run your
-test suite, especially if you&#8217;re not poking something related to this
+come from <em>actually</em> sending a text message with a test.</p>
+<p>Now, you'll not want to always send a text message when you run your
+test suite, especially if you're not poking something related to this
 wrapper. Luckily, <tt class="docutils literal">py.test</tt> provides a very helpful marker module and
-a way to specify when to run these&nbsp;markers:</p>
+a way to specify when to run these markers:</p>
 <pre class="code ipython3 literal-block">
 <span class="c1"># tests/.../test_twilio_wrapper.py</span>
 
@@ -372,48 +376,49 @@ a way to specify when to run these&nbsp;markers:</p>
 <span class="k">class</span> <span class="nc">TestTwilioWrapperSuite</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">pass</span>
 </pre>
-<p>And on the command line, you can specify like&nbsp;this:</p>
+<p>And on the command line, you can specify like this:</p>
 <pre class="code bash literal-block">
 py.test -m <span class="s2">&quot;not integration or system&quot;</span>
 </pre>
-<p>to only run unit tests,&nbsp;or</p>
+<p>to only run unit tests, or</p>
 <pre class="code bash literal-block">
 py.test -m <span class="s2">&quot;integration and not costs_money&quot;</span>
 </pre>
-<p>To only run integrations that aren&#8217;t also tagged with the
+<p>To only run integrations that aren't also tagged with the
 <tt class="docutils literal">costs_money</tt> tag. Or you could only tag it with <tt class="docutils literal">costs_money</tt> to
 avoid accidentally running it with your integration tests. Another big
 helper here is tox, which goes a long way to setting up and executing
-tests for you. I love it so much, I&#8217;ve bound it to <tt class="docutils literal">&lt;F12&gt;</tt> in normal
+tests for you. I love it so much, I've bound it to <tt class="docutils literal">&lt;F12&gt;</tt> in normal
 mode for Vim. Alternatively, you can simply run
-<tt class="docutils literal">!tox <span class="pre">-e</span> comma,separated,envs</tt> as&nbsp;well.</p>
+<tt class="docutils literal">!tox <span class="pre">-e</span> comma,separated,envs</tt> as well.</p>
 <p>This allows you to run fast moving unit tests all the time and slow
-moving integration tests and system tests&nbsp;sometimes.</p>
+moving integration tests and system tests sometimes.</p>
 </div>
 <div class="section" id="system-tests-are-for-the-big-picture">
-<h3>System Tests Are For The Big&nbsp;Picture</h3>
-<p>You don&#8217;t want to do fine grained testing in your system tests. These
+<h3>System Tests Are For The Big Picture</h3>
+<p>You don't want to do fine grained testing in your system tests. These
 are tests that integrate with things like frameworks, threads, asyncio,
 etc. And require specialized setup and the whole production application
 (though not necessarily the production data). These would be things
-like, &#8220;When I send a notification throught Twilio, the <span class="caps">SMS</span> sink shows
-the message as&nbsp;recieved&#8221;.</p>
+like, &quot;When I send a notification throught Twilio, the SMS sink shows
+the message as recieved&quot;.</p>
 </div>
 </div>
 <div class="section" id="fin">
 <h2>Fin!</h2>
-<p>As usual, I&#8217;d like to end with some other content for you to consume
-that inspired me for this&nbsp;post:</p>
+<p>As usual, I'd like to end with some other content for you to consume
+that inspired me for this post:</p>
 <ul class="simple">
 <li><a class="reference external" href="https://blog.fugue.co/2016-02-11-python-mocking-101.html">Mike Lin - Python Mocking 101: Fake It Before You Make
 It</a>.
 This is the post that started the conversation. While it feel it
-gives bad advice &#8212; encouraging patching of external dependencies &#8212;
-it&#8217;s a decent over view of the power of the mock&nbsp;library.</li>
+gives bad advice -- encouraging patching of external dependencies --
+it's a decent over view of the power of the mock library.</li>
 <li><a class="reference external" href="https://www.youtube.com/watch?v=VD51AkG8EZw">Justin Searls - How To Stop Hating Your Test
 Suite</a>. I really like
-Justin Searls. He&#8217;s funny, informative, passionate and uses vim. By
-default I have to like him. He also gives really good talks about&nbsp;testing.</li>
+Justin Searls. He's funny, informative, passionate and uses vim. By
+default I have to like him. He also gives really good talks about
+testing.</li>
 </ul>
 </div>
 
@@ -421,7 +426,9 @@ default I have to like him. He also gives really good talks about&nbsp;testing.<
             <nav>
             <ul class="articles_timeline">
  
-                <li class="previous_article">« <a href="http://justanr.github.io/the-value-of-objects" title="Previous: The Value of&nbsp;Objects">The Value of&nbsp;Objects</a></li>
+                <li class="previous_article">« <a href="http://justanr.github.io/the-value-of-objects" title="Previous: The Value of Objects">The Value of Objects</a></li>
+ 
+                <li class="next_article"><a href="http://justanr.github.io/dockerizing-an-existing-python-web-app" title="Next: Dockerizing an existing Python web app">Dockerizing an existing Python web app</a> »</li>
             </ul>
             </nav>
             </aside>

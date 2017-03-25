@@ -19,7 +19,7 @@
 
 
 <meta name="keywords" content="python, pynads, haskell, libraries, " />
-        <title>Fizzbuzz With&nbsp;Pynads! - from alec.thoughts import *
+        <title>Fizzbuzz With Pynads! - from alec.thoughts import *
 </title>
         <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
@@ -73,7 +73,7 @@
 <article>
 <div class="row-fluid">
     <header class="page_header span10 offset2">
-    <h1><a href="http://justanr.github.io/fizzbuzz-with-pynads"> Fizzbuzz With&nbsp;Pynads!  </a></h1>
+    <h1><a href="http://justanr.github.io/fizzbuzz-with-pynads"> Fizzbuzz With Pynads!  </a></h1>
     </header>
 </div>
 
@@ -98,20 +98,21 @@
 <pre class="literal-block">
 Writer(16, {1: 1, 2: 2, 3: 'buzz', 4: 4, 5: 'fizz', 6: 'buzz', 7: 7, 8: 8, 9: 'buzz', 10: 'fizz', 11: 11, 12: 'buzz', 13: 13, 14: 14, 15: 'fizzbuzz'})
 </pre>
-<p>Truly an 11x Developer solution to the [<span class="caps">STRIKEOUT</span>:world&#8217;s] universe&#8217;s
-premier code interview&nbsp;question!</p>
+<p>Truly an 11x Developer solution to the [STRIKEOUT:world's] universe's
+premier code interview question!</p>
 <div class="section" id="what-is-pynads">
-<h2>What is&nbsp;&#8220;pynads&#8221;</h2>
-<p>All joking aside, I&#8217;ve been hacking together a collection of
+<h2>What is &quot;pynads&quot;</h2>
+<p>All joking aside, I've been hacking together a collection of
 Haskell-esque tools for Python over the last few weeks. It started as a
-&#8220;Well, I&#8217;ll learn Haskell better this way.&#8221; and has become&#8230;well,
-honestly a tool for me learning Haskell&nbsp;still.</p>
-<p><a class="reference external" href="https://github.com/justanr/pynads">Check it out</a>, I think it&#8217;s&nbsp;nifty.</p>
+&quot;Well, I'll learn Haskell better this way.&quot; and has become...well,
+honestly a tool for me learning Haskell still.</p>
+<p><a class="reference external" href="https://github.com/justanr/pynads">Check it out</a>, I think it's
+nifty.</p>
 </div>
 <div class="section" id="a-quick-tour-of-pynads">
-<h2>A Quick Tour of&nbsp;Pynads</h2>
+<h2>A Quick Tour of Pynads</h2>
 <p>pynads strives to be a pythonic form of Haskell. Which is buzzword for I
-did some stuff.&nbsp;There&#8217;s:</p>
+did some stuff. There's:</p>
 <ul class="simple">
 <li>Functors</li>
 <li>Applicatives</li>
@@ -120,7 +121,7 @@ did some stuff.&nbsp;There&#8217;s:</p>
 <li>Helpers</li>
 </ul>
 <p>All of the base classes are implemented as Abstract Base Classes which
-makes inheritance easy. Well, that&#8217;s a lie, the root object of pynads is
+makes inheritance easy. Well, that's a lie, the root object of pynads is
 a concrete class that just serves as an endpoint for <tt class="docutils literal">__new__</tt> and
 <tt class="docutils literal">__init__</tt>.</p>
 <div class="section" id="container">
@@ -128,21 +129,21 @@ a concrete class that just serves as an endpoint for <tt class="docutils literal
 <p><tt class="docutils literal">pynads.Container</tt> is the root object of every <tt class="docutils literal">pynads</tt> class. It
 serves as a final endpoint for <tt class="docutils literal">__new__</tt> and <tt class="docutils literal">__init__</tt> as well as
 providing a consistent name for accessing the values held by objects in
-<tt class="docutils literal">pynads</tt>. Some would say that it&#8217;s a silly idea, but it works! Every
-class in <tt class="docutils literal">pynads</tt> is also slotted for memory reasons since it&#8217;s built
-around the idea of not manipulating a container but creating a new&nbsp;one.</p>
+<tt class="docutils literal">pynads</tt>. Some would say that it's a silly idea, but it works! Every
+class in <tt class="docutils literal">pynads</tt> is also slotted for memory reasons since it's built
+around the idea of not manipulating a container but creating a new one.</p>
 <p>The only important thing to know about Container is that it defines
 <tt class="docutils literal">v</tt> as a property which actually delagates to the <tt class="docutils literal">_get_val</tt> method.
-Meaning that&#8217;s all that needs to be overriden to get multiple values out
-of a&nbsp;container.</p>
+Meaning that's all that needs to be overriden to get multiple values out
+of a container.</p>
 <p>For most subclasses of Container, the provided <tt class="docutils literal">__init__</tt> is fine, but
-it&#8217;s a-ok to override it as well as the only setup that happens is
+it's a-ok to override it as well as the only setup that happens is
 setting a single attribute <tt class="docutils literal">_v</tt>.</p>
 <pre class="code ipython3 literal-block">
 <span class="kn">from</span> <span class="nn">pynads</span> <span class="k">import</span> <span class="n">Container</span>
 
 <span class="k">class</span> <span class="nc">Person</span><span class="p">(</span><span class="n">Container</span><span class="p">):</span>
-    <span class="n">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'name'</span><span class="p">,</span> <span class="s1">'age'</span><span class="p">)</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'name'</span><span class="p">,</span> <span class="s1">'age'</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">age</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">age</span> <span class="o">=</span> <span class="n">age</span>
@@ -162,25 +163,25 @@ setting a single attribute <tt class="docutils literal">_v</tt>.</p>
 <div class="section" id="functors">
 <h3>Functors</h3>
 <p>Functors are data types that can be mapped over with the <tt class="docutils literal">fmap</tt>
-method. But calling methods isn&#8217;t very Haskell like, so there&#8217;s an
+method. But calling methods isn't very Haskell like, so there's an
 operator that does the same thing: <tt class="docutils literal">%</tt>.</p>
 <pre class="code ipython3 literal-block">
 <span class="kn">from</span> <span class="nn">pynads</span> <span class="k">import</span> <span class="n">Functor</span>
 
 <span class="k">class</span> <span class="nc">FmapPerson</span><span class="p">(</span><span class="n">Person</span><span class="p">,</span> <span class="n">Functor</span><span class="p">):</span>
-    <span class="n">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
     <span class="k">def</span> <span class="nf">fmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">age</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">age</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">upper</span> <span class="o">%</span> <span class="n">FmapPerson</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Alec&quot;</span><span class="p">,</span> <span class="n">age</span><span class="o">=</span><span class="mi">26</span><span class="p">))</span>
 </pre>
 <pre class="literal-block">
 Person(name=ALEC, age=26)
 </pre>
-<p>Of course, you <em>could</em> just use <tt class="docutils literal">FmapPerson.fmap</tt> but that&#8217;s not very
+<p>Of course, you <em>could</em> just use <tt class="docutils literal">FmapPerson.fmap</tt> but that's not very
 Haskellic. <tt class="docutils literal">pynads</tt> also exports a <tt class="docutils literal">funcs</tt> name space that contains
-functional shortcuts to some of these (though <tt class="docutils literal">f % functor</tt> doesn&#8217;t
-get much shorter). In this case, there&#8217;s&nbsp;also:</p>
+functional shortcuts to some of these (though <tt class="docutils literal">f % functor</tt> doesn't
+get much shorter). In this case, there's also:</p>
 <pre class="code ipython3 literal-block">
 <span class="kn">from</span> <span class="nn">pynads</span> <span class="k">import</span> <span class="n">funcs</span>
 
@@ -190,13 +191,13 @@ get much shorter). In this case, there&#8217;s&nbsp;also:</p>
 Person(name=ALEC, age=26)
 </pre>
 <p>Every class in the <tt class="docutils literal">pynads.concrete</tt> namespace is a functor except for
-<tt class="docutils literal">Mempty</tt> (we&#8217;ll get&nbsp;there!).</p>
+<tt class="docutils literal">Mempty</tt> (we'll get there!).</p>
 </div>
 <div class="section" id="applicatives">
 <h3>Applicatives</h3>
 <p>Applicative Functors are functors that hold functions and can then be
 applied to other Applicatives/Functors. Every class (except for
-<tt class="docutils literal">Mempty</tt>) in <tt class="docutils literal">pynads.concrete</tt> is also an&nbsp;Applicative!</p>
+<tt class="docutils literal">Mempty</tt>) in <tt class="docutils literal">pynads.concrete</tt> is also an Applicative!</p>
 <pre class="code ipython3 literal-block">
 <span class="kn">from</span> <span class="nn">pynads</span> <span class="k">import</span> <span class="n">Just</span>
 
@@ -205,26 +206,26 @@ applied to other Applicatives/Functors. Every class (except for
 <pre class="literal-block">
 Just 4
 </pre>
-<p>Yeah, like Haskell there&#8217;s an infix operator. Except of <tt class="docutils literal">&lt;*&gt;</tt> I just
-dropped the angle brackets because Python doesn&#8217;t let you define custom
+<p>Yeah, like Haskell there's an infix operator. Except of <tt class="docutils literal">&lt;*&gt;</tt> I just
+dropped the angle brackets because Python doesn't let you define custom
 operators (easily). It also combines nicely with <tt class="docutils literal">%</tt> because they have
-the same precedence&nbsp;level!</p>
+the same precedence level!</p>
 <pre class="code ipython3 literal-block">
 <span class="nb">print</span><span class="p">((</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">)</span> <span class="o">%</span> <span class="n">Just</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="o">*</span> <span class="n">Just</span><span class="p">(</span><span class="mi">6</span><span class="p">))</span>
 </pre>
 <pre class="literal-block">
 Just 10
 </pre>
-<p><span class="caps">BOOM</span>! Mind blown! Whaaaaaat. Applicative uses the abstract method
+<p>BOOM! Mind blown! Whaaaaaat. Applicative uses the abstract method
 <tt class="docutils literal">apply</tt> to determine how <tt class="docutils literal">*</tt> operates. Just inherit from
-Applicative, define <tt class="docutils literal">fmap</tt> and <tt class="docutils literal">apply</tt> and boom, you&#8217;re on your way.
-Well, you also need the <tt class="docutils literal">unit</tt> method &#8212; which is a class method for
-all <tt class="docutils literal">pynad</tt> types, but that&#8217;s not a requirement &#8212; which knows how to
-put a value in a minimal&nbsp;context.</p>
+Applicative, define <tt class="docutils literal">fmap</tt> and <tt class="docutils literal">apply</tt> and boom, you're on your way.
+Well, you also need the <tt class="docutils literal">unit</tt> method -- which is a class method for
+all <tt class="docutils literal">pynad</tt> types, but that's not a requirement -- which knows how to
+put a value in a minimal context.</p>
 <p>But wait, what if you have a curried function and you stuffed it into a
-Just and now you don&#8217;t want to write out
-<tt class="docutils literal">just_f * just_v1 * just_v2 ...</tt>. Sure, you could think &#8220;Well, what if
-I used <tt class="docutils literal">reduce(operator.mul, *justs)</tt>&#8221; But I thought of that&nbsp;already.</p>
+Just and now you don't want to write out
+<tt class="docutils literal">just_f * just_v1 * just_v2 ...</tt>. Sure, you could think &quot;Well, what if
+I used <tt class="docutils literal">reduce(operator.mul, *justs)</tt>&quot; But I thought of that already.</p>
 <pre class="code ipython3 literal-block">
 <span class="n">add_three_together</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">z</span><span class="p">:</span> <span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="o">+</span><span class="n">z</span>
 
@@ -233,16 +234,16 @@ I used <tt class="docutils literal">reduce(operator.mul, *justs)</tt>&#8221; But
 <pre class="literal-block">
 Just 6
 </pre>
-<p>If you&#8217;re mind isn&#8217;t blown yet, it&#8217;s because I haven&#8217;t&nbsp;revealed&#8230;</p>
+<p>If you're mind isn't blown yet, it's because I haven't revealed...</p>
 </div>
 <div class="section" id="mooooooooonaaaaaaaads">
-<h3><span class="caps">MOOOOOOOOONAAAAAAAADS</span>!!!!!</h3>
+<h3>MOOOOOOOOONAAAAAAAADS!!!!!</h3>
 <p>Monads get a bad rap because they get all sorts of overblown
-explainations. You want to know a what a monad is? It&#8217;s another way to
-compute things. It&#8217;s a glorified container with a special method. You
+explainations. You want to know a what a monad is? It's another way to
+compute things. It's a glorified container with a special method. You
 have a value in a monad, a function that takes a regular value and
-returns a monad and you bind them together. That&#8217;s it. Literally all
-there is to&nbsp;it.</p>
+returns a monad and you bind them together. That's it. Literally all
+there is to it.</p>
 <pre class="code ipython3 literal-block">
 <span class="kn">from</span> <span class="nn">pynads</span> <span class="k">import</span> <span class="n">Nothing</span>
 
@@ -254,9 +255,9 @@ there is to&nbsp;it.</p>
 Just 3
 </pre>
 <p>The Maybe monad (which consists of the Just and Nothing data types) is
-basically a glorified if expression. That&#8217;s it! The bind operation will
+basically a glorified if expression. That's it! The bind operation will
 detect if you have a failure in your computation and short circuit it.
-It&#8217;s essentially an abstraction over&nbsp;this:</p>
+It's essentially an abstraction over this:</p>
 <pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">safe_func</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -269,65 +270,67 @@ It&#8217;s essentially an abstraction over&nbsp;this:</p>
 <pre class="literal-block">
 2 None
 </pre>
-<p>Notice how that didn&#8217;t cause a nasty AttributeError, because None
-doesn&#8217;t have attributes? That&#8217;s all Maybe lets you do (this behavior is
+<p>Notice how that didn't cause a nasty AttributeError, because None
+doesn't have attributes? That's all Maybe lets you do (this behavior is
 mimicked in its fmap and apply: <tt class="docutils literal">fmap(f, Nothing)</tt> and
 <tt class="docutils literal">apply(ap_f, Nothing)</tt> both return you a Nothing). Nothing is
-extraspecialsauce because it&#8217;s a singleton. It&#8217;s basically a monadic
-None. Actually, it <em>is</em> a monadic None because it represents&#8230;well,&nbsp;Nothing.</p>
-<p>If you&#8217;ve got more binds than editor columns, then there&#8217;s something for
-you as&nbsp;well!</p>
+extraspecialsauce because it's a singleton. It's basically a monadic
+None. Actually, it <em>is</em> a monadic None because it represents...well,
+Nothing.</p>
+<p>If you've got more binds than editor columns, then there's something for
+you as well!</p>
 <pre class="code ipython3 literal-block">
 <span class="nb">print</span><span class="p">(</span><span class="n">multibind</span><span class="p">(</span><span class="n">Just</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="o">*</span><span class="n">repeat</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">Just</span><span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="mi">5</span><span class="p">)))</span>
 </pre>
 <pre class="literal-block">
 Just 6
 </pre>
-<p>Before you start thinking, &#8220;Well, monads are just glorified if
-expressions&#8221; becuase that&#8217;s missing the point, Monads are the
+<p>Before you start thinking, &quot;Well, monads are just glorified if
+expressions&quot; becuase that's missing the point, Monads are the
 abstraction abstraction. They represent a way to compute something by
-abstracting away <em>how</em> it&#8217;s&nbsp;computated.</p>
-<p>There&#8217;s the Writer monad above which is a value in a monadic context but
+abstracting away <em>how</em> it's computated.</p>
+<p>There's the Writer monad above which is a value in a monadic context but
 it also keeps some extra side-output as well. Instead of us trying to
-track this extra information ourselves, Writer says, &#8220;Hey, I&#8217;ll handle
-it for you!&#8221; It just wants a function that accepts a value and returns a
-Writer. But here&#8217;s the really cool thing, I <em>didn&#8217;t</em> have to use a
+track this extra information ourselves, Writer says, &quot;Hey, I'll handle
+it for you!&quot; It just wants a function that accepts a value and returns a
+Writer. But here's the really cool thing, I <em>didn't</em> have to use a
 dictionary. It could have a list, or a string or an integer, or a custom
-class! I hear, &#8220;But how!&#8221; Through the power&nbsp;of&#8230;</p>
+class! I hear, &quot;But how!&quot; Through the power of...</p>
 </div>
 <div class="section" id="monoids">
 <h3>Monoids!</h3>
-<p>So monoids are pretty cool. They&#8217;re a set of something, a &#8220;zero&#8221; and a
-binary operator that&#8217;s transative. Lots of things form monoids. Numbers
-are monoids! There&#8217;s <em>two</em> ways to make numbers monoids: with <tt class="docutils literal">0</tt> and
+<p>So monoids are pretty cool. They're a set of something, a &quot;zero&quot; and a
+binary operator that's transative. Lots of things form monoids. Numbers
+are monoids! There's <em>two</em> ways to make numbers monoids: with <tt class="docutils literal">0</tt> and
 <tt class="docutils literal">+</tt>, with <tt class="docutils literal">1</tt> and <tt class="docutils literal">*</tt>. However, <tt class="docutils literal">pynads</tt> is lazy and only
-defines the first&#8230;sorry, hard choices were&nbsp;made.</p>
-<p>Wait, &#8220;a zero value&#8221; but <tt class="docutils literal">1 != 0</tt>. That&#8217;s missing the point, a zero
-value is a value that doesn&#8217;t change the input when combined with the
+defines the first...sorry, hard choices were made.</p>
+<p>Wait, &quot;a zero value&quot; but <tt class="docutils literal">1 != 0</tt>. That's missing the point, a zero
+value is a value that doesn't change the input when combined with the
 binary operator. <tt class="docutils literal">x * 1 == x</tt>.</p>
-<p>But Python&#8217;s &#8220;primitive&#8221; types all form&nbsp;monads!</p>
+<p>But Python's &quot;primitive&quot; types all form monads!</p>
 <ul class="simple">
-<li><tt class="docutils literal">list</tt> is a monoid. That&#8217;s the zero value right there and it&#8217;s
-binary operator would be <tt class="docutils literal">list.extend</tt> if it was actually a&nbsp;binop.</li>
+<li><tt class="docutils literal">list</tt> is a monoid. That's the zero value right there and it's
+binary operator would be <tt class="docutils literal">list.extend</tt> if it was actually a binop.</li>
 <li><tt class="docutils literal">dict</tt> is a monoid with <tt class="docutils literal">{}</tt> and <tt class="docutils literal">dict.update</tt></li>
 <li><tt class="docutils literal">bool</tt> is a monoid with <tt class="docutils literal">False</tt> and <tt class="docutils literal">|</tt>\<tt class="docutils literal">or</tt></li>
 <li><tt class="docutils literal">set</tt> and <tt class="docutils literal">frozenset</tt> are also monoids with their empty instances
 and <tt class="docutils literal">|</tt></li>
 <li><tt class="docutils literal">str</tt> is a monoid with <tt class="docutils literal">''</tt> and <tt class="docutils literal">+</tt> (boooo using <tt class="docutils literal">+</tt> to
-combine strings! but&nbsp;whatever)</li>
+combine strings! but whatever)</li>
 </ul>
 <p>Tuple, Complex and Float are also monoids in exactly the ways you
-expect. There&#8217;s a catch though: When combining tuples, you actually get
-a list back. I&#8217;ll probably rectify this at a later point, but it&#8217;s just
-something to live with right&nbsp;now.</p>
-<p><tt class="docutils literal">pynads</tt> also defines [<span class="caps">STRIKEOUT</span>:two] three monoids of its own:
+expect. There's a catch though: When combining tuples, you actually get
+a list back. I'll probably rectify this at a later point, but it's just
+something to live with right now.</p>
+<p><tt class="docutils literal">pynads</tt> also defines [STRIKEOUT:two] three monoids of its own:
 <tt class="docutils literal">List</tt> (the monadic form of <tt class="docutils literal">tuple</tt>), <tt class="docutils literal">Map</tt> (the applicative form
-of <tt class="docutils literal">dict</tt>) and <tt class="docutils literal">Mempty</tt> (which we&#8217;re getting&nbsp;to!).</p>
-<p>Making your own monoid is easy, and you&#8217;ve probably done it before (just
+of <tt class="docutils literal">dict</tt>) and <tt class="docutils literal">Mempty</tt> (which we're getting to!).</p>
+<p>Making your own monoid is easy, and you've probably done it before (just
 not in this fashion). Just inherit from <tt class="docutils literal">pynads.Monoid</tt> create a
-<tt class="docutils literal">mempty</tt> attribute (it won&#8217;t let you without it through <tt class="docutils literal">__new__</tt>
+<tt class="docutils literal">mempty</tt> attribute (it won't let you without it through <tt class="docutils literal">__new__</tt>
 hackery) and the <tt class="docutils literal">mappend</tt> method for combining two instances of your
-monoid. Let&#8217;s assume we want a <em>real</em> tuple Monoid. We&#8217;d do it like&nbsp;this:</p>
+monoid. Let's assume we want a <em>real</em> tuple Monoid. We'd do it like
+this:</p>
 <pre class="code ipython3 literal-block">
 <span class="kn">from</span> <span class="nn">pynads</span> <span class="k">import</span> <span class="n">Monoid</span>
 
@@ -337,7 +340,7 @@ monoid. Let&#8217;s assume we want a <em>real</em> tuple Monoid. We&#8217;d do i
     <span class="n">mempty</span> <span class="o">=</span> <span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">vs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">MTuple</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">vs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MTuple</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">vs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">mappend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="c1"># type checking optional</span>
@@ -355,9 +358,9 @@ monoid. Let&#8217;s assume we want a <em>real</em> tuple Monoid. We&#8217;d do i
 MTuple(4, 5, 6, 7)
 </pre>
 <p><tt class="docutils literal">pynads.Monoid</tt> overrides <tt class="docutils literal">+</tt> to be a shortcut to <tt class="docutils literal">mappend</tt>.
-That&#8217;s all well and good, but <em>why</em> other than have a unified way of
+That's all well and good, but <em>why</em> other than have a unified way of
 combining values?! Because we get a way to reduce a list of monoids into
-a single value for&nbsp;free!</p>
+a single value for free!</p>
 <pre class="code ipython3 literal-block">
 <span class="nb">print</span><span class="p">(</span><span class="n">MTuple</span><span class="o">.</span><span class="n">mconcat</span><span class="p">(</span><span class="n">MTuple</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">MTuple</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">MTuple</span><span class="p">(</span><span class="mi">3</span><span class="p">)))</span>
 </pre>
@@ -365,9 +368,9 @@ a single value for&nbsp;free!</p>
 MTuple(1, 2, 3)
 </pre>
 <p><tt class="docutils literal">Monoid.mconcat</tt> actually delegates to the <tt class="docutils literal">mappend</tt> method and
-essentially looks like <tt class="docutils literal">reduce(cls.mappend, monoids)</tt>. That&#8217;s it.
-That&#8217;s all there is. But you can define your own <tt class="docutils literal">mconcat</tt> to get
-performace bonuses if you need&nbsp;to.</p>
+essentially looks like <tt class="docutils literal">reduce(cls.mappend, monoids)</tt>. That's it.
+That's all there is. But you can define your own <tt class="docutils literal">mconcat</tt> to get
+performace bonuses if you need to.</p>
 <pre class="code ipython3 literal-block">
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">chain</span>
 
@@ -376,7 +379,7 @@ performace bonuses if you need&nbsp;to.</p>
         <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
 
     <span class="nd">&#64;classmethod</span>
-    <span class="k">def</span> <span class="nf">mconcat</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">MTuples</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">mconcat</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">MTuples</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">CMTuple</span><span class="p">(</span><span class="o">*</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">MTuples</span><span class="p">))</span>
 </pre>
 <pre class="code ipython3 literal-block">
@@ -388,16 +391,17 @@ MTuple(1, 2, 3)
 <p><tt class="docutils literal">pynads.List</tt> and <tt class="docutils literal">pynads.Map</tt> take advantage of this to create only
 one intermediate object rather than a bunch. <tt class="docutils literal">pynads</tt> will also let
 you treat the builtin types as monoids as well through
-<tt class="docutils literal">pynads.funcs.monoid</tt> namespace which has four functions we&#8217;re
+<tt class="docutils literal">pynads.funcs.monoid</tt> namespace which has four functions we're
 interested in: <tt class="docutils literal">mempty</tt>, <tt class="docutils literal">mappend</tt>, <tt class="docutils literal">mconcat</tt> and <tt class="docutils literal">is_monoid</tt>.
-<tt class="docutils literal">mempty</tt> returns the &#8220;zero&#8221; value for a type, <tt class="docutils literal">mappend</tt> knows how to
+<tt class="docutils literal">mempty</tt> returns the &quot;zero&quot; value for a type, <tt class="docutils literal">mappend</tt> knows how to
 combine types, <tt class="docutils literal">mconcat</tt> knows how to combine an iter of types into a
 single one and <tt class="docutils literal">is_monoid</tt> knows if something is monoidal or not
-(generally, it doesn&#8217;t declare <tt class="docutils literal">decimal.Decimal</tt> to be a monoid but
-this is because I didn&#8217;t want to add a special case &#8212; special cases
-beget special&nbsp;cases).</p>
+(generally, it doesn't declare <tt class="docutils literal">decimal.Decimal</tt> to be a monoid but
+this is because I didn't want to add a special case -- special cases
+beget special cases).</p>
 <p>This is done through introspection of types and abstract base classes
-(to make the type introspection [<span class="caps">STRIKEOUT</span>:more acceptable] less&nbsp;painful).</p>
+(to make the type introspection [STRIKEOUT:more acceptable] less
+painful).</p>
 <pre class="code ipython3 literal-block">
 <span class="kn">from</span> <span class="nn">pynads.funcs</span> <span class="k">import</span> <span class="n">monoid</span>
 
@@ -413,32 +417,32 @@ hello world
 True
 </pre>
 <p>The monoid namespace is just a nice interface to the nasty plumbing that
-lives in <tt class="docutils literal">pynads.utils.monoidal</tt>. It&#8217;s pretty gross and actually
-probably pretty fragile, but it works! <span class="caps">IT</span> <span class="caps">WORKS</span>!!!</p>
+lives in <tt class="docutils literal">pynads.utils.monoidal</tt>. It's pretty gross and actually
+probably pretty fragile, but it works! IT WORKS!!!</p>
 <div class="section" id="mempty">
 <h4>Mempty</h4>
-<p>So here&#8217;s the thing that lets <tt class="docutils literal">Writer</tt> do its little trick by accept
-any monoid as a potential log. I can&#8217;t know ahead of time what you&#8217;re
-going to use to keep track of stuff with <tt class="docutils literal">Writer</tt> &#8212; I&#8217;ve drank plenty
-of spice water, but I&#8217;ve yet to develop prescient abilities. And rather
+<p>So here's the thing that lets <tt class="docutils literal">Writer</tt> do its little trick by accept
+any monoid as a potential log. I can't know ahead of time what you're
+going to use to keep track of stuff with <tt class="docutils literal">Writer</tt> -- I've drank plenty
+of spice water, but I've yet to develop prescient abilities. And rather
 than making a bunch of subclasses specialized to handle a dictionary and
 a list and a string and a blah blah blah and forcing you to make your
 own for <tt class="docutils literal">WriterLogWithMyFirstMonoid</tt> I decided to create a mempty
-monoid &#8212; <tt class="docutils literal">Mempty</tt>. It&#8217;s not an original idea. Really, it&#8217;s kind of a
-dumb&nbsp;object.</p>
-<p>It&#8217;s a singleton, so that&#8217;s a strike against it (two singletons in my
-library, my god!). It doesn&#8217;t actually <em>do</em> anything. It just sits
+monoid -- <tt class="docutils literal">Mempty</tt>. It's not an original idea. Really, it's kind of a
+dumb object.</p>
+<p>It's a singleton, so that's a strike against it (two singletons in my
+library, my god!). It doesn't actually <em>do</em> anything. It just sits
 around, taking up space until a real monoid comes along and scares it
-off. It&#8217;s mempty value is actually itself! It&#8217;s mappend just returns
-whatever its mappended with. And it&#8217;s mconcat filters out any Mempty
+off. It's mempty value is actually itself! It's mappend just returns
+whatever its mappended with. And it's mconcat filters out any Mempty
 values before trying to mconcat the remaining values (you get a Mempty
-if mconcat an iter of Mempties). There&#8217;s even an <tt class="docutils literal">__iter__</tt> method
-that yields from an empty tuple! What&#8217;s going&nbsp;on!</p>
+if mconcat an iter of Mempties). There's even an <tt class="docutils literal">__iter__</tt> method
+that yields from an empty tuple! What's going on!</p>
 <p>In Haskell, <tt class="docutils literal">mempty</tt> can be used a place holder and Haskell knows to
 do the right thing already. However, we have to teach Python how to use
 a placeholder and silently step it out of the way when a real value
 comes along. I suspect that this is similar, maybe, to how Haskell
-handles it, but I&#8217;ve not dug at&nbsp;all.</p>
+handles it, but I've not dug at all.</p>
 <pre class="code ipython3 literal-block">
 <span class="kn">from</span> <span class="nn">pynads</span> <span class="k">import</span> <span class="n">Mempty</span>
 
@@ -451,31 +455,32 @@ Mempty
 4
 {4, 5}
 </pre>
-<p>So Writer&#8217;s little trick of allowing any Monoid be the log is really
-just, &#8220;I have this dumb thing that pretends to be a Monoid as a default&nbsp;log.&#8221;</p>
+<p>So Writer's little trick of allowing any Monoid be the log is really
+just, &quot;I have this dumb thing that pretends to be a Monoid as a default
+log.&quot;</p>
 </div>
 </div>
 <div class="section" id="helpers">
 <h3>Helpers</h3>
-<p>I won&#8217;t explore this section indepth because <tt class="docutils literal">pynads.funcs</tt> has a
-whole host of helpers, with more being added as needed. There&#8217;s helpers
+<p>I won't explore this section indepth because <tt class="docutils literal">pynads.funcs</tt> has a
+whole host of helpers, with more being added as needed. There's helpers
 for making constants, composing functions, an identity function (as in
-<tt class="docutils literal">lambda x: x</tt> not <tt class="docutils literal">id(x)</tt>), turning values into Monads. There&#8217;s also
+<tt class="docutils literal">lambda x: x</tt> not <tt class="docutils literal">id(x)</tt>), turning values into Monads. There's also
 <tt class="docutils literal">pynads.utils</tt> if you need to plumb some of the internal workings like
 compatibility (did I mention all the tests pass 3.4 and 2.7?!) or how
-monoids are determined on things that aren&#8217;t explicitly&nbsp;monoids.</p>
+monoids are determined on things that aren't explicitly monoids.</p>
 </div>
 <div class="section" id="that-s-it">
-<h3>That&#8217;s&nbsp;it!</h3>
-<p>Well, not really. There&#8217;s about five other monads implemented that I
-didn&#8217;t cover (like Reader, which was a pain but also a lot of fun to
-implement). There&#8217;s more coming as well. Not just monads, but other
+<h3>That's it!</h3>
+<p>Well, not really. There's about five other monads implemented that I
+didn't cover (like Reader, which was a pain but also a lot of fun to
+implement). There's more coming as well. Not just monads, but other
 things. A proof of concept for do notation via abusing coroutines exists
 in the repo (lifted from a blog called <a class="reference external" href="http://www.valuedlessons.com/2008/01/monads-in-python-with-nice-syntax.html">Valued
 Lessons</a>
 which served as partial inspiration for this project). And maybe Monad
 Transformers if I work the gumption up for it (probably yes). And who
-knows what&nbsp;else.</p>
+knows what else.</p>
 </div>
 </div>
 
@@ -483,9 +488,9 @@ knows what&nbsp;else.</p>
             <nav>
             <ul class="articles_timeline">
  
-                <li class="previous_article">« <a href="http://justanr.github.io/musings-on-problem-solving" title="Previous: Musings on Problem&nbsp;Solving">Musings on Problem&nbsp;Solving</a></li>
+                <li class="previous_article">« <a href="http://justanr.github.io/musings-on-problem-solving" title="Previous: Musings on Problem Solving">Musings on Problem Solving</a></li>
  
-                <li class="next_article"><a href="http://justanr.github.io/crazy-ideas-and-i" title="Next: Crazy Ideas and&nbsp;I">Crazy Ideas and&nbsp;I</a> »</li>
+                <li class="next_article"><a href="http://justanr.github.io/crazy-ideas-and-i" title="Next: Crazy Ideas and I">Crazy Ideas and I</a> »</li>
             </ul>
             </nav>
             </aside>
@@ -539,7 +544,7 @@ knows what&nbsp;else.</p>
                     <span>3</span>
 </a></li>
                 <li><a href="/tags.html#python-ref">python
-                    <span>15</span>
+                    <span>16</span>
 </a></li>
             </ul>
 

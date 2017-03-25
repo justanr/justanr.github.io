@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>from alec.thoughts import * - cool stuff</title><link href="http://justanr.github.io/" rel="alternate"></link><link href="http://justanr.github.io/feeds/cool-stuff.atom.xml" rel="self"></link><id>http://justanr.github.io/</id><updated>2015-04-22T00:00:00-04:00</updated><entry><title>Fun With Descriptors</title><link href="http://justanr.github.io/fun-with-descriptors" rel="alternate"></link><published>2015-04-22T00:00:00-04:00</published><updated>2015-04-22T00:00:00-04:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2015-04-22:/fun-with-descriptors</id><summary type="html">&lt;p&gt;Once you understand their purpose and power, playing with descriptors is
-a lot of&amp;nbsp;fun.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>from alec.thoughts import * - cool stuff</title><link href="http://justanr.github.io/" rel="alternate"></link><link href="http://justanr.github.io/feeds/cool-stuff.atom.xml" rel="self"></link><id>http://justanr.github.io/</id><updated>2015-04-22T00:00:00-04:00</updated><entry><title>Fun With Descriptors</title><link href="http://justanr.github.io/fun-with-descriptors" rel="alternate"></link><published>2015-04-22T00:00:00-04:00</published><updated>2015-04-22T00:00:00-04:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2015-04-22:/fun-with-descriptors</id><summary type="html">&lt;p&gt;Once you understand their purpose and power, playing with descriptors is
+a lot of fun.&lt;/p&gt;
 &lt;p&gt;I recently found myself needing to set an instance of a class as a class
-attribute on the class in question. I&amp;#8217;m not crazy, I swear. It&amp;#8217;s for
-pynads&amp;#8217; implementation of Monoids. However …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Once you understand their purpose and power, playing with descriptors is
-a lot of&amp;nbsp;fun.&lt;/p&gt;
+attribute on the class in question. I'm not crazy, I swear. It's for
+pynads' implementation of Monoids. However, doing this …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Once you understand their purpose and power, playing with descriptors is
+a lot of fun.&lt;/p&gt;
 &lt;p&gt;I recently found myself needing to set an instance of a class as a class
-attribute on the class in question. I&amp;#8217;m not crazy, I swear. It&amp;#8217;s for
-pynads&amp;#8217; implementation of Monoids. However, doing&amp;nbsp;this:&lt;/p&gt;
+attribute on the class in question. I'm not crazy, I swear. It's for
+pynads' implementation of Monoids. However, doing this:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Thing&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;object&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="n"&gt;mempty&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Thing&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
@@ -29,33 +29,34 @@ NameError                                 Traceback (most recent call last)
 
 NameError: name 'Thing' is not defined
 &lt;/pre&gt;
-&lt;p&gt;Doesn&amp;#8217;t work. Wah wah wah. So my brain began turning, and I first tried&amp;nbsp;this:&lt;/p&gt;
+&lt;p&gt;Doesn't work. Wah wah wah. So my brain began turning, and I first tried
+this:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Thing&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;object&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="nd"&gt;&amp;#64;classmethod&lt;/span&gt;
     &lt;span class="nd"&gt;&amp;#64;property&lt;/span&gt;
-    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;mempty&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;mempty&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 
 &lt;span class="n"&gt;Thing&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mempty&lt;/span&gt;
 &lt;/pre&gt;
 &lt;pre class="literal-block"&gt;
 &amp;lt;bound method type.? of &amp;lt;class '__main__.Thing'&amp;gt;&amp;gt;
 &lt;/pre&gt;
-&lt;p&gt;At least that didn&amp;#8217;t blow up&amp;#8230;, what if I swapped&amp;nbsp;them?&lt;/p&gt;
+&lt;p&gt;At least that didn't blow up..., what if I swapped them?&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Thing&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;object&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="nd"&gt;&amp;#64;property&lt;/span&gt;
     &lt;span class="nd"&gt;&amp;#64;classmethod&lt;/span&gt;
-    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;mempty&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;mempty&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 
 &lt;span class="n"&gt;Thing&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mempty&lt;/span&gt;
 &lt;/pre&gt;
 &lt;pre class="literal-block"&gt;
 &amp;lt;property at 0x7fd39c1601d8&amp;gt;
 &lt;/pre&gt;
-&lt;p&gt;Well, that didn&amp;#8217;t work either. Hm. I had hoped that composing
+&lt;p&gt;Well, that didn't work either. Hm. I had hoped that composing
 &lt;tt class="docutils literal"&gt;classmethod&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;property&lt;/tt&gt; together would work and that Python
 would magically infer what I wanted. However, Python does no such thing,
 unsurprisingly. So, what if I made my &lt;em&gt;own&lt;/em&gt; &lt;tt class="docutils literal"&gt;classproperty&lt;/tt&gt;
@@ -64,13 +65,13 @@ descriptor?&lt;/p&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;classproperty&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;object&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;method&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
         &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;method&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;method&lt;/span&gt;
-    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__get__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;_&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;method&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__get__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;_&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="bp"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;method&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Thing&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;object&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="nd"&gt;&amp;#64;classproperty&lt;/span&gt;
-    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;mempty&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;mempty&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 
 &lt;span class="n"&gt;Thing&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mempty&lt;/span&gt;
 &lt;/pre&gt;
@@ -78,30 +79,30 @@ descriptor?&lt;/p&gt;
 &amp;lt;__main__.Thing at 0x7fd39c159588&amp;gt;
 &lt;/pre&gt;
 &lt;p&gt;It works! Five lines of code plus another three to use it! Yeah! Except
-that three line use was repeated at least three times in pynads. I&amp;#8217;m not
-sure about you, but I hate repeating myself. I&amp;#8217;m gonna make a mistake
+that three line use was repeated at least three times in pynads. I'm not
+sure about you, but I hate repeating myself. I'm gonna make a mistake
 somewhere (and did with List). Mainly because I was caching the instance
-like&amp;nbsp;this:&lt;/p&gt;
+like this:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Thing&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;object&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="n"&gt;_mempty&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;None&lt;/span&gt;
 
     &lt;span class="nd"&gt;&amp;#64;classproperty&lt;/span&gt;
-    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;mempty&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;cls&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_mempty&lt;/span&gt; &lt;span class="ow"&gt;is&lt;/span&gt; &lt;span class="kc"&gt;None&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
-            &lt;span class="n"&gt;cls&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_mempty&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;cls&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_mempty&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;mempty&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="bp"&gt;cls&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_mempty&lt;/span&gt; &lt;span class="ow"&gt;is&lt;/span&gt; &lt;span class="kc"&gt;None&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="bp"&gt;cls&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_mempty&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;cls&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_mempty&lt;/span&gt;
 
 &lt;span class="k"&gt;assert&lt;/span&gt; &lt;span class="n"&gt;Thing&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mempty&lt;/span&gt; &lt;span class="ow"&gt;is&lt;/span&gt; &lt;span class="n"&gt;Thing&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mempty&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;That&amp;#8217;s great, but that&amp;#8217;s also six lines of boilerplate, which is one
+&lt;p&gt;That's great, but that's also six lines of boilerplate, which is one
 line longer than the implementation. ): After the benadryl wore off and
 I was able to think straight, what if I just moved the boiler plate into
-the&amp;nbsp;descriptor?&lt;/p&gt;
+the descriptor?&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Instance&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;object&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__get__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;_&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__get__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;_&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="bp"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Thing&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;object&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="n"&gt;mempty&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Instance&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
@@ -113,15 +114,15 @@ the&amp;nbsp;descriptor?&lt;/p&gt;
 &amp;lt;__main__.Thing object at 0x7fd39c166e80&amp;gt;
 False
 &lt;/pre&gt;
-&lt;p&gt;Awesome. That&amp;#8217;s a much nicer use of it. The caching can also be moved
-into the descriptor&amp;nbsp;too:&lt;/p&gt;
+&lt;p&gt;Awesome. That's a much nicer use of it. The caching can also be moved
+into the descriptor too:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Instance&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;object&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
         &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_inst&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;None&lt;/span&gt;
-    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__get__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;_&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__get__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;_&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="bp"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
         &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_inst&lt;/span&gt; &lt;span class="ow"&gt;is&lt;/span&gt; &lt;span class="kc"&gt;None&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
-            &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_inst&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+            &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_inst&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
         &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_inst&lt;/span&gt;
 
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Thing&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;object&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
@@ -129,16 +130,16 @@ into the descriptor&amp;nbsp;too:&lt;/p&gt;
 
 &lt;span class="k"&gt;assert&lt;/span&gt; &lt;span class="n"&gt;Thing&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mempty&lt;/span&gt; &lt;span class="ow"&gt;is&lt;/span&gt; &lt;span class="n"&gt;Thing&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mempty&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;And, if needed, a specific instance can be created and&amp;nbsp;cached:&lt;/p&gt;
+&lt;p&gt;And, if needed, a specific instance can be created and cached:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Instance&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;object&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
         &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_inst&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;None&lt;/span&gt;
         &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;args&lt;/span&gt;
         &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;kwargs&lt;/span&gt;
-    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__get__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;_&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__get__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;_&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="bp"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
         &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_inst&lt;/span&gt; &lt;span class="ow"&gt;is&lt;/span&gt; &lt;span class="kc"&gt;None&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
-            &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_inst&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_inst&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
         &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_inst&lt;/span&gt;
 
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Thing&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;object&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
@@ -155,7 +156,7 @@ world
 &lt;pre class="literal-block"&gt;
 &amp;lt;__main__.Thing at 0x7fd39c1f5e10&amp;gt;
 &lt;/pre&gt;
-&lt;p&gt;And to show it&amp;#8217;s&amp;nbsp;cached:&lt;/p&gt;
+&lt;p&gt;And to show it's cached:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="n"&gt;Thing&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mempty&lt;/span&gt;
 &lt;/pre&gt;
@@ -163,5 +164,5 @@ world
 &amp;lt;__main__.Thing at 0x7fd39c1f5e10&amp;gt;
 &lt;/pre&gt;
 &lt;p&gt;Ta-da! Setting an instance of a class on the class as a class attribute
-&amp;#8212; a sentence that is no less confusing to read now than&amp;nbsp;before.&lt;/p&gt;
+-- a sentence that is no less confusing to read now than before.&lt;/p&gt;
 </content><category term="classes"></category><category term="data model"></category><category term="descriptors"></category><category term="pynads"></category></entry></feed>

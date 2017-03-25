@@ -19,7 +19,7 @@
 
 
 <meta name="keywords" content="python, data processing, tutorials, " />
-        <title>Python and Audio&nbsp;Metadata - from alec.thoughts import *
+        <title>Python and Audio Metadata - from alec.thoughts import *
 </title>
         <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
@@ -73,7 +73,7 @@
 <article>
 <div class="row-fluid">
     <header class="page_header span10 offset2">
-    <h1><a href="http://justanr.github.io/python-and-audio-metadata"> Python and Audio&nbsp;Metadata  </a></h1>
+    <h1><a href="http://justanr.github.io/python-and-audio-metadata"> Python and Audio Metadata  </a></h1>
     </header>
 </div>
 
@@ -81,21 +81,22 @@
         <div class="span8 offset2 article-content">
 
             <div class="section" id="metadata-and-you">
-<h2>Metadata and&nbsp;You</h2>
-<p>You&#8217;re probably familiar, at least in passing, with the concept of
-metadata. It&#8217;s data about data. In terms of audio files, it&#8217;s things&nbsp;like:</p>
+<h2>Metadata and You</h2>
+<p>You're probably familiar, at least in passing, with the concept of
+metadata. It's data about data. In terms of audio files, it's things
+like:</p>
 <ul class="simple">
 <li>Bitrate</li>
 <li>Duration/Length</li>
 <li>Artist</li>
 <li>Album</li>
-<li>Track Position (if&nbsp;available)</li>
-<li>Year released (if&nbsp;available)</li>
+<li>Track Position (if available)</li>
+<li>Year released (if available)</li>
 </ul>
-<p>Today, I&#8217;m using <a class="reference external" href="https://github.com/devsnd/tinytag">TinyTag</a>
+<p>Today, I'm using <a class="reference external" href="https://github.com/devsnd/tinytag">TinyTag</a>
 (<tt class="docutils literal">pip install tinytag</tt>) to extract metadata (and TinyTag only supports
-this), but there&#8217;s a whole plethora of libraries to extract and set
-audio&nbsp;metadata:</p>
+this), but there's a whole plethora of libraries to extract and set
+audio metadata:</p>
 <ul class="simple">
 <li>Mutagen <a class="reference external" href="https://mutagen.readthedocs.org/en/latest/">docs</a>
 <a class="reference external" href="https://bitbucket.org/lazka/mutagen">source</a></li>
@@ -105,24 +106,24 @@ audio&nbsp;metadata:</p>
 </ul>
 <div class="section" id="aside">
 <h3>Aside</h3>
-<p>I actually don&#8217;t spend a terrible amount of time on actually pulling the
-metadata out. It&#8217;s extremely straightforward with TinyTag. I spend more
+<p>I actually don't spend a terrible amount of time on actually pulling the
+metadata out. It's extremely straightforward with TinyTag. I spend more
 time with processing and massaging that data into information we can
 really work with. I revisit the cacheing decorator from the decorator
-post (and don&#8217;t follow much of my own advice &#8212; it&#8217;s kind of a do as I
-say, not as I do sort of thing, even then I&#8217;m not even really giving
+post (and don't follow much of my own advice -- it's kind of a do as I
+say, not as I do sort of thing, even then I'm not even really giving
 that great of advice) as well as improving on the Artist/Album/Track
-mock data models from the <span class="caps">API</span> post as well. There&#8217;s also a little bit
+mock data models from the API post as well. There's also a little bit
 about recursively walking directories and selectively looking for the
-files you&nbsp;want.</p>
+files you want.</p>
 </div>
 </div>
 <div class="section" id="becoming-the-nsa-of-your-music">
-<h2>Becoming the <span class="caps">NSA</span> of your&nbsp;Music</h2>
-<p>Getting the metadata is incredibly easy. I&#8217;m only going to extract it
+<h2>Becoming the NSA of your Music</h2>
+<p>Getting the metadata is incredibly easy. I'm only going to extract it
 from one artist today, but extending this out to covering your whole
 library is easy (well, as long as you store your music in one location
-and in a reasonable&nbsp;pattern).</p>
+and in a reasonable pattern).</p>
 <pre class="code ipython3 literal-block">
 <span class="kn">from</span> <span class="nn">tinytag</span> <span class="k">import</span> <span class="n">TinyTag</span>
 <span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">os.path</span> <span class="k">as</span> <span class="nn">path</span>
@@ -162,22 +163,22 @@ and in a reasonable&nbsp;pattern).</p>
 <pre class="literal-block">
 {'track_total': '14', 'title': 'x03Jezebel', 'filesize': 11915076, 'artist': 'x03Acid Bath', 'album': 'x03When the Kite String Pops', 'track': 'x035', 'audio_offset': 192239, 'bitrate': 320.0, 'year': '1994', 'samplerate': 44100, 'duration': 297.87708785043435}
 </pre>
-<p>As an aside, if you&#8217;ve never listened to <a class="reference external" href="http://www.metal-archives.com/bands/Acid_Bath/19">Acid
-Bath</a>, I can&#8217;t
+<p>As an aside, if you've never listened to <a class="reference external" href="http://www.metal-archives.com/bands/Acid_Bath/19">Acid
+Bath</a>, I can't
 recommend them enough. Hard rocking, groovy sludgey metal with lyrics
 that are equal parts Lewis Carroll, grotesque and drug binge. Some songs
 are more the typical what the layman thinks of metal (Jezebel, Cheap
 Vodka) but with songs like Venus Blue, Bleed Me an Ocean and Dead Girl
-there&#8217;s really something for most&nbsp;people.</p>
+there's really something for most people.</p>
 </div>
 <div class="section" id="data-munging-and-you">
-<h2>Data Munging and&nbsp;You</h2>
+<h2>Data Munging and You</h2>
 <p>Alright, looks like I have an encoding issue. There is something to note
-here though: <tt class="docutils literal">\x03</tt> denotes <tt class="docutils literal"><span class="caps">END</span> <span class="caps">OF</span> <span class="caps">TEXT</span></tt> and to my understanding
-you&#8217;re suppose to see it in <span class="caps">ID3</span> tags (though, that&#8217;s based on second
-hand information as my search-fu didn&#8217;t turn up anything). However, I
-have actually run into an encoding issue using TinyTag (I&#8217;m not sure if
-the problem is with the file, Python, IPython or TinyTag). An&nbsp;example:</p>
+here though: <tt class="docutils literal">\x03</tt> denotes <tt class="docutils literal">END OF TEXT</tt> and to my understanding
+you're suppose to see it in ID3 tags (though, that's based on second
+hand information as my search-fu didn't turn up anything). However, I
+have actually run into an encoding issue using TinyTag (I'm not sure if
+the problem is with the file, Python, IPython or TinyTag). An example:</p>
 <pre class="code ipython3 literal-block">
 <span class="n">nzp</span> <span class="o">=</span> <span class="n">TinyTag</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'/home/justanr/Music/At the Drive‐In/Relationship of Command/11 Non‐Zero Possibility.mp3'</span><span class="p">)</span>
 
@@ -266,26 +267,28 @@ After Fixing:  At the Drive‐In - Relationship of Command - 11 - Non‐Zero Pos
 <p>As you can see, encoding issues are <em>painful</em>. This bandage is the best
 I can come up with until I can actually track down and address the
 issue. However, this works <em>for now</em> (and like so many
-<tt class="docutils literal">#<span class="caps">TODO</span>: Address actual issue</tt> functions, it&#8217;ll inevitable end up in my
-codebase&nbsp;permanently).</p>
-<p>This is an example of <em>data munging</em>. You&#8217;ll mostly hear that phrase in
-machine learning and data processing. But when you think about, isn&#8217;t
+<tt class="docutils literal">#TODO: Address actual issue</tt> functions, it'll inevitable end up in my
+codebase permanently).</p>
+<p>This is an example of <em>data munging</em>. You'll mostly hear that phrase in
+machine learning and data processing. But when you think about, isn't
 all programming data processing? Data munging is the process of taking
 in data and massaging it into a form you can work with. Most of the
 time, this involves just converting data from one type to another.
-Sometimes it involves just throwing data away and knowing when you&nbsp;should.</p>
-<p>In this case, it&#8217;s taking a TinyTag object and breaking it into three
+Sometimes it involves just throwing data away and knowing when you
+should.</p>
+<p>In this case, it's taking a TinyTag object and breaking it into three
 separate pieces: Artist, Album and Track data models. Just like in the
-<span class="caps">API</span> data mocking post, these stand in for actual data models. However,
-now, there&#8217;s a fair bit of magic going on: cacheing, auto registration
-of albums and tracks on relevant models, and for good measure: total&nbsp;ordering.</p>
+API data mocking post, these stand in for actual data models. However,
+now, there's a fair bit of magic going on: cacheing, auto registration
+of albums and tracks on relevant models, and for good measure: total
+ordering.</p>
 <p>Cacheing is not done entirely correctly, but do note the use of
 <tt class="docutils literal">WeakValueDictionary</tt> which stores weak references. Weak references
-allow an object to be garbage collected when it&#8217;s the only remaining
+allow an object to be garbage collected when it's the only remaining
 reference left. Meaning if we created a bunch of Artist objects, stuffed
 them into permanent storage somewhere and then deleted the objects (and
-all their &#8220;strong&#8221; references), Python can come clean up some memory for
-us. Which is incredibly useful when dealing with a lot of data at&nbsp;once.</p>
+all their &quot;strong&quot; references), Python can come clean up some memory for
+us. Which is incredibly useful when dealing with a lot of data at once.</p>
 <pre class="code ipython3 literal-block">
 <span class="kn">import</span> <span class="nn">itertools</span> <span class="k">as</span> <span class="nn">it</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">wraps</span>
@@ -295,7 +298,7 @@ us. Which is incredibly useful when dealing with a lot of data at&nbsp;once.</p>
 <span class="c1"># __new__ or making a metaclass</span>
 <span class="c1"># (actually, I spent a lot of time being frustrated at them)</span>
 <span class="c1"># to handle this so there's this hack</span>
-<span class="k">def</span> <span class="nf">cache</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">cache</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
     <span class="sd">'''Helper caching and identification methods.'''</span>
     <span class="n">_registry</span> <span class="o">=</span> <span class="n">WeakValueDictionary</span><span class="p">()</span>
     <span class="n">_ids</span> <span class="o">=</span> <span class="n">it</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
@@ -303,13 +306,13 @@ us. Which is incredibly useful when dealing with a lot of data at&nbsp;once.</p>
     <span class="k">def</span> <span class="nf">by_name</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">_registry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
-    <span class="nd">&#64;wraps</span><span class="p">(</span><span class="n">cls</span><span class="p">)</span>
+    <span class="nd">&#64;wraps</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">nonlocal</span> <span class="n">_registry</span><span class="p">,</span> <span class="n">_ids</span>
 
         <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_registry</span><span class="p">:</span>
             <span class="c1"># create a new instance of the class</span>
-            <span class="n">instance</span> <span class="o">=</span> <span class="n">cls</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">instance</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
             <span class="c1"># generate id for the instance</span>
             <span class="n">instance</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">_ids</span><span class="p">)</span>
@@ -448,16 +451,16 @@ us. Which is incredibly useful when dealing with a lot of data at&nbsp;once.</p>
 </pre>
 <p>So much hard work taken care of for us with a little magic. The little
 unittest at the end is to assure us everything is working as intended.
-Uncomment them to see them in&nbsp;action.</p>
+Uncomment them to see them in action.</p>
 <p>The <tt class="docutils literal">Comparable</tt> mixin, I shamelessly
 <a class="reference external" href="http://regebro.wordpress.com/2010/12/13/python-implementing-rich-comparison-the-correct-way/">stole</a>,
-but it&#8217;ll make life much easier on the other end of this conversion if
+but it'll make life much easier on the other end of this conversion if
 we need to sort a collection of <tt class="docutils literal">Artist</tt>, <tt class="docutils literal">Album</tt> or <tt class="docutils literal">Track</tt>
 objects. I added the <tt class="docutils literal">__hash__</tt> method to it. Technically it should be
-a <tt class="docutils literal">HashableMixin</tt>, there&#8217;s already a <em>ton</em> of stuff going on in this
-frame, I decided another class would just add to the&nbsp;noise.</p>
+a <tt class="docutils literal">HashableMixin</tt>, there's already a <em>ton</em> of stuff going on in this
+frame, I decided another class would just add to the noise.</p>
 <p>Now, we need to massage our list of Acid Bath tracks into these models.
-You didn&#8217;t think I forgot about them, did&nbsp;you?</p>
+You didn't think I forgot about them, did you?</p>
 <pre class="code ipython3 literal-block">
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span>
 
@@ -532,10 +535,10 @@ Tracks:
 &lt;Track artist=Acid Bath album=When the Kite String Pops track=13 name=The Bones of Baby Dolls id=25&gt;
 &lt;Track artist=Acid Bath album=When the Kite String Pops track=14 name=Cassie Eats Cockroaches id=26&gt;
 </pre>
-<p>Of course to avoid dealing with &#8220;hanger on&#8221; variables as I like to call
+<p>Of course to avoid dealing with &quot;hanger on&quot; variables as I like to call
 them, this logic (as well as the logic to take a directory and extract
-it&#8217;s subdirectories and finally the music files in it) could be stored
-in a function that&#8217;d be callable again and again. Something like&nbsp;this:</p>
+it's subdirectories and finally the music files in it) could be stored
+in a function that'd be callable again and again. Something like this:</p>
 <pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">get_music_files</span><span class="p">(</span><span class="n">basedir</span><span class="p">,</span> <span class="n">valid_types</span><span class="o">=</span><span class="p">(</span><span class="s1">'mp3'</span><span class="p">,</span> <span class="s1">'ogg'</span><span class="p">,</span> <span class="s1">'oga'</span><span class="p">,</span> <span class="s1">'wav'</span><span class="p">,</span> <span class="s1">'flac'</span><span class="p">),</span> <span class="n">ignore</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">'''Walks the base directory to extract album directories from it.
@@ -642,7 +645,8 @@ Tracks:
 &lt;Track artist=At the Drive‐In album=Vaya track=7 name=198d id=44&gt;
 </pre>
 <p>Of course, we could generalize <tt class="docutils literal">get_music_files</tt> to recursively walk
-the base Music directory so it&#8217;s not confined to my organizational&nbsp;scheme.</p>
+the base Music directory so it's not confined to my organizational
+scheme.</p>
 <pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">r_get_music_files</span><span class="p">(</span><span class="n">basedir</span><span class="p">,</span> <span class="n">valid_types</span><span class="o">=</span><span class="p">(</span><span class="s1">'mp3'</span><span class="p">,</span> <span class="s1">'ogg'</span><span class="p">,</span> <span class="s1">'oga'</span><span class="p">,</span> <span class="s1">'wav'</span><span class="p">,</span> <span class="s1">'flac'</span><span class="p">),</span> <span class="n">ignore</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">tracks</span> <span class="o">=</span> <span class="p">[]</span>
@@ -699,23 +703,24 @@ Tracks:
 &lt;Track artist=Alt-J album=An Awesome Wave track=12 name=Bloodflow id=56&gt;
 &lt;Track artist=Alt-J album=An Awesome Wave track=13 name=Taro id=57&gt;
 </pre>
-<p>That works, but it&#8217;s recursive (in a bad way). And it stores everything
+<p>That works, but it's recursive (in a bad way). And it stores everything
 <em>in memory</em>. Yuck. I have approximately 26,000 or so audio files
 chilling in my music directory. Do we really want to store all that
 information all at once when the ultimate goal is to simlply stuff it in
-the database (did I give away my plan?) and throw the immediate result&nbsp;away.</p>
-<p>You know what&#8217;s really good at doing something and then throwing results
+the database (did I give away my plan?) and throw the immediate result
+away.</p>
+<p>You know what's really good at doing something and then throwing results
 away? Generators. Adapting <tt class="docutils literal">r_get_music_files</tt> to a general file
-walker is trivial but I&#8217;m slightly vain and overly happy with my end
-generator. Before anyone jumps on me and says, &#8220;<span class="caps">ALEC</span>! There&#8217;s os.walk!
-You&#8217;ve got os imported&nbsp;already!&#8221;</p>
+walker is trivial but I'm slightly vain and overly happy with my end
+generator. Before anyone jumps on me and says, &quot;ALEC! There's os.walk!
+You've got os imported already!&quot;</p>
 <p>I know. <tt class="docutils literal">os.walk</tt> almost does what we want: start with a folder, find
-the subfolders, yield a list of things. Except in this case it&#8217;s three
+the subfolders, yield a list of things. Except in this case it's three
 tuples: <tt class="docutils literal">(dirpath, dirnames, filenames)</tt>. Which means we need to then
 parse that before getting to what we want. We could also use glob for
-this &#8212; iglob uses an iterator &#8212; but that delves into using regular
-expressions. There&#8217;s <tt class="docutils literal">pathlib</tt> in 3.4, but I&#8217;m ultimately unfamilar
-with&nbsp;it.</p>
+this -- iglob uses an iterator -- but that delves into using regular
+expressions. There's <tt class="docutils literal">pathlib</tt> in 3.4, but I'm ultimately unfamilar
+with it.</p>
 <pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">walk</span><span class="p">(</span><span class="n">basedir</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">basedir</span><span class="p">)):</span>
@@ -775,26 +780,26 @@ with&nbsp;it.</p>
 &lt;Album name=Bridges to Burn artist=16 id=6&gt;
 &lt;Track artist=16 album=Bridges to Burn track=1 name=Throw in the Towel id=58&gt;
 </pre>
-<p>It&#8217;s still procedural code but it&#8217;s nicely composable. And it&#8217;s quick.
-In this particular instance, it&#8217;s faster than os.walk but I&#8217;ve always
-thought benchmarks are useless without a greater context &#8212; so for shits
+<p>It's still procedural code but it's nicely composable. And it's quick.
+In this particular instance, it's faster than os.walk but I've always
+thought benchmarks are useless without a greater context -- so for shits
 and giggles, I ran both over my Music directory (with all 26,000+
 files), just spitting values into 0 length deque, and my walk function
-took about ~560ms, os.walk took ~350ms. Considering we&#8217;re doing a little
-more work than os.walk, I&#8217;ll take it any day of the&nbsp;week.</p>
+took about ~560ms, os.walk took ~350ms. Considering we're doing a little
+more work than os.walk, I'll take it any day of the week.</p>
 <p>And even though convert_track only accepts one track now, chunking over
-walk with <tt class="docutils literal">islice</tt> is&nbsp;obvious.</p>
-<p>Now that I&#8217;ve digressed completely from audio metadata to quickly
-processing through files, I think I&#8217;ll end&nbsp;here.</p>
+walk with <tt class="docutils literal">islice</tt> is obvious.</p>
+<p>Now that I've digressed completely from audio metadata to quickly
+processing through files, I think I'll end here.</p>
 </div>
 
             <aside>
             <nav>
             <ul class="articles_timeline">
  
-                <li class="previous_article">« <a href="http://justanr.github.io/decorator-day" title="Previous: Decorator&nbsp;Day">Decorator&nbsp;Day</a></li>
+                <li class="previous_article">« <a href="http://justanr.github.io/decorator-day" title="Previous: Decorator Day">Decorator Day</a></li>
  
-                <li class="next_article"><a href="http://justanr.github.io/describing-descriptors" title="Next: Describing&nbsp;Descriptors">Describing&nbsp;Descriptors</a> »</li>
+                <li class="next_article"><a href="http://justanr.github.io/describing-descriptors" title="Next: Describing Descriptors">Describing Descriptors</a> »</li>
             </ul>
             </nav>
             </aside>
@@ -845,7 +850,7 @@ processing through files, I think I&#8217;ll end&nbsp;here.</p>
                     <span>1</span>
 </a></li>
                 <li><a href="/tags.html#python-ref">python
-                    <span>15</span>
+                    <span>16</span>
 </a></li>
             </ul>
 

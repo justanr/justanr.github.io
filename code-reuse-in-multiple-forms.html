@@ -19,7 +19,7 @@
 
 
 <meta name="keywords" content="python, design, tips and tricks, " />
-        <title>Code Reuse in Multiple&nbsp;Forms - from alec.thoughts import *
+        <title>Code Reuse in Multiple Forms - from alec.thoughts import *
 </title>
         <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
@@ -73,7 +73,7 @@
 <article>
 <div class="row-fluid">
     <header class="page_header span10 offset2">
-    <h1><a href="http://justanr.github.io/code-reuse-in-multiple-forms"> Code Reuse in Multiple&nbsp;Forms  </a></h1>
+    <h1><a href="http://justanr.github.io/code-reuse-in-multiple-forms"> Code Reuse in Multiple Forms  </a></h1>
     </header>
 </div>
 
@@ -81,15 +81,15 @@
         <div class="span8 offset2 article-content">
 
             <div class="section" id="reusing-code-or-how-i-learned-to-stop-repeating-myself">
-<h2>Reusing Code, or: How I Learned to Stop Repeating&nbsp;Myself</h2>
+<h2>Reusing Code, or: How I Learned to Stop Repeating Myself</h2>
 <p>One of the best things about coding is not having to do the same thing
 over and over again. You automate. You work things into functions and
 objects and have <em>them</em> worry about completing a series of actions for
-you. Why wouldn&#8217;t you do the same thing when <em>actually writing&nbsp;code?</em></p>
+you. Why wouldn't you do the same thing when <em>actually writing code?</em></p>
 <p>There are times where you find yourself repeating code; when this
-happens, you should consider if it&#8217;s possible to refactor and break the
+happens, you should consider if it's possible to refactor and break the
 issue into a reuable piece of code. Generally, the rule of three comes
-in&nbsp;play:</p>
+in play:</p>
 <pre class="literal-block">
 There are two &quot;rules of three&quot; in [software] reuse:
 
@@ -98,17 +98,17 @@ There are two &quot;rules of three&quot; in [software] reuse:
 </pre>
 <p><a class="reference external" href="http://www.amazon.com/exec/obidos/ASIN/0321117425/">Facts and Fallacies of Software
 Engineering</a> #18
-Credit to Jeff Atwood&#8217;s Coding Horror post about the <a class="reference external" href="http://blog.codinghorror.com/rule-of-three/">Rule of
+Credit to Jeff Atwood's Coding Horror post about the <a class="reference external" href="http://blog.codinghorror.com/rule-of-three/">Rule of
 Three</a> for bringing it
-to my&nbsp;attention.</p>
+to my attention.</p>
 <div class="section" id="about-this-post">
-<h3>About This&nbsp;Post</h3>
+<h3>About This Post</h3>
 <p>This post is just going to be a <em>brief</em> overview of common techniques
 and patterns to avoid writing the same thing <em>over and over</em> again.
 Starting with functions and moving into objects, inheritance, mixins,
-composition, decorators and context managers. There&#8217;s plenty of other
-techniques, patterns and idioms that I don&#8217;t touch on either but this
-post isn&#8217;t meant to be an exhaustive list&nbsp;either.</p>
+composition, decorators and context managers. There's plenty of other
+techniques, patterns and idioms that I don't touch on either but this
+post isn't meant to be an exhaustive list either.</p>
 </div>
 </div>
 <div class="section" id="functions">
@@ -116,7 +116,7 @@ post isn&#8217;t meant to be an exhaustive list&nbsp;either.</p>
 <p>Functions are a great way to ensure that a piece of code is always
 executed the same way. This could be as simple a small expression like
 <tt class="docutils literal">(a + b) * x</tt> or something that performs a complicated piece of logic.
-Functions are the most basic form of code reuse in&nbsp;Python.</p>
+Functions are the most basic form of code reuse in Python.</p>
 <pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">calc</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Our business crucial algorithm&quot;&quot;&quot;</span>
@@ -128,31 +128,31 @@ Functions are the most basic form of code reuse in&nbsp;Python.</p>
 9
 </pre>
 <p>Python also offers a limited form of anonymous functions called
-<tt class="docutils literal">lambda</tt>. They&#8217;re limited to just a single expression with no
+<tt class="docutils literal">lambda</tt>. They're limited to just a single expression with no
 statements in them. A lot of them time, they serve as basic callbacks or
 as key functions for a sort or group method. The syntax is simple and
-the return value is the outcome of the&nbsp;expression.</p>
+the return value is the outcome of the expression.</p>
 <pre class="code ipython3 literal-block">
 <span class="nb">sorted</span><span class="p">([(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)],</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 </pre>
 <pre class="literal-block">
 [(3, -1), (0, 0), (1, 2)]
 </pre>
-<p>While lambdas are incredibly useful in many instances, it&#8217;s generally
-considered bad form to assign them to variables (since they&#8217;re supposed
-to be anonymous functions), not that I&#8217;ve never done that when it suited
-my needs.&nbsp;;)</p>
+<p>While lambdas are incredibly useful in many instances, it's generally
+considered bad form to assign them to variables (since they're supposed
+to be anonymous functions), not that I've never done that when it suited
+my needs. ;)</p>
 </div>
 <div class="section" id="objects">
 <h2>Objects</h2>
 <p>Objects are really the poster child for code reuse. Essentially, an
 object is a collection of data and functions that inter relate. Many in
-the Python community are fond of calling them a pile of dictionaries &#8212;
-because that&#8217;s what they essentially are in&nbsp;Python.</p>
+the Python community are fond of calling them a pile of dictionaries --
+because that's what they essentially are in Python.</p>
 <p>Objects offer all sorts of possibilities such as inheritance and
-composition, which I&#8217;ll briefly touch upon here. For now, a simple
+composition, which I'll briefly touch upon here. For now, a simple
 example will suffice: take our business critical algorithm and turn it
-into a spreadsheet&nbsp;row</p>
+into a spreadsheet row</p>
 <pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">SpreadsheetRow</span><span class="p">:</span>
 
@@ -170,26 +170,26 @@ into a spreadsheet&nbsp;row</p>
 <pre class="literal-block">
 9
 </pre>
-<p>Notice how we&#8217;re already reusing code to find our business critical
+<p>Notice how we're already reusing code to find our business critical
 total of 9! If later, someone in accounting realizes that we should
 actually be doing <tt class="docutils literal">a * (b + x)</tt>, we simply change the original
-calculation&nbsp;function.</p>
+calculation function.</p>
 <div class="section" id="inheritance">
 <h3>Inheritance</h3>
 <p>Inheritance is simply a way of giving access of all the data and methods
-of a class to another class. It&#8217;s commonly called &#8220;specialization,&#8221;
-though Raymond Hettinger aptly describes it as &#8220;delegating work.&#8221; If
+of a class to another class. It's commonly called &quot;specialization,&quot;
+though Raymond Hettinger aptly describes it as &quot;delegating work.&quot; If
 later, accounting wants to be able to label all of our spreadsheet rows,
 we could go back and modify the original class or we could design a new
-one that does this for&nbsp;us.</p>
+one that does this for us.</p>
 <p>Accessing information in the inherited class is done through
-<tt class="docutils literal">super()</tt>, I won&#8217;t delve into it&#8217;s details here but it is <a class="reference external" href="http://rhettinger.wordpress.com/2011/05/26/super-considered-super/">quite
+<tt class="docutils literal">super()</tt>, I won't delve into it's details here but it is <a class="reference external" href="http://rhettinger.wordpress.com/2011/05/26/super-considered-super/">quite
 super</a>.</p>
 <pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">LabeledSpreadsheetRow</span><span class="p">(</span><span class="n">SpreadsheetRow</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="n">label</span>
 
 <span class="n">row</span> <span class="o">=</span> <span class="n">LabeledSpreadsheetRow</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">'1'</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
@@ -200,21 +200,21 @@ The total for 1 is 9
 </pre>
 <div class="section" id="mixins">
 <h4>Mixins</h4>
-<p>Mixins are a type of multiple inheritance, which I won&#8217;t fully delve
-into here because it&#8217;s a complicated and touchy subject. However, Python
-supports it. Because of this and it&#8217;s support for duck typing, we can
+<p>Mixins are a type of multiple inheritance, which I won't fully delve
+into here because it's a complicated and touchy subject. However, Python
+supports it. Because of this and it's support for duck typing, we can
 completely forego the use of Interfaces and Traits which are common in
-single inheritance&nbsp;languages.</p>
+single inheritance languages.</p>
 <p>Mixins are a way of writing logic that is common to many objects and
-placing it in a single location. Mixins are also classes that aren&#8217;t
+placing it in a single location. Mixins are also classes that aren't
 meant to be instantiated on their own either, since they represent a
 small piece of a puzzle rather than the whole picture. A common problem
-I use mixins for is creating a generic <tt class="docutils literal">__repr__</tt> method for&nbsp;objects.</p>
+I use mixins for is creating a generic <tt class="docutils literal">__repr__</tt> method for objects.</p>
 <pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">ReprMixin</span><span class="p">:</span>
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
         <span class="n">attrs</span> <span class="o">=</span> <span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
         <span class="k">return</span> <span class="s2">&quot;&lt;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
 
@@ -228,23 +228,23 @@ I use mixins for is creating a generic <tt class="docutils literal">__repr__</tt
 '&lt;Row b=2, x=3, a=1, label=1&gt;'
 </pre>
 <p>This showcases the power of inheritance and mixins: composing complex
-objects from smaller parts into what you&#8217;re wanting. The actual class
-we&#8217;re using implements no logic of it&#8217;s own but we&#8217;re now provided&nbsp;with:</p>
+objects from smaller parts into what you're wanting. The actual class
+we're using implements no logic of it's own but we're now provided with:</p>
 <ul class="simple">
-<li>A repr&nbsp;method</li>
-<li>A calculation&nbsp;method</li>
-<li>A label&nbsp;attribute</li>
-<li>Data points to&nbsp;calculate</li>
+<li>A repr method</li>
+<li>A calculation method</li>
+<li>A label attribute</li>
+<li>Data points to calculate</li>
 </ul>
 </div>
 </div>
 <div class="section" id="composition">
 <h3>Composition</h3>
-<p>Composition is a fancy way of saying we&#8217;re going to build an object
-using other objects, in other words: composing them from parts. It&#8217;s a
-similar idea to inheritance, but instead the objects we&#8217;re using are
+<p>Composition is a fancy way of saying we're going to build an object
+using other objects, in other words: composing them from parts. It's a
+similar idea to inheritance, but instead the objects we're using are
 stored as attributes on the main object. We have spreadsheet rows, why
-not a spreadsheet to hold&nbsp;them?</p>
+not a spreadsheet to hold them?</p>
 <pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Spreadsheet</span><span class="p">(</span><span class="n">ReprMixin</span><span class="p">):</span>
 
@@ -273,8 +273,8 @@ The total for 2 is 64
 <pre class="literal-block">
 &quot;&lt;Spreadsheet name=alec's totals, rows=[&lt;Row b=2, x=3, a=1, label=1&gt;, &lt;Row b=5, x=8, a=3, label=2&gt;]&gt;&quot;
 </pre>
-<p>Here we&#8217;re not only reusing the ReprMixin so we can have accurate
-information about our Spreadsheet object, we&#8217;re also reusing the Row
+<p>Here we're not only reusing the ReprMixin so we can have accurate
+information about our Spreadsheet object, we're also reusing the Row
 objects to provide that logic for free, leaving us to just implement the
 <tt class="docutils literal">show_all</tt> and <tt class="docutils literal">total</tt> methods.</p>
 </div>
@@ -283,15 +283,15 @@ objects to provide that logic for free, leaving us to just implement the
 <h2>Decorators</h2>
 <p>Decorators are a way factoring logic out of a class or function and into
 another class or function. Or to add extra logic to it. That sounds
-confusing, but it&#8217;s really not. I&#8217;ve written about them
+confusing, but it's really not. I've written about them
 <a class="reference external" href="http://justanr.blogspot.com/2014/08/decorator-day-exploration-of-decorators.html">elsewhere</a>,
-so if you&#8217;re unfamiliar with them I recommend reading that first. Here,
-we&#8217;re going to use two decorators Python provides in the standard
+so if you're unfamiliar with them I recommend reading that first. Here,
+we're going to use two decorators Python provides in the standard
 library called <tt class="docutils literal">total_ordering</tt> so we can sort our Row objects and the
 other is the <tt class="docutils literal">property</tt> decorator which allows us to retreat a
 function as if it were an attribute (via the <a class="reference external" href="http://justanr.blogspot.com/2014/09/descriptor-day.html">descriptor
 protocol</a>
-which is a fantastic code reuse ability that I won&#8217;t explore&nbsp;here).</p>
+which is a fantastic code reuse ability that I won't explore here).</p>
 <pre class="code ipython3 literal-block">
 <span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">total_ordering</span>
 
@@ -317,19 +317,19 @@ which is a fantastic code reuse ability that I won&#8217;t explore&nbsp;here).</
 <p>What <tt class="docutils literal">total_ordering</tt> does is provide <em>all</em> the missing rich
 comparison operators for us. Meaning even though we only defined
 <tt class="docutils literal">__lt__</tt> and <tt class="docutils literal">__eq__</tt> here, we also have <tt class="docutils literal">__le__</tt>, <tt class="docutils literal">__gt__</tt>,
-<tt class="docutils literal">__ge__</tt>, and <tt class="docutils literal">__ne__</tt> available to&nbsp;us.</p>
+<tt class="docutils literal">__ge__</tt>, and <tt class="docutils literal">__ne__</tt> available to us.</p>
 <p>Decorators are an incredibly powerful to modify your regular Python
-functions and&nbsp;objects.</p>
+functions and objects.</p>
 </div>
 <div class="section" id="context-managers">
-<h2>Context&nbsp;Managers</h2>
+<h2>Context Managers</h2>
 <p>Context managers are a way of handling operations you typically do in
 pairs: open a file, close a file; start a timer, end a timer; acquire a
 lock, release a lock; start a transactio, end a transaction. Really,
-anything you do in pairs should be a candidate for context&nbsp;managers.</p>
+anything you do in pairs should be a candidate for context managers.</p>
 <p>Writing context managers is pretty easy, depending on which method you
-go about. I&#8217;ll likely explore them in a future post. For now, I&#8217;m going
-to stick to using the generator context manager form as an&nbsp;example:</p>
+go about. I'll likely explore them in a future post. For now, I'm going
+to stick to using the generator context manager form as an example:</p>
 <pre class="code ipython3 literal-block">
 <span class="kn">from</span> <span class="nn">contextlib</span> <span class="k">import</span> <span class="n">contextmanager</span>
 
@@ -347,30 +347,30 @@ Before the greeting.
 Hello Alec
 After the greeting.
 </pre>
-<p>We won&#8217;t be writing a context manager here, but rather using one to
-implement an &#8220;alternate constructor&#8221; for our <tt class="docutils literal">Spreadsheet</tt> class.
+<p>We won't be writing a context manager here, but rather using one to
+implement an &quot;alternate constructor&quot; for our <tt class="docutils literal">Spreadsheet</tt> class.
 Alternate constructors are a way of initializing an object in a specific
 way. These are especially handy if you find yourself occasionally
 creating an object under certain conditions. Consider <tt class="docutils literal">dict.fromkeys</tt>
 which lets you fill a dictionary with keys from an iterable that all
-have the same&nbsp;value:</p>
+have the same value:</p>
 <pre class="code ipython3 literal-block">
 <span class="nb">print</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span> <span class="kc">None</span><span class="p">))</span>
 </pre>
 <pre class="literal-block">
 {0: None, 1: None, 2: None, 3: None, 4: None}
 </pre>
-<p>In our case, we&#8217;ll probably want to draw our information from a <span class="caps">CSV</span> file
+<p>In our case, we'll probably want to draw our information from a CSV file
 occasionally. If we do it often enough, writing the setup logic could
-become tedious to rewrite all over the&nbsp;place.</p>
+become tedious to rewrite all over the place.</p>
 <pre class="code ipython3 literal-block">
 <span class="kn">import</span> <span class="nn">csv</span>
 
 <span class="k">class</span> <span class="nc">CSVSpreadsheet</span><span class="p">(</span><span class="n">Spreadsheet</span><span class="p">):</span>
 
     <span class="nd">&#64;classmethod</span>
-    <span class="k">def</span> <span class="nf">from_csv</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">sheetname</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
-        <span class="n">sheet</span> <span class="o">=</span> <span class="n">cls</span><span class="p">(</span><span class="n">sheetname</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">from_csv</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">sheetname</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="n">sheet</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">sheetname</span><span class="p">)</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
             <span class="n">reader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">readlines</span><span class="p">())</span>
             <span class="n">sheet</span><span class="o">.</span><span class="n">rows</span> <span class="o">=</span> <span class="p">[</span><span class="n">ComparableRow</span><span class="p">(</span><span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">row</span><span class="p">))</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">]</span>
@@ -389,16 +389,16 @@ The total for 3 is 16
 <div class="section" id="fin">
 <h2>Fin</h2>
 <p>Hopefully this gives you an idea for reusing code in your own projects.
-Maybe you&#8217;ll write your own crappy spreadsheet object as&nbsp;well.</p>
+Maybe you'll write your own crappy spreadsheet object as well.</p>
 </div>
 
             <aside>
             <nav>
             <ul class="articles_timeline">
  
-                <li class="previous_article">« <a href="http://justanr.github.io/describing-descriptors" title="Previous: Describing&nbsp;Descriptors">Describing&nbsp;Descriptors</a></li>
+                <li class="previous_article">« <a href="http://justanr.github.io/describing-descriptors" title="Previous: Describing Descriptors">Describing Descriptors</a></li>
  
-                <li class="next_article"><a href="http://justanr.github.io/observer-pattern-with-descriptors" title="Next: Observer Pattern with&nbsp;Descriptors">Observer Pattern with&nbsp;Descriptors</a> »</li>
+                <li class="next_article"><a href="http://justanr.github.io/observer-pattern-with-descriptors" title="Next: Observer Pattern with Descriptors">Observer Pattern with Descriptors</a> »</li>
             </ul>
             </nav>
             </aside>
@@ -449,7 +449,7 @@ Maybe you&#8217;ll write your own crappy spreadsheet object as&nbsp;well.</p>
                     <span>7</span>
 </a></li>
                 <li><a href="/tags.html#python-ref">python
-                    <span>15</span>
+                    <span>16</span>
 </a></li>
             </ul>
 

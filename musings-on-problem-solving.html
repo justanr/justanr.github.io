@@ -19,7 +19,7 @@
 
 
 <meta name="keywords" content="python, design, tips and tricks, " />
-        <title>Musings on Problem&nbsp;Solving - from alec.thoughts import *
+        <title>Musings on Problem Solving - from alec.thoughts import *
 </title>
         <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
@@ -73,7 +73,7 @@
 <article>
 <div class="row-fluid">
     <header class="page_header span10 offset2">
-    <h1><a href="http://justanr.github.io/musings-on-problem-solving"> Musings on Problem&nbsp;Solving  </a></h1>
+    <h1><a href="http://justanr.github.io/musings-on-problem-solving"> Musings on Problem Solving  </a></h1>
     </header>
 </div>
 
@@ -81,48 +81,49 @@
         <div class="span8 offset2 article-content">
 
             <p>I just started reading a book on algorithms and data structures in
-Python. I&#8217;ve also commited myself to reading every chapter, taking notes
+Python. I've also commited myself to reading every chapter, taking notes
 and doing every exercise at the end of each chapter (okay, Chapter 1 is
-all &#8220;This is Python, this is the syntax, here&#8217;s how you loop&#8230;&#8221; so I
-skimmed it) except for the ones I can&#8217;t reasonably fit in a single
-IPython Notebook cell (I&#8217;m not trying shove a calculator into a
-notebook) or are just plain boring (&#8220;Print a statement 100 times!&#8221; &#8212;
-seriously, this is an&nbsp;exercise).</p>
-<p>Most of the problems are okay, made me think some. Some are ones I&#8217;ve
+all &quot;This is Python, this is the syntax, here's how you loop...&quot; so I
+skimmed it) except for the ones I can't reasonably fit in a single
+IPython Notebook cell (I'm not trying shove a calculator into a
+notebook) or are just plain boring (&quot;Print a statement 100 times!&quot; --
+seriously, this is an exercise).</p>
+<p>Most of the problems are okay, made me think some. Some are ones I've
 done before. Others made me think about how to decompose the problem
-into smaller, more managable bits. And I&#8217;d like to share my process on
-one in&nbsp;particular.</p>
+into smaller, more managable bits. And I'd like to share my process on
+one in particular.</p>
 <div class="section" id="our-task">
-<h2>Our&nbsp;Task</h2>
+<h2>Our Task</h2>
 <p>To paraphrase the exercise: We want to accept three integer inputs and
 determine if either <tt class="docutils literal">a = f(b,c)</tt> or <tt class="docutils literal">f(a,b) = c</tt>, where f is some
 mathematical function (maybe addition, modulo but log and pow are
 candidates as well). Right now, if you feel this is a complex challenge,
 I want you attempt to code it and come back and see how your code and my
-code differs. If you get stuck, don&#8217;t feel bad and come along for the&nbsp;ride.</p>
+code differs. If you get stuck, don't feel bad and come along for the
+ride.</p>
 </div>
 <div class="section" id="the-steps">
-<h2>The&nbsp;Steps</h2>
+<h2>The Steps</h2>
 <p>The first thing I like to try to do is break a problem down into steps.
 If a step is ambigous, I try to decompose the step into smaller bits.
-Eventually, I have kinda procedural&nbsp;pseudo-code.</p>
+Eventually, I have kinda procedural pseudo-code.</p>
 <ol class="arabic simple">
-<li>Collect&nbsp;Operations</li>
-<li>Collect&nbsp;Integers</li>
-<li>Map inputs to&nbsp;operations</li>
-<li>Check if at least one operation returned&nbsp;true</li>
-<li>Put the whole thing&nbsp;together.</li>
+<li>Collect Operations</li>
+<li>Collect Integers</li>
+<li>Map inputs to operations</li>
+<li>Check if at least one operation returned true</li>
+<li>Put the whole thing together.</li>
 </ol>
-<p>To me, those are pretty clear cut, atomic steps. Sure, they&#8217;re composed
+<p>To me, those are pretty clear cut, atomic steps. Sure, they're composed
 of smaller steps internally, but they represent a single unit of work
 each function of the program needs to do. Step 5 is usually implied, but
-I find it&#8217;s nice to list&nbsp;anyways.</p>
+I find it's nice to list anyways.</p>
 <div class="section" id="step-1-collect-operations">
-<h3>Step 1: Collect&nbsp;Operations</h3>
-<p>We&#8217;ll just make a list of all the operations we want to check against.
+<h3>Step 1: Collect Operations</h3>
+<p>We'll just make a list of all the operations we want to check against.
 Since Python has first class functions (meaning functions can be treated
-like data), this is <em>really</em> easy. We&#8217;ll also make a simple root
-function for calculating things like cubic roots as&nbsp;well.</p>
+like data), this is <em>really</em> easy. We'll also make a simple root
+function for calculating things like cubic roots as well.</p>
 <pre class="code ipython3 literal-block">
 <span class="kn">from</span> <span class="nn">operator</span> <span class="k">import</span> <span class="n">add</span><span class="p">,</span> <span class="n">sub</span><span class="p">,</span> <span class="n">mul</span><span class="p">,</span> <span class="n">mod</span><span class="p">,</span> <span class="n">truediv</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">log</span>
@@ -134,38 +135,38 @@ function for calculating things like cubic roots as&nbsp;well.</p>
 
 <span class="n">operations</span> <span class="o">=</span> <span class="p">[</span><span class="n">add</span><span class="p">,</span> <span class="n">sub</span><span class="p">,</span> <span class="n">mul</span><span class="p">,</span> <span class="n">mod</span><span class="p">,</span> <span class="n">truediv</span><span class="p">,</span> <span class="n">log</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="nb">pow</span><span class="p">]</span>
 </pre>
-<p>Super simple. Now, let&#8217;s move&nbsp;on.</p>
+<p>Super simple. Now, let's move on.</p>
 </div>
 <div class="section" id="step-3-map-inputs-to-operations">
-<h3>Step 3: Map Inputs To&nbsp;Operations</h3>
-<p><span class="dquo">&#8220;</span>Alec,&#8221; you say, &#8220;You skipped a step!&#8221; And I did. Because I/O is nasty
-and I&#8217;d like to do it last. For now, let&#8217;s assume the integers we
-collected are 1, 2 and&nbsp;3.</p>
+<h3>Step 3: Map Inputs To Operations</h3>
+<p>&quot;Alec,&quot; you say, &quot;You skipped a step!&quot; And I did. Because I/O is nasty
+and I'd like to do it last. For now, let's assume the integers we
+collected are 1, 2 and 3.</p>
 <pre class="code ipython3 literal-block">
 <span class="n">integers</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
 </pre>
 <p>For this step we need to make our operation to a potential output.
 Basically: <tt class="docutils literal">f(a, b) == c</tt>. Again, this is easy. Even if we decide to
-check if <tt class="docutils literal">a == f(b,c)</tt> in the same step. Like I said before, Python&#8217;s
+check if <tt class="docutils literal">a == f(b,c)</tt> in the same step. Like I said before, Python's
 functions can be treated just like data and this includes passing them
-as arguments to other&nbsp;functions.</p>
+as arguments to other functions.</p>
 <pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">either_side_true</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">a</span> <span class="o">==</span> <span class="n">op</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="ow">or</span> <span class="n">op</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span> <span class="o">==</span> <span class="n">c</span>
 </pre>
 </div>
 <div class="section" id="step-4-determine-if-any-check-returned-true">
-<h3>Step 4: Determine if any check returned&nbsp;True</h3>
-<p>There&#8217;s many ways we could do this. But the key here is the word <tt class="docutils literal">any</tt>
-&#8212; which happens to be a Python built-in function. What <tt class="docutils literal">any</tt> does is
+<h3>Step 4: Determine if any check returned True</h3>
+<p>There's many ways we could do this. But the key here is the word <tt class="docutils literal">any</tt>
+-- which happens to be a Python built-in function. What <tt class="docutils literal">any</tt> does is
 accept an iterable of values and checks if at least one of them is True.
-There&#8217;s also its sibling <tt class="docutils literal">all</tt> which checks that none of the values
-are False. What&#8217;s really nice about <tt class="docutils literal">any</tt> and <tt class="docutils literal">all</tt> is they allow
+There's also its sibling <tt class="docutils literal">all</tt> which checks that none of the values
+are False. What's really nice about <tt class="docutils literal">any</tt> and <tt class="docutils literal">all</tt> is they allow
 collapsing a bunch of <tt class="docutils literal">and</tt>/<tt class="docutils literal">or</tt> groupings in an <tt class="docutils literal">if</tt> statement
-into a single&nbsp;expression.</p>
+into a single expression.</p>
 <p>Say you wanted to check if any variable in a given group was equal to
-something. You might do (ignoring that you&#8217;d actually have a list and do
-<tt class="docutils literal">if 1 in list_of_vars:</tt>)&#8230;</p>
+something. You might do (ignoring that you'd actually have a list and do
+<tt class="docutils literal">if 1 in list_of_vars:</tt>)...</p>
 <pre class="code ipython3 literal-block">
 <span class="n">a</span> <span class="o">=</span> <span class="mi">2</span>
 <span class="n">b</span> <span class="o">=</span> <span class="mi">1</span>
@@ -177,7 +178,7 @@ something. You might do (ignoring that you&#8217;d actually have a list and do
 <pre class="literal-block">
 We've got a winner!
 </pre>
-<p>&#8230;but with <tt class="docutils literal">any</tt> we can simply do&nbsp;this&#8230;</p>
+<p>...but with <tt class="docutils literal">any</tt> we can simply do this...</p>
 <pre class="code ipython3 literal-block">
 <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">v</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="p">[</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">]):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;I said We've got a winner!&quot;</span><span class="p">)</span>
@@ -187,9 +188,9 @@ I said We've got a winner!
 </pre>
 <p>Of course, the true power of <tt class="docutils literal">any</tt> and <tt class="docutils literal">all</tt> comes when you combine
 them with generators, which will allow you to lazily compute your check.
-These aren&#8217;t a catch all, sometimes you want to store the output of a
+These aren't a catch all, sometimes you want to store the output of a
 check or you already have a list built, in which case <tt class="docutils literal">x in my_list</tt>
-<em>is</em> superior, but these should be tools you consider from time to&nbsp;time.</p>
+<em>is</em> superior, but these should be tools you consider from time to time.</p>
 <p>Now, we want to check if <tt class="docutils literal">any</tt> of our operations returns True if
 <tt class="docutils literal">a == f(c,b)</tt> or <tt class="docutils literal">c == f(a,b)</tt>.</p>
 <pre class="code ipython3 literal-block">
@@ -200,14 +201,14 @@ check or you already have a list built, in which case <tt class="docutils litera
 Heck yeah at least one did.
 </pre>
 <p>Alternatively, we could store that as a separate function if we needed
-to fiddle with it more, but for this case, I feel that&#8217;s&nbsp;overkill.</p>
+to fiddle with it more, but for this case, I feel that's overkill.</p>
 </div>
 <div class="section" id="step-2-collect-integers">
-<h3>Step 2: Collect&nbsp;Integers</h3>
-<p>Okay, now we&#8217;ll worry about actually grabbing some input from the user.
-We need to collect three integers, probably using <span class="caps">STDIN</span>. But they could
-come from a file, a database or anywhere. But let&#8217;s focus on just
-grabbing them from <span class="caps">STDIN</span>.</p>
+<h3>Step 2: Collect Integers</h3>
+<p>Okay, now we'll worry about actually grabbing some input from the user.
+We need to collect three integers, probably using STDIN. But they could
+come from a file, a database or anywhere. But let's focus on just
+grabbing them from STDIN.</p>
 <pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">collect_ints_from_stdin</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
     <span class="n">ints</span> <span class="o">=</span> <span class="p">[]</span>
@@ -222,25 +223,26 @@ grabbing them from <span class="caps">STDIN</span>.</p>
 
     <span class="k">return</span> <span class="n">ints</span>
 </pre>
-<p>Normally, I&#8217;d wince at a while loop used to build a fixed length list,
+<p>Normally, I'd wince at a while loop used to build a fixed length list,
 but we have to trouble with users doing something like trying to enter
-the number <tt class="docutils literal">a</tt> (well&#8230;you <em>could</em> use hex&#8230;but who does that?).
-Since we&#8217;re just passing on the error, our list of integers could end up&nbsp;short!</p>
-<p>You might also notice that I&#8217;ve used <tt class="docutils literal">try/else</tt>. I am of the opinion
+the number <tt class="docutils literal">a</tt> (well...you <em>could</em> use hex...but who does that?).
+Since we're just passing on the error, our list of integers could end up
+short!</p>
+<p>You might also notice that I've used <tt class="docutils literal">try/else</tt>. I am of the opinion
 that a <tt class="docutils literal">try</tt> block should be isolated to <em>just</em> the code that could
 raise an exception. <tt class="docutils literal">except</tt> handles cleaning up the exception. And
-then there&#8217;s <tt class="docutils literal">else</tt> which allows us to run code on the condition we
-didn&#8217;t encounter a problem. Mentally, if you replace
+then there's <tt class="docutils literal">else</tt> which allows us to run code on the condition we
+didn't encounter a problem. Mentally, if you replace
 <tt class="docutils literal">except ValueError</tt> with <tt class="docutils literal">if catch(ValueError)</tt> where <tt class="docutils literal">catch</tt> is
-some magic framehack or something, it begins to make sense. I&#8217;ll also
-note, for completion&#8217;s sake that there&#8217;s also an optional <tt class="docutils literal">finally</tt>
+some magic framehack or something, it begins to make sense. I'll also
+note, for completion's sake that there's also an optional <tt class="docutils literal">finally</tt>
 clause which lets us run code regardless of an exception occuring. But
-the full <tt class="docutils literal">try/except/else/finally</tt> concept is for another&nbsp;time.</p>
+the full <tt class="docutils literal">try/except/else/finally</tt> concept is for another time.</p>
 </div>
 <div class="section" id="step-5-put-it-altogther">
-<h3>Step 5: Put it&nbsp;altogther</h3>
-<p>Finally, we&#8217;ll take these individual components and piece them together
-into a cohesive&nbsp;answer.</p>
+<h3>Step 5: Put it altogther</h3>
+<p>Finally, we'll take these individual components and piece them together
+into a cohesive answer.</p>
 <pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">answer</span><span class="p">(</span><span class="n">operations</span><span class="p">,</span> <span class="n">num_ints</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">collector</span><span class="o">=</span><span class="n">collect_ints_from_stdin</span><span class="p">):</span>
     <span class="n">ints</span> <span class="o">=</span> <span class="n">collector</span><span class="p">(</span><span class="n">num_ints</span><span class="p">)</span>
@@ -250,62 +252,62 @@ into a cohesive&nbsp;answer.</p>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;D: Nope!&quot;</span><span class="p">)</span>
 </pre>
 <p>If you add <tt class="docutils literal">if __name__ == &quot;__main__&quot;: answer(operations)</tt> and count
-spacing and imports, the whole thing&#8217;s less than forty&nbsp;lines!</p>
+spacing and imports, the whole thing's less than forty lines!</p>
 </div>
 </div>
 <div class="section" id="the-take-away">
-<h2>The Take&nbsp;Away</h2>
+<h2>The Take Away</h2>
 <ol class="arabic simple">
-<li>Break a problem down into steps as small as&nbsp;possible</li>
-<li>Small, functional pieces are more&nbsp;manageable</li>
+<li>Break a problem down into steps as small as possible</li>
+<li>Small, functional pieces are more manageable</li>
 </ol>
-<p>Breaking down a problem is something that seems <em>so obvious</em> but it&#8217;s a
+<p>Breaking down a problem is something that seems <em>so obvious</em> but it's a
 skill that needs to be practiced and honed just like any other. After
-all, programming isn&#8217;t so much about code as solving problems. And part
-of solving problems is finding the smaller problems hidden inside&nbsp;them.</p>
+all, programming isn't so much about code as solving problems. And part
+of solving problems is finding the smaller problems hidden inside them.</p>
 <p>What looked liked a complicated task on the surface, ended up being just
-five simple tasks on the inside. That&#8217;s not to say that every problem
-will immediately break down to simple tasks. Sometimes you&#8217;ll end up
-with a list of steps that&#8217;s nested five levels deep! But if you tackle
+five simple tasks on the inside. That's not to say that every problem
+will immediately break down to simple tasks. Sometimes you'll end up
+with a list of steps that's nested five levels deep! But if you tackle
 each step one at a time, sprinkle in some Python idioms and a touch of
-abstraction, your application will come&nbsp;together.</p>
+abstraction, your application will come together.</p>
 <p>The other, writing smaller more functional code pieces allows your code
 to be modular. What if tomorrow, we want to grab the integers from a
 database? Well, since <tt class="docutils literal">collect_ints_from_stdin</tt> is separated from the
 main function, we can easily. Just build a callable that queries the
 database for integers and feeds them into the operations. Or if we need
 to change from integers to strings, we just swap out the collector and
-the operations and move on with our day &#8212; or better, pass a callback to
-coerce the type for&nbsp;us!</p>
+the operations and move on with our day -- or better, pass a callback to
+coerce the type for us!</p>
 <p>But consider if we had just written a thirty line function that did all
-this? Ugh, it&#8217;d be a nightmare to untangle the pieces. Honestly, we&#8217;d
+this? Ugh, it'd be a nightmare to untangle the pieces. Honestly, we'd
 probably have <em>two functions</em> that did the same thing, but just grabbed
 data from other locations. And then <em>two more</em> functions because maybe
 we need to work on strings. Quickly, this spirals out of control as the
 number of functions grows at (Data Types) * (Sources). We have four
-sources and four data types? That&#8217;s <em>16</em> functions! I don&#8217;t want to
-write the same function 16 times and I doubt you do&nbsp;either.</p>
+sources and four data types? That's <em>16</em> functions! I don't want to
+write the same function 16 times and I doubt you do either.</p>
 <p>Instead we can write four functions to grab the data, pass our coercion
-callback and maintain the lists of&nbsp;operations.</p>
+callback and maintain the lists of operations.</p>
 </div>
 <div class="section" id="going-further">
-<h2>Going&nbsp;Further</h2>
+<h2>Going Further</h2>
 <p>There are problems. What happens when we input <tt class="docutils literal">0</tt> and our checks make
 it to the division, modulo, log or root operations? We get a nasty
 exception. :( But handling it is easy (hint: ZeroDivisionError and
 ValueError would needed to be caught). Also, we should be able to tell
-the user <em>which</em> operations returned&nbsp;true.</p>
-<p>Of course, I&#8217;m not going to play my full hand. I&#8217;ll leave these as an
-exercise to you to figure&nbsp;out.</p>
+the user <em>which</em> operations returned true.</p>
+<p>Of course, I'm not going to play my full hand. I'll leave these as an
+exercise to you to figure out.</p>
 </div>
 
             <aside>
             <nav>
             <ul class="articles_timeline">
  
-                <li class="previous_article">« <a href="http://justanr.github.io/understanding-foobar" title="Previous: Understanding&nbsp;foo.bar()">Understanding&nbsp;foo.bar()</a></li>
+                <li class="previous_article">« <a href="http://justanr.github.io/understanding-foobar" title="Previous: Understanding foo.bar()">Understanding foo.bar()</a></li>
  
-                <li class="next_article"><a href="http://justanr.github.io/fizzbuzz-with-pynads" title="Next: Fizzbuzz With&nbsp;Pynads!">Fizzbuzz With&nbsp;Pynads!</a> »</li>
+                <li class="next_article"><a href="http://justanr.github.io/fizzbuzz-with-pynads" title="Next: Fizzbuzz With Pynads!">Fizzbuzz With Pynads!</a> »</li>
             </ul>
             </nav>
             </aside>
@@ -356,7 +358,7 @@ exercise to you to figure&nbsp;out.</p>
                     <span>7</span>
 </a></li>
                 <li><a href="/tags.html#python-ref">python
-                    <span>15</span>
+                    <span>16</span>
 </a></li>
             </ul>
 

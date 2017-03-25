@@ -19,7 +19,7 @@
 
 
 <meta name="keywords" content="python, design, tips and tricks, " />
-        <title>On Dryers, Adapters and Software&nbsp;Design - from alec.thoughts import *
+        <title>On Dryers, Adapters and Software Design - from alec.thoughts import *
 </title>
         <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
@@ -73,7 +73,7 @@
 <article>
 <div class="row-fluid">
     <header class="page_header span10 offset2">
-    <h1><a href="http://justanr.github.io/on-dryers-adapters-and-software-design"> On Dryers, Adapters and Software&nbsp;Design  </a></h1>
+    <h1><a href="http://justanr.github.io/on-dryers-adapters-and-software-design"> On Dryers, Adapters and Software Design  </a></h1>
     </header>
 </div>
 
@@ -81,52 +81,53 @@
         <div class="span8 offset2 article-content">
 
             <p>About two months ago we moved into our new apartment (with some help
-from Kaitlyn&#8217;s dad and my uncle). Loaded everything into the truck from
+from Kaitlyn's dad and my uncle). Loaded everything into the truck from
 the old apartment, drove ten miles up the road to the new apartment and
-then unloaded everything into the new apartment (on the third floor&nbsp;D:).</p>
+then unloaded everything into the new apartment (on the third floor D:).</p>
 <p>The first thing we moved up stairs was the washer. Plugged it in, hooked
 it up, turned it on briefly to test. Boom, already feeling at home.
-Actually, it was hot outside and this was an excuse to stand in the <span class="caps">AC</span>
-for a minute. Then we decided, &#8220;Well, we moved the washer, why not move
-the dryer now?&#8221; So we did. Got it up stairs (after almost dropping it
+Actually, it was hot outside and this was an excuse to stand in the AC
+for a minute. Then we decided, &quot;Well, we moved the washer, why not move
+the dryer now?&quot; So we did. Got it up stairs (after almost dropping it
 down a flight of stairs), pushed it into the laundry room and went to
-plug it in and &#8230; it&#8217;s a different&nbsp;plug.</p>
+plug it in and ... it's a different plug.</p>
 <p>Apparently back in 2000, new residences were required to have four prong
-outlets for dryers. And our dryer had a three prong plug. That&#8217;s a
-problem. My first thought was, &#8220;We&#8217;ll just get an adapter.&#8221; Turns out,
-that&#8217;s a horrible idea and had I been thinking clearly, I wouldn&#8217;t have
-&#8212; anyone who&#8217;s used a grounded to ungrounded 120v adapter knows the
+outlets for dryers. And our dryer had a three prong plug. That's a
+problem. My first thought was, &quot;We'll just get an adapter.&quot; Turns out,
+that's a horrible idea and had I been thinking clearly, I wouldn't have
+-- anyone who's used a grounded to ungrounded 120v adapter knows the
 sorts of trouble that comes with that. We ended up replacing the actual
-cable and plug &#8212; the dryer had a little cover that pulled off and
+cable and plug -- the dryer had a little cover that pulled off and
 exposed four connection screws: neutral, positive, negative and ground.
 Just unscrew the old cable, screw on the new cable, plug it in and hope
-I did it right otherwise a fire&nbsp;happens.</p>
-<p>But there&#8217;s an interesting thought: my first reaction was, &#8220;Use an
-adapter.&#8221; I&#8217;ll reach for a tool that takes some interface and maps it to
+I did it right otherwise a fire happens.</p>
+<p>But there's an interesting thought: my first reaction was, &quot;Use an
+adapter.&quot; I'll reach for a tool that takes some interface and maps it to
 another interface. How often have I been faced with this <em>exact same
-problem</em> in software and yet I&#8217;ve chosen to do something hard or
-terrible instead? More often than I care to admit,&nbsp;honestly.</p>
-<p>Let&#8217;s look at an example. Something of a trivial example, but it
-suffices for a blog post. Let&#8217;s pretend that we&#8217;ve developed an app that
-can send a user an authentication token for some&nbsp;purpose.</p>
+problem</em> in software and yet I've chosen to do something hard or
+terrible instead? More often than I care to admit, honestly.</p>
+<p>Let's look at an example. Something of a trivial example, but it
+suffices for a blog post. Let's pretend that we've developed an app that
+can send a user an authentication token for some purpose.</p>
 <pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">send_user_auth_token</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">notifier</span><span class="p">):</span>
     <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Your access code is </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">notifier</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">msg</span><span class="p">)</span>
 </pre>
-<p>The actual business logic here doesn&#8217;t even do anything (well, it
-formats a string). It just delegates the work off to something&nbsp;else.</p>
+<p>The actual business logic here doesn't even do anything (well, it
+formats a string). It just delegates the work off to something else.</p>
 <p>My bank uses a system like this for password resets, except I can choose
 to get a text, an email or a phone call. They might even have a bit of
-code that looks exactly like&nbsp;this.</p>
-<p>Our imaginary app can do that as well. <em>How</em> though, that&#8217;s the
-question. We&#8217;ve provided no actual sending details here. There&#8217;s no
-&#8220;Send text message&#8221; or &#8220;Send email&#8221; or &#8220;Initiate phone call&#8221;. There&#8217;s
-also no &#8220;fetch user&#8221; or &#8220;generate token&#8221;. Instead, we&#8217;re relying on the
+code that looks exactly like this.</p>
+<p>Our imaginary app can do that as well. <em>How</em> though, that's the
+question. We've provided no actual sending details here. There's no
+&quot;Send text message&quot; or &quot;Send email&quot; or &quot;Initiate phone call&quot;. There's
+also no &quot;fetch user&quot; or &quot;generate token&quot;. Instead, we're relying on the
 fact that the notifier we pass it implements some <tt class="docutils literal">notify</tt> method that
-will handle the actual notifying given the user and the token we&nbsp;provide.</p>
-<p>Let&#8217;s implement a simple notifier that we can use as an inspiration, as
-well as a user model and something to generate&nbsp;tokens.</p>
+will handle the actual notifying given the user and the token we
+provide.</p>
+<p>Let's implement a simple notifier that we can use as an inspiration, as
+well as a user model and something to generate tokens.</p>
 <pre class="code ipython3 literal-block">
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span>
 <span class="kn">from</span> <span class="nn">random</span> <span class="k">import</span> <span class="n">SystemRandom</span>
@@ -153,17 +154,17 @@ justanr: Your access code is 614726
 <pre class="literal-block">
 True
 </pre>
-<p>That&#8217;s pretty cool. I bet we could replace that <tt class="docutils literal">PrintingNotifier</tt>
-with something that sends a text message. Twilio&#8217;s cool, let&#8217;s use
-that&#8230;but there&#8217;s a problem. The code to send an <span class="caps">SMS</span> with Twilio looks
-like&nbsp;this:</p>
+<p>That's pretty cool. I bet we could replace that <tt class="docutils literal">PrintingNotifier</tt>
+with something that sends a text message. Twilio's cool, let's use
+that...but there's a problem. The code to send an SMS with Twilio looks
+like this:</p>
 <pre class="code ipython3 literal-block">
 <span class="kn">from</span> <span class="nn">twilio.rest</span> <span class="k">import</span> <span class="n">TwilioRestClient</span>
 
 <span class="n">client</span> <span class="o">=</span> <span class="n">TwilioRestClient</span><span class="p">(</span><span class="n">account_sid</span><span class="p">,</span> <span class="n">auth_token</span><span class="p">)</span>
 <span class="n">message</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">to</span><span class="o">=</span><span class="s1">'...'</span><span class="p">,</span> <span class="n">from_</span><span class="o">=</span><span class="s1">'...'</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="s1">'...'</span><span class="p">)</span>
 </pre>
-<p>We <em>can&#8217;t</em> just drop that in&#8230;unless we modify the original&nbsp;function:</p>
+<p>We <em>can't</em> just drop that in...unless we modify the original function:</p>
 <pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">polymorphic_notify_user</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">notifier</span><span class="p">):</span>
     <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Your access code is </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
@@ -173,41 +174,41 @@ like&nbsp;this:</p>
         <span class="k">return</span> <span class="n">notifier</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">to</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="n">phone_number</span><span class="p">,</span> <span class="n">from_</span><span class="o">=</span><span class="n">application_number</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">msg</span><span class="p">)</span>
 </pre>
 <p>If I had Twilio set up in this notebook, I could get a text messsage
-that says, &#8220;Your access code is 123456&#8221;. But we&#8217;ve done something awful.
-We&#8217;ve violated Single Responsibility. Our <tt class="docutils literal">send_user_auth_token</tt>
+that says, &quot;Your access code is 123456&quot;. But we've done something awful.
+We've violated Single Responsibility. Our <tt class="docutils literal">send_user_auth_token</tt>
 function has one responsibility: send some user some auth token using
-some notifier. It <em>looks</em> like we&#8217;ve not violated, we&#8217;ve added a new
-notifier so our function should be aware of it,&nbsp;right?</p>
+some notifier. It <em>looks</em> like we've not violated, we've added a new
+notifier so our function should be aware of it, right?</p>
 <p>Nope. Are we going to add a new
 <tt class="docutils literal">elif isinstance(notifier, SomeNotifierClass)</tt> every time we add one?
 A check for Gmail, a check for SendMail, a check for this, a check for
 that, a check for the TestNotifier! Each with code that knows <em>how to
-send that particular&nbsp;notification.</em></p>
-<p>What. Why does production code need to know about test code? We&#8217;ll get
-an issue that reads: &#8220;NameError: TestNotifier not found&#8221;. And it won&#8217;t
-be just once, it&#8217;ll crop up again and again, everytime someone looks at
+send that particular notification.</em></p>
+<p>What. Why does production code need to know about test code? We'll get
+an issue that reads: &quot;NameError: TestNotifier not found&quot;. And it won't
+be just once, it'll crop up again and again, everytime someone looks at
 that file and sees <tt class="docutils literal">from ourapp.tests.fixtures import TestNotifier</tt>
-and thinks, &#8220;Wait&#8230;, why?&#8221; and deletes it. Every time until finally,
-fed up, you write a comment that says, &#8220;<span class="caps">DON</span>&#8217;T <span class="caps">REMOVE</span>, <span class="caps">NEEDED</span> <span class="caps">FOR</span>
-send_user_auth_token.&#8221; You probably die a little bit inside, too. And
-it won&#8217;t be just this module and this function. It&#8217;ll be every module
-and every&nbsp;function.</p>
-<p>I know because I&#8217;ve been there and I&#8217;ve done that and I handled it be
-just not writing code for a long&nbsp;time.</p>
-<p>No, no, no, let&#8217;s back up to the original&nbsp;function.</p>
+and thinks, &quot;Wait..., why?&quot; and deletes it. Every time until finally,
+fed up, you write a comment that says, &quot;DON'T REMOVE, NEEDED FOR
+send_user_auth_token.&quot; You probably die a little bit inside, too. And
+it won't be just this module and this function. It'll be every module
+and every function.</p>
+<p>I know because I've been there and I've done that and I handled it be
+just not writing code for a long time.</p>
+<p>No, no, no, let's back up to the original function.</p>
 <pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">send_user_auth_token</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">notifier</span><span class="p">):</span>
     <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Your access code is </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">notifier</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">msg</span><span class="p">)</span>
 </pre>
-<p>This, I like this. It&#8217;s simple. It&#8217;s expressive. It does exactly what
-the name says! In fact, I&#8217;d argue that it doesn&#8217;t even need a docstring.
-There&#8217;s no if this type else that type. So, <em>how</em> can we use this
-function to send a <span class="caps">SMS</span> with the TwilioRestClient that doesn&#8217;t have an
-interface that looks anything like&nbsp;this.</p>
+<p>This, I like this. It's simple. It's expressive. It does exactly what
+the name says! In fact, I'd argue that it doesn't even need a docstring.
+There's no if this type else that type. So, <em>how</em> can we use this
+function to send a SMS with the TwilioRestClient that doesn't have an
+interface that looks anything like this.</p>
 <p>The same way we go from a grounded three prong plug to an ungrounded two
 prong outlet (and the correct answer is <em>not</em> tear the ground pin out
-despite what my power strips say), we use an&nbsp;adapter!</p>
+despite what my power strips say), we use an adapter!</p>
 <pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">TwilioSMSNotifier</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">twilio_client</span><span class="p">,</span> <span class="n">sender_number</span><span class="p">):</span>
@@ -221,10 +222,10 @@ despite what my power strips say), we use an&nbsp;adapter!</p>
         <span class="k">except</span> <span class="n">TwilioRestException</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
 </pre>
-<p>We could probably handle that failure case better. But that&#8217;s not the
-point here. We&#8217;ve taken an interface that&#8217;s <em>completely different</em> and
+<p>We could probably handle that failure case better. But that's not the
+point here. We've taken an interface that's <em>completely different</em> and
 changed it by wrapping it in a class that implements our interface. If
-we wanted to send an email, we could simply create a new&nbsp;implementation:</p>
+we wanted to send an email, we could simply create a new implementation:</p>
 <pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">EmailNotifer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">email_client</span><span class="p">,</span> <span class="n">to_html</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -257,29 +258,29 @@ we wanted to send an email, we could simply create a new&nbsp;implementation:</p
  'receiver': <a class="reference external" href="mailto:'justanr&#64;service.com">'justanr&#64;service.com</a>',
  'title': 'Two Factor Auth Code'}
 </pre>
-<p>Here&#8217;s an interesting thought: what if we don&#8217;t know a head of time what
+<p>Here's an interesting thought: what if we don't know a head of time what
 email provider will be used? Instead of writing a dozen different
 <tt class="docutils literal">EmailProviderNotifier</tt> maybe we could conceive an <tt class="docutils literal">EmailClient</tt>
-interface &#8212; maybe it just exposes the <tt class="docutils literal">encode_to_html</tt> and <tt class="docutils literal">send</tt>
-methods &#8212; and then implement that with the provider we need and pass
+interface -- maybe it just exposes the <tt class="docutils literal">encode_to_html</tt> and <tt class="docutils literal">send</tt>
+methods -- and then implement that with the provider we need and pass
 <em>that</em> interface to <tt class="docutils literal">EmailNotifier</tt>? Our system becomes <em>more</em>
-decoupled from what&#8217;s steering it. We can provide <em>really</em> high level
+decoupled from what's steering it. We can provide <em>really</em> high level
 policies internally and let something external from the application
 provide implementations for them. We could simply tell end users,
-&#8220;Here&#8217;s the <tt class="docutils literal">EmailClient</tt> interface, you need to implement that for
-your provider and inject it into the&nbsp;application.&#8221;</p>
-<p>However, remember you can&#8217;t abstract everything away. Eventually, you
+&quot;Here's the <tt class="docutils literal">EmailClient</tt> interface, you need to implement that for
+your provider and inject it into the application.&quot;</p>
+<p>However, remember you can't abstract everything away. Eventually, you
 need to write code that actually does something. But this
 Interface-to-Interface pattern (also called a Bridge, but only when we
 write both sides of it) has some <em>very interesting</em> ramifications for
-our tests that I&#8217;ll cover&nbsp;below.</p>
+our tests that I'll cover below.</p>
 <p>What if we wanted to send the auth token as an email <em>and</em> a text
 message. We can do that without hard coding <em>any</em> of them by reaching
-for a different design&nbsp;pattern.</p>
+for a different design pattern.</p>
 <p>Related to the adapter pattern and the bridge pattern is the decorator
 pattern. Rather than changing the interface to an object or connecting
 two interfaces together, the decorator patterns adds additional
-funtionality to an object by using the&nbsp;interface.</p>
+funtionality to an object by using the interface.</p>
 <pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">MultiNotifier</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">notifiers</span><span class="p">):</span>
@@ -293,20 +294,20 @@ funtionality to an object by using the&nbsp;interface.</p>
         <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
 </pre>
 <p>In this case, if we pass MultiNotifier to the <tt class="docutils literal">send_user_auth_token</tt>,
-it&#8217;s notify would be called which actually calls all of its internal
+it's notify would be called which actually calls all of its internal
 notifiers. If you wanted to do logging instead, you could pass a logger
 and a notifier to the class and the notify method would log that a
 message was sent and then use the internal notifier to do the actual
 sending. Those two could even be combined:
 <tt class="docutils literal">LoggingNotifier(my_logger, MultiNotifier(sms_notifier, email_notifier))</tt></p>
-<p>Even better, with combinations like this, there&#8217;s only one rule to
+<p>Even better, with combinations like this, there's only one rule to
 remember: plugs match outlets. The plugs in this case are our classes
 and the outlets are the interfaces something expects to interact with.
 More concretely, a plug would be the EmailClient and an Outlet is the
-<tt class="docutils literal">send_user_auth_token</tt>. Since they don&#8217;t match, we use an&nbsp;adapter.</p>
+<tt class="docutils literal">send_user_auth_token</tt>. Since they don't match, we use an adapter.</p>
 <p>And, a very happy side effect is that <tt class="docutils literal">send_user_auth_token</tt> is very
-testable. It doesn&#8217;t actually do anything, so there&#8217;s nothing to mock
-out. We just pass it exactly what we want it to&nbsp;use.</p>
+testable. It doesn't actually do anything, so there's nothing to mock
+out. We just pass it exactly what we want it to use.</p>
 <pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">TestEmailNotifier</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
@@ -321,7 +322,7 @@ out. We just pass it exactly what we want it to&nbsp;use.</p>
 <span class="n">test_send_auth_token_to_email</span><span class="p">()</span>
 </pre>
 <p>Imagine if we had hardcoded all the actual sending logic. What does the
-test look like&nbsp;then?</p>
+test look like then?</p>
 <pre class="code ipython3 literal-block">
 <span class="kn">from</span> <span class="nn">unittest</span> <span class="k">import</span> <span class="n">mock</span>
 
@@ -331,11 +332,11 @@ test look like&nbsp;then?</p>
 <span class="k">def</span> <span class="nf">test_send_user_auth_token</span><span class="p">():</span>
     <span class="k">assert</span> <span class="n">send_user_auth_token</span><span class="p">()</span> <span class="o">=</span> <span class="p">{</span><span class="o">...</span><span class="p">}</span>
 </pre>
-<p>We&#8217;re patching three things and we probably still missed something.
+<p>We're patching three things and we probably still missed something.
 Instead, with the decoupled version we can test that our business logic
-&#8212; given a user, a token and a notifier, send the user the token &#8212;
+-- given a user, a token and a notifier, send the user the token --
 <em>works</em>.</p>
-<p>We can also test if our adapters work,&nbsp;too.</p>
+<p>We can also test if our adapters work, too.</p>
 <pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">test_email_adapter_translates_correctly</span><span class="p">():</span>
     <span class="n">email_client</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">create_autospec</span><span class="p">(</span><span class="n">EmailClient</span><span class="p">)</span>
@@ -356,19 +357,19 @@ Instead, with the decoupled version we can test that our business logic
 <span class="n">test_email_adapter_translates_correctly</span><span class="p">()</span>
 <span class="n">test_email_adapter_can_send_html_email</span><span class="p">()</span>
 </pre>
-<p>Here&#8217;s the interesting testing ramification I mentioned above. There&#8217;s a
-mantra in testing that says, &#8220;Don&#8217;t mock what you don&#8217;t own.&#8221; We don&#8217;t
-own the Gmail interface, we don&#8217;t own the SendMail interface. <em>But</em> we
+<p>Here's the interesting testing ramification I mentioned above. There's a
+mantra in testing that says, &quot;Don't mock what you don't own.&quot; We don't
+own the Gmail interface, we don't own the SendMail interface. <em>But</em> we
 do own the <tt class="docutils literal">EmailClient</tt> interface so we can mock it. Here I do it
-with Python 3.3&#8217;s built in <tt class="docutils literal">unittest.mock.create_autospec</tt> but we
-could also just write a stub that does the same&nbsp;thing.</p>
-<p>When we&#8217;re not terribly interested if Twilio is working or Gmail is
-working, we can switch in another notifier. Just go, &#8220;Oh, well&#8230;let&#8217;s
-use this one instead.&#8221; We also don&#8217;t dictate to users, &#8220;You can only use
-these email service providers.&#8221; Instead we say, &#8220;You can use any
-provider you like <em>as long as you implement this interface.</em>&#8221;</p>
-<p>You change a few lines of code in a procedure that doesn&#8217;t affect the
-actual logic of <tt class="docutils literal">send_user_auth_token</tt>. Maybe it&#8217;s a Flask end&nbsp;point?</p>
+with Python 3.3's built in <tt class="docutils literal">unittest.mock.create_autospec</tt> but we
+could also just write a stub that does the same thing.</p>
+<p>When we're not terribly interested if Twilio is working or Gmail is
+working, we can switch in another notifier. Just go, &quot;Oh, well...let's
+use this one instead.&quot; We also don't dictate to users, &quot;You can only use
+these email service providers.&quot; Instead we say, &quot;You can use any
+provider you like <em>as long as you implement this interface.</em>&quot;</p>
+<p>You change a few lines of code in a procedure that doesn't affect the
+actual logic of <tt class="docutils literal">send_user_auth_token</tt>. Maybe it's a Flask end point?</p>
 <pre class="code ipython3 literal-block">
 <span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">render_template</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">flash</span>
 <span class="kn">from</span> <span class="nn">flask.views</span> <span class="k">import</span> <span class="n">MethodView</span>
@@ -409,76 +410,77 @@ actual logic of <tt class="docutils literal">send_user_auth_token</tt>. Maybe it
         <span class="c1"># form didn't validate, so re-render and probably display errors</span>
         <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">'auth/send_auth_token.html'</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="p">)</span>
 </pre>
-<p>And like that, almost by accident, we&#8217;ve stumbled upon something very
-important: We&#8217;ve decoupled our business logic &#8212; send the user the token
-&#8212; from the orchestration of <em>how we get that information</em>. Our token
-sender doesn&#8217;t care&nbsp;about:</p>
+<p>And like that, almost by accident, we've stumbled upon something very
+important: We've decoupled our business logic -- send the user the token
+-- from the orchestration of <em>how we get that information</em>. Our token
+sender doesn't care about:</p>
 <ul class="simple">
-<li><span class="caps">HTTP</span>&nbsp;Endpoints</li>
-<li>Form&nbsp;validation</li>
-<li>Getting the correct&nbsp;user</li>
-<li>The <em>actual sending</em> of the&nbsp;token</li>
-<li>Creating a&nbsp;notifier</li>
-<li>How to handle success and&nbsp;failure</li>
-<li><span class="caps">ORM</span>&nbsp;models</li>
-<li>Other application&nbsp;endpoints</li>
-<li><strong>*Everything that isn&#8217;t using some object to send some token to some&nbsp;user*</strong></li>
+<li>HTTP Endpoints</li>
+<li>Form validation</li>
+<li>Getting the correct user</li>
+<li>The <em>actual sending</em> of the token</li>
+<li>Creating a notifier</li>
+<li>How to handle success and failure</li>
+<li>ORM models</li>
+<li>Other application endpoints</li>
+<li><strong>*Everything that isn't using some object to send some token to some
+user*</strong></li>
 </ul>
 <p>All of that stuff goes into our endpoint. We let some external thing
 decide who the user is, what the token is, what notifier to use. How
-complicated does this endpoint get if we don&#8217;t use interfaces? How
+complicated does this endpoint get if we don't use interfaces? How
 convoluted, obscure and cryptic does the simple act of <em>sending a
-message to the user</em> become? Probably&nbsp;very.</p>
-<p>And by accidentally stumbling upon all of this, we&#8217;ve stumbled upon
+message to the user</em> become? Probably very.</p>
+<p>And by accidentally stumbling upon all of this, we've stumbled upon
 something else even more important: application architecture. Something
-I&#8217;m just now seriously beginning to apperciate and&nbsp;understand.</p>
+I'm just now seriously beginning to apperciate and understand.</p>
 <div class="section" id="thanks">
 <h2>Thanks</h2>
-<p>I didn&#8217;t come up with. I&#8217;m not nearly that smart. Instead, this post has
+<p>I didn't come up with. I'm not nearly that smart. Instead, this post has
 been the product of <em>months of research</em> and playing with
-implementations of it. It seemed so&#8230;over engineered at first. But
-slowly, it&#8217;s dawned on me that this is how to manage complexity in
-applications. So I&#8217;d like to give thanks where it&#8217;s&nbsp;due:</p>
+implementations of it. It seemed so...over engineered at first. But
+slowly, it's dawned on me that this is how to manage complexity in
+applications. So I'd like to give thanks where it's due:</p>
 <ul class="simple">
-<li><a class="reference external" href="https://www.youtube.com/watch?v=DJtef410XaM">Brandon Rhodes&#8217; The Clean Architecture in
-Python</a> &#8212; This was
-my first exposure to the idea. I thought, &#8220;Oh that&#8217;s an interesting
-idea. Invert how I ususally think about abstracting my I/O.&#8221; But I
-didn&#8217;t really apperciate what he saying at the&nbsp;time.</li>
-<li><a class="reference external" href="https://www.youtube.com/watch?v=K5GguxPi3EA">Daniel Rocco&#8217;s Clean and
-Green</a> &#8212; He gave the
+<li><a class="reference external" href="https://www.youtube.com/watch?v=DJtef410XaM">Brandon Rhodes' The Clean Architecture in
+Python</a> -- This was
+my first exposure to the idea. I thought, &quot;Oh that's an interesting
+idea. Invert how I ususally think about abstracting my I/O.&quot; But I
+didn't really apperciate what he saying at the time.</li>
+<li><a class="reference external" href="https://www.youtube.com/watch?v=K5GguxPi3EA">Daniel Rocco's Clean and
+Green</a> -- He gave the
 original talk at PyATL back in January 2015, with less examples than
 in the PyTenn talk. Here are the <a class="reference external" href="http://pyatl.github.io/talks/2015-01_patterns/clean_and_green.html">PyATL
 slides</a>.
 This is when the idea was planted. He recommended looking into Gary
-Bernhardt and Uncle Bob&#8217;s talks on the&nbsp;matter.</li>
+Bernhardt and Uncle Bob's talks on the matter.</li>
 <li>So I watched <a class="reference external" href="https://www.youtube.com/watch?v=yTkzNHF6rMs">Boundaries by Gary
-Bernhardt</a>&#8230;which I
-didn&#8217;t let sink in because a) it&#8217;s Ruby and I like Python, and b)
-&#8220;What the hell do tests have to do with design?&#8221;. Pffft,&nbsp;pass.</li>
-<li>I don&#8217;t think I watched any of Uncle Bob&#8217;s talks at this point, but I
-ended up at <a class="reference external" href="https://vimeo.com/80533536"><span class="caps">J.B.</span> Rainsberger&#8217;s Integrated Tests are a
+Bernhardt</a>...which I
+didn't let sink in because a) it's Ruby and I like Python, and b)
+&quot;What the hell do tests have to do with design?&quot;. Pffft, pass.</li>
+<li>I don't think I watched any of Uncle Bob's talks at this point, but I
+ended up at <a class="reference external" href="https://vimeo.com/80533536">J.B. Rainsberger's Integrated Tests are a
 Scam</a>, which after watching the talk
 dozens of times, it began to make sense. I also realized what tests
-have to do with&nbsp;design.</li>
-<li>Eventually, I ended up watching some of Uncle Bob&#8217;s videos (<a class="reference external" href="https://www.youtube.com/watch?v=WpkDN78P884">this one
+have to do with design.</li>
+<li>Eventually, I ended up watching some of Uncle Bob's videos (<a class="reference external" href="https://www.youtube.com/watch?v=WpkDN78P884">this one
 for example</a>). And
 after watching several variations on this talk dozens of times, this
-began to make&nbsp;sense.</li>
+began to make sense.</li>
 <li>After the <em>idea</em> sank in, I began looking for examples of
 applications that implement this architecture. I read a bunch of
 articles that talked about the idea, but no implementations. Silly
-me, I should&#8217;ve immediately gone to the
+me, I should've immediately gone to the
 <a class="reference external" href="https://github.com/unclebob/fitnesse">FitNesse</a> repo and cloned
-it and pored over it &#8212; which I&#8217;ve now done, even if I don&#8217;t
-completely grok&nbsp;Java.</li>
+it and pored over it -- which I've now done, even if I don't
+completely grok Java.</li>
 <li>I also found a <a class="reference external" href="http://fideloper.com/hexagonal-architecture">very thorough
 article</a> written with
-a <span class="caps">PHP</span> mindset which gave not only explainations of the concepts but
-<em>example code</em> for each concept &#8212; and honestly, there is where I got
-the notifier example from, I&#8217;ve merely adapted it to&nbsp;Python.</li>
+a PHP mindset which gave not only explainations of the concepts but
+<em>example code</em> for each concept -- and honestly, there is where I got
+the notifier example from, I've merely adapted it to Python.</li>
 <li>My dryer for being a completely unexpected source of inspiration for
-software&nbsp;design.</li>
+software design.</li>
 </ul>
 </div>
 
@@ -486,9 +488,9 @@ software&nbsp;design.</li>
             <nav>
             <ul class="articles_timeline">
  
-                <li class="previous_article">« <a href="http://justanr.github.io/flask-lesser-knowns-pluggable-views" title="Previous: Flask Lesser Knowns: Pluggable&nbsp;Views">Flask Lesser Knowns: Pluggable&nbsp;Views</a></li>
+                <li class="previous_article">« <a href="http://justanr.github.io/flask-lesser-knowns-pluggable-views" title="Previous: Flask Lesser Knowns: Pluggable Views">Flask Lesser Knowns: Pluggable Views</a></li>
  
-                <li class="next_article"><a href="http://justanr.github.io/are-we-hiding-complexity-or-reducing-it" title="Next: Are we hiding complexity or reducing&nbsp;it?">Are we hiding complexity or reducing&nbsp;it?</a> »</li>
+                <li class="next_article"><a href="http://justanr.github.io/are-we-hiding-complexity-or-reducing-it" title="Next: Are we hiding complexity or reducing it?">Are we hiding complexity or reducing it?</a> »</li>
             </ul>
             </nav>
             </aside>
@@ -539,7 +541,7 @@ software&nbsp;design.</li>
                     <span>7</span>
 </a></li>
                 <li><a href="/tags.html#python-ref">python
-                    <span>15</span>
+                    <span>16</span>
 </a></li>
             </ul>
 

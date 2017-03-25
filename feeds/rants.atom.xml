@@ -1,33 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>from alec.thoughts import * - rants</title><link href="http://justanr.github.io/" rel="alternate"></link><link href="http://justanr.github.io/feeds/rants.atom.xml" rel="self"></link><id>http://justanr.github.io/</id><updated>2015-09-13T00:00:00-04:00</updated><entry><title>Drawbacks in Flask-SQLAlchemy</title><link href="http://justanr.github.io/drawbacks-in-flask-sqlalchemy" rel="alternate"></link><published>2015-09-13T00:00:00-04:00</published><updated>2015-09-13T00:00:00-04:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2015-09-13:/drawbacks-in-flask-sqlalchemy</id><summary type="html">&lt;p&gt;If you&amp;#8217;ve used Flask at all, you&amp;#8217;ve probably at least heard about
-Flask-SQLAlchemy. Despite the title, it&amp;#8217;s actually a great adapter from
+<feed xmlns="http://www.w3.org/2005/Atom"><title>from alec.thoughts import * - rants</title><link href="http://justanr.github.io/" rel="alternate"></link><link href="http://justanr.github.io/feeds/rants.atom.xml" rel="self"></link><id>http://justanr.github.io/</id><updated>2015-09-13T00:00:00-04:00</updated><entry><title>Drawbacks in Flask-SQLAlchemy</title><link href="http://justanr.github.io/drawbacks-in-flask-sqlalchemy" rel="alternate"></link><published>2015-09-13T00:00:00-04:00</published><updated>2015-09-13T00:00:00-04:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2015-09-13:/drawbacks-in-flask-sqlalchemy</id><summary type="html">&lt;p&gt;If you've used Flask at all, you've probably at least heard about
+Flask-SQLAlchemy. Despite the title, it's actually a great adapter from
 SQLAlchemy to Flask. It handles things like tying the current database
-session to the lifespan of the Flask request cycle and it&amp;#8217;ll centralize
-a …&lt;/p&gt;</summary><content type="html">&lt;p&gt;If you&amp;#8217;ve used Flask at all, you&amp;#8217;ve probably at least heard about
-Flask-SQLAlchemy. Despite the title, it&amp;#8217;s actually a great adapter from
+session to the lifespan of the Flask request cycle and it'll centralize
+a lot of the ORM …&lt;/p&gt;</summary><content type="html">&lt;p&gt;If you've used Flask at all, you've probably at least heard about
+Flask-SQLAlchemy. Despite the title, it's actually a great adapter from
 SQLAlchemy to Flask. It handles things like tying the current database
-session to the lifespan of the Flask request cycle and it&amp;#8217;ll centralize
-a lot of the &lt;span class="caps"&gt;ORM&lt;/span&gt; stuff under one namespace instead of having to remember
-where to import a bunch of stuff&amp;nbsp;from.&lt;/p&gt;
-&lt;p&gt;Buuuuuut, there&amp;#8217;s several major issues I have with&amp;nbsp;it.&lt;/p&gt;
+session to the lifespan of the Flask request cycle and it'll centralize
+a lot of the ORM stuff under one namespace instead of having to remember
+where to import a bunch of stuff from.&lt;/p&gt;
+&lt;p&gt;Buuuuuut, there's several major issues I have with it.&lt;/p&gt;
 &lt;div class="section" id="x-or-404"&gt;
 &lt;h2&gt;x_or_404&lt;/h2&gt;
 &lt;p&gt;SQLAlchemy has a &lt;tt class="docutils literal"&gt;first()&lt;/tt&gt; selector that either returns the first row
 that matches the query or None. On one hand, I understand why it acts
-this way but it creates a weird disjoint between it and &lt;tt class="docutils literal"&gt;one&lt;/tt&gt; which&amp;nbsp;will:&lt;/p&gt;
+this way but it creates a weird disjoint between it and &lt;tt class="docutils literal"&gt;one&lt;/tt&gt; which
+will:&lt;/p&gt;
 &lt;ul class="simple"&gt;
-&lt;li&gt;Return the single matching&amp;nbsp;row&lt;/li&gt;
-&lt;li&gt;Throw a &lt;tt class="docutils literal"&gt;NoResultFound&lt;/tt&gt; if there&amp;#8217;s no matching&amp;nbsp;results&lt;/li&gt;
-&lt;li&gt;Throw a &lt;tt class="docutils literal"&gt;MultipleResultsFound&lt;/tt&gt; if there&amp;#8217;s more than one matching&amp;nbsp;row&lt;/li&gt;
+&lt;li&gt;Return the single matching row&lt;/li&gt;
+&lt;li&gt;Throw a &lt;tt class="docutils literal"&gt;NoResultFound&lt;/tt&gt; if there's no matching results&lt;/li&gt;
+&lt;li&gt;Throw a &lt;tt class="docutils literal"&gt;MultipleResultsFound&lt;/tt&gt; if there's more than one matching
+row&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;Personally, it&amp;#8217;d be good design for &lt;tt class="docutils literal"&gt;first()&lt;/tt&gt; to follow this pattern,
-the same with &lt;tt class="docutils literal"&gt;get()&lt;/tt&gt;, and I&amp;#8217;m sure the SQLAlchemy team has their
-reasons that are perfectly valid, but that&amp;#8217;s not what I&amp;#8217;m here to talk&amp;nbsp;about.&lt;/p&gt;
+&lt;p&gt;Personally, it'd be good design for &lt;tt class="docutils literal"&gt;first()&lt;/tt&gt; to follow this pattern,
+the same with &lt;tt class="docutils literal"&gt;get()&lt;/tt&gt;, and I'm sure the SQLAlchemy team has their
+reasons that are perfectly valid, but that's not what I'm here to talk
+about.&lt;/p&gt;
 &lt;p&gt;Flask-SQLAlchemy adds &lt;tt class="docutils literal"&gt;first_or_404&lt;/tt&gt; as well as &lt;tt class="docutils literal"&gt;get_or_404&lt;/tt&gt;. These
 either get the desired object &lt;em&gt;or&lt;/em&gt; calls &lt;tt class="docutils literal"&gt;flask.abort(404)&lt;/tt&gt;. Think
 about that. Your database call is either going to find the right result
-or make routing call into your&amp;nbsp;application.&lt;/p&gt;
-&lt;p&gt;If you used these, how would you test that a non-existent user causes a&amp;nbsp;404?&lt;/p&gt;
+or make routing call into your application.&lt;/p&gt;
+&lt;p&gt;If you used these, how would you test that a non-existent user causes a
+404?&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;unittest&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;mock&lt;/span&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;myapp.users.views&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;user_profile&lt;/span&gt;
@@ -38,81 +42,81 @@ or make routing call into your&amp;nbsp;application.&lt;/p&gt;
 
     &lt;span class="k"&gt;assert&lt;/span&gt; &lt;span class="n"&gt;aborter&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;called&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;That&amp;#8217;s a &lt;em&gt;huge&lt;/em&gt; red flag. I need to patch something that&amp;#8217;s essentially a
-private call in a third party library. Whereas if I use just regular ol&amp;#8217;
-&lt;tt class="docutils literal"&gt;first()&lt;/tt&gt; I can check if &lt;em&gt;I called&lt;/em&gt; abort, which isn&amp;#8217;t great but at
-least I&amp;#8217;m patching against my logic not somebody&amp;nbsp;else&amp;#8217;s.&lt;/p&gt;
+&lt;p&gt;That's a &lt;em&gt;huge&lt;/em&gt; red flag. I need to patch something that's essentially a
+private call in a third party library. Whereas if I use just regular ol'
+&lt;tt class="docutils literal"&gt;first()&lt;/tt&gt; I can check if &lt;em&gt;I called&lt;/em&gt; abort, which isn't great but at
+least I'm patching against my logic not somebody else's.&lt;/p&gt;
 &lt;p&gt;Now, I get the utility of this. When it was written, it was probably
 with the same mindset I have: first should throw an exception when it
-doesn&amp;#8217;t find what it was looking for. But instead of causing a routing
+doesn't find what it was looking for. But instead of causing a routing
 call, it could simply raise &lt;tt class="docutils literal"&gt;NoResultFound&lt;/tt&gt;. Or provide a
 &lt;tt class="docutils literal"&gt;first_or_raise&lt;/tt&gt; that allows me to provide my own exception, because
 maybe I want to handle a &lt;tt class="docutils literal"&gt;UserNotFound&lt;/tt&gt; differently than an
 &lt;tt class="docutils literal"&gt;OrderNotFound&lt;/tt&gt;. Currently, I think best practice is to &lt;em&gt;not&lt;/em&gt; use the
 &lt;tt class="docutils literal"&gt;x_or_404&lt;/tt&gt; utilities and simply check for None. Better yet, provide
-your own utility method that does this (more on this&amp;nbsp;later).&lt;/p&gt;
+your own utility method that does this (more on this later).&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="conflation-of-the-model-and-the-repository"&gt;
-&lt;h2&gt;Conflation of the Model and the&amp;nbsp;Repository&lt;/h2&gt;
+&lt;h2&gt;Conflation of the Model and the Repository&lt;/h2&gt;
 &lt;p&gt;SQLAlchemy does a really good job of separating models from their
-repositories. There&amp;#8217;s a very clear separatation between what &lt;tt class="docutils literal"&gt;User&lt;/tt&gt;
+repositories. There's a very clear separatation between what &lt;tt class="docutils literal"&gt;User&lt;/tt&gt;
 represents and what &lt;tt class="docutils literal"&gt;session.query(User)&lt;/tt&gt; represents. The first is
 &lt;em&gt;structure&lt;/em&gt; and the second is &lt;em&gt;access&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;However, Flask-SQLAlchemy blurs this line to the point where it doesn&amp;#8217;t
+&lt;p&gt;However, Flask-SQLAlchemy blurs this line to the point where it doesn't
 exist any more. Instead of requiring data access to go through a session
 object, Flask-SQLAlchemy places a &lt;tt class="docutils literal"&gt;query&lt;/tt&gt; object on the models and
-allows us to do stuff&amp;nbsp;like:&lt;/p&gt;
+allows us to do stuff like:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="n"&gt;User&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;filter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;User&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;permission_level&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;=&lt;/span&gt; &lt;span class="n"&gt;PermissionLevels&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;MODERATOR&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;all&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;/pre&gt;
 &lt;p&gt;This also encourages adding complex queries onto the model itself,
 further blurring the line. For example, the query above might be used
-often and so we create a query method on the User&amp;nbsp;object:&lt;/p&gt;
+often and so we create a query method on the User object:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;User&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="c1"&gt;#...&lt;/span&gt;
 
     &lt;span class="nd"&gt;&amp;#64;classmethod&lt;/span&gt;
-    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;find_by_permission_level&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;permission&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;cls&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;filter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cls&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;permission_level&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;=&lt;/span&gt; &lt;span class="n"&gt;permission&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;all&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;find_by_permission_level&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;permission&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;cls&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;filter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;cls&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;permission_level&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;=&lt;/span&gt; &lt;span class="n"&gt;permission&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;all&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;That&amp;#8217;s pretty handy. But does it make sense? I don&amp;#8217;t think it does. Even
+&lt;p&gt;That's pretty handy. But does it make sense? I don't think it does. Even
 more so when you consider that the query property and these methods are
-available on actual instances of&amp;nbsp;User.&lt;/p&gt;
+available on actual instances of User.&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="n"&gt;me&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;User&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="n"&gt;me&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;find_by_permission_level&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PermissionLevel&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;MODERATOR&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="n"&gt;me&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;filter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;User&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;username&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;startswith&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'just'&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;first&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;/pre&gt;
 &lt;p&gt;And even scarier is that often model instances are passed directly to
-templates. It isn&amp;#8217;t common, but if you allowed users to provide their
-own templates, what&amp;#8217;s to stop them from running queries in the template?
-That&amp;#8217;s bad&amp;nbsp;news.&lt;/p&gt;
-&lt;p&gt;I don&amp;#8217;t have a good solution for this problem, the best I&amp;#8217;ve come up
+templates. It isn't common, but if you allowed users to provide their
+own templates, what's to stop them from running queries in the template?
+That's bad news.&lt;/p&gt;
+&lt;p&gt;I don't have a good solution for this problem, the best I've come up
 with is to wrap data access into a repository layer itself. While it
-might seem really silly to wrap SQLAlchemy&amp;#8217;s data access in an
+might seem really silly to wrap SQLAlchemy's data access in an
 abstraction (abstraction-inception!), to me this makes the most amount
 of sense. There are pros-and-cons. The biggest pro is that these common
 queries now have an actual home, but the biggest con is that a
 repository tends to grow accessor methods at an exponential rate
 (&lt;tt class="docutils literal"&gt;find_by_id&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;find_by_name&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;find_by_permission_level&lt;/tt&gt;,
 &lt;tt class="docutils literal"&gt;find_by_this&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;find_by_that&lt;/tt&gt;) outside of implementing some sort of
-criteria matching, I&amp;#8217;m not sure how to address&amp;nbsp;this.&lt;/p&gt;
-&lt;p&gt;This alone doesn&amp;#8217;t fix the issue of returning database models to the
+criteria matching, I'm not sure how to address this.&lt;/p&gt;
+&lt;p&gt;This alone doesn't fix the issue of returning database models to the
 template, but that can be fixed by simply scrubbing your models before
 returning them off to the templates. Marshmallow is good for this, but
-will return dictionaries instead of objects. However, that&amp;#8217;s easily
+will return dictionaries instead of objects. However, that's easily
 fixed by providing a &lt;tt class="docutils literal"&gt;post_dump&lt;/tt&gt; method that transforms the result
-into something with dotted&amp;nbsp;access:&lt;/p&gt;
+into something with dotted access:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;marshmallow&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Schema&lt;/span&gt;
 
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;dottedict&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;dict&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__getattr__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;__getitem__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="fm"&gt;__getitem__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__setattr__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;__setitem__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="fm"&gt;__setitem__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;UserSchema&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Schema&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="c1"&gt;# fields here&lt;/span&gt;
@@ -125,20 +129,21 @@ into something with dotted&amp;nbsp;access:&lt;/p&gt;
 &lt;/pre&gt;
 &lt;p&gt;And this is probably a good practice everyone should get into. This
 allows completely forbidding access to implementation details or private
-attributes altogether. We simply don&amp;#8217;t serialize things like password or
+attributes altogether. We simply don't serialize things like password or
 &lt;a class="reference external" href="https://en.wikipedia.org/wiki/Surrogate_key"&gt;surrogate primary
 keys&lt;/a&gt;. The biggest issue
-for this is that Marshmallow doesn&amp;#8217;t handle multiple &lt;tt class="docutils literal"&gt;post_dump&lt;/tt&gt;
+for this is that Marshmallow doesn't handle multiple &lt;tt class="docutils literal"&gt;post_dump&lt;/tt&gt;
 methods deterministically. So if you need to do multiple things to the
-data after dumping it, you&amp;#8217;re better off defining the post dump behavior
+data after dumping it, you're better off defining the post dump behavior
 on each schema independently, rather than allowing it propagate through
-inheritance (a mixin might be a good fix&amp;nbsp;though).&lt;/p&gt;
+inheritance (a mixin might be a good fix though).&lt;/p&gt;
 &lt;p&gt;As for unblurring the line, you could set up your repository to convert
 between plain Python objects and SQLAlchemy models depending on if
-you&amp;#8217;re accessing or persisting data, but this adds a certain amount of&amp;nbsp;overhead.&lt;/p&gt;
+you're accessing or persisting data, but this adds a certain amount of
+overhead.&lt;/p&gt;
 &lt;p&gt;Using this approach also solves the issue of &lt;tt class="docutils literal"&gt;first_or_404&lt;/tt&gt;, we can
 simply define our own &lt;tt class="docutils literal"&gt;first()&lt;/tt&gt; method on the repository that throws
-an&amp;nbsp;exception:&lt;/p&gt;
+an exception:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;UserRepository&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
 
@@ -152,7 +157,7 @@ an&amp;nbsp;exception:&lt;/p&gt;
 &lt;/pre&gt;
 &lt;/div&gt;
 &lt;div class="section" id="restricting-configuration"&gt;
-&lt;h2&gt;Restricting&amp;nbsp;Configuration&lt;/h2&gt;
+&lt;h2&gt;Restricting Configuration&lt;/h2&gt;
 &lt;p&gt;SQLAlchemy allows configuring just about every aspect of it. The type of
 session you use, the query class you use, on and on and on. However,
 Flask-SQLAlchemy locks you into using the ones it provides.
@@ -164,18 +169,18 @@ Flask-SQLAlchemy locks you into using the ones it provides.
 &lt;p&gt;And until these are resolved, the default advice is to subclass the
 SQLAlchemy object and override what you need. But the actual change for
 specifying custom query classes involves patching three internal helpers
-so they get the correct query class as well.&amp;nbsp;Ugh.&lt;/p&gt;
+so they get the correct query class as well. Ugh.&lt;/p&gt;
 &lt;p&gt;So going back to implementing our own &lt;tt class="docutils literal"&gt;first_or_raise&lt;/tt&gt; utility, we
-need&amp;nbsp;to:&lt;/p&gt;
+need to:&lt;/p&gt;
 &lt;ul class="simple"&gt;
 &lt;li&gt;Define our own query class with the &lt;tt class="docutils literal"&gt;first_or_raise&lt;/tt&gt; method&lt;/li&gt;
-&lt;li&gt;Subclass the SQLAlchemy class to accept a query&amp;nbsp;class&lt;/li&gt;
+&lt;li&gt;Subclass the SQLAlchemy class to accept a query class&lt;/li&gt;
 &lt;li&gt;Patch &lt;tt class="docutils literal"&gt;_set_default_query_class&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;_include_sqlalchemy&lt;/tt&gt; and
-&lt;tt class="docutils literal"&gt;_wrap_with_default_query_class&lt;/tt&gt; to accept a query&amp;nbsp;class.&lt;/li&gt;
+&lt;tt class="docutils literal"&gt;_wrap_with_default_query_class&lt;/tt&gt; to accept a query class.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;We could just override the &lt;tt class="docutils literal"&gt;query_class&lt;/tt&gt; attribute on the individual
 models if having the default query class on relationships and dynamic
-queries isn&amp;#8217;t an&amp;nbsp;issue.&lt;/p&gt;
+queries isn't an issue.&lt;/p&gt;
 &lt;p&gt;Alternatively, we could do some horrible stuff to
 &lt;tt class="docutils literal"&gt;flask_sqlalchemy.BaseQuery&lt;/tt&gt; directly:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
@@ -204,34 +209,35 @@ queries isn&amp;#8217;t an&amp;nbsp;issue.&lt;/p&gt;
 &lt;/pre&gt;
 &lt;/div&gt;
 &lt;div class="section" id="wrapping-up"&gt;
-&lt;h2&gt;Wrapping&amp;nbsp;Up&lt;/h2&gt;
-&lt;p&gt;It&amp;#8217;s important to not unconditionally love our tools, to turn a critical
+&lt;h2&gt;Wrapping Up&lt;/h2&gt;
+&lt;p&gt;It's important to not unconditionally love our tools, to turn a critical
 eye towards their shortcomings and to submit patches and pull requests
 to fix these issues. Flask-SQLAlchemy is a pretty good utility to have,
-if only for tying together the request-response cycle with the database&amp;nbsp;session.&lt;/p&gt;
-&lt;p&gt;Its drawbacks aren&amp;#8217;t necessarily crippling, but they can leak into your
+if only for tying together the request-response cycle with the database
+session.&lt;/p&gt;
+&lt;p&gt;Its drawbacks aren't necessarily crippling, but they can leak into your
 code and cause a mess. Sometimes working around these drawbacks feels
-like shimming (providing our own query class), but other times, it&amp;#8217;s
-architecting a solution (finding a home for common&amp;nbsp;queries).&lt;/p&gt;
-&lt;p&gt;I&amp;#8217;m interested in hearing how you&amp;#8217;ve approached these issues, or if I&amp;#8217;m
-just&amp;nbsp;bikeshedding.&lt;/p&gt;
+like shimming (providing our own query class), but other times, it's
+architecting a solution (finding a home for common queries).&lt;/p&gt;
+&lt;p&gt;I'm interested in hearing how you've approached these issues, or if I'm
+just bikeshedding.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="flask"></category><category term="sqlalchemy"></category></entry><entry><title>PEP 484 and Me</title><link href="http://justanr.github.io/pep-484-and-me" rel="alternate"></link><published>2015-04-29T00:00:00-04:00</published><updated>2015-04-29T00:00:00-04:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2015-04-29:/pep-484-and-me</id><summary type="html">&lt;p&gt;So &lt;a class="reference external" href="https://www.python.org/dev/peps/pep-0484/"&gt;&lt;span class="caps"&gt;PEP&lt;/span&gt; 484&lt;/a&gt; is a thing.
-It&amp;#8217;s about type hinting in Python and seems to be heavily influenced by
-mypy-lang. However, this isn&amp;#8217;t a &lt;em&gt;type system&lt;/em&gt;. It&amp;#8217;s meant as a helper
-for static code analysis. There&amp;#8217;s no type enforcement &amp;#8212; at least to my
-understanding. Basically, we …&lt;/p&gt;</summary><content type="html">&lt;p&gt;So &lt;a class="reference external" href="https://www.python.org/dev/peps/pep-0484/"&gt;&lt;span class="caps"&gt;PEP&lt;/span&gt; 484&lt;/a&gt; is a thing.
-It&amp;#8217;s about type hinting in Python and seems to be heavily influenced by
-mypy-lang. However, this isn&amp;#8217;t a &lt;em&gt;type system&lt;/em&gt;. It&amp;#8217;s meant as a helper
-for static code analysis. There&amp;#8217;s no type enforcement &amp;#8212; at least to my
-understanding. Basically, we&amp;#8217;d be able to load up pyflakes or PyCharm
+</content><category term="flask"></category><category term="sqlalchemy"></category></entry><entry><title>PEP 484 and Me</title><link href="http://justanr.github.io/pep-484-and-me" rel="alternate"></link><published>2015-04-29T00:00:00-04:00</published><updated>2015-04-29T00:00:00-04:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2015-04-29:/pep-484-and-me</id><summary type="html">&lt;p&gt;So &lt;a class="reference external" href="https://www.python.org/dev/peps/pep-0484/"&gt;PEP 484&lt;/a&gt; is a thing.
+It's about type hinting in Python and seems to be heavily influenced by
+mypy-lang. However, this isn't a &lt;em&gt;type system&lt;/em&gt;. It's meant as a helper
+for static code analysis. There's no type enforcement -- at least to my
+understanding. Basically, we'd be able to load …&lt;/p&gt;</summary><content type="html">&lt;p&gt;So &lt;a class="reference external" href="https://www.python.org/dev/peps/pep-0484/"&gt;PEP 484&lt;/a&gt; is a thing.
+It's about type hinting in Python and seems to be heavily influenced by
+mypy-lang. However, this isn't a &lt;em&gt;type system&lt;/em&gt;. It's meant as a helper
+for static code analysis. There's no type enforcement -- at least to my
+understanding. Basically, we'd be able to load up pyflakes or PyCharm
 and receive information on what the parameters are expected to be or if
-at some point we&amp;#8217;ve got a type&amp;nbsp;mismatch.&lt;/p&gt;
-&lt;p&gt;There&amp;#8217;s been a lot of talk about this. Some in favor, some&amp;nbsp;not.&lt;/p&gt;
+at some point we've got a type mismatch.&lt;/p&gt;
+&lt;p&gt;There's been a lot of talk about this. Some in favor, some not.&lt;/p&gt;
 &lt;p&gt;On one hand, I get it. This is super helpful for analysing a new code
-base &amp;#8212; assuming it&amp;#8217;s been used. :/ On the other hand, it&amp;#8217;s down right
-&lt;em&gt;ugly&lt;/em&gt;. I&amp;#8217;m not a big fan of inlining types, at all. Some things aren&amp;#8217;t
-so&amp;nbsp;bad&amp;#8230;&lt;/p&gt;
+base -- assuming it's been used. :/ On the other hand, it's down right
+&lt;em&gt;ugly&lt;/em&gt;. I'm not a big fan of inlining types, at all. Some things aren't
+so bad...&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;typing&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;t&lt;/span&gt;
 
@@ -239,49 +245,49 @@ so&amp;nbsp;bad&amp;#8230;&lt;/p&gt;
     &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="n"&gt;y&lt;/span&gt;
 &lt;/pre&gt;
 &lt;p&gt;Not so bad. Just a simple add function, we see it takes two ints and
-returns an int. However, for something more complicated, let&amp;#8217;s say
-&lt;tt class="docutils literal"&gt;zipWith&lt;/tt&gt; it&amp;#8217;s gets ugly really&amp;nbsp;fast.&lt;/p&gt;
-&lt;p&gt;Here&amp;#8217;s the comparable Haskell&amp;nbsp;type:&lt;/p&gt;
+returns an int. However, for something more complicated, let's say
+&lt;tt class="docutils literal"&gt;zipWith&lt;/tt&gt; it's gets ugly really fast.&lt;/p&gt;
+&lt;p&gt;Here's the comparable Haskell type:&lt;/p&gt;
 &lt;pre class="literal-block"&gt;
 zipWith (a -&amp;gt; b -&amp;gt; c) -&amp;gt; [a] -&amp;gt; [b] -&amp;gt; [c]
 &lt;/pre&gt;
-&lt;p&gt;And here&amp;#8217;s the proposed &lt;span class="caps"&gt;PEP&lt;/span&gt;&amp;nbsp;syntax:&lt;/p&gt;
+&lt;p&gt;And here's the proposed PEP syntax:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;C&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;TypeVar&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'A'&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;TypeVar&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'B'&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;TypeVar&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'C'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
 &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;zip_with&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;func&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Callable&lt;/span&gt;&lt;span class="p"&gt;[[&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;List&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;List&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt; &lt;span class="o"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;List&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt;
     &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nb"&gt;map&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;func&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;There&amp;#8217;s so much information in the parameter line I can hardly see
-what&amp;#8217;s actually relavant. This is something that really bothers me about
-&lt;em&gt;all&lt;/em&gt; inlined types. Here&amp;#8217;s the proposed &lt;span class="caps"&gt;PEP&lt;/span&gt; syntax for something as
-simple as&amp;nbsp;compose:&lt;/p&gt;
+&lt;p&gt;There's so much information in the parameter line I can hardly see
+what's actually relavant. This is something that really bothers me about
+&lt;em&gt;all&lt;/em&gt; inlined types. Here's the proposed PEP syntax for something as
+simple as compose:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="c1"&gt;# compose :: (b -&amp;gt; c) -&amp;gt; (a -&amp;gt; b) -&amp;gt; (a -&amp;gt; c)&lt;/span&gt;
 &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;compose&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Callable&lt;/span&gt;&lt;span class="p"&gt;[[&lt;/span&gt;&lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;g&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Callable&lt;/span&gt;&lt;span class="p"&gt;[[&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt; &lt;span class="o"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Callable&lt;/span&gt;&lt;span class="p"&gt;[[&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt;
     &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="k"&gt;lambda&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;g&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
 
-&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;compose&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;__annotations__&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;compose&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="vm"&gt;__annotations__&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;
 &lt;pre class="literal-block"&gt;
 {'f': typing.CallableCallable[[~B], ~C], 'return': typing.CallableCallable[[~A], ~C], 'g': typing.CallableCallable[[~A], ~B]}
 &lt;/pre&gt;
-&lt;p&gt;Using a decorator was explictly shot down in the &lt;span class="caps"&gt;PEP&lt;/span&gt; under the argument
-that it&amp;#8217;s verbose and function parameters would need to be repeated.
-However, I find the current proposed syntax to already be&amp;nbsp;verbose.&lt;/p&gt;
+&lt;p&gt;Using a decorator was explictly shot down in the PEP under the argument
+that it's verbose and function parameters would need to be repeated.
+However, I find the current proposed syntax to already be verbose.&lt;/p&gt;
 &lt;p&gt;Moreover, a special type of file was proposed: Stub files. These would
 be additional files maintainers right that mirror the structure of an
 existing project only to provide annotated functions. If decorators are
 being shot down as unnecessarily verbose, this should too even if
-addresses the issue of Python 2 and 3 compatibility. I surely don&amp;#8217;t want
+addresses the issue of Python 2 and 3 compatibility. I surely don't want
 to maintain essentially two copies of my project structure to get the
 minimal benefits of type hinting. And I certainly think that projects
-that begin using these will see a decline in contributitions &amp;#8212; if your
+that begin using these will see a decline in contributitions -- if your
 project is using stub files already, surely the onus will be on the
-committer to maintain changes in the stubs as&amp;nbsp;well.&lt;/p&gt;
+committer to maintain changes in the stubs as well.&lt;/p&gt;
 &lt;p&gt;Breaking out the type definitions into a separate line would go a long
-way to clean it up. Retyping parameters shouldn&amp;#8217;t be needed, just doing
-something like this would&amp;nbsp;help:&lt;/p&gt;
+way to clean it up. Retyping parameters shouldn't be needed, just doing
+something like this would help:&lt;/p&gt;
 &lt;pre class="literal-block"&gt;
 &amp;#64;typed(t.Callable[[B], C], t.Callable[[A], B], returns=t.Callable[[A], C])
 def compose(f, g):
@@ -289,9 +295,9 @@ def compose(f, g):
 &lt;/pre&gt;
 &lt;p&gt;Using the special keyword syntax introduced in Python 3.0 provides a
 clean break between input and output types. And using a decorator to
-separate the concern of &amp;#8220;this is type information&amp;#8221; from &amp;#8220;these are the
-parameters&amp;#8221; is what decorators&amp;nbsp;do.&lt;/p&gt;
-&lt;p&gt;As a proof of&amp;nbsp;concept:&lt;/p&gt;
+separate the concern of &amp;quot;this is type information&amp;quot; from &amp;quot;these are the
+parameters&amp;quot; is what decorators do.&lt;/p&gt;
+&lt;p&gt;As a proof of concept:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;inspect&lt;/span&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;functools&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;wraps&lt;/span&gt;
@@ -304,7 +310,7 @@ parameters&amp;#8221; is what decorators&amp;nbsp;do.&lt;/p&gt;
             &lt;span class="k"&gt;raise&lt;/span&gt; &lt;span class="ne"&gt;TypeError&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Must provide types for all parameters&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
         &lt;span class="n"&gt;annotations&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;zip&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;params&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;types&lt;/span&gt;&lt;span class="p"&gt;)}&lt;/span&gt;
         &lt;span class="n"&gt;annotations&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'return'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;returns&lt;/span&gt;
-        &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;__annotations__&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;annotations&lt;/span&gt;
+        &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="vm"&gt;__annotations__&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;annotations&lt;/span&gt;
         &lt;span class="nd"&gt;&amp;#64;wraps&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
         &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;wrapper&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
             &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -317,7 +323,7 @@ parameters&amp;#8221; is what decorators&amp;nbsp;do.&lt;/p&gt;
     &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="k"&gt;lambda&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;g&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
 &lt;/pre&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
-&lt;span class="n"&gt;compose&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;__annotations__&lt;/span&gt;
+&lt;span class="n"&gt;compose&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="vm"&gt;__annotations__&lt;/span&gt;
 &lt;/pre&gt;
 &lt;pre class="literal-block"&gt;
 {'f': typing.CallableCallable[[~B], ~C],
@@ -350,9 +356,9 @@ TypeError                                 Traceback (most recent call last)
 
 TypeError: Must provide types for all parameters
 &lt;/pre&gt;
-&lt;p&gt;Of course, there&amp;#8217;s still the issue of things like classes that accept
+&lt;p&gt;Of course, there's still the issue of things like classes that accept
 instances of themselves as arguments to methods. The cannonical example
-appears to be&amp;nbsp;Nodes:&lt;/p&gt;
+appears to be Nodes:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Node&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;left&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;None&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;right&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;None&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
@@ -360,9 +366,9 @@ appears to be&amp;nbsp;Nodes:&lt;/p&gt;
         &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;left&lt;/span&gt;
         &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;right&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;right&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;Since class names aren&amp;#8217;t evaluated until the entire body of the class is
-evaluated, it&amp;#8217;s impossible to straight up reference the class in the top
-level of the class,&amp;nbsp;i.e.:&lt;/p&gt;
+&lt;p&gt;Since class names aren't evaluated until the entire body of the class is
+evaluated, it's impossible to straight up reference the class in the top
+level of the class, i.e.:&lt;/p&gt;
 &lt;pre class="literal-block"&gt;
 class Node:
     def __init__(self, value: t.Any, left: Node, right: Node):
@@ -371,7 +377,7 @@ class Node:
 &lt;p&gt;This results in a NameError because of the inside out evaluation
 (something that has bitten me before, but was easy enough to work around
 in that case). I believe the current fix for this is actually inheriting
-from something like Generic[T],&amp;nbsp;i.e.:&lt;/p&gt;
+from something like Generic[T], i.e.:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Node&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Generic&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;T&lt;/span&gt;&lt;span class="p"&gt;]):&lt;/span&gt;
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;left&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;T&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;right&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;T&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
@@ -379,13 +385,13 @@ from something like Generic[T],&amp;nbsp;i.e.:&lt;/p&gt;
 &lt;/pre&gt;
 &lt;p&gt;Nevermind the fact that I think imposing this requirement is ridiculous
 not only because should types be out of the way, the implication is that
-I&amp;#8217;m gaining some tangible runtime benefit by inheriting from Generic[T]
-&amp;#8212; we&amp;#8217;re not, static type analysis is an &amp;#8220;offline&amp;#8221;&amp;nbsp;thing.&lt;/p&gt;
+I'm gaining some tangible runtime benefit by inheriting from Generic[T]
+-- we're not, static type analysis is an &amp;quot;offline&amp;quot; thing.&lt;/p&gt;
 &lt;p&gt;Also the problem of using my own metaclass arises. These type variables
 are scaffolded around using &lt;tt class="docutils literal"&gt;abc.ABCMeta&lt;/tt&gt; as a base, which is fine
 until the fact that we can only have one metaclass in a heirarchy comes
-into play. Wah wah&amp;nbsp;wah.&lt;/p&gt;
-&lt;p&gt;I don&amp;#8217;t think that type hinting is necessarily a bad thing. However, I
-think as the &lt;span class="caps"&gt;PEP&lt;/span&gt; is written currently, we&amp;#8217;re sacrificing quite a bit for
-minimal&amp;nbsp;gain.&lt;/p&gt;
+into play. Wah wah wah.&lt;/p&gt;
+&lt;p&gt;I don't think that type hinting is necessarily a bad thing. However, I
+think as the PEP is written currently, we're sacrificing quite a bit for
+minimal gain.&lt;/p&gt;
 </content><category term="python"></category><category term="haskell"></category></entry></feed>

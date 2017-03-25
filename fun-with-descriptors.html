@@ -19,7 +19,7 @@
 
 
 <meta name="keywords" content="classes, data model, descriptors, pynads, cool stuff, " />
-        <title>Fun With&nbsp;Descriptors - from alec.thoughts import *
+        <title>Fun With Descriptors - from alec.thoughts import *
 </title>
         <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
@@ -73,7 +73,7 @@
 <article>
 <div class="row-fluid">
     <header class="page_header span10 offset2">
-    <h1><a href="http://justanr.github.io/fun-with-descriptors"> Fun With&nbsp;Descriptors  </a></h1>
+    <h1><a href="http://justanr.github.io/fun-with-descriptors"> Fun With Descriptors  </a></h1>
     </header>
 </div>
 
@@ -81,10 +81,10 @@
         <div class="span8 offset2 article-content">
 
             <p>Once you understand their purpose and power, playing with descriptors is
-a lot of&nbsp;fun.</p>
+a lot of fun.</p>
 <p>I recently found myself needing to set an instance of a class as a class
-attribute on the class in question. I&#8217;m not crazy, I swear. It&#8217;s for
-pynads&#8217; implementation of Monoids. However, doing&nbsp;this:</p>
+attribute on the class in question. I'm not crazy, I swear. It's for
+pynads' implementation of Monoids. However, doing this:</p>
 <pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Thing</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">mempty</span> <span class="o">=</span> <span class="n">Thing</span><span class="p">()</span>
@@ -106,33 +106,34 @@ NameError                                 Traceback (most recent call last)
 
 NameError: name 'Thing' is not defined
 </pre>
-<p>Doesn&#8217;t work. Wah wah wah. So my brain began turning, and I first tried&nbsp;this:</p>
+<p>Doesn't work. Wah wah wah. So my brain began turning, and I first tried
+this:</p>
 <pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Thing</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="nd">&#64;classmethod</span>
     <span class="nd">&#64;property</span>
-    <span class="k">def</span> <span class="nf">mempty</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">cls</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">mempty</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">()</span>
 
 <span class="n">Thing</span><span class="o">.</span><span class="n">mempty</span>
 </pre>
 <pre class="literal-block">
 &lt;bound method type.? of &lt;class '__main__.Thing'&gt;&gt;
 </pre>
-<p>At least that didn&#8217;t blow up&#8230;, what if I swapped&nbsp;them?</p>
+<p>At least that didn't blow up..., what if I swapped them?</p>
 <pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Thing</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="nd">&#64;property</span>
     <span class="nd">&#64;classmethod</span>
-    <span class="k">def</span> <span class="nf">mempty</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">cls</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">mempty</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">()</span>
 
 <span class="n">Thing</span><span class="o">.</span><span class="n">mempty</span>
 </pre>
 <pre class="literal-block">
 &lt;property at 0x7fd39c1601d8&gt;
 </pre>
-<p>Well, that didn&#8217;t work either. Hm. I had hoped that composing
+<p>Well, that didn't work either. Hm. I had hoped that composing
 <tt class="docutils literal">classmethod</tt> and <tt class="docutils literal">property</tt> together would work and that Python
 would magically infer what I wanted. However, Python does no such thing,
 unsurprisingly. So, what if I made my <em>own</em> <tt class="docutils literal">classproperty</tt>
@@ -141,13 +142,13 @@ descriptor?</p>
 <span class="k">class</span> <span class="nc">classproperty</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">method</span>
-    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">cls</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="p">(</span><span class="n">cls</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">Thing</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="nd">&#64;classproperty</span>
-    <span class="k">def</span> <span class="nf">mempty</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">cls</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">mempty</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">()</span>
 
 <span class="n">Thing</span><span class="o">.</span><span class="n">mempty</span>
 </pre>
@@ -155,30 +156,30 @@ descriptor?</p>
 &lt;__main__.Thing at 0x7fd39c159588&gt;
 </pre>
 <p>It works! Five lines of code plus another three to use it! Yeah! Except
-that three line use was repeated at least three times in pynads. I&#8217;m not
-sure about you, but I hate repeating myself. I&#8217;m gonna make a mistake
+that three line use was repeated at least three times in pynads. I'm not
+sure about you, but I hate repeating myself. I'm gonna make a mistake
 somewhere (and did with List). Mainly because I was caching the instance
-like&nbsp;this:</p>
+like this:</p>
 <pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Thing</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">_mempty</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="nd">&#64;classproperty</span>
-    <span class="k">def</span> <span class="nf">mempty</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">cls</span><span class="o">.</span><span class="n">_mempty</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">cls</span><span class="o">.</span><span class="n">_mempty</span> <span class="o">=</span> <span class="n">cls</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">_mempty</span>
+    <span class="k">def</span> <span class="nf">mempty</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_mempty</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_mempty</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_mempty</span>
 
 <span class="k">assert</span> <span class="n">Thing</span><span class="o">.</span><span class="n">mempty</span> <span class="ow">is</span> <span class="n">Thing</span><span class="o">.</span><span class="n">mempty</span>
 </pre>
-<p>That&#8217;s great, but that&#8217;s also six lines of boilerplate, which is one
+<p>That's great, but that's also six lines of boilerplate, which is one
 line longer than the implementation. ): After the benadryl wore off and
 I was able to think straight, what if I just moved the boiler plate into
-the&nbsp;descriptor?</p>
+the descriptor?</p>
 <pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Instance</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">cls</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">cls</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">()</span>
 
 <span class="k">class</span> <span class="nc">Thing</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">mempty</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">()</span>
@@ -190,15 +191,15 @@ the&nbsp;descriptor?</p>
 &lt;__main__.Thing object at 0x7fd39c166e80&gt;
 False
 </pre>
-<p>Awesome. That&#8217;s a much nicer use of it. The caching can also be moved
-into the descriptor&nbsp;too:</p>
+<p>Awesome. That's a much nicer use of it. The caching can also be moved
+into the descriptor too:</p>
 <pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Instance</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_inst</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">cls</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inst</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_inst</span> <span class="o">=</span> <span class="n">cls</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_inst</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inst</span>
 
 <span class="k">class</span> <span class="nc">Thing</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -206,16 +207,16 @@ into the descriptor&nbsp;too:</p>
 
 <span class="k">assert</span> <span class="n">Thing</span><span class="o">.</span><span class="n">mempty</span> <span class="ow">is</span> <span class="n">Thing</span><span class="o">.</span><span class="n">mempty</span>
 </pre>
-<p>And, if needed, a specific instance can be created and&nbsp;cached:</p>
+<p>And, if needed, a specific instance can be created and cached:</p>
 <pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Instance</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_inst</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
-    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">cls</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inst</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_inst</span> <span class="o">=</span> <span class="n">cls</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_inst</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inst</span>
 
 <span class="k">class</span> <span class="nc">Thing</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -232,7 +233,7 @@ world
 <pre class="literal-block">
 &lt;__main__.Thing at 0x7fd39c1f5e10&gt;
 </pre>
-<p>And to show it&#8217;s&nbsp;cached:</p>
+<p>And to show it's cached:</p>
 <pre class="code ipython3 literal-block">
 <span class="n">Thing</span><span class="o">.</span><span class="n">mempty</span>
 </pre>
@@ -240,15 +241,15 @@ world
 &lt;__main__.Thing at 0x7fd39c1f5e10&gt;
 </pre>
 <p>Ta-da! Setting an instance of a class on the class as a class attribute
-&#8212; a sentence that is no less confusing to read now than&nbsp;before.</p>
+-- a sentence that is no less confusing to read now than before.</p>
 
             <aside>
             <nav>
             <ul class="articles_timeline">
  
-                <li class="previous_article">« <a href="http://justanr.github.io/crazy-ideas-and-i" title="Previous: Crazy Ideas and&nbsp;I">Crazy Ideas and&nbsp;I</a></li>
+                <li class="previous_article">« <a href="http://justanr.github.io/crazy-ideas-and-i" title="Previous: Crazy Ideas and I">Crazy Ideas and I</a></li>
  
-                <li class="next_article"><a href="http://justanr.github.io/pep-484-and-me" title="Next: <span class="caps">PEP</span> 484 and&nbsp;Me"><span class="caps">PEP</span> 484 and&nbsp;Me</a> »</li>
+                <li class="next_article"><a href="http://justanr.github.io/pep-484-and-me" title="Next: PEP 484 and Me">PEP 484 and Me</a> »</li>
             </ul>
             </nav>
             </aside>

@@ -19,7 +19,7 @@
 
 
 <meta name="keywords" content="python, don't do this at home, pynads, Miscellaneous, " />
-        <title>Crazy Ideas and&nbsp;I - from alec.thoughts import *
+        <title>Crazy Ideas and I - from alec.thoughts import *
 </title>
         <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
@@ -73,7 +73,7 @@
 <article>
 <div class="row-fluid">
     <header class="page_header span10 offset2">
-    <h1><a href="http://justanr.github.io/crazy-ideas-and-i"> Crazy Ideas and&nbsp;I  </a></h1>
+    <h1><a href="http://justanr.github.io/crazy-ideas-and-i"> Crazy Ideas and I  </a></h1>
     </header>
 </div>
 
@@ -81,17 +81,17 @@
         <div class="span8 offset2 article-content">
 
             <p>Occasionally, absolutely crazy ideas crop up into my noggin. Recently,
-I&#8217;ve had two take up residence almost simultaneously, both related to
+I've had two take up residence almost simultaneously, both related to
 <a class="reference external" href="https://github.com/justanr/pynads">pynads</a>.</p>
 <div class="section" id="haskell-type-signatures">
-<h2>Haskell Type&nbsp;Signatures</h2>
+<h2>Haskell Type Signatures</h2>
 <p>Since Pynads is, nominally, a learning exercise for me to understand
-some concepts in functional programming &#8212; specifically in terms of
-Haskell &#8212; a little more deeply. I found myself wanting to using Haskell
+some concepts in functional programming -- specifically in terms of
+Haskell -- a little more deeply. I found myself wanting to using Haskell
 type signatures with some of my functions. The reason why is because I
-<em>like</em> Haskell&#8217;s type signatures. They stay out of the way of my actual
-function&nbsp;signatures.</p>
-<p>Here&#8217;s the current way Python 3 annotates&nbsp;functions:</p>
+<em>like</em> Haskell's type signatures. They stay out of the way of my actual
+function signatures.</p>
+<p>Here's the current way Python 3 annotates functions:</p>
 <pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">my_func</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'hello'</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
@@ -101,24 +101,24 @@ function&nbsp;signatures.</p>
 <pre class="literal-block">
 (1, 'wut')
 </pre>
-<p>That&#8217;s <em>so much line noise</em>. Like what. Look at that default assignment.
+<p>That's <em>so much line noise</em>. Like what. Look at that default assignment.
 Like, I get why the annotations are inlined with the signature. But
-they&#8217;re just ugly. Meanwhile, here&#8217;s a similar Haskell function with the
-type&nbsp;signature:</p>
+they're just ugly. Meanwhile, here's a similar Haskell function with the
+type signature:</p>
 <pre class="literal-block">
 myFunc :: Int -&gt; String -&gt; (Int, String)
 myFunc a b = (a, b)
 </pre>
-<p>That type signature is both helpful <span class="caps">AND</span> out of the way. However, there&#8217;s
-one really nice thing that Python does with these&nbsp;annotations:</p>
+<p>That type signature is both helpful AND out of the way. However, there's
+one really nice thing that Python does with these annotations:</p>
 <pre class="code ipython3 literal-block">
-<span class="n">my_func</span><span class="o">.</span><span class="n">__annotations__</span>
+<span class="n">my_func</span><span class="o">.</span><span class="vm">__annotations__</span>
 </pre>
 <pre class="literal-block">
 {'a': int, 'b': str, 'return': tuple}
 </pre>
 <p>Nice. We retain that information in a dictionary out of the way. What if
-we could combine these two&nbsp;things?</p>
+we could combine these two things?</p>
 <pre class="code ipython3 literal-block">
 <span class="kn">from</span> <span class="nn">pynads.utils.decorators</span> <span class="k">import</span> <span class="n">annotate</span>
 
@@ -127,26 +127,26 @@ we could combine these two&nbsp;things?</p>
     <span class="k">return</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
 </pre>
 <p>I like this. It stays out of the way, it uses a decorator (never enough
-decorators). Let&#8217;s checkout the <tt class="docutils literal">__annotations__</tt> dict:</p>
+decorators). Let's checkout the <tt class="docutils literal">__annotations__</tt> dict:</p>
 <pre class="code ipython3 literal-block">
-<span class="n">my_func</span><span class="o">.</span><span class="n">__annotations__</span>
+<span class="n">my_func</span><span class="o">.</span><span class="vm">__annotations__</span>
 </pre>
 <pre class="literal-block">
 {}
 </pre>
-<p>Uh&#8230;.Well, it didn&#8217;t fill anything in. What did it do? Well, it
-attaches the signature to the&nbsp;docstring&#8230;</p>
+<p>Uh....Well, it didn't fill anything in. What did it do? Well, it
+attaches the signature to the docstring...</p>
 <pre class="code ipython3 literal-block">
-<span class="nb">print</span><span class="p">(</span><span class="n">my_func</span><span class="o">.</span><span class="n">__doc__</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">my_func</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 my_func :: Int -&gt; String -&gt; (Int, String)
 </pre>
-<p>That&#8217;s&#8230;nice. I&#8217;m actually perfectly content with this solution
-currently. But wouldn&#8217;t it be cool? (this is a phrase that only preceeds
-michief and trouble). Wouldn&#8217;t it be cool if that Haskell type was
+<p>That's...nice. I'm actually perfectly content with this solution
+currently. But wouldn't it be cool? (this is a phrase that only preceeds
+michief and trouble). Wouldn't it be cool if that Haskell type was
 somehow transformed into a Python annotations dictionary and on the
-other end we&#8217;d be able to inspect the annotation and get&nbsp;this:</p>
+other end we'd be able to inspect the annotation and get this:</p>
 <pre class="code ipython3 literal-block">
 <span class="p">{</span><span class="s1">'a'</span><span class="p">:</span> <span class="s1">'Int'</span><span class="p">,</span>
  <span class="s1">'b'</span><span class="p">:</span> <span class="s1">'String'</span><span class="p">,</span>
@@ -157,58 +157,59 @@ other end we&#8217;d be able to inspect the annotation and get&nbsp;this:</p>
 {'a': 'Int', 'b': 'String', 'returns': '(Int, String)'}
 </pre>
 <p>However, this is complicated because what if we had a higher order
-function? The Haskell type signature looks like&nbsp;this:</p>
+function? The Haskell type signature looks like this:</p>
 <pre class="literal-block">
 map :: (a -&gt; b) -&gt; [a] -&gt; [b]
 </pre>
-<p><span class="dquo">&#8220;</span>Take a function of type a to type b, a list of as and return a list of
-bs.&#8221; Simple. How is this parsed? What if we put type class restrictions
-on the&nbsp;type:</p>
+<p>&quot;Take a function of type a to type b, a list of as and return a list of
+bs.&quot; Simple. How is this parsed? What if we put type class restrictions
+on the type:</p>
 <pre class="literal-block">
 (Monad m) =&gt; m a -&gt; (a -&gt; b) -&gt; m b
 </pre>
 <p>Where m is an instance of Monad, take a <tt class="docutils literal">m a</tt> and a function of type a
 to b and return a <tt class="docutils literal">m b</tt>.</p>
-<p>What if we have multiple typeclass&nbsp;restrictions:</p>
+<p>What if we have multiple typeclass restrictions:</p>
 <pre class="literal-block">
 (Monad m, Monoid s) =&gt; m s -&gt; m s -&gt; (s -&gt; s -&gt; m s) -&gt; m s
 </pre>
-<p>Maybe we&#8217;re lifting <tt class="docutils literal">mappend</tt> into a monad? Let&#8217;s also pretend that
-this isn&#8217;t a bad way of doing it as well. How do we parse&nbsp;this?</p>
-<p>What about &#8220;existentially types&#8221;, aka. <tt class="docutils literal">forall a b.</tt> (which is
-something I&#8217;ve not used, nor understand, but apparently it&#8217;s useful
-because&nbsp;reasons).</p>
-<p>Of course, there are cons with&nbsp;this:</p>
+<p>Maybe we're lifting <tt class="docutils literal">mappend</tt> into a monad? Let's also pretend that
+this isn't a bad way of doing it as well. How do we parse this?</p>
+<p>What about &quot;existentially types&quot;, aka. <tt class="docutils literal">forall a b.</tt> (which is
+something I've not used, nor understand, but apparently it's useful
+because reasons).</p>
+<p>Of course, there are cons with this:</p>
 <ul class="simple">
 <li>Haskell type signatures are too complex to be matched with regular
 expressions. How do you write a regex for
 <tt class="docutils literal">forall a b. ((a, b) <span class="pre">-&gt;</span> (Char, Bool))</tt>?</li>
 <li>Parsers can be slow. They <em>can</em> be fast. But since this is a library
 built on understand functional things like applicatives and monads,
-of course I&#8217;d use an applicative/monadic combinatorial parser, which
-in Python <em>will</em> be&nbsp;slow.</li>
+of course I'd use an applicative/monadic combinatorial parser, which
+in Python <em>will</em> be slow.</li>
 <li>So many competing Python typing libraries. <tt class="docutils literal">mypy</tt> seems to have
-gotten the <span class="caps">BDFL</span> nod and in fact, seems to be on track for inclusion
+gotten the BDFL nod and in fact, seems to be on track for inclusion
 to Python 3.5. Is it worth taking a second step and translating the
-parsed type signature to a type&nbsp;system?</li>
-<li><tt class="docutils literal">__annotations__</tt> are use for things that aren&#8217;t type annotations.
-Is this good? Is this bad? I don&#8217;t know. Well, I think they <em>should</em>
-be for type signatures, but there&#8217;s some cool stuff that is done with&nbsp;them.</li>
+parsed type signature to a type system?</li>
+<li><tt class="docutils literal">__annotations__</tt> are use for things that aren't type annotations.
+Is this good? Is this bad? I don't know. Well, I think they <em>should</em>
+be for type signatures, but there's some cool stuff that is done with
+them.</li>
 <li>What about typeclass restrictions? Do we create a special entry? How
-do we handle collisions?&nbsp;Etc.</li>
+do we handle collisions? Etc.</li>
 </ul>
-<p>Things to think&nbsp;about.</p>
+<p>Things to think about.</p>
 </div>
 <div class="section" id="my-broken-do-notation">
-<h2>My Broken Do&nbsp;Notation</h2>
+<h2>My Broken Do Notation</h2>
 <p>I implemented a <a class="reference external" href="https://github.com/justanr/pynads/tree/master/pynads/do">rudimentary do-notation esque
 syntax</a>
-sourced from Peter Thatcher&#8217;s post on <a class="reference external" href="http://www.valuedlessons.com/2008/01/monads-in-python-with-nice-syntax.html">monads in
+sourced from Peter Thatcher's post on <a class="reference external" href="http://www.valuedlessons.com/2008/01/monads-in-python-with-nice-syntax.html">monads in
 Python</a>.
-Here&#8217;s the thing, it works&#8230;except with the <tt class="docutils literal">List</tt> monad, because we
+Here's the thing, it works...except with the <tt class="docutils literal">List</tt> monad, because we
 need to repeatedly call the bound function and then flatten the list
 out. Except with this implementation, it hits <tt class="docutils literal">mreturn</tt> and the whole
-thing blows up. Wah wah wah. But I like this&nbsp;style:</p>
+thing blows up. Wah wah wah. But I like this style:</p>
 <pre class="code ipython3 literal-block">
 <span class="kn">from</span> <span class="nn">pynads.do</span> <span class="k">import</span> <span class="n">do</span><span class="p">,</span> <span class="n">mreturn</span>
 <span class="kn">from</span> <span class="nn">pynads</span> <span class="k">import</span> <span class="n">List</span>
@@ -221,7 +222,7 @@ thing blows up. Wah wah wah. But I like this&nbsp;style:</p>
 
 <span class="c1">#chessboard('abcdefgh', range(1,9))</span>
 </pre>
-<p>Oops. But this&nbsp;works:</p>
+<p>Oops. But this works:</p>
 <pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">chessboard</span><span class="p">(</span><span class="n">ranks</span><span class="p">,</span> <span class="n">files</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">List</span><span class="p">(</span><span class="o">*</span><span class="n">ranks</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">r</span><span class="p">:</span>
@@ -233,7 +234,7 @@ thing blows up. Wah wah wah. But I like this&nbsp;style:</p>
 <pre class="literal-block">
 List(('a', 1), ('a', 2), ('a', 3), ('a', 4), ('a', 5), '...54 more...', ('h', 4), ('h', 5), ('h', 6), ('h', 7), ('h', 8))
 </pre>
-<p>But compare to&nbsp;Haskell:</p>
+<p>But compare to Haskell:</p>
 <pre class="literal-block">
 ranks = ['a'..'h']
 files = [1..8]
@@ -246,44 +247,44 @@ chessboard = do
 </pre>
 <p>It just works. Obviously, something in Pynads is implemented poorly. Wah
 wah wah. But what if <tt class="docutils literal">do</tt> did something different? What if it took a
-look at that function and said, &#8220;No no no, this is <em>all</em> wrong&#8230;let
-me&#8230;let me just rewrite it for you.&#8221; And instead of actually&nbsp;using:</p>
+look at that function and said, &quot;No no no, this is <em>all</em> wrong...let
+me...let me just rewrite it for you.&quot; And instead of actually using:</p>
 <pre class="literal-block">
 def chessboard(ranks, files):
     r = yield List(*ranks)
     f = yield List(*files)
     mreturn((r,f))
 </pre>
-<p>We actually end up&nbsp;using:</p>
+<p>We actually end up using:</p>
 <pre class="literal-block">
 def chesboard(ranks, files):
     return List(*ranks) &gt;&gt; (lambda r:
            List(*files) &gt;&gt; (lambda f:
            List.unit((r,f))        ))
 </pre>
-<p>And just rewrite the function with <span class="caps">AST</span> and compile it and use the new
+<p>And just rewrite the function with AST and compile it and use the new
 function instead. I mean if Lisp can be implemented in Python by parsing
-Lisp into Python <span class="caps">AST</span>, surely it&#8217;s (relatively, being the keyword) simple
+Lisp into Python AST, surely it's (relatively, being the keyword) simple
 to take a function with a bunch of yields and rewrite it into a function
-with a bunch of&nbsp;lambdas.</p>
-<p>Besides, wouldn&#8217;t it be cool?&nbsp;;)</p>
+with a bunch of lambdas.</p>
+<p>Besides, wouldn't it be cool? ;)</p>
 </div>
 <div class="section" id="thoughts">
 <h2>Thoughts</h2>
 <p>Of course both of these are nuclear options. Well, the parser less so
-than rewriting <span class="caps">AST</span>. But, I know if I become a professional developer, at
-some point I&#8217;ll need to have a passable understanding of parsers and
-ASTs (they&#8217;re not even that unrelated) so instead of breaking something
-someone&#8217;s using, why not break something I&#8217;ll be the only one&nbsp;cursing?</p>
+than rewriting AST. But, I know if I become a professional developer, at
+some point I'll need to have a passable understanding of parsers and
+ASTs (they're not even that unrelated) so instead of breaking something
+someone's using, why not break something I'll be the only one cursing?</p>
 </div>
 
             <aside>
             <nav>
             <ul class="articles_timeline">
  
-                <li class="previous_article">« <a href="http://justanr.github.io/fizzbuzz-with-pynads" title="Previous: Fizzbuzz With&nbsp;Pynads!">Fizzbuzz With&nbsp;Pynads!</a></li>
+                <li class="previous_article">« <a href="http://justanr.github.io/fizzbuzz-with-pynads" title="Previous: Fizzbuzz With Pynads!">Fizzbuzz With Pynads!</a></li>
  
-                <li class="next_article"><a href="http://justanr.github.io/fun-with-descriptors" title="Next: Fun With&nbsp;Descriptors">Fun With&nbsp;Descriptors</a> »</li>
+                <li class="next_article"><a href="http://justanr.github.io/fun-with-descriptors" title="Next: Fun With Descriptors">Fun With Descriptors</a> »</li>
             </ul>
             </nav>
             </aside>
@@ -337,7 +338,7 @@ someone&#8217;s using, why not break something I&#8217;ll be the only one&nbsp;c
                     <span>3</span>
 </a></li>
                 <li><a href="/tags.html#python-ref">python
-                    <span>15</span>
+                    <span>16</span>
 </a></li>
             </ul>
 

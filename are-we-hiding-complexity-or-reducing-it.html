@@ -19,7 +19,7 @@
 
 
 <meta name="keywords" content="my-journey-through-tdd, design, " />
-        <title>Are we hiding complexity or reducing&nbsp;it? - from alec.thoughts import *
+        <title>Are we hiding complexity or reducing it? - from alec.thoughts import *
 </title>
         <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
@@ -73,14 +73,14 @@
 <article>
 <div class="row-fluid">
     <header class="page_header span10 offset2">
-    <h1><a href="http://justanr.github.io/are-we-hiding-complexity-or-reducing-it"> Are we hiding complexity or reducing&nbsp;it?  </a></h1>
+    <h1><a href="http://justanr.github.io/are-we-hiding-complexity-or-reducing-it"> Are we hiding complexity or reducing it?  </a></h1>
     </header>
 </div>
 
 <div class="row-fluid">
         <div class="span8 offset2 article-content">
 
-            <p>Consider this seemingly innocuous Flask&nbsp;endpoint.</p>
+            <p>Consider this seemingly innocuous Flask endpoint.</p>
 <pre class="code ipython3 literal-block">
 <span class="kn">from</span> <span class="nn">myapp.token</span> <span class="k">import</span> <span class="n">TokenGenerator</span>
 <span class="kn">from</span> <span class="nn">myapp.decorators</span> <span class="k">import</span> <span class="n">email</span>
@@ -93,7 +93,7 @@
     <span class="n">html_body</span> <span class="o">=</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">'token-reset-email.html'</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">Message</span><span class="p">(</span><span class="n">body</span><span class="o">=</span><span class="n">html_body</span><span class="p">,</span> <span class="n">receiver</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
 </pre>
-<p>And, let&#8217;s pretend the <tt class="docutils literal">email</tt> decorator looks like&nbsp;this:</p>
+<p>And, let's pretend the <tt class="docutils literal">email</tt> decorator looks like this:</p>
 <pre class="code ipython3 literal-block">
 <span class="kn">from</span> <span class="nn">myapp.extensions</span> <span class="k">import</span> <span class="n">emailer</span>
 
@@ -104,43 +104,43 @@
         <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">'front.homepage'</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">decorator</span>
 </pre>
-<p>We might look at that and think, &#8220;Hey! That&#8217;s pretty cool, sending the
-email is separated from composing the email! It&#8217;s&nbsp;testable!&#8221;</p>
+<p>We might look at that and think, &quot;Hey! That's pretty cool, sending the
+email is separated from composing the email! It's testable!&quot;</p>
 <div class="section" id="is-it-though">
-<h2>Is it&nbsp;though?</h2>
+<h2>Is it though?</h2>
 <p>What does the <tt class="docutils literal">email</tt> decorator actually do? It intercepts a request
 from some endpoint and takes the message it returns and sends it. Then
-it redirects to some homepage. It&#8217;s still coupled, we can&#8217;t test
+it redirects to some homepage. It's still coupled, we can't test
 <em>either</em> part without cranking up Flask and running the test server and
-worse still the logic is separated&nbsp;oddly.</p>
-<p>The creation of the message is the endpoint&#8217;s responsibility. But the
+worse still the logic is separated oddly.</p>
+<p>The creation of the message is the endpoint's responsibility. But the
 sending of the email resides some place else. The end point obviously
-<em>wants</em> to send a notification to a user, but it doesn&#8217;t. Instead it
-ends up just going &#8220;Well&#8230;.uh&#8230;here&#8217;s this message thing. I hope
-whoever gets it knows what to do with it.&#8221; Similarly, the <tt class="docutils literal">email</tt>
-decorator <em>wants</em> a message but it doesn&#8217;t build one, it gets one from
-someplace&nbsp;else.</p>
+<em>wants</em> to send a notification to a user, but it doesn't. Instead it
+ends up just going &quot;Well....uh...here's this message thing. I hope
+whoever gets it knows what to do with it.&quot; Similarly, the <tt class="docutils literal">email</tt>
+decorator <em>wants</em> a message but it doesn't build one, it gets one from
+someplace else.</p>
 <p>Mostly this tell us that the logic inside the <tt class="docutils literal">email</tt> decorator was
 originally inside this endpoint, but someone got tired of typing
 <tt class="docutils literal">emailer.send(msg, sender)</tt> all the time and decided that was the seam
-to split on. I&#8217;m not gonna cast stones, I&#8217;ve written things like this.
-My eyes would glaze over and became limp every time I&#8217;d need to do
+to split on. I'm not gonna cast stones, I've written things like this.
+My eyes would glaze over and became limp every time I'd need to do
 <tt class="docutils literal">emailer.send(msg, sender)</tt>.</p>
 <p>However, all this decorator has accomplished is <em>hiding</em> the complexity
 instead of <em>reducing</em> it. Remember when you were young and your mom or
 dad would tell you to clean your room. And instead of cleaning it, you
 shoved everything into the closet and under the bed? Your room <em>looked</em>
-clean, but you only <em>hid</em> the&nbsp;mess.</p>
-<p>&#8230;maybe you didn&#8217;t do that, but I remember doing that. And I do the
+clean, but you only <em>hid</em> the mess.</p>
+<p>...maybe you didn't do that, but I remember doing that. And I do the
 same thing in my code. But now, instead of shoveling the complexity into
 decorators and pushing it away and never dealing with it, I want to look
-at the complexity and think, &#8220;What&#8217;s the best way to clean this and keep
-it from happening&nbsp;again?&#8221;</p>
+at the complexity and think, &quot;What's the best way to clean this and keep
+it from happening again?&quot;</p>
 </div>
 <div class="section" id="how-can-we-fix-it">
-<h2>How can we fix&nbsp;it?</h2>
-<p>Before we touch anything, we should create a test harness (something I&#8217;m
-trying to force myself to do&nbsp;lately).</p>
+<h2>How can we fix it?</h2>
+<p>Before we touch anything, we should create a test harness (something I'm
+trying to force myself to do lately).</p>
 <pre class="code ipython3 literal-block">
 <span class="kn">from</span> <span class="nn">unittest</span> <span class="k">import</span> <span class="n">mock</span>
 <span class="kn">import</span> <span class="nn">pytest</span>
@@ -160,16 +160,16 @@ trying to force myself to do&nbsp;lately).</p>
 <p>These two things are a staple in my <tt class="docutils literal">conftest.py</tt> for Flask
 applications. The first creates a single Flask app for the entire
 session. This might not be the <em>best</em> way to handle testing Flask apps,
-but it certainly speeds things up. If you don&#8217;t have environment
+but it certainly speeds things up. If you don't have environment
 senstive things (checking for Redis, for example), this probably good
-enough for end-to-end testing, if you have that sort of thing&#8230;well,
-you&#8217;ll probably want to create things <tt class="docutils literal">create_app_with_redis</tt> or maybe
-use a parametrized fixture. I&#8217;m not going to get into that here&nbsp;though.</p>
+enough for end-to-end testing, if you have that sort of thing...well,
+you'll probably want to create things <tt class="docutils literal">create_app_with_redis</tt> or maybe
+use a parametrized fixture. I'm not going to get into that here though.</p>
 <p>The <tt class="docutils literal">app_context</tt> fixture is local to each function that wants it.
-It&#8217;s much quicker to set up and teardown application contexts than a
-whole application, which makes&nbsp;sense.</p>
-<p>Next, we&#8217;ll want to batter our endpoint with tests. This part is <em>no
-fun</em> because we need to essentially test the endpoint through the <span class="caps">UI</span>.</p>
+It's much quicker to set up and teardown application contexts than a
+whole application, which makes sense.</p>
+<p>Next, we'll want to batter our endpoint with tests. This part is <em>no
+fun</em> because we need to essentially test the endpoint through the UI.</p>
 <pre class="code ipython3 literal-block">
 <span class="kn">from</span> <span class="nn">myapp.models</span> <span class="k">import</span> <span class="n">User</span><span class="p">,</span> <span class="n">db</span>
 <span class="kn">from</span> <span class="nn">inspect</span> <span class="k">import</span> <span class="n">unwrap</span>
@@ -208,37 +208,37 @@ fun</em> because we need to essentially test the endpoint through the <span clas
     <span class="k">assert</span> <span class="n">aborter</span><span class="o">.</span><span class="n">called</span>
 </pre>
 <p>The very first thing you should notice is that <em>these tests are hard to
-write</em>. There&#8217;s all sorts of setup, things are being mocked left and
+write</em>. There's all sorts of setup, things are being mocked left and
 right. We have to mock something in the Flask-SQLAlchemy library! If
 nothing else sends up red flags, mocking something in a third party
-library&nbsp;should.</p>
-<p>However, there&#8217;s something important we&#8217;ve just learned: our design is
-bad. Trying to isolate this one function, and let&#8217;s be honest there&#8217;s
-things we&#8217;ve missed here, has put tremendous pressure on our thinking.
+library should.</p>
+<p>However, there's something important we've just learned: our design is
+bad. Trying to isolate this one function, and let's be honest there's
+things we've missed here, has put tremendous pressure on our thinking.
 The only reason I knew <tt class="docutils literal">first_or_404</tt> calls <tt class="docutils literal">flask.abort</tt> is because
-I&#8217;ve contributed to the&nbsp;library.</p>
-<p>There&#8217;s also another, more insidious dependency we have: Python&nbsp;3.4+</p>
+I've contributed to the library.</p>
+<p>There's also another, more insidious dependency we have: Python 3.4+</p>
 <ul class="simple">
 <li>Python 3.2 added the <tt class="docutils literal">__wrapped__</tt> attribute for functions wrapped
 with <tt class="docutils literal">update_wrapper</tt>/<tt class="docutils literal">wraps</tt></li>
 <li>mock was added to unittest in 3.3. It is available as a third party
-library&nbsp;though.</li>
+library though.</li>
 <li>inspected.unwrap was added in 3.4, which can unwrap decorators using
 <tt class="docutils literal">__wrapped__</tt></li>
 </ul>
-<p>So these tests <em>can&#8217;t run on almost every version of Python</em>. We could
+<p>So these tests <em>can't run on almost every version of Python</em>. We could
 ditch <tt class="docutils literal">unwrap</tt> and simply call dig through to <tt class="docutils literal">__wrapped__</tt>
 ourselves, but there could be more decorators between <tt class="docutils literal">&#64;email</tt> and the
 actual function that get added in the future, breaking the tests and
-they&#8217;ll be fixed by just doing this
+they'll be fixed by just doing this
 <tt class="docutils literal">function.__wrapped__.__wrapped__.__wrapped__</tt>. The other option is
 implementing <tt class="docutils literal">unwrap</tt> ourselves, which brings our dependencies down to
-<em>just</em> Python&nbsp;3.2</p>
+<em>just</em> Python 3.2</p>
 </div>
 <div class="section" id="how-to-fix-it">
-<h2>How to fix&nbsp;it.</h2>
+<h2>How to fix it.</h2>
 <p>The first step is to stop hiding the complexity. And to me, that means
-bringing the emailer <em>back</em> into the&nbsp;endpoint.</p>
+bringing the emailer <em>back</em> into the endpoint.</p>
 <pre class="code ipython3 literal-block">
 <span class="nd">&#64;app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">'/send-reset-password-token/&lt;username&gt;'</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">generate_auth_token_and_send_it</span><span class="p">(</span><span class="n">username</span><span class="p">):</span>
@@ -254,31 +254,32 @@ bringing the emailer <em>back</em> into the&nbsp;endpoint.</p>
 other, originally they were in a long distance relationship and we all
 know long distance relationships are hard. We could simply pull <em>both</em>
 the message construction and the email sender out into a decorator, but
-then the function name is wrong. It&#8217;s no longer
-<tt class="docutils literal">generate_auth_token_and_send_it</tt> it&#8217;s
+then the function name is wrong. It's no longer
+<tt class="docutils literal">generate_auth_token_and_send_it</tt> it's
 <tt class="docutils literal">generate_auth_token_and_return_some_structure_a_decorator_deals_with</tt>.</p>
-<p>By moving that logic back inside the endpoint, we&#8217;ve eliminated our hard
-dependency on Python 3 (there&#8217;s nothing to unwrap right now, and mock
-can be pip installed). Things are looking up already. If you&#8217;re
+<p>By moving that logic back inside the endpoint, we've eliminated our hard
+dependency on Python 3 (there's nothing to unwrap right now, and mock
+can be pip installed). Things are looking up already. If you're
 modifying your tests along with your source code, you can remove the
-<tt class="docutils literal">unwrap</tt> lines&nbsp;now.</p>
+<tt class="docutils literal">unwrap</tt> lines now.</p>
 </div>
 <div class="section" id="what-s-the-use-case">
-<h2>What&#8217;s the use&nbsp;case?</h2>
-<p>The next step is to look at the story the endpoint is telling&nbsp;us:</p>
+<h2>What's the use case?</h2>
+<p>The next step is to look at the story the endpoint is telling us:</p>
 <ul class="simple">
-<li>Given a username, the endpoint locates the proper&nbsp;user</li>
+<li>Given a username, the endpoint locates the proper user</li>
 <li>When the user is found, the endpoint generates a token for password
-resets for the&nbsp;user</li>
-<li>Then the endpoint generates an&nbsp;email</li>
-<li>The endpoint sends the&nbsp;email</li>
-<li>Finally the endpoint redirects to the&nbsp;homepage</li>
+resets for the user</li>
+<li>Then the endpoint generates an email</li>
+<li>The endpoint sends the email</li>
+<li>Finally the endpoint redirects to the homepage</li>
 </ul>
-<p>There&#8217;s also an error&nbsp;case:</p>
+<p>There's also an error case:</p>
 <ul class="simple">
-<li>If the endpoint can&#8217;t find the user, it redirects to an error&nbsp;page</li>
+<li>If the endpoint can't find the user, it redirects to an error page</li>
 </ul>
-<p>By doing this, we can completely pull the actual logic out into it&#8217;s own&nbsp;function:</p>
+<p>By doing this, we can completely pull the actual logic out into it's own
+function:</p>
 <pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">send_user_reset_token</span><span class="p">(</span><span class="n">user</span><span class="p">):</span>
     <span class="n">token</span> <span class="o">=</span> <span class="n">TokenGenerator</span><span class="p">(</span><span class="n">secret_key</span><span class="o">=</span><span class="n">current_app</span><span class="o">.</span><span class="n">secret_key</span><span class="p">)</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">'op'</span><span class="p">:</span> <span class="s1">'reset-token'</span><span class="p">,</span> <span class="s1">'username'</span><span class="p">:</span><span class="n">user</span><span class="o">.</span><span class="n">username</span><span class="p">})</span>
@@ -292,8 +293,8 @@ resets for the&nbsp;user</li>
     <span class="n">send_user_reset_token</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">'index.homepage'</span><span class="p">)</span>
 </pre>
-<p>That&#8217;s even better. Our test through the <span class="caps">UI</span> can be replaced with
-something a little&nbsp;simpler:</p>
+<p>That's even better. Our test through the UI can be replaced with
+something a little simpler:</p>
 <pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">test_do_we_send_the_token</span><span class="p">(</span><span class="n">app_context</span><span class="p">):</span>
     <span class="n">fred</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s1">'fred'</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s1">'fred&#64;fred.fred'</span><span class="p">)</span>
@@ -305,8 +306,8 @@ something a little&nbsp;simpler:</p>
 
     <span class="k">assert</span> <span class="n">sender</span><span class="o">.</span><span class="n">called</span>
 </pre>
-<p>I&#8217;m not completely happy with this test, but it&#8217;s okay. However, before
-we completely divert our attention from the endpoint test, let&#8217;s fix the
+<p>I'm not completely happy with this test, but it's okay. However, before
+we completely divert our attention from the endpoint test, let's fix the
 second test where we mock <tt class="docutils literal">flask_sqlalchemy.abort</tt>:</p>
 <pre class="code ipython3 literal-block">
 <span class="nd">&#64;app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">'/send-reset-password-token/&lt;username&gt;'</span><span class="p">)</span>
@@ -330,20 +331,20 @@ second test where we mock <tt class="docutils literal">flask_sqlalchemy.abort</t
     <span class="k">assert</span> <span class="ow">not</span> <span class="n">aborter</span><span class="o">.</span><span class="n">called</span>
     <span class="k">assert</span> <span class="s1">'Username not found'</span> <span class="ow">in</span> <span class="n">get_flashed_messages</span><span class="p">()</span>
 </pre>
-<p>We still need to spin up Flask to run these tests, but they&#8217;re simpler.
-The negative assertion in this test can be dangerous, but it&#8217;s paired
-with a positive assertion so I feel fine with having&nbsp;it.</p>
+<p>We still need to spin up Flask to run these tests, but they're simpler.
+The negative assertion in this test can be dangerous, but it's paired
+with a positive assertion so I feel fine with having it.</p>
 <p>That leaves just the emailer and the token generator to deal with. The
 reason for emailer to be mocked out is obvious, but the token generator
-might be less obvious. If it&#8217;s a <em>good</em> token generator, you won&#8217;t be
-able to know ahead of time what it&#8217;ll generate, it also has a hard
-dependency on our application. Both of these make it hard to&nbsp;test.</p>
-<p><a class="reference external" href="http://justanr.github.io/on-dryers-adapters-and-software-design">The emailer problem I&#8217;ve addressed else
+might be less obvious. If it's a <em>good</em> token generator, you won't be
+able to know ahead of time what it'll generate, it also has a hard
+dependency on our application. Both of these make it hard to test.</p>
+<p><a class="reference external" href="http://justanr.github.io/on-dryers-adapters-and-software-design">The emailer problem I've addressed else
 where</a>,
 we just build an interface we want to use and pass the implementation
-in. We&#8217;ll do the same for the token generator. The <tt class="docutils literal">dumps</tt>/<tt class="docutils literal">loads</tt>
+in. We'll do the same for the token generator. The <tt class="docutils literal">dumps</tt>/<tt class="docutils literal">loads</tt>
 interface is pretty common, so we could even subsitute the regular
-<tt class="docutils literal">json</tt> module for it. So the actual logic really&nbsp;becomes:</p>
+<tt class="docutils literal">json</tt> module for it. So the actual logic really becomes:</p>
 <pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">send_user_reset_token</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">notifier</span><span class="p">):</span>
     <span class="n">token</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">'op'</span><span class="p">:</span> <span class="s1">'reset-token'</span><span class="p">,</span> <span class="s1">'username'</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">username</span><span class="p">})</span>
@@ -364,7 +365,7 @@ interface is pretty common, so we could even subsitute the regular
     <span class="n">send_user_reset_token</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">notifier</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">'index.homepage'</span><span class="p">)</span>
 </pre>
-<p>And our tests against the <em>actual</em> logic become really&nbsp;easy.</p>
+<p>And our tests against the <em>actual</em> logic become really easy.</p>
 <pre class="code ipython3 literal-block">
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span>
 
@@ -386,30 +387,30 @@ interface is pretty common, so we could even subsitute the regular
     <span class="k">assert</span> <span class="n">result</span> <span class="o">==</span> <span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="p">{</span><span class="s1">'op'</span><span class="p">:</span> <span class="s1">'reset-token'</span><span class="p">,</span> <span class="s1">'username'</span><span class="p">:</span> <span class="s1">'fred'</span><span class="p">})</span>
 </pre>
 <p>This is a <em>collaboration test</em> not a <em>unit test</em> because our
-<tt class="docutils literal">send_user_reset_token</tt> relies on the behavior of others, but it&#8217;s
+<tt class="docutils literal">send_user_reset_token</tt> relies on the behavior of others, but it's
 <em>isolated</em> completely from the outside world. We can test that <em>it</em>
 behaves correctly by simply handing it things we know work. If we wanted
 to make sure it talks correctly to these things, we could simply use a
-spying double and assert that each bit was&nbsp;called.</p>
+spying double and assert that each bit was called.</p>
 <p>If it were more complicated, say it looped through some data set, we
 could pass it five different kinds of data sets to see how it behaves
 with each (those five are: empty, one, many, lots, and blows up; this is
 one of things <a class="reference external" href="https://vimeo.com/80533536">Integrated Tests are a
-Scam</a> taught&nbsp;me).</p>
-<p>So let&#8217;s stop yanking out the complexity and simply shoving it someplace
-else and saying, &#8220;Look how clean it is! &#8230;no, no, no don&#8217;t pop open the
-decorators file!&#8221; Instead, let&#8217;s look the complexity in the eye and say,
-&#8220;I&#8217;m going to control you before you control&nbsp;me!&#8221;</p>
-<p>Now, if you pardon me, I have a closet to&nbsp;organize.</p>
+Scam</a> taught me).</p>
+<p>So let's stop yanking out the complexity and simply shoving it someplace
+else and saying, &quot;Look how clean it is! ...no, no, no don't pop open the
+decorators file!&quot; Instead, let's look the complexity in the eye and say,
+&quot;I'm going to control you before you control me!&quot;</p>
+<p>Now, if you pardon me, I have a closet to organize.</p>
 </div>
 
             <aside>
             <nav>
             <ul class="articles_timeline">
  
-                <li class="previous_article">« <a href="http://justanr.github.io/on-dryers-adapters-and-software-design" title="Previous: On Dryers, Adapters and Software&nbsp;Design">On Dryers, Adapters and Software&nbsp;Design</a></li>
+                <li class="previous_article">« <a href="http://justanr.github.io/on-dryers-adapters-and-software-design" title="Previous: On Dryers, Adapters and Software Design">On Dryers, Adapters and Software Design</a></li>
  
-                <li class="next_article"><a href="http://justanr.github.io/drawbacks-in-flask-sqlalchemy" title="Next: Drawbacks in&nbsp;Flask-SQLAlchemy">Drawbacks in&nbsp;Flask-SQLAlchemy</a> »</li>
+                <li class="next_article"><a href="http://justanr.github.io/drawbacks-in-flask-sqlalchemy" title="Next: Drawbacks in Flask-SQLAlchemy">Drawbacks in Flask-SQLAlchemy</a> »</li>
             </ul>
             </nav>
             </aside>

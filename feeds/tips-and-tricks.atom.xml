@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>from alec.thoughts import * - tips and tricks</title><link href="http://justanr.github.io/" rel="alternate"></link><link href="http://justanr.github.io/feeds/tips-and-tricks.atom.xml" rel="self"></link><id>http://justanr.github.io/</id><updated>2016-02-14T00:00:00-05:00</updated><entry><title>The Value of Objects</title><link href="http://justanr.github.io/the-value-of-objects" rel="alternate"></link><published>2016-02-14T00:00:00-05:00</published><updated>2016-02-14T00:00:00-05:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2016-02-14:/the-value-of-objects</id><summary type="html">&lt;p&gt;Strings are the most degenerate datastructure at our disposable. That&amp;#8217;s
-not to say they&amp;#8217;re not useful &amp;#8212; because they are. But they&amp;#8217;re terrible
+<feed xmlns="http://www.w3.org/2005/Atom"><title>from alec.thoughts import * - tips and tricks</title><link href="http://justanr.github.io/" rel="alternate"></link><link href="http://justanr.github.io/feeds/tips-and-tricks.atom.xml" rel="self"></link><id>http://justanr.github.io/</id><updated>2016-02-14T00:00:00-05:00</updated><entry><title>The Value of Objects</title><link href="http://justanr.github.io/the-value-of-objects" rel="alternate"></link><published>2016-02-14T00:00:00-05:00</published><updated>2016-02-14T00:00:00-05:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2016-02-14:/the-value-of-objects</id><summary type="html">&lt;p&gt;Strings are the most degenerate datastructure at our disposable. That's
+not to say they're not useful -- because they are. But they're terrible
 for communicating non-string data. But people use them all the time to
-communicate non-string data. It&amp;#8217;s called &lt;a class="reference external" href="http://c2.com/cgi/wiki?PrimitiveObsession"&gt;Primitive
-Obession&lt;/a&gt; &amp;#8212; the idea that
-&amp;#8220;The data …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Strings are the most degenerate datastructure at our disposable. That&amp;#8217;s
-not to say they&amp;#8217;re not useful &amp;#8212; because they are. But they&amp;#8217;re terrible
+communicate non-string data. It's called &lt;a class="reference external" href="http://c2.com/cgi/wiki?PrimitiveObsession"&gt;Primitive
+Obession&lt;/a&gt; -- the idea that
+&amp;quot;The data types built into the …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Strings are the most degenerate datastructure at our disposable. That's
+not to say they're not useful -- because they are. But they're terrible
 for communicating non-string data. But people use them all the time to
-communicate non-string data. It&amp;#8217;s called &lt;a class="reference external" href="http://c2.com/cgi/wiki?PrimitiveObsession"&gt;Primitive
-Obession&lt;/a&gt; &amp;#8212; the idea that
-&amp;#8220;The data types built into the language are more than enough for me.
+communicate non-string data. It's called &lt;a class="reference external" href="http://c2.com/cgi/wiki?PrimitiveObsession"&gt;Primitive
+Obession&lt;/a&gt; -- the idea that
+&amp;quot;The data types built into the language are more than enough for me.
 &lt;a class="reference external" href="http://www.jamesshore.com/Blog/PrimitiveObsession.html"&gt;Why should I make an age class when we have
-int?&lt;/a&gt;&amp;#8221;&lt;/p&gt;
-&lt;p&gt;Consider an &lt;span class="caps"&gt;IP&lt;/span&gt;&amp;nbsp;address:&lt;/p&gt;
+int?&lt;/a&gt;&amp;quot;&lt;/p&gt;
+&lt;p&gt;Consider an IP address:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="n"&gt;myip&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'127.0.0.1'&lt;/span&gt;
 &lt;/pre&gt;
 &lt;p&gt;Unless this is on the boundary between two systems, this string actually
-loses a tremendous amount of information. Every time we&amp;#8217;ll want to know
-something about it, we&amp;#8217;ll need to parse&amp;nbsp;it.&lt;/p&gt;
+loses a tremendous amount of information. Every time we'll want to know
+something about it, we'll need to parse it.&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get_ip_network&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ip_str&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;ip_str&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;split&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'.'&lt;/span&gt;&lt;span class="p"&gt;)[:&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;]]&lt;/span&gt;
@@ -34,18 +34,20 @@ something about it, we&amp;#8217;ll need to parse&amp;nbsp;it.&lt;/p&gt;
 [127, 0]
 [0, 1]
 &lt;/pre&gt;
-&lt;p&gt;Strings hide things very well. They&amp;#8217;re an opaque collection of
-characters (or bytes if you&amp;#8217;re on Python 2). They provide no structure,
+&lt;p&gt;Strings hide things very well. They're an opaque collection of
+characters (or bytes if you're on Python 2). They provide no structure,
 no semantics. They have no attributes and the only methods on them
-(short of monkey patching it, which don&amp;#8217;t except for for fun) are
+(short of monkey patching it, which don't except for for fun) are
 related to transforming the collection of characters into a different
-collection of characters (or a collection of a collection of&amp;nbsp;characters).&lt;/p&gt;
-&lt;p&gt;Instead, what if had something that represented the concept of an &lt;span class="caps"&gt;IP&lt;/span&gt;&amp;nbsp;Address:&lt;/p&gt;
+collection of characters (or a collection of a collection of
+characters).&lt;/p&gt;
+&lt;p&gt;Instead, what if had something that represented the concept of an IP
+Address:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;IPAddress&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;object&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;pass&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;And we could pass in the parts of the ip to&amp;nbsp;it:&lt;/p&gt;
+&lt;p&gt;And we could pass in the parts of the ip to it:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;IPAddress&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;object&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;network&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;host&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;subnet&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;None&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
@@ -53,9 +55,9 @@ collection of characters (or a collection of a collection of&amp;nbsp;characters
         &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;host&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;host&lt;/span&gt;
         &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;subnet&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;subnet&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;This doesn&amp;#8217;t do us any good when we already have a string representation
-of the &lt;span class="caps"&gt;IP&lt;/span&gt;, to avoid parsing that and passing it in every time we get an
-&lt;span class="caps"&gt;IP&lt;/span&gt; Address, let&amp;#8217;s add an alternative&amp;nbsp;constructor:&lt;/p&gt;
+&lt;p&gt;This doesn't do us any good when we already have a string representation
+of the IP, to avoid parsing that and passing it in every time we get an
+IP Address, let's add an alternative constructor:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;IPAddress&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;object&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;network&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;host&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;subnet&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;None&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
@@ -64,7 +66,7 @@ of the &lt;span class="caps"&gt;IP&lt;/span&gt;, to avoid parsing that and passi
         &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;subnet&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;subnet&lt;/span&gt;
 
     &lt;span class="nd"&gt;&amp;#64;classmethod&lt;/span&gt;
-    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;fromstr&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ipstr&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;fromstr&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ipstr&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
         &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="s1"&gt;'/'&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;ipstr&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
             &lt;span class="n"&gt;ip&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;subnet&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;ipstr&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;split&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'/'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
             &lt;span class="n"&gt;subnet&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;subnet&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -75,7 +77,7 @@ of the &lt;span class="caps"&gt;IP&lt;/span&gt;, to avoid parsing that and passi
         &lt;span class="n"&gt;network&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;tuple&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;divided&lt;/span&gt;&lt;span class="p"&gt;[:&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
         &lt;span class="n"&gt;host&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;tuple&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;divided&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;:])&lt;/span&gt;
 
-        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;network&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;host&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;subnet&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;network&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;host&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;subnet&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
 &lt;span class="n"&gt;MyIP&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;IPAddress&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;fromstr&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;myip&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
@@ -84,8 +86,8 @@ of the &lt;span class="caps"&gt;IP&lt;/span&gt;, to avoid parsing that and passi
 &lt;pre class="literal-block"&gt;
 (127, 0) (0, 1) None
 &lt;/pre&gt;
-&lt;p&gt;But it could helpful to &amp;#8220;unparse&amp;#8221; this as well. Let&amp;#8217;s add &lt;tt class="docutils literal"&gt;__str__&lt;/tt&gt;
-and &lt;tt class="docutils literal"&gt;__repr__&lt;/tt&gt; methods as those are part of the Python&amp;nbsp;protocol:&lt;/p&gt;
+&lt;p&gt;But it could helpful to &amp;quot;unparse&amp;quot; this as well. Let's add &lt;tt class="docutils literal"&gt;__str__&lt;/tt&gt;
+and &lt;tt class="docutils literal"&gt;__repr__&lt;/tt&gt; methods as those are part of the Python protocol:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;itertools&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;chain&lt;/span&gt;
 
@@ -96,7 +98,7 @@ and &lt;tt class="docutils literal"&gt;__repr__&lt;/tt&gt; methods as those are 
         &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;subnet&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;subnet&lt;/span&gt;
 
     &lt;span class="nd"&gt;&amp;#64;classmethod&lt;/span&gt;
-    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;fromstr&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ipstr&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;fromstr&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ipstr&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
         &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="s1"&gt;'/'&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;ipstr&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
             &lt;span class="n"&gt;ip&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;subnet&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;ipstr&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;split&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'/'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
             &lt;span class="n"&gt;subnet&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;subnet&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -107,7 +109,7 @@ and &lt;tt class="docutils literal"&gt;__repr__&lt;/tt&gt; methods as those are 
         &lt;span class="n"&gt;network&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;tuple&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;divided&lt;/span&gt;&lt;span class="p"&gt;[:&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
         &lt;span class="n"&gt;host&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;tuple&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;divided&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;:])&lt;/span&gt;
 
-        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;network&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;host&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;subnet&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;network&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;host&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;subnet&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__str__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
         &lt;span class="n"&gt;pattern&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'&lt;/span&gt;&lt;span class="si"&gt;{}&lt;/span&gt;&lt;span class="s1"&gt;.&lt;/span&gt;&lt;span class="si"&gt;{}&lt;/span&gt;&lt;span class="s1"&gt;.&lt;/span&gt;&lt;span class="si"&gt;{}&lt;/span&gt;&lt;span class="s1"&gt;.&lt;/span&gt;&lt;span class="si"&gt;{}&lt;/span&gt;&lt;span class="s1"&gt;'&lt;/span&gt;
@@ -120,7 +122,7 @@ and &lt;tt class="docutils literal"&gt;__repr__&lt;/tt&gt; methods as those are 
 
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__repr__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
         &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="s1"&gt;'&lt;/span&gt;&lt;span class="si"&gt;{}&lt;/span&gt;&lt;span class="s1"&gt;(network=&lt;/span&gt;&lt;span class="si"&gt;{!r}&lt;/span&gt;&lt;span class="s1"&gt;, host=&lt;/span&gt;&lt;span class="si"&gt;{!r}&lt;/span&gt;&lt;span class="s1"&gt;, subnet=&lt;/span&gt;&lt;span class="si"&gt;{!r}&lt;/span&gt;&lt;span class="s1"&gt;)'&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
-            &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;__class__&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;__name__&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+            &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="vm"&gt;__class__&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="vm"&gt;__name__&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
             &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;network&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
             &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;host&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
             &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;subnet&lt;/span&gt;
@@ -136,21 +138,21 @@ and &lt;tt class="docutils literal"&gt;__repr__&lt;/tt&gt; methods as those are 
 As str:   127.0.0.1/24
 As repr:  IPAddress(network=(127, 0), host=(0, 1), subnet=24)
 &lt;/pre&gt;
-&lt;p&gt;And like that, we&amp;#8217;ve transformed a very degenerate datastructure into a
-very rich value object. I won&amp;#8217;t claim it&amp;#8217;s comprehensive, because it&amp;#8217;s
-not. But it&amp;#8217;s very useful. Every time we get an &lt;span class="caps"&gt;IP&lt;/span&gt; Address &amp;#8212; maybe from
-bash &amp;#8212; we can simply call &lt;tt class="docutils literal"&gt;IPAddress.fromstr&lt;/tt&gt; and when we need to
+&lt;p&gt;And like that, we've transformed a very degenerate datastructure into a
+very rich value object. I won't claim it's comprehensive, because it's
+not. But it's very useful. Every time we get an IP Address -- maybe from
+bash -- we can simply call &lt;tt class="docutils literal"&gt;IPAddress.fromstr&lt;/tt&gt; and when we need to
 spit one back out, we simple call &lt;tt class="docutils literal"&gt;str(some_ip)&lt;/tt&gt;.&lt;/p&gt;
 &lt;p&gt;Edit: I recently became aware of the Python 3.3+ &lt;tt class="docutils literal"&gt;ipaddress&lt;/tt&gt; module,
 which is pretty neat and you should totally use that if you need to
-manipulate &lt;span class="caps"&gt;IP&lt;/span&gt;&amp;nbsp;Addresses.&lt;/p&gt;
+manipulate IP Addresses.&lt;/p&gt;
 &lt;div class="section" id="the-value-of-objects"&gt;
-&lt;h2&gt;The Value Of&amp;nbsp;Objects&lt;/h2&gt;
+&lt;h2&gt;The Value Of Objects&lt;/h2&gt;
 &lt;p&gt;Imagine if every time you found self repeatedly parsing a string for
 data, you looked at &lt;em&gt;why&lt;/em&gt; and &lt;em&gt;how&lt;/em&gt; you were doing that and wrapped that
 up into an object and gave it a name. Consider &lt;a class="reference external" href="https://gist.github.com/justanr/3df4ac627939e0029fec"&gt;a money
-object&lt;/a&gt; &amp;#8212;
-sorry to link off, it&amp;#8217;s like a hundred&amp;nbsp;lines.&lt;/p&gt;
+object&lt;/a&gt; --
+sorry to link off, it's like a hundred lines.&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="n"&gt;Money&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;fromstr&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'$5.99'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;
@@ -232,75 +234,76 @@ TypeError                                 Traceback (most recent call last)
 
 TypeError: Can only multiple money by real numbers
 &lt;/pre&gt;
-&lt;p&gt;With a small module, we&amp;#8217;ve created a very useful money object that
+&lt;p&gt;With a small module, we've created a very useful money object that
 guards us against silly mistakes like multiplying five dollars by three
 dollars or adding dollars to yen (without converting them first).
-There&amp;#8217;s also comparison operators and precision&amp;nbsp;guards.&lt;/p&gt;
-&lt;p&gt;These things are called &lt;em&gt;value objects&lt;/em&gt; and they&amp;#8217;re something that
+There's also comparison operators and precision guards.&lt;/p&gt;
+&lt;p&gt;These things are called &lt;em&gt;value objects&lt;/em&gt; and they're something that
 should be part of your programming dictionary. And they bring lots of
 value &lt;em&gt;ba-dum-tis&lt;/em&gt;.&lt;/p&gt;
 &lt;div class="section" id="they-have-very-little-behavior"&gt;
-&lt;h3&gt;They have very little&amp;nbsp;behavior&lt;/h3&gt;
-&lt;p&gt;The money and &lt;span class="caps"&gt;IP&lt;/span&gt; address objects only do stuff that involves
+&lt;h3&gt;They have very little behavior&lt;/h3&gt;
+&lt;p&gt;The money and IP address objects only do stuff that involves
 transforming themselves into a new version of themselves. &lt;tt class="docutils literal"&gt;Money&lt;/tt&gt; only
 has behavior related to adding and subtracting amounts of money, and
 multiplying and dividing amounts of money by a real number. If
-&lt;tt class="docutils literal"&gt;IPAddress&lt;/tt&gt; had behavior, it might be something like checking if an &lt;span class="caps"&gt;IP&lt;/span&gt;
-is in it&amp;#8217;s subnet&amp;nbsp;mask.&lt;/p&gt;
+&lt;tt class="docutils literal"&gt;IPAddress&lt;/tt&gt; had behavior, it might be something like checking if an IP
+is in it's subnet mask.&lt;/p&gt;
 &lt;p&gt;But value objects are predominantly related to &lt;em&gt;being&lt;/em&gt; rather than
-&lt;em&gt;doing&lt;/em&gt;. And they&amp;#8217;re very useful as things being passed into&amp;nbsp;methods:&lt;/p&gt;
+&lt;em&gt;doing&lt;/em&gt;. And they're very useful as things being passed into methods:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="n"&gt;cc&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;CreditCard&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'4474...'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="n"&gt;cc&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;charge&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Money&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;fromstr&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'$5.99'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;
 &lt;/div&gt;
 &lt;div class="section" id="they-re-generally-immutable"&gt;
-&lt;h3&gt;They&amp;#8217;re generally&amp;nbsp;immutable&lt;/h3&gt;
-&lt;p&gt;Python doesn&amp;#8217;t make immutability easy. Sure, you can do fun stuff like
-inherit from a namedtuple &amp;#8212; which is frought with its own issues &amp;#8212; or
-overriding &lt;tt class="docutils literal"&gt;__setattr__&lt;/tt&gt; to throw an error, but that doesn&amp;#8217;t stop
+&lt;h3&gt;They're generally immutable&lt;/h3&gt;
+&lt;p&gt;Python doesn't make immutability easy. Sure, you can do fun stuff like
+inherit from a namedtuple -- which is frought with its own issues -- or
+overriding &lt;tt class="docutils literal"&gt;__setattr__&lt;/tt&gt; to throw an error, but that doesn't stop
 someone from doing &lt;tt class="docutils literal"&gt;object.__setattr__(immutable, name, value)&lt;/tt&gt;. You
-&lt;em&gt;could&lt;/em&gt; write a C extension, but who wants to do that for such little&amp;nbsp;value.&lt;/p&gt;
+&lt;em&gt;could&lt;/em&gt; write a C extension, but who wants to do that for such little
+value.&lt;/p&gt;
 &lt;p&gt;Instead, we can write methods that return new instances of the object in
-question and trust our users that they know what they&amp;#8217;re doing if they
-go about changing attributes. Consenting adults and all&amp;nbsp;that.&lt;/p&gt;
+question and trust our users that they know what they're doing if they
+go about changing attributes. Consenting adults and all that.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="that-make-the-implicit-explicit"&gt;
-&lt;h3&gt;That make the implicit&amp;nbsp;explicit&lt;/h3&gt;
-&lt;p&gt;What&amp;#8217;s clearer about its&amp;nbsp;purpose?&lt;/p&gt;
+&lt;h3&gt;That make the implicit explicit&lt;/h3&gt;
+&lt;p&gt;What's clearer about its purpose?&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="s1"&gt;'127.0.0.1/24'&lt;/span&gt;
 &lt;span class="n"&gt;IPAddress&lt;/span&gt;&lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="mi"&gt;127&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="mi"&gt;24&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;
 &lt;p&gt;Pycharm, Jupyter and vim plugins (and I guess other editors) will
 display all sorts of information about IPAddress but when examining
-&lt;tt class="docutils literal"&gt;'127.0.0.1/24&lt;/tt&gt; you&amp;#8217;d think it&amp;#8217;s a regular ol&amp;#8217; string and you&amp;#8217;ll need
-to print it out to see the&amp;nbsp;details.&lt;/p&gt;
+&lt;tt class="docutils literal"&gt;'127.0.0.1/24&lt;/tt&gt; you'd think it's a regular ol' string and you'll need
+to print it out to see the details.&lt;/p&gt;
 &lt;p&gt;They also provide a convenient place to raise errors if something bad
-happens. &lt;tt class="docutils literal"&gt;$3 * $5&lt;/tt&gt; doesn&amp;#8217;t make any sense no matter how long you stare
+happens. &lt;tt class="docutils literal"&gt;$3 * $5&lt;/tt&gt; doesn't make any sense no matter how long you stare
 at it.† So you can get really strict type checking if needed as well; if
-you&amp;#8217;re on Python 3, combine this with type annotations as&amp;nbsp;well:&lt;/p&gt;
+you're on Python 3, combine this with type annotations as well:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Money&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;symbol&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;amount&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;decimal&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Decimal&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
         &lt;span class="o"&gt;...&lt;/span&gt;
 &lt;/pre&gt;
 &lt;p&gt;And your code editting tools will reveal even more information about
-your&amp;nbsp;types.&lt;/p&gt;
+your types.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="they-group-up-related-things"&gt;
-&lt;h3&gt;They group up related&amp;nbsp;things&lt;/h3&gt;
+&lt;h3&gt;They group up related things&lt;/h3&gt;
 &lt;p&gt;If you find yourself passing around a tuple, quite often your
 application is telling you to name that thing. Generally, my first stop
 is to upgrade a regular tuple to a namedtuple. And this goes a long way
-towards upgrading the semantics of my application. Instead&amp;nbsp;of:&lt;/p&gt;
+towards upgrading the semantics of my application. Instead of:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="mi"&gt;127&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="mi"&gt;24&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;
 &lt;pre class="literal-block"&gt;
 ((127, 0), (0, 1), 24)
 &lt;/pre&gt;
-&lt;p&gt;I now&amp;nbsp;have:&lt;/p&gt;
+&lt;p&gt;I now have:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;collections&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;namedtuple&lt;/span&gt;
 &lt;span class="n"&gt;IP&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;namedtuple&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'IP'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'network'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'host'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'subnet'&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
@@ -311,26 +314,26 @@ IP(network=(127, 0), host=(0, 1), subnet=24)
 &lt;/pre&gt;
 &lt;p&gt;Then if I need to add parsing logic (&lt;tt class="docutils literal"&gt;fromstr&lt;/tt&gt;, etc), I only need to
 swap out in one place. However, like I said, inheriting from
-&lt;tt class="docutils literal"&gt;namedtuple&lt;/tt&gt; leads to all sorts of issues, namely your type&amp;nbsp;is:&lt;/p&gt;
+&lt;tt class="docutils literal"&gt;namedtuple&lt;/tt&gt; leads to all sorts of issues, namely your type is:&lt;/p&gt;
 &lt;ul class="simple"&gt;
-&lt;li&gt;iterable but overriding &lt;tt class="docutils literal"&gt;__iter__&lt;/tt&gt; isn&amp;#8217;t an&amp;nbsp;issue&lt;/li&gt;
-&lt;li&gt;subscriptable and overriding this &lt;em&gt;is&lt;/em&gt; an&amp;nbsp;issue&lt;/li&gt;
-&lt;li&gt;saddled with the entire interface of &lt;tt class="docutils literal"&gt;namedtuple&lt;/tt&gt; as well &amp;#8212;
-&lt;tt class="docutils literal"&gt;_replace&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;_asdict&lt;/tt&gt;,&amp;nbsp;etc.&lt;/li&gt;
+&lt;li&gt;iterable but overriding &lt;tt class="docutils literal"&gt;__iter__&lt;/tt&gt; isn't an issue&lt;/li&gt;
+&lt;li&gt;subscriptable and overriding this &lt;em&gt;is&lt;/em&gt; an issue&lt;/li&gt;
+&lt;li&gt;saddled with the entire interface of &lt;tt class="docutils literal"&gt;namedtuple&lt;/tt&gt; as well --
+&lt;tt class="docutils literal"&gt;_replace&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;_asdict&lt;/tt&gt;, etc.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="section" id="don-t-be-afraid-of-objects"&gt;
-&lt;h2&gt;Don&amp;#8217;t be afraid of&amp;nbsp;Objects&lt;/h2&gt;
+&lt;h2&gt;Don't be afraid of Objects&lt;/h2&gt;
 &lt;p&gt;A few years ago, Jack Diederich gave a very influential talk called
 &lt;a class="reference external" href="https://www.youtube.com/watch?v=o9pEzgHorH0"&gt;Stop Writing Classes&lt;/a&gt;
-&amp;#8212; perhaps you&amp;#8217;ve seen it, if not take a watch &amp;#8212; which I think is full
+-- perhaps you've seen it, if not take a watch -- which I think is full
 of very good advice. But some Pythonistas drank the kool-aid a little
-too deeply and thought this meant &amp;#8220;Don&amp;#8217;t write &lt;em&gt;any&lt;/em&gt; classes.&amp;#8221; I won&amp;#8217;t
-claim to have special insight into Jack&amp;#8217;s mindset or opinions, but I&amp;#8217;m
-not sure that&amp;#8217;s what he meant. Instead, I&amp;#8217;m pretty sure he meant, &amp;#8220;If it
-doesn&amp;#8217;t need to be a class, don&amp;#8217;t make a class.&amp;#8221; My favorite example is
-the &lt;tt class="docutils literal"&gt;MuffinMail.MuffinHash.MuffinHash&lt;/tt&gt; &amp;#8212; which is just&amp;nbsp;this:&lt;/p&gt;
+too deeply and thought this meant &amp;quot;Don't write &lt;em&gt;any&lt;/em&gt; classes.&amp;quot; I won't
+claim to have special insight into Jack's mindset or opinions, but I'm
+not sure that's what he meant. Instead, I'm pretty sure he meant, &amp;quot;If it
+doesn't need to be a class, don't make a class.&amp;quot; My favorite example is
+the &lt;tt class="docutils literal"&gt;MuffinMail.MuffinHash.MuffinHash&lt;/tt&gt; -- which is just this:&lt;/p&gt;
 &lt;pre class="code python literal-block"&gt;
 &lt;span class="n"&gt;MuffinHash&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;dict&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;pass&lt;/span&gt;
@@ -339,18 +342,18 @@ the &lt;tt class="docutils literal"&gt;MuffinMail.MuffinHash.MuffinHash&lt;/tt&g
 &lt;a class="reference external" href="http://lucumr.pocoo.org/2013/2/13/moar-classes/"&gt;Armin Ronancher - Start Writing More
 Classes&lt;/a&gt;. And in
 this, Armin advocates for creating a rich domain of classes that have
-tightly focused behaviors and&amp;nbsp;relationships.&lt;/p&gt;
-&lt;p&gt;I generally lean toward&amp;#8217;s Armin opinion. After all, Python is an object
-oriented language, why shouldn&amp;#8217;t we use classes and objects to enhance
+tightly focused behaviors and relationships.&lt;/p&gt;
+&lt;p&gt;I generally lean toward's Armin opinion. After all, Python is an object
+oriented language, why shouldn't we use classes and objects to enhance
 our intent? For example, in the money example, normally to set a local
-context with decimals, you need to&amp;nbsp;do:&lt;/p&gt;
+context with decimals, you need to do:&lt;/p&gt;
 &lt;pre class="code python literal-block"&gt;
 &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;decimal&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;localcontext&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;my_context&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;prec&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt; &lt;span class="c1"&gt;# if you need to adjust it&lt;/span&gt;
     &lt;span class="c1"&gt;# operations&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;But, since we&amp;#8217;re not afraid of objects, we&amp;#8217;ll just wrap up the Context
-in our own context manager (confusing much) that we can just use&amp;nbsp;like:‡&lt;/p&gt;
+&lt;p&gt;But, since we're not afraid of objects, we'll just wrap up the Context
+in our own context manager (confusing much) that we can just use like:‡&lt;/p&gt;
 &lt;pre class="code python literal-block"&gt;
 &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;Context&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;prec&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="c1"&gt;# if we *really* need to modify c we can&lt;/span&gt;
@@ -358,112 +361,115 @@ in our own context manager (confusing much) that we can just use&amp;nbsp;like:�
 &lt;/pre&gt;
 &lt;/div&gt;
 &lt;div class="section" id="but-sometimes-you-don-t-need-a-class"&gt;
-&lt;h2&gt;But sometimes you don&amp;#8217;t need a&amp;nbsp;class&lt;/h2&gt;
-&lt;p&gt;Armin also has some very good advice about functions,&amp;nbsp;too:&lt;/p&gt;
+&lt;h2&gt;But sometimes you don't need a class&lt;/h2&gt;
+&lt;p&gt;Armin also has some very good advice about functions, too:&lt;/p&gt;
 &lt;blockquote&gt;
 This is a convenience function, it does not implement actual
 template rendering. It just further simplifies a common case.&lt;/blockquote&gt;
 &lt;p&gt;However, at the same time, these convenience functions can become part
-of our domain as well. If you&amp;#8217;ve ever used Redis as a cache, you&amp;#8217;ve
-probably set timeouts so keys and values aren&amp;#8217;t just hanging out
-forever. So, you&amp;#8217;ve probably go things like this hanging out in the&amp;nbsp;code:&lt;/p&gt;
+of our domain as well. If you've ever used Redis as a cache, you've
+probably set timeouts so keys and values aren't just hanging out
+forever. So, you've probably go things like this hanging out in the
+code:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="n"&gt;cache&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;set&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;timeout&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;300&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# 5 minutes&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;I noticed this at work and it kinda bugged me. There&amp;#8217;s code and then a
+&lt;p&gt;I noticed this at work and it kinda bugged me. There's code and then a
 very descriptive comment right next to it that is screaming the intent.
-Why not marry those&amp;nbsp;two?&lt;/p&gt;
+Why not marry those two?&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;datetime&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;timedelta&lt;/span&gt;
 
 &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;as_seconds&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;timedelta&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;total_seconds&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;Now we can use that&amp;nbsp;instead:&lt;/p&gt;
+&lt;p&gt;Now we can use that instead:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="n"&gt;cache&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;set&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;timeout&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;as_seconds&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;minutes&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;I found this one change did three&amp;nbsp;things:&lt;/p&gt;
+&lt;p&gt;I found this one change did three things:&lt;/p&gt;
 &lt;ol class="arabic simple"&gt;
 &lt;li&gt;Eliminated a &lt;em&gt;bunch&lt;/em&gt; of useless constants. Things like
-&lt;tt class="docutils literal"&gt;settings.FIVE_MINUTES = 300&lt;/tt&gt;.&amp;nbsp;Yuck.&lt;/li&gt;
+&lt;tt class="docutils literal"&gt;settings.FIVE_MINUTES = 300&lt;/tt&gt;. Yuck.&lt;/li&gt;
 &lt;li&gt;Eliminated a &lt;em&gt;bunch&lt;/em&gt; of descriptive but useless comments. Things like
 &lt;tt class="docutils literal"&gt;# 5 minutes&lt;/tt&gt;.&lt;/li&gt;
 &lt;li&gt;Eased the context switch between Django and Angular. Python really
-likes seconds but Javascript &lt;em&gt;loves&lt;/em&gt; microseconds &amp;#8212; why, I don&amp;#8217;t
-know, but it&amp;nbsp;does.&lt;/li&gt;
+likes seconds but Javascript &lt;em&gt;loves&lt;/em&gt; microseconds -- why, I don't
+know, but it does.&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;I&amp;#8217;m in the process of working out the details for a javascript version
-of this so I don&amp;#8217;t have another frightfully embarrassing episode when I
+&lt;p&gt;I'm in the process of working out the details for a javascript version
+of this so I don't have another frightfully embarrassing episode when I
 accidentally asked why our Selenium test driver was set to timeout after
-thirty-three hours instead of two&amp;nbsp;minutes.&lt;/p&gt;
+thirty-three hours instead of two minutes.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="fin"&gt;
 &lt;h2&gt;Fin&lt;/h2&gt;
 &lt;p&gt;Hopefully this is illuminating. When I first learned about value
-objects, I remember thinking, &amp;#8220;Pfft, what&amp;#8217;s even the point?&amp;#8221; But after
+objects, I remember thinking, &amp;quot;Pfft, what's even the point?&amp;quot; But after
 having worked with them, I really, really enjoy the depth they bring to
-an&amp;nbsp;application.&lt;/p&gt;
-&lt;p&gt;I don&amp;#8217;t have much to put here, because value objects usually come up in
-the context of larger talks, usually in the context of &lt;span class="caps"&gt;DDD&lt;/span&gt; &amp;#8212; which is
+an application.&lt;/p&gt;
+&lt;p&gt;I don't have much to put here, because value objects usually come up in
+the context of larger talks, usually in the context of DDD -- which is
 sad since these are just so friggen valuable in any application. There
 is of course a &lt;a class="reference external" href="http://martinfowler.com/bliki/ValueObject.html"&gt;short Martin Fowler
-page&lt;/a&gt; about value&amp;nbsp;objects.&lt;/p&gt;
-&lt;p&gt;†: I&amp;#8217;m sure I&amp;#8217;ll get an economist leaving a comment about super dollars
-or something else I&amp;#8217;ve never heard of&amp;nbsp;before.&lt;/p&gt;
-&lt;p&gt;‡: I&amp;#8217;m not sure if my love of adapters is well known enough, so I&amp;#8217;ll
-just advertise it some&amp;nbsp;more.&lt;/p&gt;
+page&lt;/a&gt; about value
+objects.&lt;/p&gt;
+&lt;p&gt;†: I'm sure I'll get an economist leaving a comment about super dollars
+or something else I've never heard of before.&lt;/p&gt;
+&lt;p&gt;‡: I'm not sure if my love of adapters is well known enough, so I'll
+just advertise it some more.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="design"></category></entry><entry><title>On Dryers, Adapters and Software Design</title><link href="http://justanr.github.io/on-dryers-adapters-and-software-design" rel="alternate"></link><published>2015-09-02T00:00:00-04:00</published><updated>2015-09-02T00:00:00-04:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2015-09-02:/on-dryers-adapters-and-software-design</id><summary type="html">&lt;p&gt;About two months ago we moved into our new apartment (with some help
-from Kaitlyn&amp;#8217;s dad and my uncle). Loaded everything into the truck from
+</content><category term="design"></category></entry><entry><title>On Dryers, Adapters and Software Design</title><link href="http://justanr.github.io/on-dryers-adapters-and-software-design" rel="alternate"></link><published>2015-09-02T00:00:00-04:00</published><updated>2015-09-02T00:00:00-04:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2015-09-02:/on-dryers-adapters-and-software-design</id><summary type="html">&lt;p&gt;About two months ago we moved into our new apartment (with some help
+from Kaitlyn's dad and my uncle). Loaded everything into the truck from
 the old apartment, drove ten miles up the road to the new apartment and
-then unloaded everything into the new apartment (on the third …&lt;/p&gt;</summary><content type="html">&lt;p&gt;About two months ago we moved into our new apartment (with some help
-from Kaitlyn&amp;#8217;s dad and my uncle). Loaded everything into the truck from
+then unloaded everything into the new apartment (on the third floor …&lt;/p&gt;</summary><content type="html">&lt;p&gt;About two months ago we moved into our new apartment (with some help
+from Kaitlyn's dad and my uncle). Loaded everything into the truck from
 the old apartment, drove ten miles up the road to the new apartment and
-then unloaded everything into the new apartment (on the third floor&amp;nbsp;D:).&lt;/p&gt;
+then unloaded everything into the new apartment (on the third floor D:).&lt;/p&gt;
 &lt;p&gt;The first thing we moved up stairs was the washer. Plugged it in, hooked
 it up, turned it on briefly to test. Boom, already feeling at home.
-Actually, it was hot outside and this was an excuse to stand in the &lt;span class="caps"&gt;AC&lt;/span&gt;
-for a minute. Then we decided, &amp;#8220;Well, we moved the washer, why not move
-the dryer now?&amp;#8221; So we did. Got it up stairs (after almost dropping it
+Actually, it was hot outside and this was an excuse to stand in the AC
+for a minute. Then we decided, &amp;quot;Well, we moved the washer, why not move
+the dryer now?&amp;quot; So we did. Got it up stairs (after almost dropping it
 down a flight of stairs), pushed it into the laundry room and went to
-plug it in and &amp;#8230; it&amp;#8217;s a different&amp;nbsp;plug.&lt;/p&gt;
+plug it in and ... it's a different plug.&lt;/p&gt;
 &lt;p&gt;Apparently back in 2000, new residences were required to have four prong
-outlets for dryers. And our dryer had a three prong plug. That&amp;#8217;s a
-problem. My first thought was, &amp;#8220;We&amp;#8217;ll just get an adapter.&amp;#8221; Turns out,
-that&amp;#8217;s a horrible idea and had I been thinking clearly, I wouldn&amp;#8217;t have
-&amp;#8212; anyone who&amp;#8217;s used a grounded to ungrounded 120v adapter knows the
+outlets for dryers. And our dryer had a three prong plug. That's a
+problem. My first thought was, &amp;quot;We'll just get an adapter.&amp;quot; Turns out,
+that's a horrible idea and had I been thinking clearly, I wouldn't have
+-- anyone who's used a grounded to ungrounded 120v adapter knows the
 sorts of trouble that comes with that. We ended up replacing the actual
-cable and plug &amp;#8212; the dryer had a little cover that pulled off and
+cable and plug -- the dryer had a little cover that pulled off and
 exposed four connection screws: neutral, positive, negative and ground.
 Just unscrew the old cable, screw on the new cable, plug it in and hope
-I did it right otherwise a fire&amp;nbsp;happens.&lt;/p&gt;
-&lt;p&gt;But there&amp;#8217;s an interesting thought: my first reaction was, &amp;#8220;Use an
-adapter.&amp;#8221; I&amp;#8217;ll reach for a tool that takes some interface and maps it to
+I did it right otherwise a fire happens.&lt;/p&gt;
+&lt;p&gt;But there's an interesting thought: my first reaction was, &amp;quot;Use an
+adapter.&amp;quot; I'll reach for a tool that takes some interface and maps it to
 another interface. How often have I been faced with this &lt;em&gt;exact same
-problem&lt;/em&gt; in software and yet I&amp;#8217;ve chosen to do something hard or
-terrible instead? More often than I care to admit,&amp;nbsp;honestly.&lt;/p&gt;
-&lt;p&gt;Let&amp;#8217;s look at an example. Something of a trivial example, but it
-suffices for a blog post. Let&amp;#8217;s pretend that we&amp;#8217;ve developed an app that
-can send a user an authentication token for some&amp;nbsp;purpose.&lt;/p&gt;
+problem&lt;/em&gt; in software and yet I've chosen to do something hard or
+terrible instead? More often than I care to admit, honestly.&lt;/p&gt;
+&lt;p&gt;Let's look at an example. Something of a trivial example, but it
+suffices for a blog post. Let's pretend that we've developed an app that
+can send a user an authentication token for some purpose.&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;send_user_auth_token&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;token&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;notifier&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="n"&gt;msg&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Your access code is &lt;/span&gt;&lt;span class="si"&gt;{0}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;token&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
     &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;notifier&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;notify&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;message&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;msg&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;The actual business logic here doesn&amp;#8217;t even do anything (well, it
-formats a string). It just delegates the work off to something&amp;nbsp;else.&lt;/p&gt;
+&lt;p&gt;The actual business logic here doesn't even do anything (well, it
+formats a string). It just delegates the work off to something else.&lt;/p&gt;
 &lt;p&gt;My bank uses a system like this for password resets, except I can choose
 to get a text, an email or a phone call. They might even have a bit of
-code that looks exactly like&amp;nbsp;this.&lt;/p&gt;
-&lt;p&gt;Our imaginary app can do that as well. &lt;em&gt;How&lt;/em&gt; though, that&amp;#8217;s the
-question. We&amp;#8217;ve provided no actual sending details here. There&amp;#8217;s no
-&amp;#8220;Send text message&amp;#8221; or &amp;#8220;Send email&amp;#8221; or &amp;#8220;Initiate phone call&amp;#8221;. There&amp;#8217;s
-also no &amp;#8220;fetch user&amp;#8221; or &amp;#8220;generate token&amp;#8221;. Instead, we&amp;#8217;re relying on the
+code that looks exactly like this.&lt;/p&gt;
+&lt;p&gt;Our imaginary app can do that as well. &lt;em&gt;How&lt;/em&gt; though, that's the
+question. We've provided no actual sending details here. There's no
+&amp;quot;Send text message&amp;quot; or &amp;quot;Send email&amp;quot; or &amp;quot;Initiate phone call&amp;quot;. There's
+also no &amp;quot;fetch user&amp;quot; or &amp;quot;generate token&amp;quot;. Instead, we're relying on the
 fact that the notifier we pass it implements some &lt;tt class="docutils literal"&gt;notify&lt;/tt&gt; method that
-will handle the actual notifying given the user and the token we&amp;nbsp;provide.&lt;/p&gt;
-&lt;p&gt;Let&amp;#8217;s implement a simple notifier that we can use as an inspiration, as
-well as a user model and something to generate&amp;nbsp;tokens.&lt;/p&gt;
+will handle the actual notifying given the user and the token we
+provide.&lt;/p&gt;
+&lt;p&gt;Let's implement a simple notifier that we can use as an inspiration, as
+well as a user model and something to generate tokens.&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;collections&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;namedtuple&lt;/span&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;random&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;SystemRandom&lt;/span&gt;
@@ -490,17 +496,17 @@ justanr: Your access code is 614726
 &lt;pre class="literal-block"&gt;
 True
 &lt;/pre&gt;
-&lt;p&gt;That&amp;#8217;s pretty cool. I bet we could replace that &lt;tt class="docutils literal"&gt;PrintingNotifier&lt;/tt&gt;
-with something that sends a text message. Twilio&amp;#8217;s cool, let&amp;#8217;s use
-that&amp;#8230;but there&amp;#8217;s a problem. The code to send an &lt;span class="caps"&gt;SMS&lt;/span&gt; with Twilio looks
-like&amp;nbsp;this:&lt;/p&gt;
+&lt;p&gt;That's pretty cool. I bet we could replace that &lt;tt class="docutils literal"&gt;PrintingNotifier&lt;/tt&gt;
+with something that sends a text message. Twilio's cool, let's use
+that...but there's a problem. The code to send an SMS with Twilio looks
+like this:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;twilio.rest&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;TwilioRestClient&lt;/span&gt;
 
 &lt;span class="n"&gt;client&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;TwilioRestClient&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;account_sid&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;auth_token&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="n"&gt;message&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;messages&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;'...'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;from_&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;'...'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;body&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;'...'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;We &lt;em&gt;can&amp;#8217;t&lt;/em&gt; just drop that in&amp;#8230;unless we modify the original&amp;nbsp;function:&lt;/p&gt;
+&lt;p&gt;We &lt;em&gt;can't&lt;/em&gt; just drop that in...unless we modify the original function:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;polymorphic_notify_user&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;token&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;notifier&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="n"&gt;msg&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Your access code is &lt;/span&gt;&lt;span class="si"&gt;{0}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;token&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -510,41 +516,41 @@ like&amp;nbsp;this:&lt;/p&gt;
         &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;notifier&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;messages&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;phone_number&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;from_&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;application_number&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;body&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;msg&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;
 &lt;p&gt;If I had Twilio set up in this notebook, I could get a text messsage
-that says, &amp;#8220;Your access code is 123456&amp;#8221;. But we&amp;#8217;ve done something awful.
-We&amp;#8217;ve violated Single Responsibility. Our &lt;tt class="docutils literal"&gt;send_user_auth_token&lt;/tt&gt;
+that says, &amp;quot;Your access code is 123456&amp;quot;. But we've done something awful.
+We've violated Single Responsibility. Our &lt;tt class="docutils literal"&gt;send_user_auth_token&lt;/tt&gt;
 function has one responsibility: send some user some auth token using
-some notifier. It &lt;em&gt;looks&lt;/em&gt; like we&amp;#8217;ve not violated, we&amp;#8217;ve added a new
-notifier so our function should be aware of it,&amp;nbsp;right?&lt;/p&gt;
+some notifier. It &lt;em&gt;looks&lt;/em&gt; like we've not violated, we've added a new
+notifier so our function should be aware of it, right?&lt;/p&gt;
 &lt;p&gt;Nope. Are we going to add a new
 &lt;tt class="docutils literal"&gt;elif isinstance(notifier, SomeNotifierClass)&lt;/tt&gt; every time we add one?
 A check for Gmail, a check for SendMail, a check for this, a check for
 that, a check for the TestNotifier! Each with code that knows &lt;em&gt;how to
-send that particular&amp;nbsp;notification.&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;What. Why does production code need to know about test code? We&amp;#8217;ll get
-an issue that reads: &amp;#8220;NameError: TestNotifier not found&amp;#8221;. And it won&amp;#8217;t
-be just once, it&amp;#8217;ll crop up again and again, everytime someone looks at
+send that particular notification.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;What. Why does production code need to know about test code? We'll get
+an issue that reads: &amp;quot;NameError: TestNotifier not found&amp;quot;. And it won't
+be just once, it'll crop up again and again, everytime someone looks at
 that file and sees &lt;tt class="docutils literal"&gt;from ourapp.tests.fixtures import TestNotifier&lt;/tt&gt;
-and thinks, &amp;#8220;Wait&amp;#8230;, why?&amp;#8221; and deletes it. Every time until finally,
-fed up, you write a comment that says, &amp;#8220;&lt;span class="caps"&gt;DON&lt;/span&gt;&amp;#8217;T &lt;span class="caps"&gt;REMOVE&lt;/span&gt;, &lt;span class="caps"&gt;NEEDED&lt;/span&gt; &lt;span class="caps"&gt;FOR&lt;/span&gt;
-send_user_auth_token.&amp;#8221; You probably die a little bit inside, too. And
-it won&amp;#8217;t be just this module and this function. It&amp;#8217;ll be every module
-and every&amp;nbsp;function.&lt;/p&gt;
-&lt;p&gt;I know because I&amp;#8217;ve been there and I&amp;#8217;ve done that and I handled it be
-just not writing code for a long&amp;nbsp;time.&lt;/p&gt;
-&lt;p&gt;No, no, no, let&amp;#8217;s back up to the original&amp;nbsp;function.&lt;/p&gt;
+and thinks, &amp;quot;Wait..., why?&amp;quot; and deletes it. Every time until finally,
+fed up, you write a comment that says, &amp;quot;DON'T REMOVE, NEEDED FOR
+send_user_auth_token.&amp;quot; You probably die a little bit inside, too. And
+it won't be just this module and this function. It'll be every module
+and every function.&lt;/p&gt;
+&lt;p&gt;I know because I've been there and I've done that and I handled it be
+just not writing code for a long time.&lt;/p&gt;
+&lt;p&gt;No, no, no, let's back up to the original function.&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;send_user_auth_token&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;token&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;notifier&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="n"&gt;msg&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Your access code is &lt;/span&gt;&lt;span class="si"&gt;{0}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;token&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
     &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;notifier&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;notify&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;message&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;msg&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;This, I like this. It&amp;#8217;s simple. It&amp;#8217;s expressive. It does exactly what
-the name says! In fact, I&amp;#8217;d argue that it doesn&amp;#8217;t even need a docstring.
-There&amp;#8217;s no if this type else that type. So, &lt;em&gt;how&lt;/em&gt; can we use this
-function to send a &lt;span class="caps"&gt;SMS&lt;/span&gt; with the TwilioRestClient that doesn&amp;#8217;t have an
-interface that looks anything like&amp;nbsp;this.&lt;/p&gt;
+&lt;p&gt;This, I like this. It's simple. It's expressive. It does exactly what
+the name says! In fact, I'd argue that it doesn't even need a docstring.
+There's no if this type else that type. So, &lt;em&gt;how&lt;/em&gt; can we use this
+function to send a SMS with the TwilioRestClient that doesn't have an
+interface that looks anything like this.&lt;/p&gt;
 &lt;p&gt;The same way we go from a grounded three prong plug to an ungrounded two
 prong outlet (and the correct answer is &lt;em&gt;not&lt;/em&gt; tear the ground pin out
-despite what my power strips say), we use an&amp;nbsp;adapter!&lt;/p&gt;
+despite what my power strips say), we use an adapter!&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;TwilioSMSNotifier&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;object&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;twilio_client&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;sender_number&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
@@ -558,10 +564,10 @@ despite what my power strips say), we use an&amp;nbsp;adapter!&lt;/p&gt;
         &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="n"&gt;TwilioRestException&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
             &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kc"&gt;False&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;We could probably handle that failure case better. But that&amp;#8217;s not the
-point here. We&amp;#8217;ve taken an interface that&amp;#8217;s &lt;em&gt;completely different&lt;/em&gt; and
+&lt;p&gt;We could probably handle that failure case better. But that's not the
+point here. We've taken an interface that's &lt;em&gt;completely different&lt;/em&gt; and
 changed it by wrapping it in a class that implements our interface. If
-we wanted to send an email, we could simply create a new&amp;nbsp;implementation:&lt;/p&gt;
+we wanted to send an email, we could simply create a new implementation:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;EmailNotifer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;object&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;email_client&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;to_html&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;False&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
@@ -594,29 +600,29 @@ we wanted to send an email, we could simply create a new&amp;nbsp;implementation
  'receiver': &lt;a class="reference external" href="mailto:'justanr&amp;#64;service.com"&gt;'justanr&amp;#64;service.com&lt;/a&gt;',
  'title': 'Two Factor Auth Code'}
 &lt;/pre&gt;
-&lt;p&gt;Here&amp;#8217;s an interesting thought: what if we don&amp;#8217;t know a head of time what
+&lt;p&gt;Here's an interesting thought: what if we don't know a head of time what
 email provider will be used? Instead of writing a dozen different
 &lt;tt class="docutils literal"&gt;EmailProviderNotifier&lt;/tt&gt; maybe we could conceive an &lt;tt class="docutils literal"&gt;EmailClient&lt;/tt&gt;
-interface &amp;#8212; maybe it just exposes the &lt;tt class="docutils literal"&gt;encode_to_html&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;send&lt;/tt&gt;
-methods &amp;#8212; and then implement that with the provider we need and pass
+interface -- maybe it just exposes the &lt;tt class="docutils literal"&gt;encode_to_html&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;send&lt;/tt&gt;
+methods -- and then implement that with the provider we need and pass
 &lt;em&gt;that&lt;/em&gt; interface to &lt;tt class="docutils literal"&gt;EmailNotifier&lt;/tt&gt;? Our system becomes &lt;em&gt;more&lt;/em&gt;
-decoupled from what&amp;#8217;s steering it. We can provide &lt;em&gt;really&lt;/em&gt; high level
+decoupled from what's steering it. We can provide &lt;em&gt;really&lt;/em&gt; high level
 policies internally and let something external from the application
 provide implementations for them. We could simply tell end users,
-&amp;#8220;Here&amp;#8217;s the &lt;tt class="docutils literal"&gt;EmailClient&lt;/tt&gt; interface, you need to implement that for
-your provider and inject it into the&amp;nbsp;application.&amp;#8221;&lt;/p&gt;
-&lt;p&gt;However, remember you can&amp;#8217;t abstract everything away. Eventually, you
+&amp;quot;Here's the &lt;tt class="docutils literal"&gt;EmailClient&lt;/tt&gt; interface, you need to implement that for
+your provider and inject it into the application.&amp;quot;&lt;/p&gt;
+&lt;p&gt;However, remember you can't abstract everything away. Eventually, you
 need to write code that actually does something. But this
 Interface-to-Interface pattern (also called a Bridge, but only when we
 write both sides of it) has some &lt;em&gt;very interesting&lt;/em&gt; ramifications for
-our tests that I&amp;#8217;ll cover&amp;nbsp;below.&lt;/p&gt;
+our tests that I'll cover below.&lt;/p&gt;
 &lt;p&gt;What if we wanted to send the auth token as an email &lt;em&gt;and&lt;/em&gt; a text
 message. We can do that without hard coding &lt;em&gt;any&lt;/em&gt; of them by reaching
-for a different design&amp;nbsp;pattern.&lt;/p&gt;
+for a different design pattern.&lt;/p&gt;
 &lt;p&gt;Related to the adapter pattern and the bridge pattern is the decorator
 pattern. Rather than changing the interface to an object or connecting
 two interfaces together, the decorator patterns adds additional
-funtionality to an object by using the&amp;nbsp;interface.&lt;/p&gt;
+funtionality to an object by using the interface.&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;MultiNotifier&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;object&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;notifiers&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
@@ -630,20 +636,20 @@ funtionality to an object by using the&amp;nbsp;interface.&lt;/p&gt;
         &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nb"&gt;all&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;results&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;
 &lt;p&gt;In this case, if we pass MultiNotifier to the &lt;tt class="docutils literal"&gt;send_user_auth_token&lt;/tt&gt;,
-it&amp;#8217;s notify would be called which actually calls all of its internal
+it's notify would be called which actually calls all of its internal
 notifiers. If you wanted to do logging instead, you could pass a logger
 and a notifier to the class and the notify method would log that a
 message was sent and then use the internal notifier to do the actual
 sending. Those two could even be combined:
 &lt;tt class="docutils literal"&gt;LoggingNotifier(my_logger, MultiNotifier(sms_notifier, email_notifier))&lt;/tt&gt;&lt;/p&gt;
-&lt;p&gt;Even better, with combinations like this, there&amp;#8217;s only one rule to
+&lt;p&gt;Even better, with combinations like this, there's only one rule to
 remember: plugs match outlets. The plugs in this case are our classes
 and the outlets are the interfaces something expects to interact with.
 More concretely, a plug would be the EmailClient and an Outlet is the
-&lt;tt class="docutils literal"&gt;send_user_auth_token&lt;/tt&gt;. Since they don&amp;#8217;t match, we use an&amp;nbsp;adapter.&lt;/p&gt;
+&lt;tt class="docutils literal"&gt;send_user_auth_token&lt;/tt&gt;. Since they don't match, we use an adapter.&lt;/p&gt;
 &lt;p&gt;And, a very happy side effect is that &lt;tt class="docutils literal"&gt;send_user_auth_token&lt;/tt&gt; is very
-testable. It doesn&amp;#8217;t actually do anything, so there&amp;#8217;s nothing to mock
-out. We just pass it exactly what we want it to&amp;nbsp;use.&lt;/p&gt;
+testable. It doesn't actually do anything, so there's nothing to mock
+out. We just pass it exactly what we want it to use.&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;TestEmailNotifier&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;object&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;notify&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;message&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
@@ -658,7 +664,7 @@ out. We just pass it exactly what we want it to&amp;nbsp;use.&lt;/p&gt;
 &lt;span class="n"&gt;test_send_auth_token_to_email&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;/pre&gt;
 &lt;p&gt;Imagine if we had hardcoded all the actual sending logic. What does the
-test look like&amp;nbsp;then?&lt;/p&gt;
+test look like then?&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;unittest&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;mock&lt;/span&gt;
 
@@ -668,11 +674,11 @@ test look like&amp;nbsp;then?&lt;/p&gt;
 &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test_send_user_auth_token&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
     &lt;span class="k"&gt;assert&lt;/span&gt; &lt;span class="n"&gt;send_user_auth_token&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;We&amp;#8217;re patching three things and we probably still missed something.
+&lt;p&gt;We're patching three things and we probably still missed something.
 Instead, with the decoupled version we can test that our business logic
-&amp;#8212; given a user, a token and a notifier, send the user the token &amp;#8212;
+-- given a user, a token and a notifier, send the user the token --
 &lt;em&gt;works&lt;/em&gt;.&lt;/p&gt;
-&lt;p&gt;We can also test if our adapters work,&amp;nbsp;too.&lt;/p&gt;
+&lt;p&gt;We can also test if our adapters work, too.&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test_email_adapter_translates_correctly&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
     &lt;span class="n"&gt;email_client&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mock&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create_autospec&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;EmailClient&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -693,19 +699,19 @@ Instead, with the decoupled version we can test that our business logic
 &lt;span class="n"&gt;test_email_adapter_translates_correctly&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;span class="n"&gt;test_email_adapter_can_send_html_email&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;Here&amp;#8217;s the interesting testing ramification I mentioned above. There&amp;#8217;s a
-mantra in testing that says, &amp;#8220;Don&amp;#8217;t mock what you don&amp;#8217;t own.&amp;#8221; We don&amp;#8217;t
-own the Gmail interface, we don&amp;#8217;t own the SendMail interface. &lt;em&gt;But&lt;/em&gt; we
+&lt;p&gt;Here's the interesting testing ramification I mentioned above. There's a
+mantra in testing that says, &amp;quot;Don't mock what you don't own.&amp;quot; We don't
+own the Gmail interface, we don't own the SendMail interface. &lt;em&gt;But&lt;/em&gt; we
 do own the &lt;tt class="docutils literal"&gt;EmailClient&lt;/tt&gt; interface so we can mock it. Here I do it
-with Python 3.3&amp;#8217;s built in &lt;tt class="docutils literal"&gt;unittest.mock.create_autospec&lt;/tt&gt; but we
-could also just write a stub that does the same&amp;nbsp;thing.&lt;/p&gt;
-&lt;p&gt;When we&amp;#8217;re not terribly interested if Twilio is working or Gmail is
-working, we can switch in another notifier. Just go, &amp;#8220;Oh, well&amp;#8230;let&amp;#8217;s
-use this one instead.&amp;#8221; We also don&amp;#8217;t dictate to users, &amp;#8220;You can only use
-these email service providers.&amp;#8221; Instead we say, &amp;#8220;You can use any
-provider you like &lt;em&gt;as long as you implement this interface.&lt;/em&gt;&amp;#8221;&lt;/p&gt;
-&lt;p&gt;You change a few lines of code in a procedure that doesn&amp;#8217;t affect the
-actual logic of &lt;tt class="docutils literal"&gt;send_user_auth_token&lt;/tt&gt;. Maybe it&amp;#8217;s a Flask end&amp;nbsp;point?&lt;/p&gt;
+with Python 3.3's built in &lt;tt class="docutils literal"&gt;unittest.mock.create_autospec&lt;/tt&gt; but we
+could also just write a stub that does the same thing.&lt;/p&gt;
+&lt;p&gt;When we're not terribly interested if Twilio is working or Gmail is
+working, we can switch in another notifier. Just go, &amp;quot;Oh, well...let's
+use this one instead.&amp;quot; We also don't dictate to users, &amp;quot;You can only use
+these email service providers.&amp;quot; Instead we say, &amp;quot;You can use any
+provider you like &lt;em&gt;as long as you implement this interface.&lt;/em&gt;&amp;quot;&lt;/p&gt;
+&lt;p&gt;You change a few lines of code in a procedure that doesn't affect the
+actual logic of &lt;tt class="docutils literal"&gt;send_user_auth_token&lt;/tt&gt;. Maybe it's a Flask end point?&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;flask&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;render_template&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;redirect&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;flash&lt;/span&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;flask.views&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;MethodView&lt;/span&gt;
@@ -746,355 +752,199 @@ actual logic of &lt;tt class="docutils literal"&gt;send_user_auth_token&lt;/tt&g
         &lt;span class="c1"&gt;# form didn't validate, so re-render and probably display errors&lt;/span&gt;
         &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;render_template&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'auth/send_auth_token.html'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;And like that, almost by accident, we&amp;#8217;ve stumbled upon something very
-important: We&amp;#8217;ve decoupled our business logic &amp;#8212; send the user the token
-&amp;#8212; from the orchestration of &lt;em&gt;how we get that information&lt;/em&gt;. Our token
-sender doesn&amp;#8217;t care&amp;nbsp;about:&lt;/p&gt;
+&lt;p&gt;And like that, almost by accident, we've stumbled upon something very
+important: We've decoupled our business logic -- send the user the token
+-- from the orchestration of &lt;em&gt;how we get that information&lt;/em&gt;. Our token
+sender doesn't care about:&lt;/p&gt;
 &lt;ul class="simple"&gt;
-&lt;li&gt;&lt;span class="caps"&gt;HTTP&lt;/span&gt;&amp;nbsp;Endpoints&lt;/li&gt;
-&lt;li&gt;Form&amp;nbsp;validation&lt;/li&gt;
-&lt;li&gt;Getting the correct&amp;nbsp;user&lt;/li&gt;
-&lt;li&gt;The &lt;em&gt;actual sending&lt;/em&gt; of the&amp;nbsp;token&lt;/li&gt;
-&lt;li&gt;Creating a&amp;nbsp;notifier&lt;/li&gt;
-&lt;li&gt;How to handle success and&amp;nbsp;failure&lt;/li&gt;
-&lt;li&gt;&lt;span class="caps"&gt;ORM&lt;/span&gt;&amp;nbsp;models&lt;/li&gt;
-&lt;li&gt;Other application&amp;nbsp;endpoints&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;*Everything that isn&amp;#8217;t using some object to send some token to some&amp;nbsp;user*&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;HTTP Endpoints&lt;/li&gt;
+&lt;li&gt;Form validation&lt;/li&gt;
+&lt;li&gt;Getting the correct user&lt;/li&gt;
+&lt;li&gt;The &lt;em&gt;actual sending&lt;/em&gt; of the token&lt;/li&gt;
+&lt;li&gt;Creating a notifier&lt;/li&gt;
+&lt;li&gt;How to handle success and failure&lt;/li&gt;
+&lt;li&gt;ORM models&lt;/li&gt;
+&lt;li&gt;Other application endpoints&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;*Everything that isn't using some object to send some token to some
+user*&lt;/strong&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;All of that stuff goes into our endpoint. We let some external thing
 decide who the user is, what the token is, what notifier to use. How
-complicated does this endpoint get if we don&amp;#8217;t use interfaces? How
+complicated does this endpoint get if we don't use interfaces? How
 convoluted, obscure and cryptic does the simple act of &lt;em&gt;sending a
-message to the user&lt;/em&gt; become? Probably&amp;nbsp;very.&lt;/p&gt;
-&lt;p&gt;And by accidentally stumbling upon all of this, we&amp;#8217;ve stumbled upon
+message to the user&lt;/em&gt; become? Probably very.&lt;/p&gt;
+&lt;p&gt;And by accidentally stumbling upon all of this, we've stumbled upon
 something else even more important: application architecture. Something
-I&amp;#8217;m just now seriously beginning to apperciate and&amp;nbsp;understand.&lt;/p&gt;
+I'm just now seriously beginning to apperciate and understand.&lt;/p&gt;
 &lt;div class="section" id="thanks"&gt;
 &lt;h2&gt;Thanks&lt;/h2&gt;
-&lt;p&gt;I didn&amp;#8217;t come up with. I&amp;#8217;m not nearly that smart. Instead, this post has
+&lt;p&gt;I didn't come up with. I'm not nearly that smart. Instead, this post has
 been the product of &lt;em&gt;months of research&lt;/em&gt; and playing with
-implementations of it. It seemed so&amp;#8230;over engineered at first. But
-slowly, it&amp;#8217;s dawned on me that this is how to manage complexity in
-applications. So I&amp;#8217;d like to give thanks where it&amp;#8217;s&amp;nbsp;due:&lt;/p&gt;
+implementations of it. It seemed so...over engineered at first. But
+slowly, it's dawned on me that this is how to manage complexity in
+applications. So I'd like to give thanks where it's due:&lt;/p&gt;
 &lt;ul class="simple"&gt;
-&lt;li&gt;&lt;a class="reference external" href="https://www.youtube.com/watch?v=DJtef410XaM"&gt;Brandon Rhodes&amp;#8217; The Clean Architecture in
-Python&lt;/a&gt; &amp;#8212; This was
-my first exposure to the idea. I thought, &amp;#8220;Oh that&amp;#8217;s an interesting
-idea. Invert how I ususally think about abstracting my I/O.&amp;#8221; But I
-didn&amp;#8217;t really apperciate what he saying at the&amp;nbsp;time.&lt;/li&gt;
-&lt;li&gt;&lt;a class="reference external" href="https://www.youtube.com/watch?v=K5GguxPi3EA"&gt;Daniel Rocco&amp;#8217;s Clean and
-Green&lt;/a&gt; &amp;#8212; He gave the
+&lt;li&gt;&lt;a class="reference external" href="https://www.youtube.com/watch?v=DJtef410XaM"&gt;Brandon Rhodes' The Clean Architecture in
+Python&lt;/a&gt; -- This was
+my first exposure to the idea. I thought, &amp;quot;Oh that's an interesting
+idea. Invert how I ususally think about abstracting my I/O.&amp;quot; But I
+didn't really apperciate what he saying at the time.&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.youtube.com/watch?v=K5GguxPi3EA"&gt;Daniel Rocco's Clean and
+Green&lt;/a&gt; -- He gave the
 original talk at PyATL back in January 2015, with less examples than
 in the PyTenn talk. Here are the &lt;a class="reference external" href="http://pyatl.github.io/talks/2015-01_patterns/clean_and_green.html"&gt;PyATL
 slides&lt;/a&gt;.
 This is when the idea was planted. He recommended looking into Gary
-Bernhardt and Uncle Bob&amp;#8217;s talks on the&amp;nbsp;matter.&lt;/li&gt;
+Bernhardt and Uncle Bob's talks on the matter.&lt;/li&gt;
 &lt;li&gt;So I watched &lt;a class="reference external" href="https://www.youtube.com/watch?v=yTkzNHF6rMs"&gt;Boundaries by Gary
-Bernhardt&lt;/a&gt;&amp;#8230;which I
-didn&amp;#8217;t let sink in because a) it&amp;#8217;s Ruby and I like Python, and b)
-&amp;#8220;What the hell do tests have to do with design?&amp;#8221;. Pffft,&amp;nbsp;pass.&lt;/li&gt;
-&lt;li&gt;I don&amp;#8217;t think I watched any of Uncle Bob&amp;#8217;s talks at this point, but I
-ended up at &lt;a class="reference external" href="https://vimeo.com/80533536"&gt;&lt;span class="caps"&gt;J.B.&lt;/span&gt; Rainsberger&amp;#8217;s Integrated Tests are a
+Bernhardt&lt;/a&gt;...which I
+didn't let sink in because a) it's Ruby and I like Python, and b)
+&amp;quot;What the hell do tests have to do with design?&amp;quot;. Pffft, pass.&lt;/li&gt;
+&lt;li&gt;I don't think I watched any of Uncle Bob's talks at this point, but I
+ended up at &lt;a class="reference external" href="https://vimeo.com/80533536"&gt;J.B. Rainsberger's Integrated Tests are a
 Scam&lt;/a&gt;, which after watching the talk
 dozens of times, it began to make sense. I also realized what tests
-have to do with&amp;nbsp;design.&lt;/li&gt;
-&lt;li&gt;Eventually, I ended up watching some of Uncle Bob&amp;#8217;s videos (&lt;a class="reference external" href="https://www.youtube.com/watch?v=WpkDN78P884"&gt;this one
+have to do with design.&lt;/li&gt;
+&lt;li&gt;Eventually, I ended up watching some of Uncle Bob's videos (&lt;a class="reference external" href="https://www.youtube.com/watch?v=WpkDN78P884"&gt;this one
 for example&lt;/a&gt;). And
 after watching several variations on this talk dozens of times, this
-began to make&amp;nbsp;sense.&lt;/li&gt;
+began to make sense.&lt;/li&gt;
 &lt;li&gt;After the &lt;em&gt;idea&lt;/em&gt; sank in, I began looking for examples of
 applications that implement this architecture. I read a bunch of
 articles that talked about the idea, but no implementations. Silly
-me, I should&amp;#8217;ve immediately gone to the
+me, I should've immediately gone to the
 &lt;a class="reference external" href="https://github.com/unclebob/fitnesse"&gt;FitNesse&lt;/a&gt; repo and cloned
-it and pored over it &amp;#8212; which I&amp;#8217;ve now done, even if I don&amp;#8217;t
-completely grok&amp;nbsp;Java.&lt;/li&gt;
+it and pored over it -- which I've now done, even if I don't
+completely grok Java.&lt;/li&gt;
 &lt;li&gt;I also found a &lt;a class="reference external" href="http://fideloper.com/hexagonal-architecture"&gt;very thorough
 article&lt;/a&gt; written with
-a &lt;span class="caps"&gt;PHP&lt;/span&gt; mindset which gave not only explainations of the concepts but
-&lt;em&gt;example code&lt;/em&gt; for each concept &amp;#8212; and honestly, there is where I got
-the notifier example from, I&amp;#8217;ve merely adapted it to&amp;nbsp;Python.&lt;/li&gt;
+a PHP mindset which gave not only explainations of the concepts but
+&lt;em&gt;example code&lt;/em&gt; for each concept -- and honestly, there is where I got
+the notifier example from, I've merely adapted it to Python.&lt;/li&gt;
 &lt;li&gt;My dryer for being a completely unexpected source of inspiration for
-software&amp;nbsp;design.&lt;/li&gt;
+software design.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="python"></category><category term="design"></category></entry><entry><title>Flask Lesser Knowns: Pluggable Views</title><link href="http://justanr.github.io/flask-lesser-knowns-pluggable-views" rel="alternate"></link><published>2015-08-25T00:00:00-04:00</published><updated>2015-08-25T00:00:00-04:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2015-08-25:/flask-lesser-knowns-pluggable-views</id><summary type="html">&lt;p&gt;Flask gets quite a bit of attention, which is awesome. However all the
-tutorials and guides can’t touch on every aspect of Flask, even if it is
-small. There’s a ton of cool stuff that just doesn’t get shown&amp;nbsp;often.&lt;/p&gt;
-&lt;div class="section" id="the-views-module"&gt;
-&lt;h2&gt;The &lt;tt class="docutils literal"&gt;views&lt;/tt&gt; Module&lt;/h2&gt;
-&lt;p&gt;Flask comes with a …&lt;/p&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;Flask gets quite a bit of attention, which is awesome. However all the
-tutorials and guides can’t touch on every aspect of Flask, even if it is
-small. There’s a ton of cool stuff that just doesn’t get shown&amp;nbsp;often.&lt;/p&gt;
-&lt;div class="section" id="the-views-module"&gt;
-&lt;h2&gt;The &lt;tt class="docutils literal"&gt;views&lt;/tt&gt; Module&lt;/h2&gt;
-&lt;p&gt;Flask comes with a &lt;tt class="docutils literal"&gt;views&lt;/tt&gt; module that contains two classes: &lt;tt class="docutils literal"&gt;View&lt;/tt&gt;
-and &lt;tt class="docutils literal"&gt;MethodView&lt;/tt&gt; — these are often referred to as “Pluggable Views”
-The idea behind these classes is&amp;nbsp;simple:&lt;/p&gt;
-&lt;ul class="simple"&gt;
-&lt;li&gt;You have complex view&amp;nbsp;logic.&lt;/li&gt;
-&lt;li&gt;It can be broken up into discrete bits to make it more&amp;nbsp;readable.&lt;/li&gt;
-&lt;li&gt;But Flask requires a callable for&amp;nbsp;views.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&lt;tt class="docutils literal"&gt;View&lt;/tt&gt; can handle this for you. One thing I really enjoy using
-&lt;tt class="docutils literal"&gt;View&lt;/tt&gt; for is wrapping my actual views in it to attach rendering
-behavior. It looks like&amp;nbsp;this:&lt;/p&gt;
-&lt;pre class="code ipython3 literal-block"&gt;
-&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;flask.views&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;View&lt;/span&gt;
-&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;flask&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;render_template&lt;/span&gt;
+</content><category term="python"></category><category term="design"></category></entry><entry><title>Flask Lesser Knowns: Pluggable Views</title><link href="http://justanr.github.io/flask-lesser-knowns-pluggable-views" rel="alternate"></link><published>2015-08-25T00:00:00-04:00</published><updated>2015-08-25T00:00:00-04:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2015-08-25:/flask-lesser-knowns-pluggable-views</id><summary type="html">&lt;p&gt;I'd like to explore some things about Flask that don't seem to get a lot
+of limelight.&lt;/p&gt;
+&lt;div class="section" id="blueprints"&gt;
+&lt;h2&gt;Blueprints&lt;/h2&gt;
+&lt;p&gt;Maybe it's unfair to include Blueprints in this, because they are
+commonly used. But maybe you don't know about them. Blueprints are a
+little tough to describe. It's easy enough to think …&lt;/p&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;I'd like to explore some things about Flask that don't seem to get a lot
+of limelight.&lt;/p&gt;
+&lt;div class="section" id="blueprints"&gt;
+&lt;h2&gt;Blueprints&lt;/h2&gt;
+&lt;p&gt;Maybe it's unfair to include Blueprints in this, because they are
+commonly used. But maybe you don't know about them. Blueprints are a
+little tough to describe. It's easy enough to think of them as a
+separate bag of routes. They're a little more than that, but not quite.
+However, they are &lt;em&gt;very&lt;/em&gt; useful, especially if you're using the
+application factory pattern. Let's explore building a simple Blueprint
+first.&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+---------------------------------------------------------------------------
 
-&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;RenderableView&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;View&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;template&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;view&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;template&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;template&lt;/span&gt;
-        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;view&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;view&lt;/span&gt;
+AttributeError                            Traceback (most recent call last)
 
-    &lt;span class="c1"&gt;# this is the magic sauce that needs to be implemented&lt;/span&gt;
-    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;dispatch_request&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-        &lt;span class="n"&gt;resp&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;headers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;unpack_response&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;view&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
-        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;render_template&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;template&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;resp&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;headers&lt;/span&gt;
-&lt;/pre&gt;
-&lt;p&gt;&lt;tt class="docutils literal"&gt;unpack_response&lt;/tt&gt; is just a little helper I use to get the response
-value, &lt;span class="caps"&gt;HTTP&lt;/span&gt; code and &lt;span class="caps"&gt;HTTP&lt;/span&gt; Headers (the last two which may or may not be
-present) out of the return value of the actual view and then simply
-render the dictionary that comes back from the view. This is great for
-testing purposes. I can test that I expect my actual view does what I
-expect it to do and not have to worry about rendering a template every
-time I test&amp;nbsp;it.&lt;/p&gt;
-&lt;p&gt;But I should probably talk about how this class gets turned into a
-callable for Flask. When &lt;tt class="docutils literal"&gt;View&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;MethodView&lt;/tt&gt; were first
-implemented, Armin could have simply tossed a &lt;tt class="docutils literal"&gt;__call__&lt;/tt&gt; on the base
-class that invokes &lt;tt class="docutils literal"&gt;dispatch_request&lt;/tt&gt; and be done with it. Which is a
-way of doing it. However, this makes decoratoring hard. So, a different
-method was added, &lt;tt class="docutils literal"&gt;as_view&lt;/tt&gt; which is a classmethod. What &lt;tt class="docutils literal"&gt;as_view&lt;/tt&gt;
-does is create a function that creates an instance of the class and then
-returns the result of &lt;tt class="docutils literal"&gt;dispatch_method&lt;/tt&gt;, and updates some metadata as
-well. It also applies any decorators provided to the function as&amp;nbsp;well.&lt;/p&gt;
-&lt;p&gt;&lt;tt class="docutils literal"&gt;as_view&lt;/tt&gt; requires just one argument: name, which becomes the
-&lt;tt class="docutils literal"&gt;__name__&lt;/tt&gt; of the returned function. It also allows providing
-arguments to initialize the class view as well. For example, if we had
-an &lt;tt class="docutils literal"&gt;index&lt;/tt&gt; view we wanted to wrap with this class, we’d call
-&lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;RenderableView.as_view(name=&amp;quot;index&amp;quot;,&lt;/span&gt; &lt;span class="pre"&gt;template=&amp;quot;index.html&amp;quot;,&lt;/span&gt; view=index_func)&lt;/tt&gt;
-and the class is instantiated with that template name and view&amp;nbsp;function.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="section" id="how-do-we-provide-decorators"&gt;
-&lt;h2&gt;How do we provide&amp;nbsp;decorators?&lt;/h2&gt;
-&lt;p&gt;Applying decorators is super easy, just create a class level attribute
-called &lt;tt class="docutils literal"&gt;decorators&lt;/tt&gt; and attach them&amp;nbsp;there.&lt;/p&gt;
-&lt;pre class="code ipython3 literal-block"&gt;
-&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;DecoratedView&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;View&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-    &lt;span class="n"&gt;decorators&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;cache&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;etag&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;admin_required&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
-&lt;/pre&gt;
-&lt;p&gt;When &lt;tt class="docutils literal"&gt;View.as_view&lt;/tt&gt; runs, these decorators will be applied to the
-resulting function. Which is really&amp;nbsp;nice.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="section" id="registering-a-view"&gt;
-&lt;h2&gt;Registering a&amp;nbsp;View&lt;/h2&gt;
-&lt;p&gt;&lt;tt class="docutils literal"&gt;app.route&lt;/tt&gt; is a nice high level way of registering functions to
-routes. However, by using pluggable views, we sacrifice this high level
-ability in exchange for the flexibility that the class based views. But
-we still need to get it onto an&amp;nbsp;endpoint.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="section" id="what-about-methodview"&gt;
-&lt;h2&gt;What about&amp;nbsp;MethodView?&lt;/h2&gt;
-&lt;p&gt;Let’s say you have an endpoint that accepts &lt;tt class="docutils literal"&gt;&lt;span class="caps"&gt;GET&lt;/span&gt;&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;&lt;span class="caps"&gt;POST&lt;/span&gt;&lt;/tt&gt;
-requests but don’t really share a lot of logic between them. So you’re
-route ends up looking like&amp;nbsp;this:&lt;/p&gt;
-&lt;pre class="code ipython3 literal-block"&gt;
-&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;flask&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;redirect&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;url_for&lt;/span&gt;
+&amp;lt;ipython-input-3-31c88fc4f35a&amp;gt; in &amp;lt;module&amp;gt;()
+      1 from flask import Blueprint
+      2
+----&amp;gt; 3 our_bp = Blueprint(&amp;quot;&amp;quot;, &amp;quot;our_bp&amp;quot;)
+      4
+      5 &amp;#64;our_bp.route('/')
 
-&lt;span class="nd"&gt;&amp;#64;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;route&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'/someplace'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;methods&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'GET'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'POST'&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
-&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;do_something&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
-    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;method&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s1"&gt;'POST'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
-        &lt;span class="n"&gt;update_the_datastore&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;redirect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url_for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'do_something'&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
-    &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
-        &lt;span class="n"&gt;form&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;SomeAwesomeForm&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;render_template&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'do_something.html'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;/pre&gt;
-&lt;p&gt;How can we separate the two? That’s where MethodView comes&amp;nbsp;in.&lt;/p&gt;
-&lt;pre class="code ipython3 literal-block"&gt;
-&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;flask.views&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;MethodView&lt;/span&gt;
 
-&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;DoSomethingView&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;MethodView&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-        &lt;span class="n"&gt;form&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;SomeAwesomeForm&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;render_template&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'do_something.html'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+/home/justanr/.local/lib/python3.4/site-packages/flask/blueprints.py in __init__(self, name, import_name, static_folder, static_url_path, template_folder, url_prefix, subdomain, url_defaults)
+     93                  static_url_path=None, template_folder=None,
+     94                  url_prefix=None, subdomain=None, url_defaults=None):
+---&amp;gt; 95         _PackageBoundObject.__init__(self, import_name, template_folder)
+     96         self.name = name
+     97         self.url_prefix = url_prefix
 
-    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;post&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-        &lt;span class="n"&gt;update_the_datastore&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-        &lt;span class="c1"&gt;# we don't know the endpoint a head of time&lt;/span&gt;
-        &lt;span class="c1"&gt;# but the request contains it&lt;/span&gt;
-        &lt;span class="c1"&gt;# alternatively we could inject the redirect point&lt;/span&gt;
-        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;redirect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url_for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;endpoint&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
-&lt;/pre&gt;
-&lt;p&gt;With &lt;tt class="docutils literal"&gt;MethodView&lt;/tt&gt; we don’t need to provide a &lt;tt class="docutils literal"&gt;dispatch_request&lt;/tt&gt;
-because it’s implemented for us. The implementation looks for a method
-on the class that matches the &lt;span class="caps"&gt;HTTP&lt;/span&gt; Method (so &lt;tt class="docutils literal"&gt;&lt;span class="caps"&gt;GET&lt;/span&gt;&lt;/tt&gt; is mapped to
-&lt;tt class="docutils literal"&gt;DoSomethingView.get&lt;/tt&gt;) and calls it. If there isn’t a matching method,
-an exception is raised saying as such. The exception being &lt;tt class="docutils literal"&gt;&lt;span class="caps"&gt;HEAD&lt;/span&gt;&lt;/tt&gt;
-which will invoke &lt;tt class="docutils literal"&gt;&lt;span class="caps"&gt;GET&lt;/span&gt;&lt;/tt&gt; if it&amp;nbsp;exists.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="section" id="when-methodview-is-good"&gt;
-&lt;h2&gt;When MethodView is&amp;nbsp;good&lt;/h2&gt;
-&lt;p&gt;&lt;tt class="docutils literal"&gt;MethodView&lt;/tt&gt; is fantastic for building RESTful APIs. Since RESTful
-APIs are build around using the different &lt;span class="caps"&gt;HTTP&lt;/span&gt; methods for performing
-actions and MethodView dispatches based on &lt;span class="caps"&gt;HTTP&lt;/span&gt; Method, the two are a
-perfect match. In fact,
-&lt;a class="reference external" href="https://github.com/flask-restful/flask-restful"&gt;Flask-RESTful&lt;/a&gt; — a
-popular &lt;span class="caps"&gt;API&lt;/span&gt; toolkit — uses MethodView behind the scenes for their
-Resource&amp;nbsp;class.&lt;/p&gt;
-&lt;p&gt;Another good use is processing forms. Typically, a form endpoint looks
-like&amp;nbsp;this:&lt;/p&gt;
-&lt;pre class="code ipython3 literal-block"&gt;
-&lt;span class="nd"&gt;&amp;#64;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;route&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'/form'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;methods&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'GET'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'POST'&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
-&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;process_form&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
-    &lt;span class="c1"&gt;# there's all sorts of reasons why we use&lt;/span&gt;
-    &lt;span class="c1"&gt;# the `_get_current_object` method&lt;/span&gt;
-    &lt;span class="c1"&gt;# see this reddit convo for more details&lt;/span&gt;
-    &lt;span class="c1"&gt;# https://www.reddit.com/r/flask/comments/3hd8j2/current_app_vs_current_app_get_current_object/&lt;/span&gt;
-    &lt;span class="n"&gt;user&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;current_user&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_get_current_object&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-    &lt;span class="n"&gt;form&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;UserForm&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;validate_on_submit&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
-        &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;username&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;username&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;
-        &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;password&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;password&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;
-        &lt;span class="n"&gt;update_user&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;redirect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url_for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'process_form'&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;render_template&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'user_form.html'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;/pre&gt;
-&lt;p&gt;However, we could simply split this into two routes easily with&amp;nbsp;MethodView:&lt;/p&gt;
-&lt;pre class="code ipython3 literal-block"&gt;
-&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;ProcessFormView&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;MethodView&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;redirect_to&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;template&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;form&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;redirect_to&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;redirect_to&lt;/span&gt;
-        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;template&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;template&lt;/span&gt;
-        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;current_user&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_get_current_user&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 
-    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;render_template&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;template&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+/home/justanr/.local/lib/python3.4/site-packages/flask/helpers.py in __init__(self, import_name, template_folder)
+    739
+    740         #: Where is the app root located?
+--&amp;gt; 741         self.root_path = get_root_path(self.import_name)
+    742
+    743         self._static_folder = None
 
-    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;post&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;validate_on_submit&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
-            &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;username&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;username&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;
-            &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;password&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;password&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;
-            &lt;span class="n"&gt;update_user&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;redirect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url_for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;redirect_to&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
-        &lt;span class="c1"&gt;# in this case, the form was submitted but was invalid&lt;/span&gt;
-        &lt;span class="c1"&gt;# so rerender the template including the form with the errors&lt;/span&gt;
-        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;render_template&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;template&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
-&lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add_url_rule&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'/methodviewform'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'process_form_view'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-                 &lt;span class="n"&gt;ProcessFormView&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;as_view&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;'user_form'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-                                         &lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;UserForm&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-                                         &lt;span class="n"&gt;redirect_to&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;'process_form_view'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-                                         &lt;span class="n"&gt;template&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;'user_form.html'&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+/home/justanr/.local/lib/python3.4/site-packages/flask/helpers.py in get_root_path(import_name)
+    629
+    630     # Next attempt: check the loader.
+--&amp;gt; 631     loader = pkgutil.get_loader(import_name)
+    632
+    633     # Loader does not exist or we're referring to an unloaded main module
+
+
+/usr/lib/python3.4/pkgutil.py in get_loader(module_or_name)
+    465     else:
+    466         fullname = module_or_name
+--&amp;gt; 467     return find_loader(fullname)
+    468
+    469
+
+
+/usr/lib/python3.4/pkgutil.py in find_loader(fullname)
+    486         msg = &amp;quot;Error while finding loader for {!r} ({}: {})&amp;quot;
+    487         raise ImportError(msg.format(fullname, type(ex), ex)) from ex
+--&amp;gt; 488     return spec.loader
+    489
+    490
+
+
+AttributeError: 'NoneType' object has no attribute 'loader'
 &lt;/pre&gt;
 &lt;/div&gt;
-&lt;div class="section" id="combining-view-classes"&gt;
-&lt;h2&gt;Combining View&amp;nbsp;classes&lt;/h2&gt;
-&lt;p&gt;The real power of &lt;tt class="docutils literal"&gt;View&lt;/tt&gt; classes is when you beginning combinging them
-together. For example, you might have an &lt;tt class="docutils literal"&gt;ETagView&lt;/tt&gt; that generates
-etags like&amp;nbsp;this:&lt;/p&gt;
-&lt;pre class="code ipython3 literal-block"&gt;
-&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;hashlib&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;md5&lt;/span&gt;
-
-&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;ETagView&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;View&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;dispatch_request&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-        &lt;span class="n"&gt;resp&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;headers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;unpack_response&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;super&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ETagView&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dispatch_request&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
-
-        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nb"&gt;hasattr&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;resp&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'encode'&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-            &lt;span class="c1"&gt;# I'm running Python3&lt;/span&gt;
-            &lt;span class="c1"&gt;# So I need to convert unicode to bytestring&lt;/span&gt;
-            &lt;span class="n"&gt;resp&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;resp&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;encode&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-
-        &lt;span class="n"&gt;headers&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'ETag'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;md5&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;resp&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;hexdigest&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;resp&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;headers&lt;/span&gt;
-&lt;/pre&gt;
-&lt;p&gt;You could trivially combine them together like&amp;nbsp;this:&lt;/p&gt;
-&lt;pre class="code ipython3 literal-block"&gt;
-&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;RenderableETagView&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ETagView&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;RenderableView&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-    &lt;span class="k"&gt;pass&lt;/span&gt;
-
-&lt;span class="n"&gt;view&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;RenderableETagView&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;template&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;'index.html'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;view&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-
-&lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;app_context&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
-    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;view&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dispatch_request&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
-&lt;/pre&gt;
-&lt;p&gt;And something else that’s really nice is many things that work as mixins
-for View can also be used with MethodView as&amp;nbsp;well.&lt;/p&gt;
-&lt;pre class="code ipython3 literal-block"&gt;
-&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;ETagMethodView&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ETagView&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;MethodView&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-    &lt;span class="k"&gt;pass&lt;/span&gt;
-
-&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;MyETagMethodView&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ETagMethodView&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="s1"&gt;'Awesome get!'&lt;/span&gt;
-    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;post&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="s1"&gt;'Awesome post!'&lt;/span&gt;
-
-&lt;span class="n"&gt;view&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;MyETagMethodView&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;as_view&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'awesome'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-
-&lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;test_request_context&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
-    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;view&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
-
-&lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;test_request_context&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;method&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;'POST'&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;view&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
-&lt;/pre&gt;
-&lt;p&gt;You just need to be a little aware of how the two differ and possibly
-adapt for&amp;nbsp;MethodView.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="section" id="fin"&gt;
-&lt;h2&gt;Fin&lt;/h2&gt;
-&lt;p&gt;Hopefully this has explained Flask’s pluggable views a little more.
-They’re woefully under represented in tutorials and guides for Flask but
-they’re amazing powerful&amp;nbsp;tools.&lt;/p&gt;
-&lt;/div&gt;
-</content><category term="python"></category><category term="design"></category><category term="flask"></category></entry><entry><title>Musings on Problem Solving</title><link href="http://justanr.github.io/musings-on-problem-solving" rel="alternate"></link><published>2015-02-08T00:00:00-05:00</published><updated>2015-02-08T00:00:00-05:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2015-02-08:/musings-on-problem-solving</id><summary type="html">&lt;p&gt;I just started reading a book on algorithms and data structures in
-Python. I&amp;#8217;ve also commited myself to reading every chapter, taking notes
+</content><category term="python"></category><category term="flask"></category><category term="design"></category></entry><entry><title>Musings on Problem Solving</title><link href="http://justanr.github.io/musings-on-problem-solving" rel="alternate"></link><published>2015-02-08T00:00:00-05:00</published><updated>2015-02-08T00:00:00-05:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2015-02-08:/musings-on-problem-solving</id><summary type="html">&lt;p&gt;I just started reading a book on algorithms and data structures in
+Python. I've also commited myself to reading every chapter, taking notes
 and doing every exercise at the end of each chapter (okay, Chapter 1 is
-all &amp;#8220;This is Python, this is the syntax, here&amp;#8217;s how you …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I just started reading a book on algorithms and data structures in
-Python. I&amp;#8217;ve also commited myself to reading every chapter, taking notes
+all &amp;quot;This is Python, this is the syntax, here's how you loop...&amp;quot; so …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I just started reading a book on algorithms and data structures in
+Python. I've also commited myself to reading every chapter, taking notes
 and doing every exercise at the end of each chapter (okay, Chapter 1 is
-all &amp;#8220;This is Python, this is the syntax, here&amp;#8217;s how you loop&amp;#8230;&amp;#8221; so I
-skimmed it) except for the ones I can&amp;#8217;t reasonably fit in a single
-IPython Notebook cell (I&amp;#8217;m not trying shove a calculator into a
-notebook) or are just plain boring (&amp;#8220;Print a statement 100 times!&amp;#8221; &amp;#8212;
-seriously, this is an&amp;nbsp;exercise).&lt;/p&gt;
-&lt;p&gt;Most of the problems are okay, made me think some. Some are ones I&amp;#8217;ve
+all &amp;quot;This is Python, this is the syntax, here's how you loop...&amp;quot; so I
+skimmed it) except for the ones I can't reasonably fit in a single
+IPython Notebook cell (I'm not trying shove a calculator into a
+notebook) or are just plain boring (&amp;quot;Print a statement 100 times!&amp;quot; --
+seriously, this is an exercise).&lt;/p&gt;
+&lt;p&gt;Most of the problems are okay, made me think some. Some are ones I've
 done before. Others made me think about how to decompose the problem
-into smaller, more managable bits. And I&amp;#8217;d like to share my process on
-one in&amp;nbsp;particular.&lt;/p&gt;
+into smaller, more managable bits. And I'd like to share my process on
+one in particular.&lt;/p&gt;
 &lt;div class="section" id="our-task"&gt;
-&lt;h2&gt;Our&amp;nbsp;Task&lt;/h2&gt;
+&lt;h2&gt;Our Task&lt;/h2&gt;
 &lt;p&gt;To paraphrase the exercise: We want to accept three integer inputs and
 determine if either &lt;tt class="docutils literal"&gt;a = f(b,c)&lt;/tt&gt; or &lt;tt class="docutils literal"&gt;f(a,b) = c&lt;/tt&gt;, where f is some
 mathematical function (maybe addition, modulo but log and pow are
 candidates as well). Right now, if you feel this is a complex challenge,
 I want you attempt to code it and come back and see how your code and my
-code differs. If you get stuck, don&amp;#8217;t feel bad and come along for the&amp;nbsp;ride.&lt;/p&gt;
+code differs. If you get stuck, don't feel bad and come along for the
+ride.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="the-steps"&gt;
-&lt;h2&gt;The&amp;nbsp;Steps&lt;/h2&gt;
+&lt;h2&gt;The Steps&lt;/h2&gt;
 &lt;p&gt;The first thing I like to try to do is break a problem down into steps.
 If a step is ambigous, I try to decompose the step into smaller bits.
-Eventually, I have kinda procedural&amp;nbsp;pseudo-code.&lt;/p&gt;
+Eventually, I have kinda procedural pseudo-code.&lt;/p&gt;
 &lt;ol class="arabic simple"&gt;
-&lt;li&gt;Collect&amp;nbsp;Operations&lt;/li&gt;
-&lt;li&gt;Collect&amp;nbsp;Integers&lt;/li&gt;
-&lt;li&gt;Map inputs to&amp;nbsp;operations&lt;/li&gt;
-&lt;li&gt;Check if at least one operation returned&amp;nbsp;true&lt;/li&gt;
-&lt;li&gt;Put the whole thing&amp;nbsp;together.&lt;/li&gt;
+&lt;li&gt;Collect Operations&lt;/li&gt;
+&lt;li&gt;Collect Integers&lt;/li&gt;
+&lt;li&gt;Map inputs to operations&lt;/li&gt;
+&lt;li&gt;Check if at least one operation returned true&lt;/li&gt;
+&lt;li&gt;Put the whole thing together.&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;To me, those are pretty clear cut, atomic steps. Sure, they&amp;#8217;re composed
+&lt;p&gt;To me, those are pretty clear cut, atomic steps. Sure, they're composed
 of smaller steps internally, but they represent a single unit of work
 each function of the program needs to do. Step 5 is usually implied, but
-I find it&amp;#8217;s nice to list&amp;nbsp;anyways.&lt;/p&gt;
+I find it's nice to list anyways.&lt;/p&gt;
 &lt;div class="section" id="step-1-collect-operations"&gt;
-&lt;h3&gt;Step 1: Collect&amp;nbsp;Operations&lt;/h3&gt;
-&lt;p&gt;We&amp;#8217;ll just make a list of all the operations we want to check against.
+&lt;h3&gt;Step 1: Collect Operations&lt;/h3&gt;
+&lt;p&gt;We'll just make a list of all the operations we want to check against.
 Since Python has first class functions (meaning functions can be treated
-like data), this is &lt;em&gt;really&lt;/em&gt; easy. We&amp;#8217;ll also make a simple root
-function for calculating things like cubic roots as&amp;nbsp;well.&lt;/p&gt;
+like data), this is &lt;em&gt;really&lt;/em&gt; easy. We'll also make a simple root
+function for calculating things like cubic roots as well.&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;operator&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;add&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;sub&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mul&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mod&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;truediv&lt;/span&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;math&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;log&lt;/span&gt;
@@ -1106,38 +956,38 @@ function for calculating things like cubic roots as&amp;nbsp;well.&lt;/p&gt;
 
 &lt;span class="n"&gt;operations&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;add&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;sub&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mul&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mod&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;truediv&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;log&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;pow&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;Super simple. Now, let&amp;#8217;s move&amp;nbsp;on.&lt;/p&gt;
+&lt;p&gt;Super simple. Now, let's move on.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="step-3-map-inputs-to-operations"&gt;
-&lt;h3&gt;Step 3: Map Inputs To&amp;nbsp;Operations&lt;/h3&gt;
-&lt;p&gt;&lt;span class="dquo"&gt;&amp;#8220;&lt;/span&gt;Alec,&amp;#8221; you say, &amp;#8220;You skipped a step!&amp;#8221; And I did. Because I/O is nasty
-and I&amp;#8217;d like to do it last. For now, let&amp;#8217;s assume the integers we
-collected are 1, 2 and&amp;nbsp;3.&lt;/p&gt;
+&lt;h3&gt;Step 3: Map Inputs To Operations&lt;/h3&gt;
+&lt;p&gt;&amp;quot;Alec,&amp;quot; you say, &amp;quot;You skipped a step!&amp;quot; And I did. Because I/O is nasty
+and I'd like to do it last. For now, let's assume the integers we
+collected are 1, 2 and 3.&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="n"&gt;integers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
 &lt;/pre&gt;
 &lt;p&gt;For this step we need to make our operation to a potential output.
 Basically: &lt;tt class="docutils literal"&gt;f(a, b) == c&lt;/tt&gt;. Again, this is easy. Even if we decide to
-check if &lt;tt class="docutils literal"&gt;a == f(b,c)&lt;/tt&gt; in the same step. Like I said before, Python&amp;#8217;s
+check if &lt;tt class="docutils literal"&gt;a == f(b,c)&lt;/tt&gt; in the same step. Like I said before, Python's
 functions can be treated just like data and this includes passing them
-as arguments to other&amp;nbsp;functions.&lt;/p&gt;
+as arguments to other functions.&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;either_side_true&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;op&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;op&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="ow"&gt;or&lt;/span&gt; &lt;span class="n"&gt;op&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;
 &lt;/pre&gt;
 &lt;/div&gt;
 &lt;div class="section" id="step-4-determine-if-any-check-returned-true"&gt;
-&lt;h3&gt;Step 4: Determine if any check returned&amp;nbsp;True&lt;/h3&gt;
-&lt;p&gt;There&amp;#8217;s many ways we could do this. But the key here is the word &lt;tt class="docutils literal"&gt;any&lt;/tt&gt;
-&amp;#8212; which happens to be a Python built-in function. What &lt;tt class="docutils literal"&gt;any&lt;/tt&gt; does is
+&lt;h3&gt;Step 4: Determine if any check returned True&lt;/h3&gt;
+&lt;p&gt;There's many ways we could do this. But the key here is the word &lt;tt class="docutils literal"&gt;any&lt;/tt&gt;
+-- which happens to be a Python built-in function. What &lt;tt class="docutils literal"&gt;any&lt;/tt&gt; does is
 accept an iterable of values and checks if at least one of them is True.
-There&amp;#8217;s also its sibling &lt;tt class="docutils literal"&gt;all&lt;/tt&gt; which checks that none of the values
-are False. What&amp;#8217;s really nice about &lt;tt class="docutils literal"&gt;any&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;all&lt;/tt&gt; is they allow
+There's also its sibling &lt;tt class="docutils literal"&gt;all&lt;/tt&gt; which checks that none of the values
+are False. What's really nice about &lt;tt class="docutils literal"&gt;any&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;all&lt;/tt&gt; is they allow
 collapsing a bunch of &lt;tt class="docutils literal"&gt;and&lt;/tt&gt;/&lt;tt class="docutils literal"&gt;or&lt;/tt&gt; groupings in an &lt;tt class="docutils literal"&gt;if&lt;/tt&gt; statement
-into a single&amp;nbsp;expression.&lt;/p&gt;
+into a single expression.&lt;/p&gt;
 &lt;p&gt;Say you wanted to check if any variable in a given group was equal to
-something. You might do (ignoring that you&amp;#8217;d actually have a list and do
-&lt;tt class="docutils literal"&gt;if 1 in list_of_vars:&lt;/tt&gt;)&amp;#8230;&lt;/p&gt;
+something. You might do (ignoring that you'd actually have a list and do
+&lt;tt class="docutils literal"&gt;if 1 in list_of_vars:&lt;/tt&gt;)...&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;
 &lt;span class="n"&gt;b&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
@@ -1149,7 +999,7 @@ something. You might do (ignoring that you&amp;#8217;d actually have a list and 
 &lt;pre class="literal-block"&gt;
 We've got a winner!
 &lt;/pre&gt;
-&lt;p&gt;&amp;#8230;but with &lt;tt class="docutils literal"&gt;any&lt;/tt&gt; we can simply do&amp;nbsp;this&amp;#8230;&lt;/p&gt;
+&lt;p&gt;...but with &lt;tt class="docutils literal"&gt;any&lt;/tt&gt; we can simply do this...&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nb"&gt;any&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;v&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;v&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;]):&lt;/span&gt;
     &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;I said We've got a winner!&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -1159,9 +1009,9 @@ I said We've got a winner!
 &lt;/pre&gt;
 &lt;p&gt;Of course, the true power of &lt;tt class="docutils literal"&gt;any&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;all&lt;/tt&gt; comes when you combine
 them with generators, which will allow you to lazily compute your check.
-These aren&amp;#8217;t a catch all, sometimes you want to store the output of a
+These aren't a catch all, sometimes you want to store the output of a
 check or you already have a list built, in which case &lt;tt class="docutils literal"&gt;x in my_list&lt;/tt&gt;
-&lt;em&gt;is&lt;/em&gt; superior, but these should be tools you consider from time to&amp;nbsp;time.&lt;/p&gt;
+&lt;em&gt;is&lt;/em&gt; superior, but these should be tools you consider from time to time.&lt;/p&gt;
 &lt;p&gt;Now, we want to check if &lt;tt class="docutils literal"&gt;any&lt;/tt&gt; of our operations returns True if
 &lt;tt class="docutils literal"&gt;a == f(c,b)&lt;/tt&gt; or &lt;tt class="docutils literal"&gt;c == f(a,b)&lt;/tt&gt;.&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
@@ -1172,14 +1022,14 @@ check or you already have a list built, in which case &lt;tt class="docutils lit
 Heck yeah at least one did.
 &lt;/pre&gt;
 &lt;p&gt;Alternatively, we could store that as a separate function if we needed
-to fiddle with it more, but for this case, I feel that&amp;#8217;s&amp;nbsp;overkill.&lt;/p&gt;
+to fiddle with it more, but for this case, I feel that's overkill.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="step-2-collect-integers"&gt;
-&lt;h3&gt;Step 2: Collect&amp;nbsp;Integers&lt;/h3&gt;
-&lt;p&gt;Okay, now we&amp;#8217;ll worry about actually grabbing some input from the user.
-We need to collect three integers, probably using &lt;span class="caps"&gt;STDIN&lt;/span&gt;. But they could
-come from a file, a database or anywhere. But let&amp;#8217;s focus on just
-grabbing them from &lt;span class="caps"&gt;STDIN&lt;/span&gt;.&lt;/p&gt;
+&lt;h3&gt;Step 2: Collect Integers&lt;/h3&gt;
+&lt;p&gt;Okay, now we'll worry about actually grabbing some input from the user.
+We need to collect three integers, probably using STDIN. But they could
+come from a file, a database or anywhere. But let's focus on just
+grabbing them from STDIN.&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;collect_ints_from_stdin&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="n"&gt;ints&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
@@ -1194,25 +1044,26 @@ grabbing them from &lt;span class="caps"&gt;STDIN&lt;/span&gt;.&lt;/p&gt;
 
     &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;ints&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;Normally, I&amp;#8217;d wince at a while loop used to build a fixed length list,
+&lt;p&gt;Normally, I'd wince at a while loop used to build a fixed length list,
 but we have to trouble with users doing something like trying to enter
-the number &lt;tt class="docutils literal"&gt;a&lt;/tt&gt; (well&amp;#8230;you &lt;em&gt;could&lt;/em&gt; use hex&amp;#8230;but who does that?).
-Since we&amp;#8217;re just passing on the error, our list of integers could end up&amp;nbsp;short!&lt;/p&gt;
-&lt;p&gt;You might also notice that I&amp;#8217;ve used &lt;tt class="docutils literal"&gt;try/else&lt;/tt&gt;. I am of the opinion
+the number &lt;tt class="docutils literal"&gt;a&lt;/tt&gt; (well...you &lt;em&gt;could&lt;/em&gt; use hex...but who does that?).
+Since we're just passing on the error, our list of integers could end up
+short!&lt;/p&gt;
+&lt;p&gt;You might also notice that I've used &lt;tt class="docutils literal"&gt;try/else&lt;/tt&gt;. I am of the opinion
 that a &lt;tt class="docutils literal"&gt;try&lt;/tt&gt; block should be isolated to &lt;em&gt;just&lt;/em&gt; the code that could
 raise an exception. &lt;tt class="docutils literal"&gt;except&lt;/tt&gt; handles cleaning up the exception. And
-then there&amp;#8217;s &lt;tt class="docutils literal"&gt;else&lt;/tt&gt; which allows us to run code on the condition we
-didn&amp;#8217;t encounter a problem. Mentally, if you replace
+then there's &lt;tt class="docutils literal"&gt;else&lt;/tt&gt; which allows us to run code on the condition we
+didn't encounter a problem. Mentally, if you replace
 &lt;tt class="docutils literal"&gt;except ValueError&lt;/tt&gt; with &lt;tt class="docutils literal"&gt;if catch(ValueError)&lt;/tt&gt; where &lt;tt class="docutils literal"&gt;catch&lt;/tt&gt; is
-some magic framehack or something, it begins to make sense. I&amp;#8217;ll also
-note, for completion&amp;#8217;s sake that there&amp;#8217;s also an optional &lt;tt class="docutils literal"&gt;finally&lt;/tt&gt;
+some magic framehack or something, it begins to make sense. I'll also
+note, for completion's sake that there's also an optional &lt;tt class="docutils literal"&gt;finally&lt;/tt&gt;
 clause which lets us run code regardless of an exception occuring. But
-the full &lt;tt class="docutils literal"&gt;try/except/else/finally&lt;/tt&gt; concept is for another&amp;nbsp;time.&lt;/p&gt;
+the full &lt;tt class="docutils literal"&gt;try/except/else/finally&lt;/tt&gt; concept is for another time.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="step-5-put-it-altogther"&gt;
-&lt;h3&gt;Step 5: Put it&amp;nbsp;altogther&lt;/h3&gt;
-&lt;p&gt;Finally, we&amp;#8217;ll take these individual components and piece them together
-into a cohesive&amp;nbsp;answer.&lt;/p&gt;
+&lt;h3&gt;Step 5: Put it altogther&lt;/h3&gt;
+&lt;p&gt;Finally, we'll take these individual components and piece them together
+into a cohesive answer.&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;answer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;operations&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;num_ints&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;collector&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;collect_ints_from_stdin&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="n"&gt;ints&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;collector&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;num_ints&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -1222,69 +1073,69 @@ into a cohesive&amp;nbsp;answer.&lt;/p&gt;
         &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;D: Nope!&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;
 &lt;p&gt;If you add &lt;tt class="docutils literal"&gt;if __name__ == &amp;quot;__main__&amp;quot;: answer(operations)&lt;/tt&gt; and count
-spacing and imports, the whole thing&amp;#8217;s less than forty&amp;nbsp;lines!&lt;/p&gt;
+spacing and imports, the whole thing's less than forty lines!&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="section" id="the-take-away"&gt;
-&lt;h2&gt;The Take&amp;nbsp;Away&lt;/h2&gt;
+&lt;h2&gt;The Take Away&lt;/h2&gt;
 &lt;ol class="arabic simple"&gt;
-&lt;li&gt;Break a problem down into steps as small as&amp;nbsp;possible&lt;/li&gt;
-&lt;li&gt;Small, functional pieces are more&amp;nbsp;manageable&lt;/li&gt;
+&lt;li&gt;Break a problem down into steps as small as possible&lt;/li&gt;
+&lt;li&gt;Small, functional pieces are more manageable&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;Breaking down a problem is something that seems &lt;em&gt;so obvious&lt;/em&gt; but it&amp;#8217;s a
+&lt;p&gt;Breaking down a problem is something that seems &lt;em&gt;so obvious&lt;/em&gt; but it's a
 skill that needs to be practiced and honed just like any other. After
-all, programming isn&amp;#8217;t so much about code as solving problems. And part
-of solving problems is finding the smaller problems hidden inside&amp;nbsp;them.&lt;/p&gt;
+all, programming isn't so much about code as solving problems. And part
+of solving problems is finding the smaller problems hidden inside them.&lt;/p&gt;
 &lt;p&gt;What looked liked a complicated task on the surface, ended up being just
-five simple tasks on the inside. That&amp;#8217;s not to say that every problem
-will immediately break down to simple tasks. Sometimes you&amp;#8217;ll end up
-with a list of steps that&amp;#8217;s nested five levels deep! But if you tackle
+five simple tasks on the inside. That's not to say that every problem
+will immediately break down to simple tasks. Sometimes you'll end up
+with a list of steps that's nested five levels deep! But if you tackle
 each step one at a time, sprinkle in some Python idioms and a touch of
-abstraction, your application will come&amp;nbsp;together.&lt;/p&gt;
+abstraction, your application will come together.&lt;/p&gt;
 &lt;p&gt;The other, writing smaller more functional code pieces allows your code
 to be modular. What if tomorrow, we want to grab the integers from a
 database? Well, since &lt;tt class="docutils literal"&gt;collect_ints_from_stdin&lt;/tt&gt; is separated from the
 main function, we can easily. Just build a callable that queries the
 database for integers and feeds them into the operations. Or if we need
 to change from integers to strings, we just swap out the collector and
-the operations and move on with our day &amp;#8212; or better, pass a callback to
-coerce the type for&amp;nbsp;us!&lt;/p&gt;
+the operations and move on with our day -- or better, pass a callback to
+coerce the type for us!&lt;/p&gt;
 &lt;p&gt;But consider if we had just written a thirty line function that did all
-this? Ugh, it&amp;#8217;d be a nightmare to untangle the pieces. Honestly, we&amp;#8217;d
+this? Ugh, it'd be a nightmare to untangle the pieces. Honestly, we'd
 probably have &lt;em&gt;two functions&lt;/em&gt; that did the same thing, but just grabbed
 data from other locations. And then &lt;em&gt;two more&lt;/em&gt; functions because maybe
 we need to work on strings. Quickly, this spirals out of control as the
 number of functions grows at (Data Types) * (Sources). We have four
-sources and four data types? That&amp;#8217;s &lt;em&gt;16&lt;/em&gt; functions! I don&amp;#8217;t want to
-write the same function 16 times and I doubt you do&amp;nbsp;either.&lt;/p&gt;
+sources and four data types? That's &lt;em&gt;16&lt;/em&gt; functions! I don't want to
+write the same function 16 times and I doubt you do either.&lt;/p&gt;
 &lt;p&gt;Instead we can write four functions to grab the data, pass our coercion
-callback and maintain the lists of&amp;nbsp;operations.&lt;/p&gt;
+callback and maintain the lists of operations.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="going-further"&gt;
-&lt;h2&gt;Going&amp;nbsp;Further&lt;/h2&gt;
+&lt;h2&gt;Going Further&lt;/h2&gt;
 &lt;p&gt;There are problems. What happens when we input &lt;tt class="docutils literal"&gt;0&lt;/tt&gt; and our checks make
 it to the division, modulo, log or root operations? We get a nasty
 exception. :( But handling it is easy (hint: ZeroDivisionError and
 ValueError would needed to be caught). Also, we should be able to tell
-the user &lt;em&gt;which&lt;/em&gt; operations returned&amp;nbsp;true.&lt;/p&gt;
-&lt;p&gt;Of course, I&amp;#8217;m not going to play my full hand. I&amp;#8217;ll leave these as an
-exercise to you to figure&amp;nbsp;out.&lt;/p&gt;
+the user &lt;em&gt;which&lt;/em&gt; operations returned true.&lt;/p&gt;
+&lt;p&gt;Of course, I'm not going to play my full hand. I'll leave these as an
+exercise to you to figure out.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="python"></category><category term="design"></category></entry><entry><title>Code Reuse in Multiple Forms</title><link href="http://justanr.github.io/code-reuse-in-multiple-forms" rel="alternate"></link><published>2014-10-09T00:00:00-04:00</published><updated>2014-10-09T00:00:00-04:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2014-10-09:/code-reuse-in-multiple-forms</id><summary type="html">&lt;div class="section" id="reusing-code-or-how-i-learned-to-stop-repeating-myself"&gt;
-&lt;h2&gt;Reusing Code, or: How I Learned to Stop Repeating&amp;nbsp;Myself&lt;/h2&gt;
+</content><category term="python"></category><category term="design"></category></entry><entry><title>Code Reuse in Multiple Forms</title><link href="http://justanr.github.io/code-reuse-in-multiple-forms" rel="alternate"></link><published>2014-10-09T00:00:00-04:00</published><updated>2014-10-09T00:00:00-04:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2014-10-09:/code-reuse-in-multiple-forms</id><summary type="html">&lt;div class="section" id="reusing-code-or-how-i-learned-to-stop-repeating-myself"&gt;
+&lt;h2&gt;Reusing Code, or: How I Learned to Stop Repeating Myself&lt;/h2&gt;
 &lt;p&gt;One of the best things about coding is not having to do the same thing
 over and over again. You automate. You work things into functions and
 objects and have &lt;em&gt;them&lt;/em&gt; worry about completing a series of actions for
 you …&lt;/p&gt;&lt;/div&gt;</summary><content type="html">&lt;div class="section" id="reusing-code-or-how-i-learned-to-stop-repeating-myself"&gt;
-&lt;h2&gt;Reusing Code, or: How I Learned to Stop Repeating&amp;nbsp;Myself&lt;/h2&gt;
+&lt;h2&gt;Reusing Code, or: How I Learned to Stop Repeating Myself&lt;/h2&gt;
 &lt;p&gt;One of the best things about coding is not having to do the same thing
 over and over again. You automate. You work things into functions and
 objects and have &lt;em&gt;them&lt;/em&gt; worry about completing a series of actions for
-you. Why wouldn&amp;#8217;t you do the same thing when &lt;em&gt;actually writing&amp;nbsp;code?&lt;/em&gt;&lt;/p&gt;
+you. Why wouldn't you do the same thing when &lt;em&gt;actually writing code?&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;There are times where you find yourself repeating code; when this
-happens, you should consider if it&amp;#8217;s possible to refactor and break the
+happens, you should consider if it's possible to refactor and break the
 issue into a reuable piece of code. Generally, the rule of three comes
-in&amp;nbsp;play:&lt;/p&gt;
+in play:&lt;/p&gt;
 &lt;pre class="literal-block"&gt;
 There are two &amp;quot;rules of three&amp;quot; in [software] reuse:
 
@@ -1293,17 +1144,17 @@ There are two &amp;quot;rules of three&amp;quot; in [software] reuse:
 &lt;/pre&gt;
 &lt;p&gt;&lt;a class="reference external" href="http://www.amazon.com/exec/obidos/ASIN/0321117425/"&gt;Facts and Fallacies of Software
 Engineering&lt;/a&gt; #18
-Credit to Jeff Atwood&amp;#8217;s Coding Horror post about the &lt;a class="reference external" href="http://blog.codinghorror.com/rule-of-three/"&gt;Rule of
+Credit to Jeff Atwood's Coding Horror post about the &lt;a class="reference external" href="http://blog.codinghorror.com/rule-of-three/"&gt;Rule of
 Three&lt;/a&gt; for bringing it
-to my&amp;nbsp;attention.&lt;/p&gt;
+to my attention.&lt;/p&gt;
 &lt;div class="section" id="about-this-post"&gt;
-&lt;h3&gt;About This&amp;nbsp;Post&lt;/h3&gt;
+&lt;h3&gt;About This Post&lt;/h3&gt;
 &lt;p&gt;This post is just going to be a &lt;em&gt;brief&lt;/em&gt; overview of common techniques
 and patterns to avoid writing the same thing &lt;em&gt;over and over&lt;/em&gt; again.
 Starting with functions and moving into objects, inheritance, mixins,
-composition, decorators and context managers. There&amp;#8217;s plenty of other
-techniques, patterns and idioms that I don&amp;#8217;t touch on either but this
-post isn&amp;#8217;t meant to be an exhaustive list&amp;nbsp;either.&lt;/p&gt;
+composition, decorators and context managers. There's plenty of other
+techniques, patterns and idioms that I don't touch on either but this
+post isn't meant to be an exhaustive list either.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="section" id="functions"&gt;
@@ -1311,7 +1162,7 @@ post isn&amp;#8217;t meant to be an exhaustive list&amp;nbsp;either.&lt;/p&gt;
 &lt;p&gt;Functions are a great way to ensure that a piece of code is always
 executed the same way. This could be as simple a small expression like
 &lt;tt class="docutils literal"&gt;(a + b) * x&lt;/tt&gt; or something that performs a complicated piece of logic.
-Functions are the most basic form of code reuse in&amp;nbsp;Python.&lt;/p&gt;
+Functions are the most basic form of code reuse in Python.&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;calc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;Our business crucial algorithm&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
@@ -1323,31 +1174,31 @@ Functions are the most basic form of code reuse in&amp;nbsp;Python.&lt;/p&gt;
 9
 &lt;/pre&gt;
 &lt;p&gt;Python also offers a limited form of anonymous functions called
-&lt;tt class="docutils literal"&gt;lambda&lt;/tt&gt;. They&amp;#8217;re limited to just a single expression with no
+&lt;tt class="docutils literal"&gt;lambda&lt;/tt&gt;. They're limited to just a single expression with no
 statements in them. A lot of them time, they serve as basic callbacks or
 as key functions for a sort or group method. The syntax is simple and
-the return value is the outcome of the&amp;nbsp;expression.&lt;/p&gt;
+the return value is the outcome of the expression.&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="nb"&gt;sorted&lt;/span&gt;&lt;span class="p"&gt;([(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)],&lt;/span&gt; &lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;lambda&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
 &lt;/pre&gt;
 &lt;pre class="literal-block"&gt;
 [(3, -1), (0, 0), (1, 2)]
 &lt;/pre&gt;
-&lt;p&gt;While lambdas are incredibly useful in many instances, it&amp;#8217;s generally
-considered bad form to assign them to variables (since they&amp;#8217;re supposed
-to be anonymous functions), not that I&amp;#8217;ve never done that when it suited
-my needs.&amp;nbsp;;)&lt;/p&gt;
+&lt;p&gt;While lambdas are incredibly useful in many instances, it's generally
+considered bad form to assign them to variables (since they're supposed
+to be anonymous functions), not that I've never done that when it suited
+my needs. ;)&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="objects"&gt;
 &lt;h2&gt;Objects&lt;/h2&gt;
 &lt;p&gt;Objects are really the poster child for code reuse. Essentially, an
 object is a collection of data and functions that inter relate. Many in
-the Python community are fond of calling them a pile of dictionaries &amp;#8212;
-because that&amp;#8217;s what they essentially are in&amp;nbsp;Python.&lt;/p&gt;
+the Python community are fond of calling them a pile of dictionaries --
+because that's what they essentially are in Python.&lt;/p&gt;
 &lt;p&gt;Objects offer all sorts of possibilities such as inheritance and
-composition, which I&amp;#8217;ll briefly touch upon here. For now, a simple
+composition, which I'll briefly touch upon here. For now, a simple
 example will suffice: take our business critical algorithm and turn it
-into a spreadsheet&amp;nbsp;row&lt;/p&gt;
+into a spreadsheet row&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;SpreadsheetRow&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
 
@@ -1365,26 +1216,26 @@ into a spreadsheet&amp;nbsp;row&lt;/p&gt;
 &lt;pre class="literal-block"&gt;
 9
 &lt;/pre&gt;
-&lt;p&gt;Notice how we&amp;#8217;re already reusing code to find our business critical
+&lt;p&gt;Notice how we're already reusing code to find our business critical
 total of 9! If later, someone in accounting realizes that we should
 actually be doing &lt;tt class="docutils literal"&gt;a * (b + x)&lt;/tt&gt;, we simply change the original
-calculation&amp;nbsp;function.&lt;/p&gt;
+calculation function.&lt;/p&gt;
 &lt;div class="section" id="inheritance"&gt;
 &lt;h3&gt;Inheritance&lt;/h3&gt;
 &lt;p&gt;Inheritance is simply a way of giving access of all the data and methods
-of a class to another class. It&amp;#8217;s commonly called &amp;#8220;specialization,&amp;#8221;
-though Raymond Hettinger aptly describes it as &amp;#8220;delegating work.&amp;#8221; If
+of a class to another class. It's commonly called &amp;quot;specialization,&amp;quot;
+though Raymond Hettinger aptly describes it as &amp;quot;delegating work.&amp;quot; If
 later, accounting wants to be able to label all of our spreadsheet rows,
 we could go back and modify the original class or we could design a new
-one that does this for&amp;nbsp;us.&lt;/p&gt;
+one that does this for us.&lt;/p&gt;
 &lt;p&gt;Accessing information in the inherited class is done through
-&lt;tt class="docutils literal"&gt;super()&lt;/tt&gt;, I won&amp;#8217;t delve into it&amp;#8217;s details here but it is &lt;a class="reference external" href="http://rhettinger.wordpress.com/2011/05/26/super-considered-super/"&gt;quite
+&lt;tt class="docutils literal"&gt;super()&lt;/tt&gt;, I won't delve into it's details here but it is &lt;a class="reference external" href="http://rhettinger.wordpress.com/2011/05/26/super-considered-super/"&gt;quite
 super&lt;/a&gt;.&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;LabeledSpreadsheetRow&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;SpreadsheetRow&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
 
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;label&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-        &lt;span class="nb"&gt;super&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="nb"&gt;super&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="fm"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
         &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;label&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;label&lt;/span&gt;
 
 &lt;span class="n"&gt;row&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;LabeledSpreadsheetRow&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;label&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;'1'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -1395,21 +1246,21 @@ The total for 1 is 9
 &lt;/pre&gt;
 &lt;div class="section" id="mixins"&gt;
 &lt;h4&gt;Mixins&lt;/h4&gt;
-&lt;p&gt;Mixins are a type of multiple inheritance, which I won&amp;#8217;t fully delve
-into here because it&amp;#8217;s a complicated and touchy subject. However, Python
-supports it. Because of this and it&amp;#8217;s support for duck typing, we can
+&lt;p&gt;Mixins are a type of multiple inheritance, which I won't fully delve
+into here because it's a complicated and touchy subject. However, Python
+supports it. Because of this and it's support for duck typing, we can
 completely forego the use of Interfaces and Traits which are common in
-single inheritance&amp;nbsp;languages.&lt;/p&gt;
+single inheritance languages.&lt;/p&gt;
 &lt;p&gt;Mixins are a way of writing logic that is common to many objects and
-placing it in a single location. Mixins are also classes that aren&amp;#8217;t
+placing it in a single location. Mixins are also classes that aren't
 meant to be instantiated on their own either, since they represent a
 small piece of a puzzle rather than the whole picture. A common problem
-I use mixins for is creating a generic &lt;tt class="docutils literal"&gt;__repr__&lt;/tt&gt; method for&amp;nbsp;objects.&lt;/p&gt;
+I use mixins for is creating a generic &lt;tt class="docutils literal"&gt;__repr__&lt;/tt&gt; method for objects.&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;ReprMixin&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
 
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__repr__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-        &lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;__class__&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;__name__&lt;/span&gt;
+        &lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="vm"&gt;__class__&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="vm"&gt;__name__&lt;/span&gt;
         &lt;span class="n"&gt;attrs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;', '&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;{}&lt;/span&gt;&lt;span class="s2"&gt;=&lt;/span&gt;&lt;span class="si"&gt;{}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;v&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;v&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;vars&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;items&lt;/span&gt;&lt;span class="p"&gt;()])&lt;/span&gt;
         &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;lt;&lt;/span&gt;&lt;span class="si"&gt;{}&lt;/span&gt;&lt;span class="s2"&gt; &lt;/span&gt;&lt;span class="si"&gt;{}&lt;/span&gt;&lt;span class="s2"&gt;&amp;gt;&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;attrs&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
@@ -1423,23 +1274,23 @@ I use mixins for is creating a generic &lt;tt class="docutils literal"&gt;__repr
 '&amp;lt;Row b=2, x=3, a=1, label=1&amp;gt;'
 &lt;/pre&gt;
 &lt;p&gt;This showcases the power of inheritance and mixins: composing complex
-objects from smaller parts into what you&amp;#8217;re wanting. The actual class
-we&amp;#8217;re using implements no logic of it&amp;#8217;s own but we&amp;#8217;re now provided&amp;nbsp;with:&lt;/p&gt;
+objects from smaller parts into what you're wanting. The actual class
+we're using implements no logic of it's own but we're now provided with:&lt;/p&gt;
 &lt;ul class="simple"&gt;
-&lt;li&gt;A repr&amp;nbsp;method&lt;/li&gt;
-&lt;li&gt;A calculation&amp;nbsp;method&lt;/li&gt;
-&lt;li&gt;A label&amp;nbsp;attribute&lt;/li&gt;
-&lt;li&gt;Data points to&amp;nbsp;calculate&lt;/li&gt;
+&lt;li&gt;A repr method&lt;/li&gt;
+&lt;li&gt;A calculation method&lt;/li&gt;
+&lt;li&gt;A label attribute&lt;/li&gt;
+&lt;li&gt;Data points to calculate&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="section" id="composition"&gt;
 &lt;h3&gt;Composition&lt;/h3&gt;
-&lt;p&gt;Composition is a fancy way of saying we&amp;#8217;re going to build an object
-using other objects, in other words: composing them from parts. It&amp;#8217;s a
-similar idea to inheritance, but instead the objects we&amp;#8217;re using are
+&lt;p&gt;Composition is a fancy way of saying we're going to build an object
+using other objects, in other words: composing them from parts. It's a
+similar idea to inheritance, but instead the objects we're using are
 stored as attributes on the main object. We have spreadsheet rows, why
-not a spreadsheet to hold&amp;nbsp;them?&lt;/p&gt;
+not a spreadsheet to hold them?&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Spreadsheet&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ReprMixin&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
 
@@ -1468,8 +1319,8 @@ The total for 2 is 64
 &lt;pre class="literal-block"&gt;
 &amp;quot;&amp;lt;Spreadsheet name=alec's totals, rows=[&amp;lt;Row b=2, x=3, a=1, label=1&amp;gt;, &amp;lt;Row b=5, x=8, a=3, label=2&amp;gt;]&amp;gt;&amp;quot;
 &lt;/pre&gt;
-&lt;p&gt;Here we&amp;#8217;re not only reusing the ReprMixin so we can have accurate
-information about our Spreadsheet object, we&amp;#8217;re also reusing the Row
+&lt;p&gt;Here we're not only reusing the ReprMixin so we can have accurate
+information about our Spreadsheet object, we're also reusing the Row
 objects to provide that logic for free, leaving us to just implement the
 &lt;tt class="docutils literal"&gt;show_all&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;total&lt;/tt&gt; methods.&lt;/p&gt;
 &lt;/div&gt;
@@ -1478,15 +1329,15 @@ objects to provide that logic for free, leaving us to just implement the
 &lt;h2&gt;Decorators&lt;/h2&gt;
 &lt;p&gt;Decorators are a way factoring logic out of a class or function and into
 another class or function. Or to add extra logic to it. That sounds
-confusing, but it&amp;#8217;s really not. I&amp;#8217;ve written about them
+confusing, but it's really not. I've written about them
 &lt;a class="reference external" href="http://justanr.blogspot.com/2014/08/decorator-day-exploration-of-decorators.html"&gt;elsewhere&lt;/a&gt;,
-so if you&amp;#8217;re unfamiliar with them I recommend reading that first. Here,
-we&amp;#8217;re going to use two decorators Python provides in the standard
+so if you're unfamiliar with them I recommend reading that first. Here,
+we're going to use two decorators Python provides in the standard
 library called &lt;tt class="docutils literal"&gt;total_ordering&lt;/tt&gt; so we can sort our Row objects and the
 other is the &lt;tt class="docutils literal"&gt;property&lt;/tt&gt; decorator which allows us to retreat a
 function as if it were an attribute (via the &lt;a class="reference external" href="http://justanr.blogspot.com/2014/09/descriptor-day.html"&gt;descriptor
 protocol&lt;/a&gt;
-which is a fantastic code reuse ability that I won&amp;#8217;t explore&amp;nbsp;here).&lt;/p&gt;
+which is a fantastic code reuse ability that I won't explore here).&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;functools&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;total_ordering&lt;/span&gt;
 
@@ -1512,19 +1363,19 @@ which is a fantastic code reuse ability that I won&amp;#8217;t explore&amp;nbsp;
 &lt;p&gt;What &lt;tt class="docutils literal"&gt;total_ordering&lt;/tt&gt; does is provide &lt;em&gt;all&lt;/em&gt; the missing rich
 comparison operators for us. Meaning even though we only defined
 &lt;tt class="docutils literal"&gt;__lt__&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;__eq__&lt;/tt&gt; here, we also have &lt;tt class="docutils literal"&gt;__le__&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;__gt__&lt;/tt&gt;,
-&lt;tt class="docutils literal"&gt;__ge__&lt;/tt&gt;, and &lt;tt class="docutils literal"&gt;__ne__&lt;/tt&gt; available to&amp;nbsp;us.&lt;/p&gt;
+&lt;tt class="docutils literal"&gt;__ge__&lt;/tt&gt;, and &lt;tt class="docutils literal"&gt;__ne__&lt;/tt&gt; available to us.&lt;/p&gt;
 &lt;p&gt;Decorators are an incredibly powerful to modify your regular Python
-functions and&amp;nbsp;objects.&lt;/p&gt;
+functions and objects.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="context-managers"&gt;
-&lt;h2&gt;Context&amp;nbsp;Managers&lt;/h2&gt;
+&lt;h2&gt;Context Managers&lt;/h2&gt;
 &lt;p&gt;Context managers are a way of handling operations you typically do in
 pairs: open a file, close a file; start a timer, end a timer; acquire a
 lock, release a lock; start a transactio, end a transaction. Really,
-anything you do in pairs should be a candidate for context&amp;nbsp;managers.&lt;/p&gt;
+anything you do in pairs should be a candidate for context managers.&lt;/p&gt;
 &lt;p&gt;Writing context managers is pretty easy, depending on which method you
-go about. I&amp;#8217;ll likely explore them in a future post. For now, I&amp;#8217;m going
-to stick to using the generator context manager form as an&amp;nbsp;example:&lt;/p&gt;
+go about. I'll likely explore them in a future post. For now, I'm going
+to stick to using the generator context manager form as an example:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;contextlib&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;contextmanager&lt;/span&gt;
 
@@ -1542,30 +1393,30 @@ Before the greeting.
 Hello Alec
 After the greeting.
 &lt;/pre&gt;
-&lt;p&gt;We won&amp;#8217;t be writing a context manager here, but rather using one to
-implement an &amp;#8220;alternate constructor&amp;#8221; for our &lt;tt class="docutils literal"&gt;Spreadsheet&lt;/tt&gt; class.
+&lt;p&gt;We won't be writing a context manager here, but rather using one to
+implement an &amp;quot;alternate constructor&amp;quot; for our &lt;tt class="docutils literal"&gt;Spreadsheet&lt;/tt&gt; class.
 Alternate constructors are a way of initializing an object in a specific
 way. These are especially handy if you find yourself occasionally
 creating an object under certain conditions. Consider &lt;tt class="docutils literal"&gt;dict.fromkeys&lt;/tt&gt;
 which lets you fill a dictionary with keys from an iterable that all
-have the same&amp;nbsp;value:&lt;/p&gt;
+have the same value:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;dict&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;fromkeys&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="kc"&gt;None&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
 &lt;/pre&gt;
 &lt;pre class="literal-block"&gt;
 {0: None, 1: None, 2: None, 3: None, 4: None}
 &lt;/pre&gt;
-&lt;p&gt;In our case, we&amp;#8217;ll probably want to draw our information from a &lt;span class="caps"&gt;CSV&lt;/span&gt; file
+&lt;p&gt;In our case, we'll probably want to draw our information from a CSV file
 occasionally. If we do it often enough, writing the setup logic could
-become tedious to rewrite all over the&amp;nbsp;place.&lt;/p&gt;
+become tedious to rewrite all over the place.&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;csv&lt;/span&gt;
 
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;CSVSpreadsheet&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Spreadsheet&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
 
     &lt;span class="nd"&gt;&amp;#64;classmethod&lt;/span&gt;
-    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;from_csv&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;sheetname&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;filename&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-        &lt;span class="n"&gt;sheet&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sheetname&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;from_csv&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;sheetname&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;filename&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;sheet&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;cls&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sheetname&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
         &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="nb"&gt;open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;filename&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;fh&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
             &lt;span class="n"&gt;reader&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;csv&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;reader&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fh&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;readlines&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
             &lt;span class="n"&gt;sheet&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;rows&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;ComparableRow&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="nb"&gt;map&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;row&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;row&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;reader&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
@@ -1584,6 +1435,6 @@ The total for 3 is 16
 &lt;div class="section" id="fin"&gt;
 &lt;h2&gt;Fin&lt;/h2&gt;
 &lt;p&gt;Hopefully this gives you an idea for reusing code in your own projects.
-Maybe you&amp;#8217;ll write your own crappy spreadsheet object as&amp;nbsp;well.&lt;/p&gt;
+Maybe you'll write your own crappy spreadsheet object as well.&lt;/p&gt;
 &lt;/div&gt;
 </content><category term="python"></category><category term="design"></category></entry></feed>

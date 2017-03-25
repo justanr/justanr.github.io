@@ -19,7 +19,7 @@
 
 
 <meta name="keywords" content="python, data model, tutorials, " />
-        <title>Understanding&nbsp;foo.bar() - from alec.thoughts import *
+        <title>Understanding foo.bar() - from alec.thoughts import *
 </title>
         <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
@@ -73,48 +73,48 @@
 <article>
 <div class="row-fluid">
     <header class="page_header span10 offset2">
-    <h1><a href="http://justanr.github.io/understanding-foobar"> Understanding&nbsp;foo.bar()  </a></h1>
+    <h1><a href="http://justanr.github.io/understanding-foobar"> Understanding foo.bar()  </a></h1>
     </header>
 </div>
 
 <div class="row-fluid">
         <div class="span8 offset2 article-content">
 
-            <p>One of my favorite shows is &#8220;How It&#8217;s Made&#8221; &#8212; my enjoyment mostly stems
-from learning how stuff is made, but the narrator&#8217;s cheeky puns and
+            <p>One of my favorite shows is &quot;How It's Made&quot; -- my enjoyment mostly stems
+from learning how stuff is made, but the narrator's cheeky puns and
 jokes certainly add to it. But something I enjoy more than knowing how
-stuff is put together, is knowing how things work. I don&#8217;t know what it
+stuff is put together, is knowing how things work. I don't know what it
 is, but I have this childlike fascination with opening things up and
 learning how it fits together, what each part. That was one of my
 favorite things about my brief stint (a whooping six months!) in the
 automative service industry: understanding, a little better, how cars
 work. It certainly opened my eyes to all the work that goes into even
-simple automotive&nbsp;repairs.</p>
+simple automotive repairs.</p>
 <p>Sadly, I no longer work on or with cars, I do still fiddle some with
-mine though, and if anyone has a good link to how a transmission &#8212;
-manual or automatic &#8212; actually works, I&#8217;d be thrilled! But this has
-left me with a hole in my life. One I&#8217;ve recently begun to fill with how
-Python operates under the hood &#8212; so to speak. While my skills with C &#8212;
-which basically amount to <tt class="docutils literal">printf</tt> and <tt class="docutils literal">for</tt> loops &#8212; leave me
+mine though, and if anyone has a good link to how a transmission --
+manual or automatic -- actually works, I'd be thrilled! But this has
+left me with a hole in my life. One I've recently begun to fill with how
+Python operates under the hood -- so to speak. While my skills with C --
+which basically amount to <tt class="docutils literal">printf</tt> and <tt class="docutils literal">for</tt> loops -- leave me
 woefully unprepared to examine much of the source, I can examine the
-surface&nbsp;parts.</p>
+surface parts.</p>
 <p>To use a car analogy, if reading the C source for Python is repairing a
 damaged block or transmission, examining how Python works is more
-similar to replacing motor mounts and broken belts (something I&#8217;m
-regretfully <em>too</em> familiar with on my <span class="caps">CRV</span>). Whereas reading someone
-else&#8217;s Python is like doing your own fluid changes. Flawed analogies
-aside, I&#8217;d like to more fully examine how Python objects work and what
+similar to replacing motor mounts and broken belts (something I'm
+regretfully <em>too</em> familiar with on my CRV). Whereas reading someone
+else's Python is like doing your own fluid changes. Flawed analogies
+aside, I'd like to more fully examine how Python objects work and what
 it really means to call <tt class="docutils literal">foo.bar()</tt>.</p>
-<p>As a forewarning, this knowledge is great for understanding what&#8217;s
-happening, but it&#8217;s not crucial knowledge to working with classes and
+<p>As a forewarning, this knowledge is great for understanding what's
+happening, but it's not crucial knowledge to working with classes and
 objects in the regular sense. All the things I will discuss here deal
-with how Python 3 handles them. Python 2 is slightly&nbsp;different.</p>
+with how Python 3 handles them. Python 2 is slightly different.</p>
 <div class="section" id="building-a-class">
-<h2>Building a&nbsp;Class</h2>
-<p>To talk about Python&#8217;s data model and how it relates to classes and
+<h2>Building a Class</h2>
+<p>To talk about Python's data model and how it relates to classes and
 objects, we should first write a class. It so basic as to wonder why
-we&#8217;re doing it. The point is, rather than examine some fictional class
-or object, why not have one of our own to open up and poke&nbsp;at?</p>
+we're doing it. The point is, rather than examine some fictional class
+or object, why not have one of our own to open up and poke at?</p>
 <pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Baz</span><span class="p">:</span>
 
@@ -124,13 +124,13 @@ or object, why not have one of our own to open up and poke&nbsp;at?</p>
     <span class="k">def</span> <span class="nf">bar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">thing</span><span class="p">)</span>
 </pre>
-<p>That&#8217;s an extremely basic object. The initalizer takes a single argument
+<p>That's an extremely basic object. The initalizer takes a single argument
 a method that prints it out. Of course, we need to instantiate it for us
-to get use out of&nbsp;it.</p>
+to get use out of it.</p>
 <pre class="code ipython3 literal-block">
 <span class="n">foo</span> <span class="o">=</span> <span class="n">Baz</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre>
-<p>Already, there&#8217;s some mechanisms at work for us. I don&#8217;t want to get too
+<p>Already, there's some mechanisms at work for us. I don't want to get too
 deep into class creation, but the short take away is the implicit
 <tt class="docutils literal">__new__</tt> classes inherit from <tt class="docutils literal">object</tt> handle object creation and
 <tt class="docutils literal">__init__</tt> simply sets the <em>init</em>ial state of the object for us..
@@ -139,77 +139,78 @@ topic for another time. What I want to focus on today is what happens
 when we call <tt class="docutils literal">foo.bar()</tt></p>
 </div>
 <div class="section" id="classes-and-objects">
-<h2>Classes and&nbsp;Objects</h2>
-<p>You&#8217;ll often hear that objects and classes in Python are simply nothing
+<h2>Classes and Objects</h2>
+<p>You'll often hear that objects and classes in Python are simply nothing
 more than a pile of dictionaries with dotted access. This obtuse
-phrasing confused me for a long time and it wasn&#8217;t until I began asking,
-&#8220;How the heck does <tt class="docutils literal">self</tt> actually get passed?&#8221; that I began to
+phrasing confused me for a long time and it wasn't until I began asking,
+&quot;How the heck does <tt class="docutils literal">self</tt> actually get passed?&quot; that I began to
 understand. Asking this began me down a rabbit hole that lead me to
-descriptors and <tt class="docutils literal">__getattribute__</tt> and what they&nbsp;do.</p>
+descriptors and <tt class="docutils literal">__getattribute__</tt> and what they do.</p>
 <div class="section" id="the-dict">
-<h3>The&nbsp;Dict</h3>
+<h3>The Dict</h3>
 <p>All classes in Python have an underlying <tt class="docutils literal">__dict__</tt> and nearly every
 instance does as well. The first step to <tt class="docutils literal">foo.bar()</tt> is understanding
-that methods live at the class&nbsp;level.</p>
+that methods live at the class level.</p>
 <pre class="code ipython3 literal-block">
-<span class="nb">print</span><span class="p">(</span><span class="s1">'bar'</span> <span class="ow">in</span> <span class="n">Baz</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">'bar'</span> <span class="ow">in</span> <span class="n">foo</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'bar'</span> <span class="ow">in</span> <span class="n">Baz</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'bar'</span> <span class="ow">in</span> <span class="n">foo</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 True
 False
 </pre>
-<p>Methods are entries in the class&#8217;s underlying <tt class="docutils literal">__dict__</tt> but <em>not</em> in
-the instance&#8217;s. Because of this, most Python objects can remain
+<p>Methods are entries in the class's underlying <tt class="docutils literal">__dict__</tt> but <em>not</em> in
+the instance's. Because of this, most Python objects can remain
 relatively small, they simply store their state rather than all of their
-available methods as well. What does this method look like in the&nbsp;dictionary?</p>
+available methods as well. What does this method look like in the
+dictionary?</p>
 <pre class="code ipython3 literal-block">
 <span class="kn">from</span> <span class="nn">inspect</span> <span class="k">import</span> <span class="n">isfunction</span><span class="p">,</span> <span class="n">ismethod</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">isfunction</span><span class="p">(</span><span class="n">Baz</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s1">'bar'</span><span class="p">]))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">ismethod</span><span class="p">(</span><span class="n">Baz</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s1">'bar'</span><span class="p">]))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">Baz</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s1">'bar'</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">isfunction</span><span class="p">(</span><span class="n">Baz</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">'bar'</span><span class="p">]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ismethod</span><span class="p">(</span><span class="n">Baz</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">'bar'</span><span class="p">]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Baz</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">'bar'</span><span class="p">])</span>
 </pre>
 <pre class="literal-block">
 True
 False
 &lt;function Baz.bar at 0x7f1d05a87ea0&gt;
 </pre>
-<p>We can see that in the class&#8217;s dictionary, methods are stored as
-functions and not as methods. It&#8217;s reasonable to infer that methods are
+<p>We can see that in the class's dictionary, methods are stored as
+functions and not as methods. It's reasonable to infer that methods are
 actually functions that operate on class instances. From here, we can
-imagine that behind the&nbsp;scenes</p>
+imagine that behind the scenes</p>
 <pre class="code ipython3 literal-block">
-<span class="n">Baz</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s1">'bar'</span><span class="p">](</span><span class="n">foo</span><span class="p">)</span>
+<span class="n">Baz</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">'bar'</span><span class="p">](</span><span class="n">foo</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 1
 </pre>
 </div>
 <div class="section" id="attribute-access">
-<h3>Attribute&nbsp;Access</h3>
+<h3>Attribute Access</h3>
 <p>The next piece of the puzzle is how Python handles attribute access. If
-you&#8217;re not familiar with how Python attribute look up happens, in short,
-it looks like&nbsp;this:</p>
+you're not familiar with how Python attribute look up happens, in short,
+it looks like this:</p>
 <ul class="simple">
 <li>Call <tt class="docutils literal">__getattribute__</tt></li>
 <li>Is the attribute in the object <tt class="docutils literal">__dict__</tt>?</li>
-<li>No? Is the attribute in the class&#8217;s <tt class="docutils literal">__dict__</tt>?</li>
-<li>No? Is the attribute in any of the parent classes&#8217; <tt class="docutils literal">__dict__</tt>?</li>
-<li>No? Call <tt class="docutils literal">__getattr__</tt> if&nbsp;present.</li>
+<li>No? Is the attribute in the class's <tt class="docutils literal">__dict__</tt>?</li>
+<li>No? Is the attribute in any of the parent classes' <tt class="docutils literal">__dict__</tt>?</li>
+<li>No? Call <tt class="docutils literal">__getattr__</tt> if present.</li>
 <li>Else, raise an <tt class="docutils literal">AttributeError</tt></li>
 </ul>
 <p>Python starts at the bottom, calling <tt class="docutils literal">__getattribute__</tt>. This what
 actually allows the dotted access. You can think of the <tt class="docutils literal">.</tt> in
 <tt class="docutils literal">foo.bar</tt> to be implicit call to this method. This method translates
 dictionary look up to dotted access and invokes the rest of the chain.
-Since we already know that methods live in the class&#8217;s <tt class="docutils literal">__dict__</tt> and
-methods are functions that act on the instance, we&#8217;ll fast forward to
-there and&nbsp;extrapolate.</p>
-<p>Since methods are functions that live in the class&#8217;s dictionary and act
+Since we already know that methods live in the class's <tt class="docutils literal">__dict__</tt> and
+methods are functions that act on the instance, we'll fast forward to
+there and extrapolate.</p>
+<p>Since methods are functions that live in the class's dictionary and act
 on instances and <tt class="docutils literal">__getattribute__</tt> is an implicit transformation from
 attribute to dictionary look up, we can infer that method calls look
-like this behind the&nbsp;scenes:</p>
+like this behind the scenes:</p>
 <pre class="code ipython3 literal-block">
 <span class="n">Baz</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>
 </pre>
@@ -218,11 +219,11 @@ like this behind the&nbsp;scenes:</p>
 </pre>
 </div>
 <div class="section" id="methods-vs-functions">
-<h3>Methods vs&nbsp;Functions</h3>
-<p>So far so good. All this is pretty easy to grasp. But there&#8217;s still
+<h3>Methods vs Functions</h3>
+<p>So far so good. All this is pretty easy to grasp. But there's still
 burning question of how the heck is <tt class="docutils literal">self</tt> (or rather <tt class="docutils literal">foo</tt>) being
 passed to our methods. If we examine <tt class="docutils literal">Baz.bar</tt> and <tt class="docutils literal">foo.bar</tt> both,
-we can see there&#8217;s a transformation going on&nbsp;somewhere.</p>
+we can see there's a transformation going on somewhere.</p>
 <pre class="code ipython3 literal-block">
 <span class="nb">print</span><span class="p">(</span><span class="n">Baz</span><span class="o">.</span><span class="n">bar</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">foo</span><span class="o">.</span><span class="n">bar</span><span class="p">)</span>
@@ -231,20 +232,20 @@ we can see there&#8217;s a transformation going on&nbsp;somewhere.</p>
 &lt;function Baz.bar at 0x7f1d05a87ea0&gt;
 &lt;bound method Baz.bar of &lt;__main__.Baz object at 0x7f1d05a88208&gt;&gt;
 </pre>
-<p>Python is some how transforming our function that lives in <tt class="docutils literal">Baz</tt>&#8216;s
+<p>Python is some how transforming our function that lives in <tt class="docutils literal">Baz</tt>'s
 dictionary into a method tied to our instance <tt class="docutils literal">foo</tt>. The answer lies
-in the descriptor protocol. I&#8217;ve written about it else where, and it&#8217;s
+in the descriptor protocol. I've written about it else where, and it's
 probably time to revise it <em>again</em> with my recent understanding. But
 essentially, descriptors add another rule to our attribute look up. Just
 before the <tt class="docutils literal">__getattr__</tt> call: If we recieved a descriptor, call the
-<tt class="docutils literal">__get__</tt> method on the&nbsp;descriptor.</p>
+<tt class="docutils literal">__get__</tt> method on the descriptor.</p>
 <p>This is our missing link. When a function is declared in the class, not
-only is it placed in the class&#8217;s dictionary it&#8217;s also wrapped by a
+only is it placed in the class's dictionary it's also wrapped by a
 descriptor. Or more accurately, a non-data descriptor because it only
 defines the special <tt class="docutils literal">__get__</tt> method. The way descriptors work is by
-intercepting lookup of specific&nbsp;attributes.</p>
+intercepting lookup of specific attributes.</p>
 <p>The Descriptor likely has a passing resemblance to this (of course,
-implemented in&nbsp;C):</p>
+implemented in C):</p>
 <pre class="code ipython3 literal-block">
 <span class="kn">from</span> <span class="nn">types</span> <span class="k">import</span> <span class="n">MethodType</span>
 
@@ -252,24 +253,24 @@ implemented in&nbsp;C):</p>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">method</span>
 
-    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">cls</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">instance</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span>
         <span class="k">return</span> <span class="n">MethodType</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="p">,</span> <span class="n">instance</span><span class="p">)</span>
 </pre>
 <p>So, our initial thought of what <tt class="docutils literal">foo.bar()</tt> looks like under the
-covers was wrong. It more accurately&nbsp;resembles:</p>
+covers was wrong. It more accurately resembles:</p>
 <pre class="code ipython3 literal-block">
-<span class="n">Baz</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s1">'bar'</span><span class="p">]</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">foo</span><span class="p">,</span> <span class="n">Baz</span><span class="p">)()</span>
+<span class="n">Baz</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">'bar'</span><span class="p">]</span><span class="o">.</span><span class="fm">__get__</span><span class="p">(</span><span class="n">foo</span><span class="p">,</span> <span class="n">Baz</span><span class="p">)()</span>
 <span class="c1"># if we inspect it we see the truth</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">Baz</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s1">'bar'</span><span class="p">]</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">foo</span><span class="p">,</span> <span class="n">Baz</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Baz</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">'bar'</span><span class="p">]</span><span class="o">.</span><span class="fm">__get__</span><span class="p">(</span><span class="n">foo</span><span class="p">,</span> <span class="n">Baz</span><span class="p">))</span>
 </pre>
 <pre class="literal-block">
 1
 &lt;bound method Baz.bar of &lt;__main__.Baz object at 0x7f1d05a88208&gt;&gt;
 </pre>
 <p>And in fact, if we put our imitation method descriptor into action, it
-works similarly to how object methods&nbsp;do.</p>
+works similarly to how object methods do.</p>
 <pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">monty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
@@ -296,7 +297,7 @@ works similarly to how object methods&nbsp;do.</p>
 </pre>
 <p>The reason we see a function when we access the <tt class="docutils literal">bar</tt> method when we
 access it through the class is because the descriptor has already run
-and decided that it should simply return the function&nbsp;itself.</p>
+and decided that it should simply return the function itself.</p>
 </div>
 </div>
 
@@ -304,9 +305,9 @@ and decided that it should simply return the function&nbsp;itself.</p>
             <nav>
             <ul class="articles_timeline">
  
-                <li class="previous_article">« <a href="http://justanr.github.io/observer-pattern-with-descriptors" title="Previous: Observer Pattern with&nbsp;Descriptors">Observer Pattern with&nbsp;Descriptors</a></li>
+                <li class="previous_article">« <a href="http://justanr.github.io/observer-pattern-with-descriptors" title="Previous: Observer Pattern with Descriptors">Observer Pattern with Descriptors</a></li>
  
-                <li class="next_article"><a href="http://justanr.github.io/musings-on-problem-solving" title="Next: Musings on Problem&nbsp;Solving">Musings on Problem&nbsp;Solving</a> »</li>
+                <li class="next_article"><a href="http://justanr.github.io/musings-on-problem-solving" title="Next: Musings on Problem Solving">Musings on Problem Solving</a> »</li>
             </ul>
             </nav>
             </aside>
@@ -357,7 +358,7 @@ and decided that it should simply return the function&nbsp;itself.</p>
                     <span>2</span>
 </a></li>
                 <li><a href="/tags.html#python-ref">python
-                    <span>15</span>
+                    <span>16</span>
 </a></li>
             </ul>
 

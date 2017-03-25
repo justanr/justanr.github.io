@@ -19,7 +19,7 @@
 
 
 <meta name="keywords" content="python, descriptors, tutorials, " />
-        <title>Describing&nbsp;Descriptors - from alec.thoughts import *
+        <title>Describing Descriptors - from alec.thoughts import *
 </title>
         <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
@@ -73,44 +73,44 @@
 <article>
 <div class="row-fluid">
     <header class="page_header span10 offset2">
-    <h1><a href="http://justanr.github.io/describing-descriptors"> Describing&nbsp;Descriptors  </a></h1>
+    <h1><a href="http://justanr.github.io/describing-descriptors"> Describing Descriptors  </a></h1>
     </header>
 </div>
 
 <div class="row-fluid">
         <div class="span8 offset2 article-content">
 
-            <p><strong>An Aside:</strong> Just like my post on decorators, I&#8217;ve decided to rewrite
-this post as well because it suffered from the same issue: &#8220;Look at all
-this code&#8230;and hey, there&#8217;s explainations as well.&#8221; Instead of
-exploring patterns, like I did in the decorator post, I&#8217;m going to focus
+            <p><strong>An Aside:</strong> Just like my post on decorators, I've decided to rewrite
+this post as well because it suffered from the same issue: &quot;Look at all
+this code...and hey, there's explainations as well.&quot; Instead of
+exploring patterns, like I did in the decorator post, I'm going to focus
 in on one example use that explores several aspects of descriptors all
-at once. Of course, I&#8217;ll step through it piece by piece. There&#8217;s
-actually going to be two major sections to this&nbsp;post:</p>
+at once. Of course, I'll step through it piece by piece. There's
+actually going to be two major sections to this post:</p>
 <ul class="simple">
-<li>Python Object Attribute&nbsp;Access</li>
-<li>Writing Our First&nbsp;Descriptor</li>
+<li>Python Object Attribute Access</li>
+<li>Writing Our First Descriptor</li>
 </ul>
-<p>Also, this post was built with Python 3.4 in mind. While it&#8217;s foolish to
+<p>Also, this post was built with Python 3.4 in mind. While it's foolish to
 think that everyone everywhere is using the latest and greatest Python
-release, it&#8217;s what I&#8217;ve been using primarily lately. That&#8217;s&nbsp;me.</p>
+release, it's what I've been using primarily lately. That's me.</p>
 <p><strong>Updated</strong> Nov. 8th, 2014: Added concrete examples of behind the scenes
 action of descriptors as well as a brief explaination of what
 <tt class="docutils literal">__delete__</tt> does.</p>
 <div class="section" id="controlling-attribute-access">
-<h2>Controlling Attribute&nbsp;Access</h2>
-<p>Before digging into descriptors, it&#8217;s important to talk about attribute
-access. Because at the end of the day, that&#8217;s what descriptors do for
-us. There&#8217;s really two ways of going about this with explicitly building
-our own&nbsp;descriptor.</p>
+<h2>Controlling Attribute Access</h2>
+<p>Before digging into descriptors, it's important to talk about attribute
+access. Because at the end of the day, that's what descriptors do for
+us. There's really two ways of going about this with explicitly building
+our own descriptor.</p>
 <div class="section" id="getters-and-setters">
-<h3>Getters and&nbsp;Setters</h3>
-<p>This is what you&#8217;ll see in many languages: explicit getters and setters.
-They&#8217;re methods that handle attributes for us. This is very common in
-Java and <span class="caps">PHP</span> (or at least as of the last time I seriously used <span class="caps">PHP</span>).
+<h3>Getters and Setters</h3>
+<p>This is what you'll see in many languages: explicit getters and setters.
+They're methods that handle attributes for us. This is very common in
+Java and PHP (or at least as of the last time I seriously used PHP).
 Essentially, the idea is to <em>always</em> expect to interact with a method
-instead of an attribute itself. There&#8217;s nothing wrong with this if it&#8217;s
-what your language of choice supports and you need to control&nbsp;access.</p>
+instead of an attribute itself. There's nothing wrong with this if it's
+what your language of choice supports and you need to control access.</p>
 <pre class="code ipython3 literal-block">
 <span class="c1"># it's a contrived example</span>
 <span class="c1"># but bear with me here</span>
@@ -138,14 +138,14 @@ what your language of choice supports and you need to control&nbsp;access.</p>
 john cleese
 eric idle
 </pre>
-<p>That&#8217;s fine and dandy. <em>If</em> that&#8217;s what you language supports. Python,
-in my opinion, handles this&nbsp;better.</p>
+<p>That's fine and dandy. <em>If</em> that's what you language supports. Python,
+in my opinion, handles this better.</p>
 </div>
 <div class="section" id="property">
 <h3>&#64;property</h3>
-<p>The real way you&#8217;d write this in Python is by using <tt class="docutils literal">&#64;property</tt>. Which
-is a decorator, which we are familiar with. I won&#8217;t go into details
-about what&#8217;s going on behind the scenes&nbsp;yet.</p>
+<p>The real way you'd write this in Python is by using <tt class="docutils literal">&#64;property</tt>. Which
+is a decorator, which we are familiar with. I won't go into details
+about what's going on behind the scenes yet.</p>
 <pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Person</span><span class="p">:</span>
 
@@ -170,23 +170,23 @@ about what&#8217;s going on behind the scenes&nbsp;yet.</p>
 graham chapman
 terry gilliam
 </pre>
-<p>For now, don&#8217;t worry that I have <em>two</em> methods called <tt class="docutils literal">name</tt>. It&#8217;ll
-become apparent in a little&nbsp;bit.</p>
+<p>For now, don't worry that I have <em>two</em> methods called <tt class="docutils literal">name</tt>. It'll
+become apparent in a little bit.</p>
 <p>That is a much cleaner interface to the class. As far as the calling
 code is concerned, <tt class="docutils literal">name</tt> is just another attribute. This is fantastic
 if you designed an object and later realized that you need to control
-how an attribute is returned or set (or deleted, but I&#8217;m not going to
-delve into that aspect of descriptors at all in this&nbsp;post).</p>
-<p>To many people, this is where they&#8217;d stop with controlling attribute
-access. And frankly, I don&#8217;t really blame them. <tt class="docutils literal">&#64;property</tt> seems to
+how an attribute is returned or set (or deleted, but I'm not going to
+delve into that aspect of descriptors at all in this post).</p>
+<p>To many people, this is where they'd stop with controlling attribute
+access. And frankly, I don't really blame them. <tt class="docutils literal">&#64;property</tt> seems to
 be magic enough behind the scenes already. Why is it disappearing into
 <tt class="docutils literal">name</tt>, where does <tt class="docutils literal">setter</tt> come from, how does it work? These are
-questions that might go unasked or, worse:&nbsp;unanswered.</p>
+questions that might go unasked or, worse: unanswered.</p>
 <p><tt class="docutils literal">&#64;property</tt> suffices in <em>most</em> situations, especially when you only
 need to control one attribute in a specific way. But imagine if we had
 to ensure two or three attributes were all lower case? You might be
-tempted to replicate the code all the way down. You don&#8217;t mind a little
-repitition, do&nbsp;you?</p>
+tempted to replicate the code all the way down. You don't mind a little
+repitition, do you?</p>
 <pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Person</span><span class="p">:</span>
 
@@ -228,105 +228,106 @@ repitition, do&nbsp;you?</p>
 <pre class="literal-block">
 michael palin <a class="reference external" href="mailto:michaelpalin&#64;montypython.com">michaelpalin&#64;montypython.com</a>
 </pre>
-<p>Like I said, it&#8217;s a contrived example. But instead of ensuring things
-are lower cased, imagine you&#8217;re attempting to keep text fields in a <span class="caps">GUI</span>
-synchronized with the state of an object or you&#8217;re working with a
-database <span class="caps">ORM</span>. Things will very quickly get out of hand if you have to
-property a <em>ton</em> of stuff with the logic repeated except for the&nbsp;names.</p>
+<p>Like I said, it's a contrived example. But instead of ensuring things
+are lower cased, imagine you're attempting to keep text fields in a GUI
+synchronized with the state of an object or you're working with a
+database ORM. Things will very quickly get out of hand if you have to
+property a <em>ton</em> of stuff with the logic repeated except for the names.</p>
 <div class="section" id="behind-the-scenes">
-<h4>Behind the&nbsp;Scenes</h4>
-<p>I&#8217;m not going to 100% faithfully recreate <tt class="docutils literal">&#64;property</tt> here, frankly I
-don&#8217;t see a point. But I do want to dissect it from what we can observe
-on the&nbsp;surface.</p>
+<h4>Behind the Scenes</h4>
+<p>I'm not going to 100% faithfully recreate <tt class="docutils literal">&#64;property</tt> here, frankly I
+don't see a point. But I do want to dissect it from what we can observe
+on the surface.</p>
 <ul class="simple">
-<li><tt class="docutils literal">property</tt> is a decorator. As a decorator it&#8217;s a function that
-takes a function and returns a callable. This we&nbsp;know.</li>
-<li>The callable created by <tt class="docutils literal">property</tt> is an&nbsp;object</li>
+<li><tt class="docutils literal">property</tt> is a decorator. As a decorator it's a function that
+takes a function and returns a callable. This we know.</li>
+<li>The callable created by <tt class="docutils literal">property</tt> is an object</li>
 <li>The object has at least one method on it, <tt class="docutils literal">setter</tt>, that somehow
-controls <em>how</em> a variable is&nbsp;set</li>
+controls <em>how</em> a variable is set</li>
 </ul>
-<p>However, if we inspect <tt class="docutils literal">property</tt> (my preferred way is with IPython&#8217;s
+<p>However, if we inspect <tt class="docutils literal">property</tt> (my preferred way is with IPython's
 <tt class="docutils literal">?</tt> and <tt class="docutils literal"><span class="pre">??</span></tt> magics) we learn that there is one more method and
-three attributes that aren&#8217;t immediately obvious to&nbsp;us.</p>
+three attributes that aren't immediately obvious to us.</p>
 <ul class="simple">
 <li><tt class="docutils literal">deleter</tt> is the missing method, which handles how an attribute is
 deleted with <tt class="docutils literal">del</tt></li>
 <li><tt class="docutils literal">fget</tt>, <tt class="docutils literal">fset</tt> and <tt class="docutils literal">fdel</tt> are the attributes, which are
 unsurprisingly the original functions for getting, setting and
-deleting&nbsp;attributes.</li>
+deleting attributes.</li>
 </ul>
 <p>For the above example, <tt class="docutils literal">fget</tt> and <tt class="docutils literal">fset</tt> are our two <tt class="docutils literal">name</tt>
 methods above. They actually get hidden away into an object decorator,
-which is how we have two methods with the same name without&nbsp;worry.</p>
+which is how we have two methods with the same name without worry.</p>
 </div>
 </div>
 </div>
 <div class="section" id="data-model">
-<h2>Data&nbsp;model</h2>
+<h2>Data model</h2>
 <p>This about as far as we can get without understanding how Python
-accesses attributes on objects. I won&#8217;t attempt to give a complete in
+accesses attributes on objects. I won't attempt to give a complete in
 depth analysis of <em>how</em> Python actually accesses and sets attributes on
-objects, but this is a simplified, high level view of what&#8217;s going on
+objects, but this is a simplified, high level view of what's going on
 (ignoring the existence of <tt class="docutils literal">__slots__</tt>, which actually replaces the
-underlying <tt class="docutils literal">__dict__</tt> with a set of descriptors and what&#8217;s going on
-there I&#8217;m not 100% sure&nbsp;of).</p>
+underlying <tt class="docutils literal">__dict__</tt> with a set of descriptors and what's going on
+there I'm not 100% sure of).</p>
 <ol class="arabic simple">
 <li>Call <tt class="docutils literal">__getattribute__</tt></li>
-<li>Look up in the object&#8217;s&nbsp;dictionary</li>
-<li>Look up in the class&#8217;s&nbsp;dictionary</li>
-<li>Walk the <span class="caps">MRO</span> and look up in those&nbsp;dictionaries</li>
+<li>Look up in the object's dictionary</li>
+<li>Look up in the class's dictionary</li>
+<li>Walk the MRO and look up in those dictionaries</li>
 <li>If present and all other look ups have failed, call <tt class="docutils literal">__getattr__</tt></li>
-<li>If the name resolves to a descriptor, return the value of it&#8217;s
+<li>If the name resolves to a descriptor, return the value of it's
 <tt class="docutils literal">__get__</tt> method</li>
 <li>If all all else fails, raise an <tt class="docutils literal">AttributeError</tt></li>
 </ol>
 <p>That sixth point is the most pertinent to us. An object that defines a
 <tt class="docutils literal">__get__</tt> method is known as a descriptor. <tt class="docutils literal">property</tt> is actually an
-object that does this. In effect, it&#8217;s <tt class="docutils literal">__get__</tt> method resembles&nbsp;this:</p>
+object that does this. In effect, it's <tt class="docutils literal">__get__</tt> method resembles
+this:</p>
 <pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fget</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
 </pre>
-<p>Similarly, the resolution for setting an attribute looks like&nbsp;this:</p>
+<p>Similarly, the resolution for setting an attribute looks like this:</p>
 <ol class="arabic simple">
 <li>If present, call <tt class="docutils literal">__setattr__</tt></li>
-<li>If the name resolves to a descriptor, call it&#8217;s <tt class="docutils literal">__set__</tt> method</li>
-<li>Stuff the value into the object&#8217;s&nbsp;dict</li>
+<li>If the name resolves to a descriptor, call it's <tt class="docutils literal">__set__</tt> method</li>
+<li>Stuff the value into the object's dict</li>
 </ol>
-<p>So, property&#8217;s <tt class="docutils literal">__set__</tt> looks like&nbsp;this:</p>
+<p>So, property's <tt class="docutils literal">__set__</tt> looks like this:</p>
 <pre class="code ipython3 literal-block">
 <span class="k">def</span> <span class="nf">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">fset</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 </pre>
-<p>I&#8217;m glossing over raising attribute errors for attributes that don&#8217;t
-support reading or writing, but <tt class="docutils literal">property</tt> does that. There&#8217;s two
-reasons I&#8217;m positive this is how these two methods look is because I&#8217;m
+<p>I'm glossing over raising attribute errors for attributes that don't
+support reading or writing, but <tt class="docutils literal">property</tt> does that. There's two
+reasons I'm positive this is how these two methods look is because I'm
 familar with the descriptor protocol and Raymond Hettinger wrote about
 it
 <a class="reference external" href="https://docs.python.org/3/howto/descriptor.html#properties">here</a>.</p>
 <div class="section" id="descriptor-protocol">
-<h3>Descriptor&nbsp;Protocol</h3>
-<p>There&#8217;s three parts to the descriptor protocol: <tt class="docutils literal">__get__</tt>, <tt class="docutils literal">__set__</tt>
-and <tt class="docutils literal">__delete__</tt>. Like I said, I&#8217;m not delving into deleting
-attributes here, so we&#8217;ll remain unconcerned with that. But any object
-that defines at least one of these methods is a&nbsp;descriptor.</p>
+<h3>Descriptor Protocol</h3>
+<p>There's three parts to the descriptor protocol: <tt class="docutils literal">__get__</tt>, <tt class="docutils literal">__set__</tt>
+and <tt class="docutils literal">__delete__</tt>. Like I said, I'm not delving into deleting
+attributes here, so we'll remain unconcerned with that. But any object
+that defines at least one of these methods is a descriptor.</p>
 <p>The best way to dissect a descriptor is provide an example
-implementation. This example isn&#8217;t actually going to do anything except
-emulate regular attribute&nbsp;access.</p>
+implementation. This example isn't actually going to do anything except
+emulate regular attribute access.</p>
 <pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Descriptor</span><span class="p">:</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
 
-    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">cls</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">instance</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">instance</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="n">instance</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="n">instance</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="k">def</span> <span class="nf">__delete__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">):</span>
-        <span class="k">del</span> <span class="n">instance</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">del</span> <span class="n">instance</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
 
 <span class="k">class</span> <span class="nc">Thing</span><span class="p">:</span>
     <span class="n">frob</span> <span class="o">=</span> <span class="n">Descriptor</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'frob'</span><span class="p">)</span>
@@ -347,23 +348,23 @@ def __get__(self, instance, type):
 </pre>
 <ul class="simple">
 <li><tt class="docutils literal">self</tt> is the instance of the descriptor itself, just like any
-other&nbsp;object.</li>
-<li><tt class="docutils literal">instance</tt> is an instance of the class it&#8217;s attached&nbsp;to</li>
-<li><tt class="docutils literal">type</tt> is the actual object that it&#8217;s attached to, I typically
-prefer to use <tt class="docutils literal">cls</tt> as the name here because it&#8217;s slightly more
+other object.</li>
+<li><tt class="docutils literal">instance</tt> is an instance of the class it's attached to</li>
+<li><tt class="docutils literal">type</tt> is the actual object that it's attached to, I typically
+prefer to use <tt class="docutils literal">cls</tt> as the name here because it's slightly more
 clear to me. <tt class="docutils literal">owner</tt> is another common name, but slightly more
-confusing to&nbsp;me.</li>
+confusing to me.</li>
 </ul>
-<p>Above, when we request <tt class="docutils literal">t.frob</tt> what&#8217;s actually happening behind the
+<p>Above, when we request <tt class="docutils literal">t.frob</tt> what's actually happening behind the
 scenes is Python is calling <tt class="docutils literal">Thing.frob.__get__(t, Thing)</tt> instead of
 passing <tt class="docutils literal">Thing.frob.__get__</tt> directly to the print function. The
-reason the actual class is passed as well is &#8220;to give you information
-about what object the descriptor is part of&#8221;, to quote <a class="reference external" href="http://nbviewer.ipython.org/gist/ChrisBeaumont/5758381/descriptor_writeup.ipynb">Chris
+reason the actual class is passed as well is &quot;to give you information
+about what object the descriptor is part of&quot;, to quote <a class="reference external" href="http://nbviewer.ipython.org/gist/ChrisBeaumont/5758381/descriptor_writeup.ipynb">Chris
 Beaumont</a>.
-While I&#8217;ve not made use of inspecting which class the descriptor is part
-of, this could be valuable&nbsp;information.</p>
-<p>You could also call <tt class="docutils literal">Thing.frob.__get__(t, Thing)</tt> explicitly if you&#8217;d
-like, but Python&#8217;s data model will handle this for&nbsp;us.</p>
+While I've not made use of inspecting which class the descriptor is part
+of, this could be valuable information.</p>
+<p>You could also call <tt class="docutils literal">Thing.frob.__get__(t, Thing)</tt> explicitly if you'd
+like, but Python's data model will handle this for us.</p>
 </div>
 <div class="section" id="set">
 <h4><tt class="docutils literal">__set__</tt></h4>
@@ -371,41 +372,42 @@ like, but Python&#8217;s data model will handle this for&nbsp;us.</p>
 def __set__(self, instance, value):
 </pre>
 <ul class="simple">
-<li><tt class="docutils literal">self</tt> again no surprises here, this is the instance of the&nbsp;descriptor</li>
-<li><tt class="docutils literal">instance</tt> this is an instance of the class it&#8217;s attached&nbsp;to</li>
-<li><tt class="docutils literal">value</tt> is the value you&#8217;re passing in, if you&#8217;ve used <tt class="docutils literal">property</tt>
-before, there&#8217;s no surprise&nbsp;here.</li>
+<li><tt class="docutils literal">self</tt> again no surprises here, this is the instance of the
+descriptor</li>
+<li><tt class="docutils literal">instance</tt> this is an instance of the class it's attached to</li>
+<li><tt class="docutils literal">value</tt> is the value you're passing in, if you've used <tt class="docutils literal">property</tt>
+before, there's no surprise here.</li>
 </ul>
-<p>Again, what&#8217;s happening behind the scenes when we set <tt class="docutils literal">t.frob</tt> to
+<p>Again, what's happening behind the scenes when we set <tt class="docutils literal">t.frob</tt> to
 something (in this case, just in <tt class="docutils literal">Thing.__init__</tt>), Python passes
 information to <tt class="docutils literal">Thing.frob.__set__</tt>, the information just being the
-instance of <tt class="docutils literal">Thing</tt> and the value we&#8217;re&nbsp;setting.</p>
+instance of <tt class="docutils literal">Thing</tt> and the value we're setting.</p>
 </div>
 <div class="section" id="delete">
 <h4><tt class="docutils literal">__delete__</tt></h4>
 <pre class="literal-block">
 def __delete__(self, instance):
 </pre>
-<p>No surprises here. And despite that I said I wasn&#8217;t going to go into
-deleting attributes with descriptors, I&#8217;ve included it for completion&#8217;s
+<p>No surprises here. And despite that I said I wasn't going to go into
+deleting attributes with descriptors, I've included it for completion's
 sake. The delete method handles what happens when we call
 <tt class="docutils literal">del t.frob</tt>.</p>
 </div>
 <div class="section" id="data-vs-non-data-descriptor">
-<h4>Data vs Non-Data&nbsp;Descriptor</h4>
-<p>This is something you&#8217;re going to encounter when reading about and
+<h4>Data vs Non-Data Descriptor</h4>
+<p>This is something you're going to encounter when reading about and
 working with descriptors: the difference between a data and non-data
-descriptor and how Python treats both when looking up an&nbsp;attribute.</p>
+descriptor and how Python treats both when looking up an attribute.</p>
 <div class="section" id="data-descriptor">
-<h5>Data&nbsp;Descriptor</h5>
+<h5>Data Descriptor</h5>
 <p>A data descriptor is a descriptor that defines <em>both</em> a <tt class="docutils literal">__get__</tt> and
 <tt class="docutils literal">__set__</tt> method. These descriptors recieve <em>higher</em> priority if
 Python finds a descriptor and a <tt class="docutils literal">__dict__</tt> entry for the attribute
-being looked up. Already, you can see that attribute access isn&#8217;t as
-clear cut as we thought it&nbsp;was.</p>
+being looked up. Already, you can see that attribute access isn't as
+clear cut as we thought it was.</p>
 </div>
 <div class="section" id="non-data-descriptor">
-<h5>Non-Data&nbsp;Descriptor</h5>
+<h5>Non-Data Descriptor</h5>
 <p>A non-data descriptor is a descriptor that defines <em>only</em> a <tt class="docutils literal">__get__</tt>
 method. These descriptors recieve a <em>lower</em> priority if Python finds
 both the descriptor and a <tt class="docutils literal">__dict__</tt> entry.</p>
@@ -414,19 +416,19 @@ both the descriptor and a <tt class="docutils literal">__dict__</tt> entry.</p>
 </div>
 </div>
 <div class="section" id="what-does-this-mean">
-<h2>What does this&nbsp;mean?</h2>
+<h2>What does this mean?</h2>
 <p>By using descriptors we can create <a class="reference external" href="http://nbviewer.ipython.org/gist/ChrisBeaumont/5758381/descriptor_writeup.ipynb">reusable
 properties</a>,
 as Chris Beaumont calls them and I find to be an incredibly apt
-definition. But there&#8217;s quite a few pits we can fall into. For the rest
-of this post, I&#8217;m going to focus on rebuilding our lower case properties
-as a reusable descriptor. In another post, I&#8217;m going to more fully
-explore some of the power these put at our finger&nbsp;tips.</p>
+definition. But there's quite a few pits we can fall into. For the rest
+of this post, I'm going to focus on rebuilding our lower case properties
+as a reusable descriptor. In another post, I'm going to more fully
+explore some of the power these put at our finger tips.</p>
 </div>
 <div class="section" id="our-first-descriptor">
-<h2>Our First&nbsp;Descriptor</h2>
+<h2>Our First Descriptor</h2>
 <p>So far, we know a descriptor needs to define <em>at least</em> one of
-<tt class="docutils literal">__get__</tt>, <tt class="docutils literal">__set__</tt>, or <tt class="docutils literal">__delete__</tt>. Let&#8217;s try our hand at
+<tt class="docutils literal">__get__</tt>, <tt class="docutils literal">__set__</tt>, or <tt class="docutils literal">__delete__</tt>. Let's try our hand at
 building a <tt class="docutils literal">LowerString</tt> descriptor.</p>
 <pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">LowerString</span><span class="p">:</span>
@@ -434,7 +436,7 @@ building a <tt class="docutils literal">LowerString</tt> descriptor.</p>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
 
-    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">cls</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
 
     <span class="k">def</span> <span class="nf">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
@@ -456,10 +458,10 @@ building a <tt class="docutils literal">LowerString</tt> descriptor.</p>
 <pre class="literal-block">
 terry jones <a class="reference external" href="mailto:terryjones&#64;montypython.com">terryjones&#64;montypython.com</a>
 </pre>
-<p>While this isn&#8217;t as perfectly clean as we might like, it&#8217;s certainly a
+<p>While this isn't as perfectly clean as we might like, it's certainly a
 lot prettier than using a series of <tt class="docutils literal">property</tt> decorators and way
-nicer than defining explicit getters and setters. However, there&#8217;s a big
-issue here. If you can&#8217;t spot it, I&#8217;ll point it&nbsp;out.</p>
+nicer than defining explicit getters and setters. However, there's a big
+issue here. If you can't spot it, I'll point it out.</p>
 <pre class="code ipython3 literal-block">
 <span class="n">me</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">firstname</span><span class="o">=</span><span class="s2">&quot;Alec&quot;</span><span class="p">,</span> <span class="n">lastname</span><span class="o">=</span><span class="s2">&quot;Reiter&quot;</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s2">&quot;alecreiter&#64;fake.com&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">f_name</span><span class="p">,</span> <span class="n">me</span><span class="o">.</span><span class="n">l_name</span><span class="p">,</span> <span class="n">me</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
@@ -469,30 +471,30 @@ issue here. If you can&#8217;t spot it, I&#8217;ll point it&nbsp;out.</p>
 alec reiter <a class="reference external" href="mailto:alecreiter&#64;fake.com">alecreiter&#64;fake.com</a>
 alec reiter <a class="reference external" href="mailto:alecreiter&#64;fake.com">alecreiter&#64;fake.com</a>
 </pre>
-<p>&#8230;oh. Well that happened. And the reason for this, and this what
+<p>...oh. Well that happened. And the reason for this, and this what
 tripped me up when I began reading about descriptors, is that each
 instance of person <em>shares</em> the same instances of <tt class="docutils literal">LowerString</tt> for
 the three properties. Descriptors enforce a shared state by virture of
 being <em>instances</em> attached to a <em>class</em> rather than <em>instances</em>. So
 instead of composing an instance of an object with other objects (say a
 Person object composed of <tt class="docutils literal">Job</tt>, <tt class="docutils literal">Nationality</tt> and <tt class="docutils literal">Gender</tt>
-instances), we compose a class out of object&nbsp;instances.</p>
+instances), we compose a class out of object instances.</p>
 <p>If we examine the <tt class="docutils literal">__dict__</tt> for both the class and the instance, it
-becomes apparent where Python finds these values&nbsp;at:</p>
+becomes apparent where Python finds these values at:</p>
 <pre class="code ipython3 literal-block">
-<span class="nb">print</span><span class="p">(</span><span class="n">Person</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">monty</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Person</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">monty</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 {'__doc__': None, '__weakref__': &lt;attribute '__weakref__' of 'Person' objects&gt;, '__init__': &lt;function Person.__init__ at 0x7f337e2e58c8&gt;, 'f_name': &lt;__main__.LowerString object at 0x7f337ce4a5c0&gt;, 'l_name': &lt;__main__.LowerString object at 0x7f337ce4a550&gt;, 'email': &lt;__main__.LowerString object at 0x7f337ce4a630&gt;, '__module__': '__main__', '__dict__': &lt;attribute '__dict__' of 'Person' objects&gt;}
 {}
 </pre>
-<p>Since the descriptors aren&#8217;t attached at the instance level, Python
-moves up to the class level where it finds the attribute we&#8217;re
-requesting, sees it&#8217;s a descriptor and then calls the <tt class="docutils literal">__get__</tt>
+<p>Since the descriptors aren't attached at the instance level, Python
+moves up to the class level where it finds the attribute we're
+requesting, sees it's a descriptor and then calls the <tt class="docutils literal">__get__</tt>
 method.</p>
 <p>If you attempt to attach these descriptors at the instance level
-instead, you end up with&nbsp;this:</p>
+instead, you end up with this:</p>
 <pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">Person</span><span class="p">:</span>
 
@@ -507,20 +509,20 @@ instead, you end up with&nbsp;this:</p>
 <pre class="literal-block">
 &lt;__main__.LowerString object at 0x7f337ce4e390&gt; &lt;__main__.LowerString object at 0x7f337ce4e400&gt; &lt;__main__.LowerString object at 0x7f337ce4e438&gt;
 </pre>
-<p>So explicitly attaching them to the instances won&#8217;t work. But remember,
-Python passes the instance <em>for us</em> automatically. Let&#8217;s try storing the
-value on the underlying object by accessing it&#8217;s <tt class="docutils literal">__dict__</tt> attribute:</p>
+<p>So explicitly attaching them to the instances won't work. But remember,
+Python passes the instance <em>for us</em> automatically. Let's try storing the
+value on the underlying object by accessing it's <tt class="docutils literal">__dict__</tt> attribute:</p>
 <pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">LowerString</span><span class="p">:</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="n">label</span>
 
-    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">cls</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">instance</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">]</span>
+    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">instance</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="n">instance</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_lower</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="n">instance</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_lower</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">Person</span><span class="p">:</span>
     <span class="n">f_name</span> <span class="o">=</span> <span class="n">LowerString</span><span class="p">(</span><span class="s1">'f_name'</span><span class="p">)</span>
@@ -538,19 +540,19 @@ value on the underlying object by accessing it&#8217;s <tt class="docutils liter
 <pre class="literal-block">
 carol cleaveland <a class="reference external" href="mailto:seventh&#64;montypython.com">seventh&#64;montypython.com</a>
 </pre>
-<p>And surely this works, but we&#8217;ve run into the issue of repeating
-ourselves again. It&#8217;d be nice if we could simply do something to
+<p>And surely this works, but we've run into the issue of repeating
+ourselves again. It'd be nice if we could simply do something to
 automatically fill in the label for us. David Beazley addressed this
 problem in the <a class="reference external" href="http://www.amazon.com/Python-Cookbook-David-Beazley/dp/1449340377">3rd Edition of the Python
 Cookbook</a>.</p>
 <pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">checkedmeta</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">clsname</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">methods</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">clsname</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">methods</span><span class="p">):</span>
         <span class="c1"># Attach attribute names to the descriptors</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">methods</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Descriptor</span><span class="p">):</span>
                 <span class="n">value</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">key</span>
-        <span class="k">return</span> <span class="nb">type</span><span class="o">.</span><span class="n">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">clsname</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">methods</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">clsname</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">methods</span><span class="p">)</span>
 </pre>
 <p>Of course this means, we need to make two small changes to our
 descriptor: changing <tt class="docutils literal">label</tt> to <tt class="docutils literal">name</tt> and inheriting from a base
@@ -563,11 +565,11 @@ descriptor: changing <tt class="docutils literal">label</tt> to <tt class="docut
 
 <span class="k">class</span> <span class="nc">LowerString</span><span class="p">(</span><span class="n">Descriptor</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">cls</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">instance</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">instance</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="n">instance</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_lower</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="n">instance</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_lower</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">Person</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">checkedmeta</span><span class="p">):</span>
     <span class="n">f_name</span> <span class="o">=</span> <span class="n">LowerString</span><span class="p">()</span>
@@ -588,36 +590,37 @@ carol cleaveland <a class="reference external" href="mailto:seventh&#64;montypyt
 <p>And this is very nice and handy. If later, we wanted to create an
 <tt class="docutils literal">EmailValidator</tt> descriptor, so long as we adhere to the pattern laid
 out here, we can attach them to any class that uses the <tt class="docutils literal">checkedmeta</tt>
-metaclass and it&#8217;ll behave as&nbsp;expected.</p>
-<p>But there&#8217;s something still very annoying going on and it&#8217;s one of the
+metaclass and it'll behave as expected.</p>
+<p>But there's something still very annoying going on and it's one of the
 biggest gripes with <tt class="docutils literal">property</tt> is that a <tt class="docutils literal">getter</tt> has to be defined
-<em>even if I&#8217;m only interested in the setter</em>. If you set <tt class="docutils literal">fget</tt> to
-None, you end up getting an attribute error that says it&#8217;s write only.
-If we examine our current implementation, we&#8217;ll notice something else as&nbsp;well:</p>
+<em>even if I'm only interested in the setter</em>. If you set <tt class="docutils literal">fget</tt> to
+None, you end up getting an attribute error that says it's write only.
+If we examine our current implementation, we'll notice something else as
+well:</p>
 <pre class="code ipython3 literal-block">
-<span class="nb">print</span><span class="p">(</span><span class="n">Person</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">monty</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Person</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">monty</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 {'__doc__': None, '__weakref__': &lt;attribute '__weakref__' of 'Person' objects&gt;, '__init__': &lt;function Person.__init__ at 0x7f337ce38c80&gt;, 'f_name': &lt;__main__.LowerString object at 0x7f337ce31588&gt;, 'l_name': &lt;__main__.LowerString object at 0x7f337ce31550&gt;, 'email': &lt;__main__.LowerString object at 0x7f337ce316a0&gt;, '__module__': '__main__', '__dict__': &lt;attribute '__dict__' of 'Person' objects&gt;}
 {'email': <a class="reference external" href="mailto:'seventh&#64;montypython.com">'seventh&#64;montypython.com</a>', 'f_name': 'carol', 'l_name': 'cleaveland'}
 </pre>
-<p>There&#8217;s now the descriptors living at the class level and the values
-living at the instance level. Let&#8217;s add some &#8220;debugging&#8221; print calls to
-see what&#8217;s happening on the&nbsp;inside.</p>
+<p>There's now the descriptors living at the class level and the values
+living at the instance level. Let's add some &quot;debugging&quot; print calls to
+see what's happening on the inside.</p>
 <pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">LowerString</span><span class="p">(</span><span class="n">Descriptor</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
 
-    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">cls</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Calling LowerString.__get__&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">instance</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">instance</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Calling LowerString.__set__&quot;</span><span class="p">)</span>
-        <span class="n">instance</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_lower</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="n">instance</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_lower</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">Person</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">checkedmeta</span><span class="p">):</span>
     <span class="n">f_name</span> <span class="o">=</span> <span class="n">LowerString</span><span class="p">()</span>
@@ -644,11 +647,11 @@ carol cleaveland <a class="reference external" href="mailto:seventh&#64;montypyt
 <p>Python gives special preference to data descriptors (as described
 before). However, we can remove this special preference by simply
 removing the <tt class="docutils literal">__get__</tt> method. Arguably, this is the most useless part
-of this descriptor anyways, it&#8217;s not transforming the result or
-providing a lazy calculation, it&#8217;s simply aping what
+of this descriptor anyways, it's not transforming the result or
+providing a lazy calculation, it's simply aping what
 <tt class="docutils literal">Person.__getattribute__</tt> would do in the first place: Find the value
-in the object&#8217;s dictionary. If we remove this, then we&#8217;re left with
-<em>only</em> a setter, which is what we really wanted in the first&nbsp;place:</p>
+in the object's dictionary. If we remove this, then we're left with
+<em>only</em> a setter, which is what we really wanted in the first place:</p>
 <pre class="code ipython3 literal-block">
 <span class="k">class</span> <span class="nc">LowerString</span><span class="p">(</span><span class="n">Descriptor</span><span class="p">):</span>
 
@@ -657,7 +660,7 @@ in the object&#8217;s dictionary. If we remove this, then we&#8217;re left with
 
     <span class="k">def</span> <span class="nf">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Calling LowerString.__set__&quot;</span><span class="p">)</span>
-        <span class="n">instance</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_lower</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="n">instance</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_lower</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">Person</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">checkedmeta</span><span class="p">):</span>
     <span class="n">f_name</span> <span class="o">=</span> <span class="n">LowerString</span><span class="p">()</span>
@@ -683,47 +686,52 @@ Calling LowerString.__set__
 cheryl
 </pre>
 <p>And this has to do with how Python sets attributes, which examined
-above. Again, it&#8217;s giving special precedence to the descriptor, which is
+above. Again, it's giving special precedence to the descriptor, which is
 what we want in the first place. However, when we access the attribute,
-it sees there&#8217;s an entry in the object&#8217;s <tt class="docutils literal">__dict__</tt> and the class&#8217;s
-<tt class="docutils literal">__dict__</tt> but the latter doesn&#8217;t have a <tt class="docutils literal">__get__</tt> method, which
-causes it to default back to the object&#8217;s&nbsp;entry.</p>
+it sees there's an entry in the object's <tt class="docutils literal">__dict__</tt> and the class's
+<tt class="docutils literal">__dict__</tt> but the latter doesn't have a <tt class="docutils literal">__get__</tt> method, which
+causes it to default back to the object's entry.</p>
 <pre class="code ipython3 literal-block">
-<span class="nb">print</span><span class="p">(</span><span class="n">Person</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">monty</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Person</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">monty</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
 </pre>
 <pre class="literal-block">
 {'__doc__': None, '__weakref__': &lt;attribute '__weakref__' of 'Person' objects&gt;, '__init__': &lt;function Person.__init__ at 0x7f337ce43730&gt;, 'f_name': &lt;__main__.LowerString object at 0x7f337ce55710&gt;, 'l_name': &lt;__main__.LowerString object at 0x7f337ce55748&gt;, 'email': &lt;__main__.LowerString object at 0x7f337ce55780&gt;, '__module__': '__main__', '__dict__': &lt;attribute '__dict__' of 'Person' objects&gt;}
 {'email': <a class="reference external" href="mailto:'seventh&#64;montypython.com">'seventh&#64;montypython.com</a>', 'f_name': 'cheryl', 'l_name': 'cleaveland'}
 </pre>
-<p>Leaving us with just the setter and no unnecessary data or method&nbsp;duplication.</p>
+<p>Leaving us with just the setter and no unnecessary data or method
+duplication.</p>
 </div>
 <div class="section" id="going-forward">
-<h2>Going&nbsp;forward</h2>
+<h2>Going forward</h2>
 <p>In the original post, I also explored building an oberserver pattern
 with descriptors, something Chris Beaumont also touches upon briefly but
 leaves a lot on the table as far registering callbacks on every instance
 and specific instances of classes. I plan on touching on this again in a
-future&nbsp;post.</p>
-<p>But for now, I&#8217;m hoping this leaves a much better impression of
-descriptors than my original post. Again, this isn&#8217;t meant to be a tell
+future post.</p>
+<p>But for now, I'm hoping this leaves a much better impression of
+descriptors than my original post. Again, this isn't meant to be a tell
 all about descriptors but hopefully serves to clarify a lot of the magic
-that appears to happen behind the scenes when you&#8217;re using SQLAlchemy
-and defining&nbsp;models.</p>
+that appears to happen behind the scenes when you're using SQLAlchemy
+and defining models.</p>
 <div class="section" id="further-learning">
-<h3>Further&nbsp;Learning</h3>
+<h3>Further Learning</h3>
 <ul class="simple">
-<li><a class="reference external" href="http://nbviewer.ipython.org/gist/ChrisBeaumont/5758381/descriptor_writeup.ipynb">Chris Beaumont&#8217;s Python Descriptors&nbsp;Demystified</a></li>
-<li><a class="reference external" href="http://pyvideo.org/video/1716/python-3-metaprogramming">David Beazley&#8217;s Python 3
+<li><a class="reference external" href="http://nbviewer.ipython.org/gist/ChrisBeaumont/5758381/descriptor_writeup.ipynb">Chris Beaumont's Python Descriptors
+Demystified</a></li>
+<li><a class="reference external" href="http://pyvideo.org/video/1716/python-3-metaprogramming">David Beazley's Python 3
 Metaprograming</a>
 this presentation explores <em>far</em> more than just descriptors and
-delves into a lot of advanced&nbsp;concepts</li>
-<li><a class="reference external" href="http://pyvideo.org/video/1760/encapsulation-with-descriptors">Luciano Ramalho&#8217;s Encapsulation with&nbsp;Descriptors</a></li>
-<li><a class="reference external" href="https://docs.python.org/3/howto/descriptor.html">Python.org Descriptor How To by Raymond&nbsp;Hettinger</a></li>
-<li>And whole host of <span class="caps">SO</span> Questions, just to show a few:<ul>
+delves into a lot of advanced concepts</li>
+<li><a class="reference external" href="http://pyvideo.org/video/1760/encapsulation-with-descriptors">Luciano Ramalho's Encapsulation with
+Descriptors</a></li>
+<li><a class="reference external" href="https://docs.python.org/3/howto/descriptor.html">Python.org Descriptor How To by Raymond
+Hettinger</a></li>
+<li>And whole host of SO Questions, just to show a few:<ul>
 <li>[How does the &#64;property decorator
 work?](<a class="reference external" href="http://stackoverflow.com/questions/17330160/how-does-the-property-decorator-work/">http://stackoverflow.com/questions/17330160/how-does-the-property-decorator-work/</a>)</li>
-<li><a class="reference external" href="http://stackoverflow.com/questions/3798835/understanding-get-and-set-and-python-descriptors">Understanding get and set and Python&nbsp;descriptors.</a></li>
+<li><a class="reference external" href="http://stackoverflow.com/questions/3798835/understanding-get-and-set-and-python-descriptors">Understanding get and set and Python
+descriptors.</a></li>
 </ul>
 </li>
 </ul>
@@ -734,9 +742,9 @@ work?](<a class="reference external" href="http://stackoverflow.com/questions/17
             <nav>
             <ul class="articles_timeline">
  
-                <li class="previous_article">« <a href="http://justanr.github.io/python-and-audio-metadata" title="Previous: Python and Audio&nbsp;Metadata">Python and Audio&nbsp;Metadata</a></li>
+                <li class="previous_article">« <a href="http://justanr.github.io/python-and-audio-metadata" title="Previous: Python and Audio Metadata">Python and Audio Metadata</a></li>
  
-                <li class="next_article"><a href="http://justanr.github.io/code-reuse-in-multiple-forms" title="Next: Code Reuse in Multiple&nbsp;Forms">Code Reuse in Multiple&nbsp;Forms</a> »</li>
+                <li class="next_article"><a href="http://justanr.github.io/code-reuse-in-multiple-forms" title="Next: Code Reuse in Multiple Forms">Code Reuse in Multiple Forms</a> »</li>
             </ul>
             </nav>
             </aside>
@@ -787,7 +795,7 @@ work?](<a class="reference external" href="http://stackoverflow.com/questions/17
                     <span>3</span>
 </a></li>
                 <li><a href="/tags.html#python-ref">python
-                    <span>15</span>
+                    <span>16</span>
 </a></li>
             </ul>
 

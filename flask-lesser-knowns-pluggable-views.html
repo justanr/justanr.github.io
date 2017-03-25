@@ -18,8 +18,8 @@
         <![endif]-->
 
 
-<meta name="keywords" content="python, design, flask, tips and tricks, " />
-        <title>Flask Lesser Knowns: Pluggable&nbsp;Views - from alec.thoughts import *
+<meta name="keywords" content="python, flask, design, tips and tricks, " />
+        <title>Flask Lesser Knowns: Pluggable Views - from alec.thoughts import *
 </title>
         <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
@@ -73,247 +73,88 @@
 <article>
 <div class="row-fluid">
     <header class="page_header span10 offset2">
-    <h1><a href="http://justanr.github.io/flask-lesser-knowns-pluggable-views"> Flask Lesser Knowns: Pluggable&nbsp;Views  </a></h1>
+    <h1><a href="http://justanr.github.io/flask-lesser-knowns-pluggable-views"> Flask Lesser Knowns: Pluggable Views  </a></h1>
     </header>
 </div>
 
 <div class="row-fluid">
         <div class="span8 offset2 article-content">
 
-            <p>Flask gets quite a bit of attention, which is awesome. However all the
-tutorials and guides can’t touch on every aspect of Flask, even if it is
-small. There’s a ton of cool stuff that just doesn’t get shown&nbsp;often.</p>
-<div class="section" id="the-views-module">
-<h2>The <tt class="docutils literal">views</tt> Module</h2>
-<p>Flask comes with a <tt class="docutils literal">views</tt> module that contains two classes: <tt class="docutils literal">View</tt>
-and <tt class="docutils literal">MethodView</tt> — these are often referred to as “Pluggable Views”
-The idea behind these classes is&nbsp;simple:</p>
-<ul class="simple">
-<li>You have complex view&nbsp;logic.</li>
-<li>It can be broken up into discrete bits to make it more&nbsp;readable.</li>
-<li>But Flask requires a callable for&nbsp;views.</li>
-</ul>
-<p><tt class="docutils literal">View</tt> can handle this for you. One thing I really enjoy using
-<tt class="docutils literal">View</tt> for is wrapping my actual views in it to attach rendering
-behavior. It looks like&nbsp;this:</p>
-<pre class="code ipython3 literal-block">
-<span class="kn">from</span> <span class="nn">flask.views</span> <span class="k">import</span> <span class="n">View</span>
-<span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">render_template</span>
+            <p>I'd like to explore some things about Flask that don't seem to get a lot
+of limelight.</p>
+<div class="section" id="blueprints">
+<h2>Blueprints</h2>
+<p>Maybe it's unfair to include Blueprints in this, because they are
+commonly used. But maybe you don't know about them. Blueprints are a
+little tough to describe. It's easy enough to think of them as a
+separate bag of routes. They're a little more than that, but not quite.
+However, they are <em>very</em> useful, especially if you're using the
+application factory pattern. Let's explore building a simple Blueprint
+first.</p>
+<pre class="literal-block">
+---------------------------------------------------------------------------
 
-<span class="k">class</span> <span class="nc">RenderableView</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">template</span> <span class="o">=</span> <span class="n">template</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span> <span class="o">=</span> <span class="n">view</span>
+AttributeError                            Traceback (most recent call last)
 
-    <span class="c1"># this is the magic sauce that needs to be implemented</span>
-    <span class="k">def</span> <span class="nf">dispatch_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">resp</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">headers</span> <span class="o">=</span> <span class="n">unpack_response</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="p">,</span> <span class="o">**</span><span class="n">resp</span><span class="p">),</span> <span class="n">code</span><span class="p">,</span> <span class="n">headers</span>
+&lt;ipython-input-3-31c88fc4f35a&gt; in &lt;module&gt;()
+      1 from flask import Blueprint
+      2
+----&gt; 3 our_bp = Blueprint(&quot;&quot;, &quot;our_bp&quot;)
+      4
+      5 &#64;our_bp.route('/')
+
+
+/home/justanr/.local/lib/python3.4/site-packages/flask/blueprints.py in __init__(self, name, import_name, static_folder, static_url_path, template_folder, url_prefix, subdomain, url_defaults)
+     93                  static_url_path=None, template_folder=None,
+     94                  url_prefix=None, subdomain=None, url_defaults=None):
+---&gt; 95         _PackageBoundObject.__init__(self, import_name, template_folder)
+     96         self.name = name
+     97         self.url_prefix = url_prefix
+
+
+/home/justanr/.local/lib/python3.4/site-packages/flask/helpers.py in __init__(self, import_name, template_folder)
+    739
+    740         #: Where is the app root located?
+--&gt; 741         self.root_path = get_root_path(self.import_name)
+    742
+    743         self._static_folder = None
+
+
+/home/justanr/.local/lib/python3.4/site-packages/flask/helpers.py in get_root_path(import_name)
+    629
+    630     # Next attempt: check the loader.
+--&gt; 631     loader = pkgutil.get_loader(import_name)
+    632
+    633     # Loader does not exist or we're referring to an unloaded main module
+
+
+/usr/lib/python3.4/pkgutil.py in get_loader(module_or_name)
+    465     else:
+    466         fullname = module_or_name
+--&gt; 467     return find_loader(fullname)
+    468
+    469
+
+
+/usr/lib/python3.4/pkgutil.py in find_loader(fullname)
+    486         msg = &quot;Error while finding loader for {!r} ({}: {})&quot;
+    487         raise ImportError(msg.format(fullname, type(ex), ex)) from ex
+--&gt; 488     return spec.loader
+    489
+    490
+
+
+AttributeError: 'NoneType' object has no attribute 'loader'
 </pre>
-<p><tt class="docutils literal">unpack_response</tt> is just a little helper I use to get the response
-value, <span class="caps">HTTP</span> code and <span class="caps">HTTP</span> Headers (the last two which may or may not be
-present) out of the return value of the actual view and then simply
-render the dictionary that comes back from the view. This is great for
-testing purposes. I can test that I expect my actual view does what I
-expect it to do and not have to worry about rendering a template every
-time I test&nbsp;it.</p>
-<p>But I should probably talk about how this class gets turned into a
-callable for Flask. When <tt class="docutils literal">View</tt> and <tt class="docutils literal">MethodView</tt> were first
-implemented, Armin could have simply tossed a <tt class="docutils literal">__call__</tt> on the base
-class that invokes <tt class="docutils literal">dispatch_request</tt> and be done with it. Which is a
-way of doing it. However, this makes decoratoring hard. So, a different
-method was added, <tt class="docutils literal">as_view</tt> which is a classmethod. What <tt class="docutils literal">as_view</tt>
-does is create a function that creates an instance of the class and then
-returns the result of <tt class="docutils literal">dispatch_method</tt>, and updates some metadata as
-well. It also applies any decorators provided to the function as&nbsp;well.</p>
-<p><tt class="docutils literal">as_view</tt> requires just one argument: name, which becomes the
-<tt class="docutils literal">__name__</tt> of the returned function. It also allows providing
-arguments to initialize the class view as well. For example, if we had
-an <tt class="docutils literal">index</tt> view we wanted to wrap with this class, we’d call
-<tt class="docutils literal"><span class="pre">RenderableView.as_view(name=&quot;index&quot;,</span> <span class="pre">template=&quot;index.html&quot;,</span> view=index_func)</tt>
-and the class is instantiated with that template name and view&nbsp;function.</p>
-</div>
-<div class="section" id="how-do-we-provide-decorators">
-<h2>How do we provide&nbsp;decorators?</h2>
-<p>Applying decorators is super easy, just create a class level attribute
-called <tt class="docutils literal">decorators</tt> and attach them&nbsp;there.</p>
-<pre class="code ipython3 literal-block">
-<span class="k">class</span> <span class="nc">DecoratedView</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
-    <span class="n">decorators</span> <span class="o">=</span> <span class="p">[</span><span class="n">cache</span><span class="p">,</span> <span class="n">etag</span><span class="p">,</span> <span class="n">admin_required</span><span class="p">]</span>
-</pre>
-<p>When <tt class="docutils literal">View.as_view</tt> runs, these decorators will be applied to the
-resulting function. Which is really&nbsp;nice.</p>
-</div>
-<div class="section" id="registering-a-view">
-<h2>Registering a&nbsp;View</h2>
-<p><tt class="docutils literal">app.route</tt> is a nice high level way of registering functions to
-routes. However, by using pluggable views, we sacrifice this high level
-ability in exchange for the flexibility that the class based views. But
-we still need to get it onto an&nbsp;endpoint.</p>
-</div>
-<div class="section" id="what-about-methodview">
-<h2>What about&nbsp;MethodView?</h2>
-<p>Let’s say you have an endpoint that accepts <tt class="docutils literal"><span class="caps">GET</span></tt> and <tt class="docutils literal"><span class="caps">POST</span></tt>
-requests but don’t really share a lot of logic between them. So you’re
-route ends up looking like&nbsp;this:</p>
-<pre class="code ipython3 literal-block">
-<span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">request</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">url_for</span>
-
-<span class="nd">&#64;app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">'/someplace'</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">'GET'</span><span class="p">,</span> <span class="s1">'POST'</span><span class="p">])</span>
-<span class="k">def</span> <span class="nf">do_something</span><span class="p">():</span>
-    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">'POST'</span><span class="p">:</span>
-        <span class="n">update_the_datastore</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">'do_something'</span><span class="p">))</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">form</span> <span class="o">=</span> <span class="n">SomeAwesomeForm</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">'do_something.html'</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
-</pre>
-<p>How can we separate the two? That’s where MethodView comes&nbsp;in.</p>
-<pre class="code ipython3 literal-block">
-<span class="kn">from</span> <span class="nn">flask.views</span> <span class="k">import</span> <span class="n">MethodView</span>
-
-<span class="k">class</span> <span class="nc">DoSomethingView</span><span class="p">(</span><span class="n">MethodView</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">form</span> <span class="o">=</span> <span class="n">SomeAwesomeForm</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">'do_something.html'</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">update_the_datastore</span><span class="p">()</span>
-        <span class="c1"># we don't know the endpoint a head of time</span>
-        <span class="c1"># but the request contains it</span>
-        <span class="c1"># alternatively we could inject the redirect point</span>
-        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">endpoint</span><span class="p">))</span>
-</pre>
-<p>With <tt class="docutils literal">MethodView</tt> we don’t need to provide a <tt class="docutils literal">dispatch_request</tt>
-because it’s implemented for us. The implementation looks for a method
-on the class that matches the <span class="caps">HTTP</span> Method (so <tt class="docutils literal"><span class="caps">GET</span></tt> is mapped to
-<tt class="docutils literal">DoSomethingView.get</tt>) and calls it. If there isn’t a matching method,
-an exception is raised saying as such. The exception being <tt class="docutils literal"><span class="caps">HEAD</span></tt>
-which will invoke <tt class="docutils literal"><span class="caps">GET</span></tt> if it&nbsp;exists.</p>
-</div>
-<div class="section" id="when-methodview-is-good">
-<h2>When MethodView is&nbsp;good</h2>
-<p><tt class="docutils literal">MethodView</tt> is fantastic for building RESTful APIs. Since RESTful
-APIs are build around using the different <span class="caps">HTTP</span> methods for performing
-actions and MethodView dispatches based on <span class="caps">HTTP</span> Method, the two are a
-perfect match. In fact,
-<a class="reference external" href="https://github.com/flask-restful/flask-restful">Flask-RESTful</a> — a
-popular <span class="caps">API</span> toolkit — uses MethodView behind the scenes for their
-Resource&nbsp;class.</p>
-<p>Another good use is processing forms. Typically, a form endpoint looks
-like&nbsp;this:</p>
-<pre class="code ipython3 literal-block">
-<span class="nd">&#64;app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">'/form'</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">'GET'</span><span class="p">,</span> <span class="s1">'POST'</span><span class="p">])</span>
-<span class="k">def</span> <span class="nf">process_form</span><span class="p">():</span>
-    <span class="c1"># there's all sorts of reasons why we use</span>
-    <span class="c1"># the `_get_current_object` method</span>
-    <span class="c1"># see this reddit convo for more details</span>
-    <span class="c1"># https://www.reddit.com/r/flask/comments/3hd8j2/current_app_vs_current_app_get_current_object/</span>
-    <span class="n">user</span> <span class="o">=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">_get_current_object</span><span class="p">()</span>
-    <span class="n">form</span> <span class="o">=</span> <span class="n">UserForm</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">validate_on_submit</span><span class="p">():</span>
-        <span class="n">user</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">username</span><span class="o">.</span><span class="n">data</span>
-        <span class="n">user</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">password</span><span class="o">.</span><span class="n">data</span>
-        <span class="n">update_user</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">'process_form'</span><span class="p">),</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">'user_form.html'</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
-</pre>
-<p>However, we could simply split this into two routes easily with&nbsp;MethodView:</p>
-<pre class="code ipython3 literal-block">
-<span class="k">class</span> <span class="nc">ProcessFormView</span><span class="p">(</span><span class="n">MethodView</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">form</span><span class="p">,</span> <span class="n">redirect_to</span><span class="p">,</span> <span class="n">template</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">form</span> <span class="o">=</span> <span class="n">form</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">redirect_to</span> <span class="o">=</span> <span class="n">redirect_to</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">template</span> <span class="o">=</span> <span class="n">template</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">user</span> <span class="o">=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">_get_current_user</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">validate_on_submit</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">username</span><span class="o">.</span><span class="n">data</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">password</span><span class="o">.</span><span class="n">data</span>
-            <span class="n">update_user</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">redirect_to</span><span class="p">))</span>
-        <span class="c1"># in this case, the form was submitted but was invalid</span>
-        <span class="c1"># so rerender the template including the form with the errors</span>
-        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="p">)</span>
-
-<span class="n">app</span><span class="o">.</span><span class="n">add_url_rule</span><span class="p">(</span><span class="s1">'/methodviewform'</span><span class="p">,</span> <span class="s1">'process_form_view'</span><span class="p">,</span>
-                 <span class="n">ProcessFormView</span><span class="o">.</span><span class="n">as_view</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'user_form'</span><span class="p">,</span>
-                                         <span class="n">form</span><span class="o">=</span><span class="n">UserForm</span><span class="p">,</span>
-                                         <span class="n">redirect_to</span><span class="o">=</span><span class="s1">'process_form_view'</span><span class="p">,</span>
-                                         <span class="n">template</span><span class="o">=</span><span class="s1">'user_form.html'</span><span class="p">))</span>
-</pre>
-</div>
-<div class="section" id="combining-view-classes">
-<h2>Combining View&nbsp;classes</h2>
-<p>The real power of <tt class="docutils literal">View</tt> classes is when you beginning combinging them
-together. For example, you might have an <tt class="docutils literal">ETagView</tt> that generates
-etags like&nbsp;this:</p>
-<pre class="code ipython3 literal-block">
-<span class="kn">from</span> <span class="nn">hashlib</span> <span class="k">import</span> <span class="n">md5</span>
-
-<span class="k">class</span> <span class="nc">ETagView</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">dispatch_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">resp</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">headers</span> <span class="o">=</span> <span class="n">unpack_response</span><span class="p">(</span><span class="nb">super</span><span class="p">(</span><span class="n">ETagView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">dispatch_request</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
-
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="s1">'encode'</span><span class="p">):</span>
-            <span class="c1"># I'm running Python3</span>
-            <span class="c1"># So I need to convert unicode to bytestring</span>
-            <span class="n">resp</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
-
-        <span class="n">headers</span><span class="p">[</span><span class="s1">'ETag'</span><span class="p">]</span> <span class="o">=</span> <span class="n">md5</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">resp</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">headers</span>
-</pre>
-<p>You could trivially combine them together like&nbsp;this:</p>
-<pre class="code ipython3 literal-block">
-<span class="k">class</span> <span class="nc">RenderableETagView</span><span class="p">(</span><span class="n">ETagView</span><span class="p">,</span> <span class="n">RenderableView</span><span class="p">):</span>
-    <span class="k">pass</span>
-
-<span class="n">view</span> <span class="o">=</span> <span class="n">RenderableETagView</span><span class="p">(</span><span class="n">template</span><span class="o">=</span><span class="s1">'index.html'</span><span class="p">,</span> <span class="n">view</span><span class="o">=</span><span class="n">index</span><span class="p">)</span>
-
-<span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">app_context</span><span class="p">():</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">dispatch_request</span><span class="p">())</span>
-</pre>
-<p>And something else that’s really nice is many things that work as mixins
-for View can also be used with MethodView as&nbsp;well.</p>
-<pre class="code ipython3 literal-block">
-<span class="k">class</span> <span class="nc">ETagMethodView</span><span class="p">(</span><span class="n">ETagView</span><span class="p">,</span> <span class="n">MethodView</span><span class="p">):</span>
-    <span class="k">pass</span>
-
-<span class="k">class</span> <span class="nc">MyETagMethodView</span><span class="p">(</span><span class="n">ETagMethodView</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">'Awesome get!'</span>
-    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">'Awesome post!'</span>
-
-<span class="n">view</span> <span class="o">=</span> <span class="n">MyETagMethodView</span><span class="o">.</span><span class="n">as_view</span><span class="p">(</span><span class="s1">'awesome'</span><span class="p">)</span>
-
-<span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">test_request_context</span><span class="p">():</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">view</span><span class="p">())</span>
-
-<span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">test_request_context</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">'POST'</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">view</span><span class="p">())</span>
-</pre>
-<p>You just need to be a little aware of how the two differ and possibly
-adapt for&nbsp;MethodView.</p>
-</div>
-<div class="section" id="fin">
-<h2>Fin</h2>
-<p>Hopefully this has explained Flask’s pluggable views a little more.
-They’re woefully under represented in tutorials and guides for Flask but
-they’re amazing powerful&nbsp;tools.</p>
 </div>
 
             <aside>
             <nav>
             <ul class="articles_timeline">
  
-                <li class="previous_article">« <a href="http://justanr.github.io/demon-hunter-demon-hunter-review" title="Previous: Demon Hunter - Demon Hunter&nbsp;Review">Demon Hunter - Demon Hunter&nbsp;Review</a></li>
+                <li class="previous_article">« <a href="http://justanr.github.io/demon-hunter-demon-hunter-review" title="Previous: Demon Hunter - Demon Hunter Review">Demon Hunter - Demon Hunter Review</a></li>
  
-                <li class="next_article"><a href="http://justanr.github.io/on-dryers-adapters-and-software-design" title="Next: On Dryers, Adapters and Software&nbsp;Design">On Dryers, Adapters and Software&nbsp;Design</a> »</li>
+                <li class="next_article"><a href="http://justanr.github.io/on-dryers-adapters-and-software-design" title="Next: On Dryers, Adapters and Software Design">On Dryers, Adapters and Software Design</a> »</li>
             </ul>
             </nav>
             </aside>
@@ -367,7 +208,7 @@ they’re amazing powerful&nbsp;tools.</p>
                     <span>4</span>
 </a></li>
                 <li><a href="/tags.html#python-ref">python
-                    <span>15</span>
+                    <span>16</span>
 </a></li>
             </ul>
 

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>from alec.thoughts import * - design</title><link href="http://justanr.github.io/" rel="alternate"></link><link href="http://justanr.github.io/feeds/design.atom.xml" rel="self"></link><id>http://justanr.github.io/</id><updated>2015-10-27T00:00:00-04:00</updated><entry><title>Exploring Code Architecture</title><link href="http://justanr.github.io/exploring-code-architecture" rel="alternate"></link><published>2015-10-27T00:00:00-04:00</published><updated>2015-10-27T00:00:00-04:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2015-10-27:/exploring-code-architecture</id><summary type="html">&lt;p&gt;I&amp;#8217;ve been thinking quite a bit about architecture lately. Not building
+<feed xmlns="http://www.w3.org/2005/Atom"><title>from alec.thoughts import * - design</title><link href="http://justanr.github.io/" rel="alternate"></link><link href="http://justanr.github.io/feeds/design.atom.xml" rel="self"></link><id>http://justanr.github.io/</id><updated>2015-10-27T00:00:00-04:00</updated><entry><title>Exploring Code Architecture</title><link href="http://justanr.github.io/exploring-code-architecture" rel="alternate"></link><published>2015-10-27T00:00:00-04:00</published><updated>2015-10-27T00:00:00-04:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2015-10-27:/exploring-code-architecture</id><summary type="html">&lt;p&gt;I've been thinking quite a bit about architecture lately. Not building
 architecture, but application architecture. The inspiration for this has
-been many blog posts, talks, slide decks and books, and I&amp;#8217;d like to take
-the time to share my take on what I&amp;#8217;ve been learning. And to …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I&amp;#8217;ve been thinking quite a bit about architecture lately. Not building
+been many blog posts, talks, slide decks and books, and I'd like to take
+the time to share my take on what I've been learning. And to do that, I …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I've been thinking quite a bit about architecture lately. Not building
 architecture, but application architecture. The inspiration for this has
-been many blog posts, talks, slide decks and books, and I&amp;#8217;d like to take
-the time to share my take on what I&amp;#8217;ve been learning. And to do that, I
+been many blog posts, talks, slide decks and books, and I'd like to take
+the time to share my take on what I've been learning. And to do that, I
 sat down with one of my projects and looked for the most boring, mundane
-parts of it: logging&amp;nbsp;in.&lt;/p&gt;
+parts of it: logging in.&lt;/p&gt;
 &lt;p&gt;Right, because who wants to write log in forms and code again? Anyways,
-this is what I started&amp;nbsp;with:&lt;/p&gt;
+this is what I started with:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="nd"&gt;&amp;#64;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;route&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'/login'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;methods&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'POST'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'GET'&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
 &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;login&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
@@ -31,34 +31,35 @@ this is what I started&amp;nbsp;with:&lt;/p&gt;
 
     &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;render_template&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;login.html&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;That&amp;#8217;s actually pretty standard across web apps I&amp;#8217;ve seen. You don&amp;#8217;t let
+&lt;p&gt;That's actually pretty standard across web apps I've seen. You don't let
 logged in users log back in (though, I have seen apps that occasionally
-need a user to reauthenticate), there&amp;#8217;s some webform that we&amp;#8217;ll pull
-data off of. Next, we&amp;#8217;ll try pulling user data for either the username
+need a user to reauthenticate), there's some webform that we'll pull
+data off of. Next, we'll try pulling user data for either the username
 or email provided and then check if the password typed in matches the
-user&amp;#8217;s password hash. If it&amp;#8217;s all good, we redirect off somewhere
-otherwise there&amp;#8217;s some &lt;span class="caps"&gt;HTML&lt;/span&gt;&amp;nbsp;rendered.&lt;/p&gt;
+user's password hash. If it's all good, we redirect off somewhere
+otherwise there's some HTML rendered.&lt;/p&gt;
 &lt;p&gt;Big whoop right. However, this is actual logic for the application. But
-it&amp;#8217;s all shoved into an endpoint which is essentially &lt;span class="caps"&gt;UI&lt;/span&gt; logic. And
-imagine testing this, we need to contend&amp;nbsp;with:&lt;/p&gt;
+it's all shoved into an endpoint which is essentially UI logic. And
+imagine testing this, we need to contend with:&lt;/p&gt;
 &lt;ol class="arabic simple"&gt;
 &lt;li&gt;A thread local (&lt;tt class="docutils literal"&gt;current_user&lt;/tt&gt;)&lt;/li&gt;
-&lt;li&gt;Form&amp;nbsp;data&lt;/li&gt;
+&lt;li&gt;Form data&lt;/li&gt;
 &lt;li&gt;Database&lt;/li&gt;
-&lt;li&gt;Werkzeug&amp;#8217;s password&amp;nbsp;checker&lt;/li&gt;
-&lt;li&gt;Message&amp;nbsp;flashing&lt;/li&gt;
-&lt;li&gt;Flask&amp;#8217;s url routing &amp;#8212; both &lt;tt class="docutils literal"&gt;url_for&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;redirect&lt;/tt&gt;&lt;/li&gt;
+&lt;li&gt;Werkzeug's password checker&lt;/li&gt;
+&lt;li&gt;Message flashing&lt;/li&gt;
+&lt;li&gt;Flask's url routing -- both &lt;tt class="docutils literal"&gt;url_for&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;redirect&lt;/tt&gt;&lt;/li&gt;
 &lt;li&gt;Templating&lt;/li&gt;
-&lt;li&gt;Creating the&amp;nbsp;form&lt;/li&gt;
-&lt;li&gt;Multiple exit&amp;nbsp;branches&lt;/li&gt;
-&lt;li&gt;A nested if&amp;nbsp;statement&lt;/li&gt;
-&lt;li&gt;Actually logging in the&amp;nbsp;user&lt;/li&gt;
-&lt;li&gt;The difference between &lt;span class="caps"&gt;GET&lt;/span&gt; and &lt;span class="caps"&gt;POST&lt;/span&gt;&amp;nbsp;requests&lt;/li&gt;
+&lt;li&gt;Creating the form&lt;/li&gt;
+&lt;li&gt;Multiple exit branches&lt;/li&gt;
+&lt;li&gt;A nested if statement&lt;/li&gt;
+&lt;li&gt;Actually logging in the user&lt;/li&gt;
+&lt;li&gt;The difference between GET and POST requests&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;That&amp;#8217;s too many things too many to deal with at once. &amp;#8220;But Alec, there&amp;#8217;s
-&lt;tt class="docutils literal"&gt;unittest.mock&lt;/tt&gt;!&amp;#8221; If we&amp;#8217;re going to go that route, we need to have a
-pile of &lt;tt class="docutils literal"&gt;mock.patch&lt;/tt&gt; decorators and context managers and there&amp;#8217;s the
-real chance we just end up creating some meaningless assertion. Like&amp;nbsp;this&amp;#8230;&lt;/p&gt;
+&lt;p&gt;That's too many things too many to deal with at once. &amp;quot;But Alec, there's
+&lt;tt class="docutils literal"&gt;unittest.mock&lt;/tt&gt;!&amp;quot; If we're going to go that route, we need to have a
+pile of &lt;tt class="docutils literal"&gt;mock.patch&lt;/tt&gt; decorators and context managers and there's the
+real chance we just end up creating some meaningless assertion. Like
+this...&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="nd"&gt;&amp;#64;mock&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;patch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'myapp.auth.views.current_user'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="nd"&gt;&amp;#64;mock&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;patch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'myapp.auth.views.LoginForm'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -73,39 +74,39 @@ real chance we just end up creating some meaningless assertion. Like&amp;nbsp;th
     &lt;span class="k"&gt;assert&lt;/span&gt; &lt;span class="kc"&gt;True&lt;/span&gt;
 &lt;/pre&gt;
 &lt;p&gt;How do we even begin munging and manipulating those mocks into any sort
-of meaningful test? If you have an endpoint like this that&amp;#8217;s tested and
-you didn&amp;#8217;t end writing tests that basically assert that &lt;tt class="docutils literal"&gt;mock.patch&lt;/tt&gt;
-works, I applaud&amp;nbsp;you.&lt;/p&gt;
+of meaningful test? If you have an endpoint like this that's tested and
+you didn't end writing tests that basically assert that &lt;tt class="docutils literal"&gt;mock.patch&lt;/tt&gt;
+works, I applaud you.&lt;/p&gt;
 &lt;p&gt;An acceptance test might be a good fit here to assert the general
 behavior. Insert a user in the database and then run the function and
 assert the user is actually logged in at the end of it, insert some user
 in the database and submit a bad password as part of the form and assert
-the template is rendered with the flashed message,&amp;nbsp;etc.&lt;/p&gt;
-&lt;p&gt;And I&amp;#8217;d probably recommend that (I didn&amp;#8217;t do it in this particular
+the template is rendered with the flashed message, etc.&lt;/p&gt;
+&lt;p&gt;And I'd probably recommend that (I didn't do it in this particular
 instance though) to make sure the functionality of the endpoint is
 preserved without asserting any fine grained details. With an acceptance
-test we want to see a forest, not trees. But there&amp;#8217;s actual reusable
+test we want to see a forest, not trees. But there's actual reusable
 components that are obscured by simply shoving everything into the end
-point. So, let&amp;#8217;s find them and make them citizens in the&amp;nbsp;application.&lt;/p&gt;
+point. So, let's find them and make them citizens in the application.&lt;/p&gt;
 &lt;div class="section" id="mise-en-place"&gt;
-&lt;h2&gt;Mise en&amp;nbsp;place&lt;/h2&gt;
+&lt;h2&gt;Mise en place&lt;/h2&gt;
 &lt;p&gt;&lt;a class="reference external" href="http://codingwithkniv.es/2014/08/14/exercise-zero-the-setup-mise-en-place/"&gt;Adrienne, a friend of mine, has an excellent blog post comparing
 cooking preperations with coding
 preperations.&lt;/a&gt;
-And I think it applies to more than just preparing to code, when we&amp;#8217;re
-refactoring, especially with the goal of unjamming an endpoint, it&amp;#8217;s
-important to lay out some goals and examine what we&amp;#8217;re dealing&amp;nbsp;with.&lt;/p&gt;
+And I think it applies to more than just preparing to code, when we're
+refactoring, especially with the goal of unjamming an endpoint, it's
+important to lay out some goals and examine what we're dealing with.&lt;/p&gt;
 &lt;p&gt;And in this case, we already did that already. We know what the goal is
-and we know all the things our endpoint touches to do its&amp;nbsp;work.&lt;/p&gt;
-&lt;p&gt;Let&amp;#8217;s start with the last concern I listed out as it&amp;#8217;s the most obvious
-seam: we handle &lt;span class="caps"&gt;GET&lt;/span&gt; and &lt;span class="caps"&gt;POST&lt;/span&gt; request separately. If it&amp;#8217;s a &lt;span class="caps"&gt;GET&lt;/span&gt; request,
-only render a template. If it&amp;#8217;s a &lt;span class="caps"&gt;POST&lt;/span&gt; request, run the actual logic and
-then either render or&amp;nbsp;redirect.&lt;/p&gt;
-&lt;p&gt;Currently, we silently treat the idea of &lt;tt class="docutils literal"&gt;&lt;span class="caps"&gt;GET&lt;/span&gt;&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;&lt;span class="caps"&gt;POST&lt;/span&gt;&lt;/tt&gt; separately
+and we know all the things our endpoint touches to do its work.&lt;/p&gt;
+&lt;p&gt;Let's start with the last concern I listed out as it's the most obvious
+seam: we handle GET and POST request separately. If it's a GET request,
+only render a template. If it's a POST request, run the actual logic and
+then either render or redirect.&lt;/p&gt;
+&lt;p&gt;Currently, we silently treat the idea of &lt;tt class="docutils literal"&gt;GET&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;POST&lt;/tt&gt; separately
 with the use of &lt;tt class="docutils literal"&gt;validate_on_submit&lt;/tt&gt;. However, Flask (and other
 frameworks) provide a way of explicitly declaring the difference without
 a series of if-statements. In Flask, we call it &lt;tt class="docutils literal"&gt;MethodView&lt;/tt&gt;, and we
-can simply define separate methods for each &lt;span class="caps"&gt;HTTP&lt;/span&gt;&amp;nbsp;Verb.&lt;/p&gt;
+can simply define separate methods for each HTTP Verb.&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;flask.views&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;MethodView&lt;/span&gt;
 
@@ -128,11 +129,11 @@ can simply define separate methods for each &lt;span class="caps"&gt;HTTP&lt;/sp
                 &lt;span class="n"&gt;flash&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Bad username/password combination&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
         &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;render_template&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'login.html'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;Right now, we&amp;#8217;ve broken one of our imaginary acceptance tests:
-&amp;#8220;Authenticated users cannot re-log in&amp;#8221;. However, there&amp;#8217;s an easy fix,
-&lt;tt class="docutils literal"&gt;MethodView&lt;/tt&gt; (and it&amp;#8217;s parent &lt;tt class="docutils literal"&gt;View&lt;/tt&gt;) allow us to provide decorators
+&lt;p&gt;Right now, we've broken one of our imaginary acceptance tests:
+&amp;quot;Authenticated users cannot re-log in&amp;quot;. However, there's an easy fix,
+&lt;tt class="docutils literal"&gt;MethodView&lt;/tt&gt; (and it's parent &lt;tt class="docutils literal"&gt;View&lt;/tt&gt;) allow us to provide decorators
 that are used at run time when the actual view function is generated. So
-we can take that little if-check and turn it into a&amp;nbsp;function&amp;#8230;&lt;/p&gt;
+we can take that little if-check and turn it into a function...&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;disallow_authenticated&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="nd"&gt;&amp;#64;wraps&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -143,17 +144,17 @@ we can take that little if-check and turn it into a&amp;nbsp;function&amp;#8230;
             &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
     &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;checker&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;And then stuff it in as a class&amp;nbsp;attribute&amp;#8230;&lt;/p&gt;
+&lt;p&gt;And then stuff it in as a class attribute...&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;LoginController&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;MethodView&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="n"&gt;decorators&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;disallow_authenticated&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
 &lt;/pre&gt;
 &lt;p&gt;Already this is slightly more testable. Not much, but we can write a
-test against &lt;tt class="docutils literal"&gt;disallow_authenticated&lt;/tt&gt; that doesn&amp;#8217;t involve
-&lt;tt class="docutils literal"&gt;LoginUser&lt;/tt&gt; and vice-versa &amp;#8212; these decorators are only applied when
-the &lt;tt class="docutils literal"&gt;as_view&lt;/tt&gt; factory method is used. There&amp;#8217;s a little bit of
+test against &lt;tt class="docutils literal"&gt;disallow_authenticated&lt;/tt&gt; that doesn't involve
+&lt;tt class="docutils literal"&gt;LoginUser&lt;/tt&gt; and vice-versa -- these decorators are only applied when
+the &lt;tt class="docutils literal"&gt;as_view&lt;/tt&gt; factory method is used. There's a little bit of
 refactoring we can do as well, we instantiate the actual form in two
-different spots and we do the rendering in two different spots as&amp;nbsp;well:&lt;/p&gt;
+different spots and we do the rendering in two different spots as well:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;LoginController&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;MethodView&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
@@ -173,10 +174,10 @@ different spots and we do the rendering in two different spots as&amp;nbsp;well:
 &lt;/pre&gt;
 &lt;/div&gt;
 &lt;div class="section" id="actually-authenticating"&gt;
-&lt;h2&gt;Actually&amp;nbsp;Authenticating&lt;/h2&gt;
-&lt;p&gt;However, there&amp;#8217;s still lots of logic inside the endpoint: we
-authenticate and login the user. Let&amp;#8217;s first extract that out into its
-own thing so we can examine it&amp;nbsp;closer:&lt;/p&gt;
+&lt;h2&gt;Actually Authenticating&lt;/h2&gt;
+&lt;p&gt;However, there's still lots of logic inside the endpoint: we
+authenticate and login the user. Let's first extract that out into its
+own thing so we can examine it closer:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;log_in_user&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;login&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;password&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="n"&gt;user&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;User&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;filter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;or_&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;User&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;username&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;login&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
@@ -184,16 +185,16 @@ own thing so we can examine it&amp;nbsp;closer:&lt;/p&gt;
     &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;user&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="n"&gt;check_password_hash&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;password&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;password&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
         &lt;span class="n"&gt;login_user&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;We&amp;#8217;re missing the failure case, but we can address that. There&amp;#8217;s two
-ways to handle&amp;nbsp;this:&lt;/p&gt;
+&lt;p&gt;We're missing the failure case, but we can address that. There's two
+ways to handle this:&lt;/p&gt;
 &lt;ol class="arabic simple"&gt;
-&lt;li&gt;Error&amp;nbsp;codes&lt;/li&gt;
+&lt;li&gt;Error codes&lt;/li&gt;
 &lt;li&gt;Exceptions&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;I like exceptions because they&amp;#8217;re really loud, unlike error code which
+&lt;p&gt;I like exceptions because they're really loud, unlike error code which
 can silently pass. Exceptions &lt;em&gt;must&lt;/em&gt; be dealt with or the application
-crashes. However, there&amp;#8217;s solid arguments for both styles, pick the one
-the fits your brain&amp;nbsp;best.&lt;/p&gt;
+crashes. However, there's solid arguments for both styles, pick the one
+the fits your brain best.&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;AuthenticationError&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ne"&gt;Exception&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;pass&lt;/span&gt;
@@ -203,21 +204,23 @@ the fits your brain&amp;nbsp;best.&lt;/p&gt;
     &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
         &lt;span class="k"&gt;raise&lt;/span&gt; &lt;span class="n"&gt;AuthenticationError&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Bad login credentials&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;And whatever calls this will deal with the exception. We&amp;#8217;ll get back to
-that later though. So the actual story for this function looks like&amp;nbsp;this:&lt;/p&gt;
+&lt;p&gt;And whatever calls this will deal with the exception. We'll get back to
+that later though. So the actual story for this function looks like
+this:&lt;/p&gt;
 &lt;ol class="arabic simple"&gt;
-&lt;li&gt;Locate a user with either the provided username or&amp;nbsp;email&lt;/li&gt;
+&lt;li&gt;Locate a user with either the provided username or email&lt;/li&gt;
 &lt;li&gt;If we find the user, check that the provided password matches the
-user&amp;#8217;s stored password&amp;nbsp;hash&lt;/li&gt;
-&lt;li&gt;If those match, login in the&amp;nbsp;user&lt;/li&gt;
-&lt;li&gt;If a user can&amp;#8217;t be found or the passwords do not match, raise an&amp;nbsp;error&lt;/li&gt;
+user's stored password hash&lt;/li&gt;
+&lt;li&gt;If those match, login in the user&lt;/li&gt;
+&lt;li&gt;If a user can't be found or the passwords do not match, raise an
+error&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;Notice that we don&amp;#8217;t say anything about &lt;em&gt;how&lt;/em&gt; to find the user, just
-that we need to. Realizing this sent a shiver down my spine: I don&amp;#8217;t
+&lt;p&gt;Notice that we don't say anything about &lt;em&gt;how&lt;/em&gt; to find the user, just
+that we need to. Realizing this sent a shiver down my spine: I don't
 actually care about the database, I care about the data it stores.
 Honestly, this data could come from anywhere: database, Redis, flatfile,
-a hash table, remote &lt;span class="caps"&gt;API&lt;/span&gt;, etc. And the next step was a leap of faith for
-me: stick an interface&amp;nbsp;there.&lt;/p&gt;
+a hash table, remote API, etc. And the next step was a leap of faith for
+me: stick an interface there.&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;locate_by_username_or_email&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;login&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;User&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;filter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;or_&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;User&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;username&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;login&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;User&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;email&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;login&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;first&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
@@ -226,8 +229,8 @@ me: stick an interface&amp;nbsp;there.&lt;/p&gt;
 want to inject it is to remove the dependency from the database and
 instead depend on the contract: either return a user object or a None.
 We should do the same with the password hash validator so we can depend
-on that interface rather than Werkzeug. Since we don&amp;#8217;t want to have to
-do it every time, we could use a&amp;nbsp;closure:&lt;/p&gt;
+on that interface rather than Werkzeug. Since we don't want to have to
+do it every time, we could use a closure:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;log_in_factory&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;locator&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;password_checker&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;log_in_user&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;login&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;password&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
@@ -241,9 +244,9 @@ do it every time, we could use a&amp;nbsp;closure:&lt;/p&gt;
 &lt;p&gt;This is a lot more testable, we only have to contend with one thing
 outside of our control: &lt;tt class="docutils literal"&gt;login_user&lt;/tt&gt; rather than twelve things outside
 our control. But then I thought about it some more. This is concerned
-with authenticating a user. And there&amp;#8217;s a separate concern about
-actually logging in the user. There&amp;#8217;s also a feature request on the
-project about creating a &lt;span class="caps"&gt;JSON&lt;/span&gt; &lt;span class="caps"&gt;API&lt;/span&gt;, which will need to also authenticate
+with authenticating a user. And there's a separate concern about
+actually logging in the user. There's also a feature request on the
+project about creating a JSON API, which will need to also authenticate
 the user but probably not using password auth. Instead of using a
 closure, what if I used the closest thing Python has to the
 &lt;tt class="docutils literal"&gt;interface&lt;/tt&gt; keyword?&lt;/p&gt;
@@ -255,8 +258,9 @@ closure, what if I used the closest thing Python has to the
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;authenticate&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
         &lt;span class="k"&gt;pass&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;That&amp;#8217;s when the whole idea of software architecture really began falling
-into place for me. Let&amp;#8217;s rejigger the current implementation to fit this&amp;nbsp;instead:&lt;/p&gt;
+&lt;p&gt;That's when the whole idea of software architecture really began falling
+into place for me. Let's rejigger the current implementation to fit this
+instead:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;PasswordAuthenticator&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Authenticator&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;locator&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;checker&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
@@ -269,10 +273,10 @@ into place for me. Let&amp;#8217;s rejigger the current implementation to fit th
             &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;user&lt;/span&gt;
         &lt;span class="k"&gt;raise&lt;/span&gt; &lt;span class="n"&gt;AuthenticationError&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Bad credentials&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;Instead of having the side effect &amp;#8212; actually logging in the user &amp;#8212;
+&lt;p&gt;Instead of having the side effect -- actually logging in the user --
 right there, the authenticator defines a contract that it either returns
 a user or raises an AuthenticationError. We can also define an
-implementation that will actually login the user as&amp;nbsp;well:&lt;/p&gt;
+implementation that will actually login the user as well:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;LoginAuthenticator&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Authenticator&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;login&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;authenticator&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
@@ -284,16 +288,16 @@ implementation that will actually login the user as&amp;nbsp;well:&lt;/p&gt;
         &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_login&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
         &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;user&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;If we find that we&amp;#8217;re doing many things after authenticating a user
+&lt;p&gt;If we find that we're doing many things after authenticating a user
 (updating a &lt;tt class="docutils literal"&gt;last_seen&lt;/tt&gt; field or keeping an audit log), we can further
 generalize this to an &lt;tt class="docutils literal"&gt;AfterAuthentication&lt;/tt&gt; class that we simple give
-the callable that causes the side&amp;nbsp;effect.&lt;/p&gt;
+the callable that causes the side effect.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="back-to-the-endpoint"&gt;
-&lt;h2&gt;Back to the&amp;nbsp;Endpoint&lt;/h2&gt;
-&lt;p&gt;Because of all this changing, we&amp;#8217;ve broken every test on the controller
-since it isn&amp;#8217;t equipped to deal with &lt;em&gt;any&lt;/em&gt; of this. So we should revisit
-it and make&amp;nbsp;changes.&lt;/p&gt;
+&lt;h2&gt;Back to the Endpoint&lt;/h2&gt;
+&lt;p&gt;Because of all this changing, we've broken every test on the controller
+since it isn't equipped to deal with &lt;em&gt;any&lt;/em&gt; of this. So we should revisit
+it and make changes.&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;LoginController&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;MethodView&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
 
@@ -314,23 +318,23 @@ it and make&amp;nbsp;changes.&lt;/p&gt;
             &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;render&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;/pre&gt;
 &lt;p&gt;However, that post method is really concerned with a lot of stuff and is
-indented quite a bit. There&amp;#8217;s two talks that influenced the next
-changes. The first was &lt;a class="reference external" href="https://www.youtube.com/watch?v=8bZh5LMaSmE"&gt;Sandi Metz&amp;#8217;s All the Little
+indented quite a bit. There's two talks that influenced the next
+changes. The first was &lt;a class="reference external" href="https://www.youtube.com/watch?v=8bZh5LMaSmE"&gt;Sandi Metz's All the Little
 Things&lt;/a&gt;, where she
-proposes a major tool in refactoring: the squint&amp;nbsp;test.&lt;/p&gt;
+proposes a major tool in refactoring: the squint test.&lt;/p&gt;
 &lt;blockquote&gt;
 You squit your eyes, and you lean back and you look at the code.
-You&amp;#8217;re looking for changes in shape and changes in color.&lt;/blockquote&gt;
+You're looking for changes in shape and changes in color.&lt;/blockquote&gt;
 &lt;p&gt;She goes on to say that changes in shape mean you have nested conditions
 and that color changes means the code is at different levels of
-abstraction. Which there definitely is&amp;nbsp;here.&lt;/p&gt;
+abstraction. Which there definitely is here.&lt;/p&gt;
 &lt;p&gt;Discounting the class and method level indentations (because we have to
 have those), the actual logic is indented two levels deep. Pretending we
-have some Flask-specific code highlighting, we&amp;#8217;d see that color bumped
-against our code and the&amp;nbsp;strings.&lt;/p&gt;
+have some Flask-specific code highlighting, we'd see that color bumped
+against our code and the strings.&lt;/p&gt;
 &lt;p&gt;The first time around this, I ended up creating an &lt;tt class="docutils literal"&gt;authenticate&lt;/tt&gt;
 method on the controller, following her advice to make smaller things.
-The whole thing looked like&amp;nbsp;this:&lt;/p&gt;
+The whole thing looked like this:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;LoginUser&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;MethodView&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="n"&gt;decorators&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;disallow_authenticated&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
@@ -367,15 +371,16 @@ The whole thing looked like&amp;nbsp;this:&lt;/p&gt;
         &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;render_template&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'login.html'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;
 &lt;p&gt;Which is slightly better, but the logic is still at different levels of
-abstraction. And it&amp;#8217;s also not really a &amp;#8220;small class&amp;#8221;. It weighs in at
+abstraction. And it's also not really a &amp;quot;small class&amp;quot;. It weighs in at
 only 34 lines, which is actually quite small, but it has a very broad
-surface&amp;nbsp;area.&lt;/p&gt;
-&lt;p&gt;So I pondered some more and watched &lt;a class="reference external" href="https://www.youtube.com/watch?v=CGN4RFkhH2M"&gt;Matt Wynne&amp;#8217;s Hexagonal
+surface area.&lt;/p&gt;
+&lt;p&gt;So I pondered some more and watched &lt;a class="reference external" href="https://www.youtube.com/watch?v=CGN4RFkhH2M"&gt;Matt Wynne's Hexagonal
 Rails&lt;/a&gt;, I had a
-different insight to Sandi&amp;#8217;s talk. Instead of trying to handle the
+different insight to Sandi's talk. Instead of trying to handle the
 authentication and the error at the same level, why not provide an
 interface on the controller that the authenticator can call into rather
-than the controller asking for something to be done and acting on the&amp;nbsp;results.&lt;/p&gt;
+than the controller asking for something to be done and acting on the
+results.&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;LoginUser&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;MethodView&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;post&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
@@ -393,12 +398,12 @@ than the controller asking for something to be done and acting on the&amp;nbsp;r
 
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;_flash_errors&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;error&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;Which makes the controller act more high level. There&amp;#8217;s still some
+&lt;p&gt;Which makes the controller act more high level. There's still some
 differing levels of abstraction, but they only cross one level. It kicks
 off some data through the authenticator interface and receives a message
 back through its interface. We can place other things in the middle by
 implementing either the Authenticator interface or this
-interface&amp;#8230;actually let&amp;#8217;s make this an interface&amp;nbsp;itself:&lt;/p&gt;
+interface...actually let's make this an interface itself:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;AuthenticationBoundary&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ABC&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="nd"&gt;&amp;#64;abstractmethod&lt;/span&gt;
@@ -412,11 +417,11 @@ interface&amp;#8230;actually let&amp;#8217;s make this an interface&amp;nbsp;its
 &lt;p&gt;But our authenticator has no way of talking back. And I think
 implementing those details directly on an authenticator is a bad idea,
 that gives it another reason to change. You might think of this as the
-authenticator crossing multiple abstraction levels at&amp;nbsp;once.&lt;/p&gt;
-&lt;p&gt;However, if we insert a bridge between them, it&amp;#8217;s easy to do. If you&amp;#8217;ve
-seen any variation on &lt;a class="reference external" href="https://www.youtube.com/watch?v=WpkDN78P884"&gt;Uncle Bob&amp;#8217;s Architecture: The Lost Years
+authenticator crossing multiple abstraction levels at once.&lt;/p&gt;
+&lt;p&gt;However, if we insert a bridge between them, it's easy to do. If you've
+seen any variation on &lt;a class="reference external" href="https://www.youtube.com/watch?v=WpkDN78P884"&gt;Uncle Bob's Architecture: The Lost Years
 talk&lt;/a&gt;, this is something
-like his Interactor or Dr. Ivar Jacobson&amp;#8217;s Controller&amp;nbsp;object:&lt;/p&gt;
+like his Interactor or Dr. Ivar Jacobson's Controller object:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;AuthenticateUser&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;authenticator&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;listener&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
@@ -431,10 +436,10 @@ like his Interactor or Dr. Ivar Jacobson&amp;#8217;s Controller&amp;nbsp;object:
         &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
             &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_listener&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;authentication_succeeded&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;This is pretty close to Sandi&amp;#8217;s idea. &lt;a class="reference external" href="https://www.youtube.com/watch?v=o9pEzgHorH0"&gt;Jack Diederich might have some
+&lt;p&gt;This is pretty close to Sandi's idea. &lt;a class="reference external" href="https://www.youtube.com/watch?v=o9pEzgHorH0"&gt;Jack Diederich might have some
 negative things to say about
-it&lt;/a&gt;, but it&amp;#8217;s also
-easily representable as a closure as&amp;nbsp;well.&lt;/p&gt;
+it&lt;/a&gt;, but it's also
+easily representable as a closure as well.&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;authenticate_user&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;authenticator&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;listener&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;authenticate&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
@@ -469,15 +474,15 @@ the &lt;tt class="docutils literal"&gt;AuthenticationBoundary&lt;/tt&gt;:&lt;/p&
         &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;listener&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;authentication_succeeded&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;
 &lt;p&gt;But I feel this is a bit cluttered and makes it more of a middle man
-than an&amp;nbsp;adapter.&lt;/p&gt;
+than an adapter.&lt;/p&gt;
 &lt;p&gt;You might be wondering why I pass the &lt;tt class="docutils literal"&gt;*args&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;**kwargs&lt;/tt&gt; back up
 through the listeners. And the reason is there might be information
-contained in there, such as a &amp;#8220;remember me&amp;#8221; or &amp;#8220;stay logged in&amp;#8221; flag,
-that doesn&amp;#8217;t apply to the authenticator itself, but could be interesting
-to another&amp;nbsp;listener.&lt;/p&gt;
+contained in there, such as a &amp;quot;remember me&amp;quot; or &amp;quot;stay logged in&amp;quot; flag,
+that doesn't apply to the authenticator itself, but could be interesting
+to another listener.&lt;/p&gt;
 &lt;p&gt;Our &lt;tt class="docutils literal"&gt;LoginAuthenticator&lt;/tt&gt; can implement the Boundary interface rather
-than the authenticator interface, since it&amp;#8217;s more a listener than an
-authenticator &amp;#8212; it doesn&amp;#8217;t do any authentication, but responds to a
+than the authenticator interface, since it's more a listener than an
+authenticator -- it doesn't do any authentication, but responds to a
 successful authentication. And since we pass the extra data back up, we
 can pluck a remember flag out and pass it to &lt;tt class="docutils literal"&gt;flask_login.login_user&lt;/tt&gt;:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
@@ -493,7 +498,7 @@ can pluck a remember flag out and pass it to &lt;tt class="docutils literal"&gt;
         &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_listener&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;authentication_failed&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;error&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;
 &lt;p&gt;Finally, we need to make one last change in the controller. It has to
-add itself to the authenticator, since we need to call back into&amp;nbsp;it.&lt;/p&gt;
+add itself to the authenticator, since we need to call back into it.&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;LoginController&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;MethodView&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;authenticator&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
@@ -502,19 +507,19 @@ add itself to the authenticator, since we need to call back into&amp;nbsp;it.&lt
 &lt;/pre&gt;
 &lt;/div&gt;
 &lt;div class="section" id="putting-the-pieces-together"&gt;
-&lt;h2&gt;Putting the pieces&amp;nbsp;together&lt;/h2&gt;
-&lt;p&gt;Gluing everything together is a little difficult, but it&amp;#8217;s&amp;nbsp;manageable.&lt;/p&gt;
+&lt;h2&gt;Putting the pieces together&lt;/h2&gt;
+&lt;p&gt;Gluing everything together is a little difficult, but it's manageable.&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="n"&gt;authenticator&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;lambda&lt;/span&gt; &lt;span class="n"&gt;listener&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;AuthenticateUser&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PasswordAuth&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;Login&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;l&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
 
 &lt;span class="n"&gt;controller&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;LoginController&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;authenticator&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;By simply providing a little factory function, we don&amp;#8217;t even need to
-wring our hands about &lt;em&gt;how&lt;/em&gt; it gets in there. I&amp;#8217;ve found this to be the
-easiest, most efficient way to deal with this. There&amp;#8217;s other things we
+&lt;p&gt;By simply providing a little factory function, we don't even need to
+wring our hands about &lt;em&gt;how&lt;/em&gt; it gets in there. I've found this to be the
+easiest, most efficient way to deal with this. There's other things we
 can do, for example instead of hardcoding form, template and redirect
 names, we can pass those in as well, allowing this controller to be
-reused for other areas (I mentioned re-authenticating&amp;nbsp;before).&lt;/p&gt;
+reused for other areas (I mentioned re-authenticating before).&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;AuthenticationController&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;MethodView&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;AuthenticationBoundary&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;authenticator&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;template&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;redirect&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
@@ -544,24 +549,25 @@ we can instead pass a function that determines &lt;em&gt;which&lt;/em&gt; form t
 example, you might have an option to enable ReCaptcha depending on some
 application configuration and this form callable could look at that and
 return the correct one. Or you need to allow the user to choose a
-default language but the list of languages can only be decided at&amp;nbsp;runtime.&lt;/p&gt;
-&lt;p&gt;Note that since we&amp;#8217;re potentially reusing this, I&amp;#8217;ve stripped out the
+default language but the list of languages can only be decided at
+runtime.&lt;/p&gt;
+&lt;p&gt;Note that since we're potentially reusing this, I've stripped out the
 decorators line. &lt;tt class="docutils literal"&gt;disallow_authenticated&lt;/tt&gt; would be applied every time
 we created a view from this and if we want to &lt;em&gt;re-authenticate&lt;/em&gt; a user,
-they&amp;#8217;re probably already authenticated. Instead, we&amp;#8217;ll need to apply it
-by hand since it&amp;#8217;s now a situational&amp;nbsp;decorator.&lt;/p&gt;
+they're probably already authenticated. Instead, we'll need to apply it
+by hand since it's now a situational decorator.&lt;/p&gt;
 &lt;p&gt;Uncle Bob does recommend one thing more: using a presenter that
 transforms the response into a view model. In Python and Flask the view
 model could be a dictionary or a object with arbitrary attributes (or
-maybe a &lt;tt class="docutils literal"&gt;dotteddict&lt;/tt&gt;, I&amp;#8217;m fond of those). However, I&amp;#8217;ve decided
-against that for two&amp;nbsp;reasons:&lt;/p&gt;
+maybe a &lt;tt class="docutils literal"&gt;dotteddict&lt;/tt&gt;, I'm fond of those). However, I've decided
+against that for two reasons:&lt;/p&gt;
 &lt;ol class="arabic simple"&gt;
-&lt;li&gt;It is another abstraction layer, which I don&amp;#8217;t feel is needed&amp;nbsp;here.&lt;/li&gt;
-&lt;li&gt;I&amp;#8217;ve not found an easy way to reconcile updating a form&amp;#8217;s errors
-through this third party&amp;nbsp;object.&lt;/li&gt;
+&lt;li&gt;It is another abstraction layer, which I don't feel is needed here.&lt;/li&gt;
+&lt;li&gt;I've not found an easy way to reconcile updating a form's errors
+through this third party object.&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;I suppose as one last thing, I should show how I&amp;#8217;ve hooked this into an
-actual Flask&amp;nbsp;app.&lt;/p&gt;
+&lt;p&gt;I suppose as one last thing, I should show how I've hooked this into an
+actual Flask app.&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;flask&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Blueprint&lt;/span&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;.controllers&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;AuthenticateController&lt;/span&gt;
@@ -570,7 +576,7 @@ actual Flask&amp;nbsp;app.&lt;/p&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;.interactors&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;AuthenticateUser&lt;/span&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;..dependencies&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;password_auth&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;BasePasswordAuth&lt;/span&gt;
 
-&lt;span class="n"&gt;authenticate&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Blueprint&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'auth'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;__name__&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;authenticate&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Blueprint&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'auth'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="vm"&gt;__name__&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
 &lt;span class="n"&gt;authenticate&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add_url_rule&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'/login'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;endpoint&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;'login'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
     &lt;span class="n"&gt;view_func&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;disallow_authenticated&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
@@ -594,47 +600,48 @@ actual Flask&amp;nbsp;app.&lt;/p&gt;
         &lt;span class="p"&gt;)&lt;/span&gt;
     &lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;Yes, it&amp;#8217;s &lt;em&gt;way&lt;/em&gt; more lines of code, and certainly a fair number of
-classes; however &lt;a class="reference external" href="https://youtu.be/ajhqScWECMo?t=22m48s"&gt;Ross Tuck calls this &amp;#8220;The Inverse Biggie
-Law&amp;#8221;&lt;/a&gt;:&lt;/p&gt;
+&lt;p&gt;Yes, it's &lt;em&gt;way&lt;/em&gt; more lines of code, and certainly a fair number of
+classes; however &lt;a class="reference external" href="https://youtu.be/ajhqScWECMo?t=22m48s"&gt;Ross Tuck calls this &amp;quot;The Inverse Biggie
+Law&amp;quot;&lt;/a&gt;:&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;Mo&amp;#8217;&amp;nbsp;classes&lt;/p&gt;
-&lt;p&gt;Mo&amp;#8217; decoupling and reduced overall design&amp;nbsp;issues&lt;/p&gt;
+&lt;p&gt;Mo' classes&lt;/p&gt;
+&lt;p&gt;Mo' decoupling and reduced overall design issues&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;Since we don&amp;#8217;t couple the high level policy &amp;#8212; see
-&lt;tt class="docutils literal"&gt;PasswordAuthenticator&lt;/tt&gt; &amp;#8212; to the low level details of &lt;em&gt;how&lt;/em&gt; we get
+&lt;p&gt;Since we don't couple the high level policy -- see
+&lt;tt class="docutils literal"&gt;PasswordAuthenticator&lt;/tt&gt; -- to the low level details of &lt;em&gt;how&lt;/em&gt; we get
 that information, each piece is independently testable. Want to see if
 the controller behaves correctly? Give a fake form and a fake
-authenticator. And since that&amp;#8217;s web aware logic, I&amp;#8217;m okay with having to
+authenticator. And since that's web aware logic, I'm okay with having to
 run Flask to test it. You could also use &lt;tt class="docutils literal"&gt;mock.patch.object&lt;/tt&gt; and dummy
-out the render and redirect methods on the controller to test if they&amp;#8217;re&amp;nbsp;called.&lt;/p&gt;
-&lt;p&gt;Or if you&amp;#8217;re testing if your AuthenticateUser use case calls back
+out the render and redirect methods on the controller to test if they're
+called.&lt;/p&gt;
+&lt;p&gt;Or if you're testing if your AuthenticateUser use case calls back
 correctly, give it a fake listener and a fake authenticator. Have the
 fake authenticator throw an error in one test and return some fake user
-in another &amp;#8212; does the fake listener get the right&amp;nbsp;message?&lt;/p&gt;
+in another -- does the fake listener get the right message?&lt;/p&gt;
 &lt;p&gt;But the important part is we can take &lt;em&gt;small&lt;/em&gt; pieces and make a &lt;em&gt;big&lt;/em&gt;
 structure out of them. We can change how the big structure works by
-handing it a different small&amp;nbsp;piece.&lt;/p&gt;
+handing it a different small piece.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="my-thoughts"&gt;
-&lt;h2&gt;My&amp;nbsp;Thoughts&lt;/h2&gt;
+&lt;h2&gt;My Thoughts&lt;/h2&gt;
 &lt;p&gt;Is this &lt;em&gt;too&lt;/em&gt; abstracted? Is enterprisey? It somewhat feels that way.
-And logging in a user isn&amp;#8217;t the most compelling example, I&amp;#8217;m more than
+And logging in a user isn't the most compelling example, I'm more than
 happy to concede that. But what if you were trying to implement
 something more complicated? Say, users sending messages to each other.
 How messy is that endpoint if we just jam everything in there? How hard
-is that to&amp;nbsp;test?&lt;/p&gt;
+is that to test?&lt;/p&gt;
 &lt;p&gt;Of course, at some point this structure might begin to wobble and topple
 just like the original one, but it will carry you &lt;em&gt;much&lt;/em&gt; further. And
 when it does begin to waver you might want to consider things like a
-command bus or domain events (or both! they&amp;#8217;re really&amp;nbsp;cool).&lt;/p&gt;
-&lt;p&gt;If you&amp;#8217;re interested in see how this is being implemented and used in a
-real application and not just some toy, thought piece I&amp;#8217;m leading the
-rearchitecture of FlaskBB&amp;#8217;s code using this style. &lt;a class="reference external" href="https://github.com/justanr/flaskbb/tree/services"&gt;Check out the
+command bus or domain events (or both! they're really cool).&lt;/p&gt;
+&lt;p&gt;If you're interested in see how this is being implemented and used in a
+real application and not just some toy, thought piece I'm leading the
+rearchitecture of FlaskBB's code using this style. &lt;a class="reference external" href="https://github.com/justanr/flaskbb/tree/services"&gt;Check out the
 services branch on my
 repo&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="python"></category><category term="flask"></category></entry><entry><title>Are we hiding complexity or reducing it?</title><link href="http://justanr.github.io/are-we-hiding-complexity-or-reducing-it" rel="alternate"></link><published>2015-09-07T00:00:00-04:00</published><updated>2015-09-07T00:00:00-04:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2015-09-07:/are-we-hiding-complexity-or-reducing-it</id><summary type="html">&lt;p&gt;Consider this seemingly innocuous Flask&amp;nbsp;endpoint.&lt;/p&gt;
+</content><category term="python"></category><category term="flask"></category></entry><entry><title>Are we hiding complexity or reducing it?</title><link href="http://justanr.github.io/are-we-hiding-complexity-or-reducing-it" rel="alternate"></link><published>2015-09-07T00:00:00-04:00</published><updated>2015-09-07T00:00:00-04:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2015-09-07:/are-we-hiding-complexity-or-reducing-it</id><summary type="html">&lt;p&gt;Consider this seemingly innocuous Flask endpoint.&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;myapp.token&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;TokenGenerator&lt;/span&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;myapp.decorators&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;email&lt;/span&gt;
@@ -644,7 +651,7 @@ repo&lt;/a&gt;.&lt;/p&gt;
 &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;generate_auth_token_and_send_it&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;username&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="n"&gt;user&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;User&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;filter_by&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;username&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;username&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;first_or_404&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
     &lt;span class="n"&gt;token&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;TokenGenerator&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;secret_key&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;current_app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;secret_key&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dumps&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="s1"&gt;'op'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;'reset-token'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'username'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;username&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;
-    &lt;span class="n"&gt;html_body&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;render_template&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'token-reset-email.html'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;token&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;token&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;user …&lt;/span&gt;&lt;/pre&gt;</summary><content type="html">&lt;p&gt;Consider this seemingly innocuous Flask&amp;nbsp;endpoint.&lt;/p&gt;
+    &lt;span class="n"&gt;html_body&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;render_template&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'token-reset-email.html'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;token&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;token&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;user …&lt;/span&gt;&lt;/pre&gt;</summary><content type="html">&lt;p&gt;Consider this seemingly innocuous Flask endpoint.&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;myapp.token&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;TokenGenerator&lt;/span&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;myapp.decorators&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;email&lt;/span&gt;
@@ -657,7 +664,7 @@ repo&lt;/a&gt;.&lt;/p&gt;
     &lt;span class="n"&gt;html_body&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;render_template&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'token-reset-email.html'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;token&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;token&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
     &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;Message&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;body&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;html_body&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;receiver&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;email&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;And, let&amp;#8217;s pretend the &lt;tt class="docutils literal"&gt;email&lt;/tt&gt; decorator looks like&amp;nbsp;this:&lt;/p&gt;
+&lt;p&gt;And, let's pretend the &lt;tt class="docutils literal"&gt;email&lt;/tt&gt; decorator looks like this:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;myapp.extensions&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;emailer&lt;/span&gt;
 
@@ -668,43 +675,43 @@ repo&lt;/a&gt;.&lt;/p&gt;
         &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;redirect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'front.homepage'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
     &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;decorator&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;We might look at that and think, &amp;#8220;Hey! That&amp;#8217;s pretty cool, sending the
-email is separated from composing the email! It&amp;#8217;s&amp;nbsp;testable!&amp;#8221;&lt;/p&gt;
+&lt;p&gt;We might look at that and think, &amp;quot;Hey! That's pretty cool, sending the
+email is separated from composing the email! It's testable!&amp;quot;&lt;/p&gt;
 &lt;div class="section" id="is-it-though"&gt;
-&lt;h2&gt;Is it&amp;nbsp;though?&lt;/h2&gt;
+&lt;h2&gt;Is it though?&lt;/h2&gt;
 &lt;p&gt;What does the &lt;tt class="docutils literal"&gt;email&lt;/tt&gt; decorator actually do? It intercepts a request
 from some endpoint and takes the message it returns and sends it. Then
-it redirects to some homepage. It&amp;#8217;s still coupled, we can&amp;#8217;t test
+it redirects to some homepage. It's still coupled, we can't test
 &lt;em&gt;either&lt;/em&gt; part without cranking up Flask and running the test server and
-worse still the logic is separated&amp;nbsp;oddly.&lt;/p&gt;
-&lt;p&gt;The creation of the message is the endpoint&amp;#8217;s responsibility. But the
+worse still the logic is separated oddly.&lt;/p&gt;
+&lt;p&gt;The creation of the message is the endpoint's responsibility. But the
 sending of the email resides some place else. The end point obviously
-&lt;em&gt;wants&lt;/em&gt; to send a notification to a user, but it doesn&amp;#8217;t. Instead it
-ends up just going &amp;#8220;Well&amp;#8230;.uh&amp;#8230;here&amp;#8217;s this message thing. I hope
-whoever gets it knows what to do with it.&amp;#8221; Similarly, the &lt;tt class="docutils literal"&gt;email&lt;/tt&gt;
-decorator &lt;em&gt;wants&lt;/em&gt; a message but it doesn&amp;#8217;t build one, it gets one from
-someplace&amp;nbsp;else.&lt;/p&gt;
+&lt;em&gt;wants&lt;/em&gt; to send a notification to a user, but it doesn't. Instead it
+ends up just going &amp;quot;Well....uh...here's this message thing. I hope
+whoever gets it knows what to do with it.&amp;quot; Similarly, the &lt;tt class="docutils literal"&gt;email&lt;/tt&gt;
+decorator &lt;em&gt;wants&lt;/em&gt; a message but it doesn't build one, it gets one from
+someplace else.&lt;/p&gt;
 &lt;p&gt;Mostly this tell us that the logic inside the &lt;tt class="docutils literal"&gt;email&lt;/tt&gt; decorator was
 originally inside this endpoint, but someone got tired of typing
 &lt;tt class="docutils literal"&gt;emailer.send(msg, sender)&lt;/tt&gt; all the time and decided that was the seam
-to split on. I&amp;#8217;m not gonna cast stones, I&amp;#8217;ve written things like this.
-My eyes would glaze over and became limp every time I&amp;#8217;d need to do
+to split on. I'm not gonna cast stones, I've written things like this.
+My eyes would glaze over and became limp every time I'd need to do
 &lt;tt class="docutils literal"&gt;emailer.send(msg, sender)&lt;/tt&gt;.&lt;/p&gt;
 &lt;p&gt;However, all this decorator has accomplished is &lt;em&gt;hiding&lt;/em&gt; the complexity
 instead of &lt;em&gt;reducing&lt;/em&gt; it. Remember when you were young and your mom or
 dad would tell you to clean your room. And instead of cleaning it, you
 shoved everything into the closet and under the bed? Your room &lt;em&gt;looked&lt;/em&gt;
-clean, but you only &lt;em&gt;hid&lt;/em&gt; the&amp;nbsp;mess.&lt;/p&gt;
-&lt;p&gt;&amp;#8230;maybe you didn&amp;#8217;t do that, but I remember doing that. And I do the
+clean, but you only &lt;em&gt;hid&lt;/em&gt; the mess.&lt;/p&gt;
+&lt;p&gt;...maybe you didn't do that, but I remember doing that. And I do the
 same thing in my code. But now, instead of shoveling the complexity into
 decorators and pushing it away and never dealing with it, I want to look
-at the complexity and think, &amp;#8220;What&amp;#8217;s the best way to clean this and keep
-it from happening&amp;nbsp;again?&amp;#8221;&lt;/p&gt;
+at the complexity and think, &amp;quot;What's the best way to clean this and keep
+it from happening again?&amp;quot;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="how-can-we-fix-it"&gt;
-&lt;h2&gt;How can we fix&amp;nbsp;it?&lt;/h2&gt;
-&lt;p&gt;Before we touch anything, we should create a test harness (something I&amp;#8217;m
-trying to force myself to do&amp;nbsp;lately).&lt;/p&gt;
+&lt;h2&gt;How can we fix it?&lt;/h2&gt;
+&lt;p&gt;Before we touch anything, we should create a test harness (something I'm
+trying to force myself to do lately).&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;unittest&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;mock&lt;/span&gt;
 &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;pytest&lt;/span&gt;
@@ -724,16 +731,16 @@ trying to force myself to do&amp;nbsp;lately).&lt;/p&gt;
 &lt;p&gt;These two things are a staple in my &lt;tt class="docutils literal"&gt;conftest.py&lt;/tt&gt; for Flask
 applications. The first creates a single Flask app for the entire
 session. This might not be the &lt;em&gt;best&lt;/em&gt; way to handle testing Flask apps,
-but it certainly speeds things up. If you don&amp;#8217;t have environment
+but it certainly speeds things up. If you don't have environment
 senstive things (checking for Redis, for example), this probably good
-enough for end-to-end testing, if you have that sort of thing&amp;#8230;well,
-you&amp;#8217;ll probably want to create things &lt;tt class="docutils literal"&gt;create_app_with_redis&lt;/tt&gt; or maybe
-use a parametrized fixture. I&amp;#8217;m not going to get into that here&amp;nbsp;though.&lt;/p&gt;
+enough for end-to-end testing, if you have that sort of thing...well,
+you'll probably want to create things &lt;tt class="docutils literal"&gt;create_app_with_redis&lt;/tt&gt; or maybe
+use a parametrized fixture. I'm not going to get into that here though.&lt;/p&gt;
 &lt;p&gt;The &lt;tt class="docutils literal"&gt;app_context&lt;/tt&gt; fixture is local to each function that wants it.
-It&amp;#8217;s much quicker to set up and teardown application contexts than a
-whole application, which makes&amp;nbsp;sense.&lt;/p&gt;
-&lt;p&gt;Next, we&amp;#8217;ll want to batter our endpoint with tests. This part is &lt;em&gt;no
-fun&lt;/em&gt; because we need to essentially test the endpoint through the &lt;span class="caps"&gt;UI&lt;/span&gt;.&lt;/p&gt;
+It's much quicker to set up and teardown application contexts than a
+whole application, which makes sense.&lt;/p&gt;
+&lt;p&gt;Next, we'll want to batter our endpoint with tests. This part is &lt;em&gt;no
+fun&lt;/em&gt; because we need to essentially test the endpoint through the UI.&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;myapp.models&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;User&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;db&lt;/span&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;inspect&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;unwrap&lt;/span&gt;
@@ -772,37 +779,37 @@ fun&lt;/em&gt; because we need to essentially test the endpoint through the &lt;
     &lt;span class="k"&gt;assert&lt;/span&gt; &lt;span class="n"&gt;aborter&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;called&lt;/span&gt;
 &lt;/pre&gt;
 &lt;p&gt;The very first thing you should notice is that &lt;em&gt;these tests are hard to
-write&lt;/em&gt;. There&amp;#8217;s all sorts of setup, things are being mocked left and
+write&lt;/em&gt;. There's all sorts of setup, things are being mocked left and
 right. We have to mock something in the Flask-SQLAlchemy library! If
 nothing else sends up red flags, mocking something in a third party
-library&amp;nbsp;should.&lt;/p&gt;
-&lt;p&gt;However, there&amp;#8217;s something important we&amp;#8217;ve just learned: our design is
-bad. Trying to isolate this one function, and let&amp;#8217;s be honest there&amp;#8217;s
-things we&amp;#8217;ve missed here, has put tremendous pressure on our thinking.
+library should.&lt;/p&gt;
+&lt;p&gt;However, there's something important we've just learned: our design is
+bad. Trying to isolate this one function, and let's be honest there's
+things we've missed here, has put tremendous pressure on our thinking.
 The only reason I knew &lt;tt class="docutils literal"&gt;first_or_404&lt;/tt&gt; calls &lt;tt class="docutils literal"&gt;flask.abort&lt;/tt&gt; is because
-I&amp;#8217;ve contributed to the&amp;nbsp;library.&lt;/p&gt;
-&lt;p&gt;There&amp;#8217;s also another, more insidious dependency we have: Python&amp;nbsp;3.4+&lt;/p&gt;
+I've contributed to the library.&lt;/p&gt;
+&lt;p&gt;There's also another, more insidious dependency we have: Python 3.4+&lt;/p&gt;
 &lt;ul class="simple"&gt;
 &lt;li&gt;Python 3.2 added the &lt;tt class="docutils literal"&gt;__wrapped__&lt;/tt&gt; attribute for functions wrapped
 with &lt;tt class="docutils literal"&gt;update_wrapper&lt;/tt&gt;/&lt;tt class="docutils literal"&gt;wraps&lt;/tt&gt;&lt;/li&gt;
 &lt;li&gt;mock was added to unittest in 3.3. It is available as a third party
-library&amp;nbsp;though.&lt;/li&gt;
+library though.&lt;/li&gt;
 &lt;li&gt;inspected.unwrap was added in 3.4, which can unwrap decorators using
 &lt;tt class="docutils literal"&gt;__wrapped__&lt;/tt&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;So these tests &lt;em&gt;can&amp;#8217;t run on almost every version of Python&lt;/em&gt;. We could
+&lt;p&gt;So these tests &lt;em&gt;can't run on almost every version of Python&lt;/em&gt;. We could
 ditch &lt;tt class="docutils literal"&gt;unwrap&lt;/tt&gt; and simply call dig through to &lt;tt class="docutils literal"&gt;__wrapped__&lt;/tt&gt;
 ourselves, but there could be more decorators between &lt;tt class="docutils literal"&gt;&amp;#64;email&lt;/tt&gt; and the
 actual function that get added in the future, breaking the tests and
-they&amp;#8217;ll be fixed by just doing this
+they'll be fixed by just doing this
 &lt;tt class="docutils literal"&gt;function.__wrapped__.__wrapped__.__wrapped__&lt;/tt&gt;. The other option is
 implementing &lt;tt class="docutils literal"&gt;unwrap&lt;/tt&gt; ourselves, which brings our dependencies down to
-&lt;em&gt;just&lt;/em&gt; Python&amp;nbsp;3.2&lt;/p&gt;
+&lt;em&gt;just&lt;/em&gt; Python 3.2&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="how-to-fix-it"&gt;
-&lt;h2&gt;How to fix&amp;nbsp;it.&lt;/h2&gt;
+&lt;h2&gt;How to fix it.&lt;/h2&gt;
 &lt;p&gt;The first step is to stop hiding the complexity. And to me, that means
-bringing the emailer &lt;em&gt;back&lt;/em&gt; into the&amp;nbsp;endpoint.&lt;/p&gt;
+bringing the emailer &lt;em&gt;back&lt;/em&gt; into the endpoint.&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="nd"&gt;&amp;#64;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;route&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'/send-reset-password-token/&amp;lt;username&amp;gt;'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;generate_auth_token_and_send_it&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;username&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
@@ -818,31 +825,32 @@ bringing the emailer &lt;em&gt;back&lt;/em&gt; into the&amp;nbsp;endpoint.&lt;/p
 other, originally they were in a long distance relationship and we all
 know long distance relationships are hard. We could simply pull &lt;em&gt;both&lt;/em&gt;
 the message construction and the email sender out into a decorator, but
-then the function name is wrong. It&amp;#8217;s no longer
-&lt;tt class="docutils literal"&gt;generate_auth_token_and_send_it&lt;/tt&gt; it&amp;#8217;s
+then the function name is wrong. It's no longer
+&lt;tt class="docutils literal"&gt;generate_auth_token_and_send_it&lt;/tt&gt; it's
 &lt;tt class="docutils literal"&gt;generate_auth_token_and_return_some_structure_a_decorator_deals_with&lt;/tt&gt;.&lt;/p&gt;
-&lt;p&gt;By moving that logic back inside the endpoint, we&amp;#8217;ve eliminated our hard
-dependency on Python 3 (there&amp;#8217;s nothing to unwrap right now, and mock
-can be pip installed). Things are looking up already. If you&amp;#8217;re
+&lt;p&gt;By moving that logic back inside the endpoint, we've eliminated our hard
+dependency on Python 3 (there's nothing to unwrap right now, and mock
+can be pip installed). Things are looking up already. If you're
 modifying your tests along with your source code, you can remove the
-&lt;tt class="docutils literal"&gt;unwrap&lt;/tt&gt; lines&amp;nbsp;now.&lt;/p&gt;
+&lt;tt class="docutils literal"&gt;unwrap&lt;/tt&gt; lines now.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="what-s-the-use-case"&gt;
-&lt;h2&gt;What&amp;#8217;s the use&amp;nbsp;case?&lt;/h2&gt;
-&lt;p&gt;The next step is to look at the story the endpoint is telling&amp;nbsp;us:&lt;/p&gt;
+&lt;h2&gt;What's the use case?&lt;/h2&gt;
+&lt;p&gt;The next step is to look at the story the endpoint is telling us:&lt;/p&gt;
 &lt;ul class="simple"&gt;
-&lt;li&gt;Given a username, the endpoint locates the proper&amp;nbsp;user&lt;/li&gt;
+&lt;li&gt;Given a username, the endpoint locates the proper user&lt;/li&gt;
 &lt;li&gt;When the user is found, the endpoint generates a token for password
-resets for the&amp;nbsp;user&lt;/li&gt;
-&lt;li&gt;Then the endpoint generates an&amp;nbsp;email&lt;/li&gt;
-&lt;li&gt;The endpoint sends the&amp;nbsp;email&lt;/li&gt;
-&lt;li&gt;Finally the endpoint redirects to the&amp;nbsp;homepage&lt;/li&gt;
+resets for the user&lt;/li&gt;
+&lt;li&gt;Then the endpoint generates an email&lt;/li&gt;
+&lt;li&gt;The endpoint sends the email&lt;/li&gt;
+&lt;li&gt;Finally the endpoint redirects to the homepage&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;There&amp;#8217;s also an error&amp;nbsp;case:&lt;/p&gt;
+&lt;p&gt;There's also an error case:&lt;/p&gt;
 &lt;ul class="simple"&gt;
-&lt;li&gt;If the endpoint can&amp;#8217;t find the user, it redirects to an error&amp;nbsp;page&lt;/li&gt;
+&lt;li&gt;If the endpoint can't find the user, it redirects to an error page&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;By doing this, we can completely pull the actual logic out into it&amp;#8217;s own&amp;nbsp;function:&lt;/p&gt;
+&lt;p&gt;By doing this, we can completely pull the actual logic out into it's own
+function:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;send_user_reset_token&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="n"&gt;token&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;TokenGenerator&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;secret_key&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;current_app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;secret_key&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dumps&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="s1"&gt;'op'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;'reset-token'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'username'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;username&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;
@@ -856,8 +864,8 @@ resets for the&amp;nbsp;user&lt;/li&gt;
     &lt;span class="n"&gt;send_user_reset_token&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
     &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;redirect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'index.homepage'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;That&amp;#8217;s even better. Our test through the &lt;span class="caps"&gt;UI&lt;/span&gt; can be replaced with
-something a little&amp;nbsp;simpler:&lt;/p&gt;
+&lt;p&gt;That's even better. Our test through the UI can be replaced with
+something a little simpler:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test_do_we_send_the_token&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;app_context&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="n"&gt;fred&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;User&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;username&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;'fred'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;email&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;'fred&amp;#64;fred.fred'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -869,8 +877,8 @@ something a little&amp;nbsp;simpler:&lt;/p&gt;
 
     &lt;span class="k"&gt;assert&lt;/span&gt; &lt;span class="n"&gt;sender&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;called&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;I&amp;#8217;m not completely happy with this test, but it&amp;#8217;s okay. However, before
-we completely divert our attention from the endpoint test, let&amp;#8217;s fix the
+&lt;p&gt;I'm not completely happy with this test, but it's okay. However, before
+we completely divert our attention from the endpoint test, let's fix the
 second test where we mock &lt;tt class="docutils literal"&gt;flask_sqlalchemy.abort&lt;/tt&gt;:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="nd"&gt;&amp;#64;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;route&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'/send-reset-password-token/&amp;lt;username&amp;gt;'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -894,20 +902,20 @@ second test where we mock &lt;tt class="docutils literal"&gt;flask_sqlalchemy.ab
     &lt;span class="k"&gt;assert&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;aborter&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;called&lt;/span&gt;
     &lt;span class="k"&gt;assert&lt;/span&gt; &lt;span class="s1"&gt;'Username not found'&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;get_flashed_messages&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;We still need to spin up Flask to run these tests, but they&amp;#8217;re simpler.
-The negative assertion in this test can be dangerous, but it&amp;#8217;s paired
-with a positive assertion so I feel fine with having&amp;nbsp;it.&lt;/p&gt;
+&lt;p&gt;We still need to spin up Flask to run these tests, but they're simpler.
+The negative assertion in this test can be dangerous, but it's paired
+with a positive assertion so I feel fine with having it.&lt;/p&gt;
 &lt;p&gt;That leaves just the emailer and the token generator to deal with. The
 reason for emailer to be mocked out is obvious, but the token generator
-might be less obvious. If it&amp;#8217;s a &lt;em&gt;good&lt;/em&gt; token generator, you won&amp;#8217;t be
-able to know ahead of time what it&amp;#8217;ll generate, it also has a hard
-dependency on our application. Both of these make it hard to&amp;nbsp;test.&lt;/p&gt;
-&lt;p&gt;&lt;a class="reference external" href="http://justanr.github.io/on-dryers-adapters-and-software-design"&gt;The emailer problem I&amp;#8217;ve addressed else
+might be less obvious. If it's a &lt;em&gt;good&lt;/em&gt; token generator, you won't be
+able to know ahead of time what it'll generate, it also has a hard
+dependency on our application. Both of these make it hard to test.&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference external" href="http://justanr.github.io/on-dryers-adapters-and-software-design"&gt;The emailer problem I've addressed else
 where&lt;/a&gt;,
 we just build an interface we want to use and pass the implementation
-in. We&amp;#8217;ll do the same for the token generator. The &lt;tt class="docutils literal"&gt;dumps&lt;/tt&gt;/&lt;tt class="docutils literal"&gt;loads&lt;/tt&gt;
+in. We'll do the same for the token generator. The &lt;tt class="docutils literal"&gt;dumps&lt;/tt&gt;/&lt;tt class="docutils literal"&gt;loads&lt;/tt&gt;
 interface is pretty common, so we could even subsitute the regular
-&lt;tt class="docutils literal"&gt;json&lt;/tt&gt; module for it. So the actual logic really&amp;nbsp;becomes:&lt;/p&gt;
+&lt;tt class="docutils literal"&gt;json&lt;/tt&gt; module for it. So the actual logic really becomes:&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;send_user_reset_token&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;tokenizer&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;notifier&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="n"&gt;token&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;tokenizer&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dumps&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="s1"&gt;'op'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;'reset-token'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'username'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;username&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;
@@ -928,7 +936,7 @@ interface is pretty common, so we could even subsitute the regular
     &lt;span class="n"&gt;send_user_reset_token&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;tokenizer&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;notifier&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
     &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;redirect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'index.homepage'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;
-&lt;p&gt;And our tests against the &lt;em&gt;actual&lt;/em&gt; logic become really&amp;nbsp;easy.&lt;/p&gt;
+&lt;p&gt;And our tests against the &lt;em&gt;actual&lt;/em&gt; logic become really easy.&lt;/p&gt;
 &lt;pre class="code ipython3 literal-block"&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;collections&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;namedtuple&lt;/span&gt;
 
@@ -950,20 +958,20 @@ interface is pretty common, so we could even subsitute the regular
     &lt;span class="k"&gt;assert&lt;/span&gt; &lt;span class="n"&gt;result&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s1"&gt;'op'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;'reset-token'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'username'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;'fred'&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;
 &lt;/pre&gt;
 &lt;p&gt;This is a &lt;em&gt;collaboration test&lt;/em&gt; not a &lt;em&gt;unit test&lt;/em&gt; because our
-&lt;tt class="docutils literal"&gt;send_user_reset_token&lt;/tt&gt; relies on the behavior of others, but it&amp;#8217;s
+&lt;tt class="docutils literal"&gt;send_user_reset_token&lt;/tt&gt; relies on the behavior of others, but it's
 &lt;em&gt;isolated&lt;/em&gt; completely from the outside world. We can test that &lt;em&gt;it&lt;/em&gt;
 behaves correctly by simply handing it things we know work. If we wanted
 to make sure it talks correctly to these things, we could simply use a
-spying double and assert that each bit was&amp;nbsp;called.&lt;/p&gt;
+spying double and assert that each bit was called.&lt;/p&gt;
 &lt;p&gt;If it were more complicated, say it looped through some data set, we
 could pass it five different kinds of data sets to see how it behaves
 with each (those five are: empty, one, many, lots, and blows up; this is
 one of things &lt;a class="reference external" href="https://vimeo.com/80533536"&gt;Integrated Tests are a
-Scam&lt;/a&gt; taught&amp;nbsp;me).&lt;/p&gt;
-&lt;p&gt;So let&amp;#8217;s stop yanking out the complexity and simply shoving it someplace
-else and saying, &amp;#8220;Look how clean it is! &amp;#8230;no, no, no don&amp;#8217;t pop open the
-decorators file!&amp;#8221; Instead, let&amp;#8217;s look the complexity in the eye and say,
-&amp;#8220;I&amp;#8217;m going to control you before you control&amp;nbsp;me!&amp;#8221;&lt;/p&gt;
-&lt;p&gt;Now, if you pardon me, I have a closet to&amp;nbsp;organize.&lt;/p&gt;
+Scam&lt;/a&gt; taught me).&lt;/p&gt;
+&lt;p&gt;So let's stop yanking out the complexity and simply shoving it someplace
+else and saying, &amp;quot;Look how clean it is! ...no, no, no don't pop open the
+decorators file!&amp;quot; Instead, let's look the complexity in the eye and say,
+&amp;quot;I'm going to control you before you control me!&amp;quot;&lt;/p&gt;
+&lt;p&gt;Now, if you pardon me, I have a closet to organize.&lt;/p&gt;
 &lt;/div&gt;
 </content><category term="my-journey-through-tdd"></category></entry></feed>
