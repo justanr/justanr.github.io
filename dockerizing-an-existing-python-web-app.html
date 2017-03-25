@@ -242,7 +242,11 @@ kill the docker containers and start them again.</p>
 <div class="section" id="from-here">
 <h2>From here</h2>
 <p>For a quicky and dirty &quot;shove an existing application into docker&quot; this
-isn't too bad. I'd recommend</p>
+isn't too bad. I'd recommend reading up on the docker-compose syntax to
+see what each individual piece does and other interesting ways to build
+upon this example, in particular using the <tt class="docutils literal">env_file</tt> setting to load
+a configuration file instead of having a bunch of declarations in the
+compose file itself.</p>
 <p>However, this isn't the end of this dockerizing IsThisWho. Instead, I
 want to use this as a starting point to address other issues I've found
 in other docker + python tutorials (and in general, most docker
