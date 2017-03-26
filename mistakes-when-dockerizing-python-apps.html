@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="Alec Nikolas Reiter" />
+        <meta name="copyright" content="Alec Nikolas Reiter" />
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="/theme/slicknav.css">
+        <script src="/theme/jquery.slicknav.min.js"></script>
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+        <script type="text/javascript"
+            src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+        </script>
+        <!--[if lt IE 9]>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.2/html5shiv.js"></script>
+        <![endif]-->
+
+
+<meta name="keywords" content="python, docker, tutorials, " />
+        <title>Mistakes when dockerizing Python apps - from alec.thoughts import *
+</title>
+        <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="http://justanr.github.io/theme/css/style.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="http://justanr.github.io/theme/css/solarizedlight.css" media="screen">
+        <link rel="shortcut icon" href="http://justanr.github.io/theme/images/favicon.ico" type="image/x-icon" />
+        <link rel="apple-touch-icon" href="http://justanr.github.io/theme/images/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" sizes="57x57" href="http://justanr.github.io/theme/images/apple-touch-icon-57x57.png" />
+        <link rel="apple-touch-icon" sizes="72x72" href="http://justanr.github.io/theme/images/apple-touch-icon-72x72.png" />
+        <link rel="apple-touch-icon" sizes="114x114" href="http://justanr.github.io/theme/images/apple-touch-icon-114x114.png" />
+        <link rel="apple-touch-icon" sizes="144x144" href="http://justanr.github.io/theme/images/apple-touch-icon-144x144.png" />
+        <link rel="icon" href="http://justanr.github.io/theme/images/apple-touch-icon-144x144.png" />
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-64904436-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+    </head>
+    <body>
+        <div id="content-sans-footer">
+        <div class="navbar navbar-static-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="http://justanr.github.io/"><span class=site-name>from alec.thoughts import *</span></a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav pull-right top-menu">
+                            <li ><a href="http://justanr.github.io">Home</a></li>
+                            <li ><a href="http://justanr.github.io/categories.html">Categories</a></li>
+                            <li ><a href="http://justanr.github.io/tags.html">Tags</a></li>
+                            <li ><a href="http://justanr.github.io/archives.html">Archives</a></li>
+                            <li><form class="navbar-search" action="http://justanr.github.io/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span1"></div>
+                <div class="span10">
+<article>
+<div class="row-fluid">
+    <header class="page_header span10 offset2">
+    <h1><a href="http://justanr.github.io/mistakes-when-dockerizing-python-apps"> Mistakes when dockerizing Python apps  </a></h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+
+            <p>In the <a class="reference external" href="dockerizing-an-existing-python-web-app">last article</a> I
+stepped through creating a docker image for an existing application.
+It's a decent attempt at a docker container, but there are some things
+that can be improved. Here's the Dockerfile again:</p>
+<pre class="literal-block">
+FROM python:3.6
+
+COPY . /app
+WORKDIR /app
+RUN pip install -r requirements.txt
+ENV PYTHONUNBUFFERED 1
+ENF PYTHONDONTWRITEBYTECODE 1
+EXPOSE 5000
+ENTRYPOINT [&quot;entrypoint.sh&quot;]
+CMD [&quot;dev&quot;]
+</pre>
+<div class="section" id="mistake-1-not-using-docker-s-layer-caching">
+<h2>Mistake 1: Not using Docker's layer caching</h2>
+<p>The first improvement can be to move the copying and installation of
+<tt class="docutils literal">requirements.txt</tt> before copying the rest of the application in:</p>
+<pre class="literal-block">
+FROM python:3.6
+
+WORKDIR /app
+COPY ./requirements.txt /app/requirements.txt
+RUN pip install -r requirements.txt
+COPY . /app
+</pre>
+<p>With this change, Docker can cache the result of the pip installation
+and only start at the <tt class="docutils literal">COPY . /app</tt> line when changes are made to the
+application code.</p>
+</div>
+<div class="section" id="mistake-2-coarse-grained-volume-mounting">
+<h2>Mistake 2: Coarse grained volume mounting</h2>
+<p>This one doesn't affect the container as is, but very well could.
+Consider if the application was modified to be installable inside the
+container and we added</p>
+<pre class="literal-block">
+RUN pip install -e .
+</pre>
+<p>When the container is built a <tt class="docutils literal">egg</tt> would be generated in <tt class="docutils literal">/app</tt>.
+When we go to run the image through the docker-compose file with the
+<tt class="docutils literal"><span class="pre">.:/app</span></tt> volume mount, that <tt class="docutils literal">egg</tt> disappears. Whoops.</p>
+<p>The first time I encountered this, I thought I was going crazy. I know
+setuptools isn't the friendliest thing in the world, but it's not
+antagonistic. It wasn't until I removed the volume mount and saw it
+working that I realized what was going on. This aggressive volume
+mounting has also been the source of other issues I've thought were
+mysterious issues (translation files disappearing, old javascript files
+being present, etc).</p>
+<p>The solution to this is to only mount exactly what you'll need into the
+container and no more. Even if that means you end up a somewhat lengthy
+volumes section (this actually telling you that you're linking too
+much). For me, I tend to mount only the actual source and the tests for
+the application. If I'm fiddling with stuff like entrypoints, tox
+configuration, etc I'll mount those files as needed and remove them when
+I'm done.</p>
+</div>
+<div class="section" id="mistake-3-packaging-too-much-into-the-image">
+<h2>Mistake 3: Packaging too much into the image</h2>
+<p>Again, it doesn't affect this image but it certainly is something to be
+mindful of. With <tt class="docutils literal">COPY . /app</tt> we bring <em>everything</em> into the image,
+including stuff we're not going to need at runtime. Things like:</p>
+<ul class="simple">
+<li>Tests</li>
+<li>Development tools</li>
+<li>Build tools</li>
+</ul>
+<p>If you have compiled dependencies, you're probably leaving things like
+development headers laying around as well. There's several solutions to
+this:</p>
+<ol class="arabic simple">
+<li>Fine grained <tt class="docutils literal">COPY</tt> commands</li>
+<li><tt class="docutils literal">.dockerignore</tt> will allow you to selective ignore things sent into
+the image, think of it like <tt class="docutils literal">.gitignore</tt> for Docker</li>
+<li>Employing a builder pattern that installs all the needed development
+headers and uses an entrypoint and volume to create a wheelhouse for
+you to install from -- <a class="reference external" href="https://glyph.twistedmatrix.com/2015/03/docker-deploy-double-dutch.html">Glyph has an article on a Python builder
+image</a></li>
+<li>A cleanup script that removes everything you don't need at runtime</li>
+</ol>
+<p>None of these are mutually exclusive and you should decide which works
+for your application and how. If this application had tests, it might
+have a directory structure like:</p>
+<pre class="literal-block">
+.
+├── docker-compose.yml
+├── Dockerfile
+├── entrypoint.sh
+├── isthatwho
+├── README.md
+├── requirements.txt
+├── setup.py
+└── tests
+</pre>
+<p>We might change the command that copies the source code to
+<tt class="docutils literal">COPY ./isthatwho /app/isthatwho</tt> to avoid picking up tests and add
+another to pick up the setup.py, requirements.txt entrypoint.sh, leaving
+everything else outside the image.</p>
+<p>If you need to do stuff like run tests on a build server, you can either
+mount all the needed files into the container and run them or build a
+child image that includes them. The former works well if you're only
+running with Python's builtin <tt class="docutils literal">unittest</tt> module:</p>
+<pre class="code bash literal-block">
+docker run -v <span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">&quot;</span>/tests:/app/tests itw python -m unittest /app/tests
+</pre>
+<p>Where as the child image works better if you need external dependencies
+like pytest, coverage, tox, etc. The issue here is if you build and tag
+images based on branch/commit/build number, you run into some
+interesting situations that way such as needing to generate a
+dockerfile. I've not put a whole lot of practice into this so I don't
+have good suggestions here, but I'd be surprised if I'm the first to
+think about it.</p>
+</div>
+<div class="section" id="mistake-4-doing-too-much-in-one-container">
+<h2>Mistake 4: Doing too much in one container</h2>
+<p>Lately, I've noticed a trend of one <em>purpose</em> per container rather a
+strict one <em>process</em> per container. I'm of two minds about this. On one
+hand, it's great to just shove a container onto a sever and know it has
+everything it needs to run without linking up to other hosts. On the
+other, it can be a huge pain for scaling services.</p>
+<p>If you have a container that runs uwsgi and nginx together, then you're
+fucked when you want to scale up the application without adding more
+nginx workers. On top of that, you're left needing something to
+orchestrate all of those processes, so on top of uwsgi and nginx, you
+need an init system as well. And as you add more and more of these
+services to the single container, it bloats and bloats and soon you're
+left wondering &quot;Why didn't I just use a VM in the first place?&quot;</p>
+<p>Instead, what you should do is stick to running as few processes inside
+a container as possible. If you have a container for uwsgi, celery,
+redis and nginx then you can scale each independently as needed, your
+images stay small, and there's less ops overhead with an init system.</p>
+<p>I'll fully admit that this does complicate getting nginx and uwsgi to
+communicate</p>
+</div>
+<div class="section" id="mistake-5-staying-as-root">
+<h2>Mistake 5: Staying as root</h2>
+<p>This is probably the biggest issue I commonly see. At build and start up
+time, I can see the value in having the current user be root. You might
+need special permissions to run some commands.</p>
+<p>However, when it comes time to run the process, being root is absolutely
+ridiculous. Mostly because the root in the container is the same root on
+the host OS. There's lots of ways to go poking around if you don't drop
+privileges. The most egregious is not dropping privileges on stuff like
+nginx or WSGI servers because these come with configurable ways to shed
+those privileges.</p>
+<p>If your base image has the nobody user and group, I recommend taking
+advantage of that at runtime. If not, adding them is as easy as
+including this in your Dockerfile:</p>
+<pre class="code bash literal-block">
+RUN groupadd nobody -r -g <span class="m">1000</span> <span class="o">&amp;&amp;</span> useradd nobody -r -u <span class="m">1000</span>  -g nobody
+</pre>
+<p>That creates &quot;system&quot; groups and accounts (essentially they don't have a
+login, shell, or homedir), it also gives them known a known GID and UID
+in case you need them.</p>
+<p>With this, you can safely run your processes as just some random user
+with no special privileges.</p>
+</div>
+
+            <aside>
+            <nav>
+            <ul class="articles_timeline">
+ 
+                <li class="previous_article">« <a href="http://justanr.github.io/dockerizing-an-existing-python-web-app" title="Previous: Dockerizing an existing Python web app">Dockerizing an existing Python web app</a></li>
+            </ul>
+            </nav>
+            </aside>
+<section>
+<hr/>
+<p id="comment-message">I spilled my brains, spill some of yours. </p>
+<div class="accordion" id="accordion2">
+    <div class="accordion-group">
+        <div class="accordion-heading">
+            <a class="accordion-toggle disqus-comment-count" data-toggle="collapse" data-parent="#accordion2" 
+                href="http://justanr.github.io/mistakes-when-dockerizing-python-apps/#disqus_thread">
+                Comments
+            </a>
+        </div>
+        <div id="disqus_thread" class="accordion-body collapse">
+            <div class="accordion-inner">
+                <div class="comments">
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ballinoctobear';
+        var disqus_identifier = 'http://justanr.github.io/mistakes-when-dockerizing-python-apps';
+    var disqus_url = 'http://justanr.github.io/mistakes-when-dockerizing-python-apps';
+
+    (function() {
+         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+         dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+     })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+        </div>
+        <section>
+        <div class="span2" style="float:right;font-size:0.9em;">
+ 
+            <h4>Published</h4>
+            <time pubdate="pubdate" datetime="2017-03-26T00:00:00-04:00">Mar 26, 2017</time>
+            <h4>Category</h4>
+            <a class="category-link" href="/categories.html#tutorials-ref">tutorials</a> 
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article"> 
+                <li><a href="/tags.html#docker-ref">docker
+                    <span>2</span>
+</a></li>
+                <li><a href="/tags.html#python-ref">python
+                    <span>17</span>
+</a></li>
+            </ul>
+
+        </div>
+        </section>
+    </div>
+    </article>
+                </div>
+                <div class="span1"></div>
+            </div>
+        </div>
+    </div>
+<footer>
+<div id="footer">
+    <ul class="footer-content">
+        <li class="elegant-license">Shared under the Creative Commons for content and MIT for code</li>
+        <li class="elegant-power">Powered by <a href="http://getpelican.com/" title="Pelican Home Page">Pelican</a>. Theme: <a href="http://oncrashreboot.com/pelican-elegant" title="Theme Elegant Home Page">Elegant</a> by <a href="http://oncrashreboot.com" title="Talha Mansoor Home Page">Talha Mansoor</a></li>
+    </ul>
+</div>
+</footer>            <script src="http://code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+<script type="text/javascript">
+    var disqus_shortname = 'ballinoctobear';
+
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+    </script>
+    </body>
+</html>

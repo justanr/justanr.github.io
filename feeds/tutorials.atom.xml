@@ -1,5 +1,172 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>from alec.thoughts import * - tutorials</title><link href="http://justanr.github.io/" rel="alternate"></link><link href="http://justanr.github.io/feeds/tutorials.atom.xml" rel="self"></link><id>http://justanr.github.io/</id><updated>2017-03-25T00:00:00-04:00</updated><entry><title>Dockerizing an existing Python web app</title><link href="http://justanr.github.io/dockerizing-an-existing-python-web-app" rel="alternate"></link><published>2017-03-25T00:00:00-04:00</published><updated>2017-03-25T00:00:00-04:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2017-03-25:/dockerizing-an-existing-python-web-app</id><summary type="html">&lt;p&gt;Are you ready for the umpteenth Docker + Python application out there?
+<feed xmlns="http://www.w3.org/2005/Atom"><title>from alec.thoughts import * - tutorials</title><link href="http://justanr.github.io/" rel="alternate"></link><link href="http://justanr.github.io/feeds/tutorials.atom.xml" rel="self"></link><id>http://justanr.github.io/</id><updated>2017-03-26T00:00:00-04:00</updated><entry><title>Mistakes when dockerizing Python apps</title><link href="http://justanr.github.io/mistakes-when-dockerizing-python-apps" rel="alternate"></link><published>2017-03-26T00:00:00-04:00</published><updated>2017-03-26T00:00:00-04:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2017-03-26:/mistakes-when-dockerizing-python-apps</id><summary type="html">&lt;p&gt;In the &lt;a class="reference external" href="dockerizing-an-existing-python-web-app"&gt;last article&lt;/a&gt; I
+stepped through creating a docker image for an existing application.
+It's a decent attempt at a docker container, but there are some things
+that can be improved. Here's the Dockerfile again:&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+FROM python:3.6
+
+COPY . /app
+WORKDIR /app
+RUN pip install -r requirements.txt …&lt;/pre&gt;</summary><content type="html">&lt;p&gt;In the &lt;a class="reference external" href="dockerizing-an-existing-python-web-app"&gt;last article&lt;/a&gt; I
+stepped through creating a docker image for an existing application.
+It's a decent attempt at a docker container, but there are some things
+that can be improved. Here's the Dockerfile again:&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+FROM python:3.6
+
+COPY . /app
+WORKDIR /app
+RUN pip install -r requirements.txt
+ENV PYTHONUNBUFFERED 1
+ENF PYTHONDONTWRITEBYTECODE 1
+EXPOSE 5000
+ENTRYPOINT [&amp;quot;entrypoint.sh&amp;quot;]
+CMD [&amp;quot;dev&amp;quot;]
+&lt;/pre&gt;
+&lt;div class="section" id="mistake-1-not-using-docker-s-layer-caching"&gt;
+&lt;h2&gt;Mistake 1: Not using Docker's layer caching&lt;/h2&gt;
+&lt;p&gt;The first improvement can be to move the copying and installation of
+&lt;tt class="docutils literal"&gt;requirements.txt&lt;/tt&gt; before copying the rest of the application in:&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+FROM python:3.6
+
+WORKDIR /app
+COPY ./requirements.txt /app/requirements.txt
+RUN pip install -r requirements.txt
+COPY . /app
+&lt;/pre&gt;
+&lt;p&gt;With this change, Docker can cache the result of the pip installation
+and only start at the &lt;tt class="docutils literal"&gt;COPY . /app&lt;/tt&gt; line when changes are made to the
+application code.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="mistake-2-coarse-grained-volume-mounting"&gt;
+&lt;h2&gt;Mistake 2: Coarse grained volume mounting&lt;/h2&gt;
+&lt;p&gt;This one doesn't affect the container as is, but very well could.
+Consider if the application was modified to be installable inside the
+container and we added&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+RUN pip install -e .
+&lt;/pre&gt;
+&lt;p&gt;When the container is built a &lt;tt class="docutils literal"&gt;egg&lt;/tt&gt; would be generated in &lt;tt class="docutils literal"&gt;/app&lt;/tt&gt;.
+When we go to run the image through the docker-compose file with the
+&lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;.:/app&lt;/span&gt;&lt;/tt&gt; volume mount, that &lt;tt class="docutils literal"&gt;egg&lt;/tt&gt; disappears. Whoops.&lt;/p&gt;
+&lt;p&gt;The first time I encountered this, I thought I was going crazy. I know
+setuptools isn't the friendliest thing in the world, but it's not
+antagonistic. It wasn't until I removed the volume mount and saw it
+working that I realized what was going on. This aggressive volume
+mounting has also been the source of other issues I've thought were
+mysterious issues (translation files disappearing, old javascript files
+being present, etc).&lt;/p&gt;
+&lt;p&gt;The solution to this is to only mount exactly what you'll need into the
+container and no more. Even if that means you end up a somewhat lengthy
+volumes section (this actually telling you that you're linking too
+much). For me, I tend to mount only the actual source and the tests for
+the application. If I'm fiddling with stuff like entrypoints, tox
+configuration, etc I'll mount those files as needed and remove them when
+I'm done.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="mistake-3-packaging-too-much-into-the-image"&gt;
+&lt;h2&gt;Mistake 3: Packaging too much into the image&lt;/h2&gt;
+&lt;p&gt;Again, it doesn't affect this image but it certainly is something to be
+mindful of. With &lt;tt class="docutils literal"&gt;COPY . /app&lt;/tt&gt; we bring &lt;em&gt;everything&lt;/em&gt; into the image,
+including stuff we're not going to need at runtime. Things like:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Tests&lt;/li&gt;
+&lt;li&gt;Development tools&lt;/li&gt;
+&lt;li&gt;Build tools&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;If you have compiled dependencies, you're probably leaving things like
+development headers laying around as well. There's several solutions to
+this:&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;Fine grained &lt;tt class="docutils literal"&gt;COPY&lt;/tt&gt; commands&lt;/li&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;.dockerignore&lt;/tt&gt; will allow you to selective ignore things sent into
+the image, think of it like &lt;tt class="docutils literal"&gt;.gitignore&lt;/tt&gt; for Docker&lt;/li&gt;
+&lt;li&gt;Employing a builder pattern that installs all the needed development
+headers and uses an entrypoint and volume to create a wheelhouse for
+you to install from -- &lt;a class="reference external" href="https://glyph.twistedmatrix.com/2015/03/docker-deploy-double-dutch.html"&gt;Glyph has an article on a Python builder
+image&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;A cleanup script that removes everything you don't need at runtime&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;None of these are mutually exclusive and you should decide which works
+for your application and how. If this application had tests, it might
+have a directory structure like:&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+.
+├── docker-compose.yml
+├── Dockerfile
+├── entrypoint.sh
+├── isthatwho
+├── README.md
+├── requirements.txt
+├── setup.py
+└── tests
+&lt;/pre&gt;
+&lt;p&gt;We might change the command that copies the source code to
+&lt;tt class="docutils literal"&gt;COPY ./isthatwho /app/isthatwho&lt;/tt&gt; to avoid picking up tests and add
+another to pick up the setup.py, requirements.txt entrypoint.sh, leaving
+everything else outside the image.&lt;/p&gt;
+&lt;p&gt;If you need to do stuff like run tests on a build server, you can either
+mount all the needed files into the container and run them or build a
+child image that includes them. The former works well if you're only
+running with Python's builtin &lt;tt class="docutils literal"&gt;unittest&lt;/tt&gt; module:&lt;/p&gt;
+&lt;pre class="code bash literal-block"&gt;
+docker run -v &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;pwd&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;/tests:/app/tests itw python -m unittest /app/tests
+&lt;/pre&gt;
+&lt;p&gt;Where as the child image works better if you need external dependencies
+like pytest, coverage, tox, etc. The issue here is if you build and tag
+images based on branch/commit/build number, you run into some
+interesting situations that way such as needing to generate a
+dockerfile. I've not put a whole lot of practice into this so I don't
+have good suggestions here, but I'd be surprised if I'm the first to
+think about it.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="mistake-4-doing-too-much-in-one-container"&gt;
+&lt;h2&gt;Mistake 4: Doing too much in one container&lt;/h2&gt;
+&lt;p&gt;Lately, I've noticed a trend of one &lt;em&gt;purpose&lt;/em&gt; per container rather a
+strict one &lt;em&gt;process&lt;/em&gt; per container. I'm of two minds about this. On one
+hand, it's great to just shove a container onto a sever and know it has
+everything it needs to run without linking up to other hosts. On the
+other, it can be a huge pain for scaling services.&lt;/p&gt;
+&lt;p&gt;If you have a container that runs uwsgi and nginx together, then you're
+fucked when you want to scale up the application without adding more
+nginx workers. On top of that, you're left needing something to
+orchestrate all of those processes, so on top of uwsgi and nginx, you
+need an init system as well. And as you add more and more of these
+services to the single container, it bloats and bloats and soon you're
+left wondering &amp;quot;Why didn't I just use a VM in the first place?&amp;quot;&lt;/p&gt;
+&lt;p&gt;Instead, what you should do is stick to running as few processes inside
+a container as possible. If you have a container for uwsgi, celery,
+redis and nginx then you can scale each independently as needed, your
+images stay small, and there's less ops overhead with an init system.&lt;/p&gt;
+&lt;p&gt;I'll fully admit that this does complicate getting nginx and uwsgi to
+communicate&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="mistake-5-staying-as-root"&gt;
+&lt;h2&gt;Mistake 5: Staying as root&lt;/h2&gt;
+&lt;p&gt;This is probably the biggest issue I commonly see. At build and start up
+time, I can see the value in having the current user be root. You might
+need special permissions to run some commands.&lt;/p&gt;
+&lt;p&gt;However, when it comes time to run the process, being root is absolutely
+ridiculous. Mostly because the root in the container is the same root on
+the host OS. There's lots of ways to go poking around if you don't drop
+privileges. The most egregious is not dropping privileges on stuff like
+nginx or WSGI servers because these come with configurable ways to shed
+those privileges.&lt;/p&gt;
+&lt;p&gt;If your base image has the nobody user and group, I recommend taking
+advantage of that at runtime. If not, adding them is as easy as
+including this in your Dockerfile:&lt;/p&gt;
+&lt;pre class="code bash literal-block"&gt;
+RUN groupadd nobody -r -g &lt;span class="m"&gt;1000&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; useradd nobody -r -u &lt;span class="m"&gt;1000&lt;/span&gt;  -g nobody
+&lt;/pre&gt;
+&lt;p&gt;That creates &amp;quot;system&amp;quot; groups and accounts (essentially they don't have a
+login, shell, or homedir), it also gives them known a known GID and UID
+in case you need them.&lt;/p&gt;
+&lt;p&gt;With this, you can safely run your processes as just some random user
+with no special privileges.&lt;/p&gt;
+&lt;/div&gt;
+</content><category term="python"></category><category term="docker"></category></entry><entry><title>Dockerizing an existing Python web app</title><link href="http://justanr.github.io/dockerizing-an-existing-python-web-app" rel="alternate"></link><published>2017-03-25T00:00:00-04:00</published><updated>2017-03-25T00:00:00-04:00</updated><author><name>Alec Nikolas Reiter</name></author><id>tag:justanr.github.io,2017-03-25:/dockerizing-an-existing-python-web-app</id><summary type="html">&lt;p&gt;Are you ready for the umpteenth Docker + Python application out there?
 Good, so am I. This one is going to focus on an existing application and
 the steps I take to turn it into an image that can be shoved up on a
 host running docker. I choose my
