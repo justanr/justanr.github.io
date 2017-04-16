@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="Alec Nikolas Reiter" />
+        <meta name="copyright" content="Alec Nikolas Reiter" />
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="/theme/slicknav.css">
+        <script src="/theme/jquery.slicknav.min.js"></script>
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+        <script type="text/javascript"
+            src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+        </script>
+        <!--[if lt IE 9]>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.2/html5shiv.js"></script>
+        <![endif]-->
+
+
+<meta name="keywords" content="python, asyncio, aiohttp, tutorial, " />
+        <title>Getting start with aiohttp.web: A todo tutorial - from alec.thoughts import *
+</title>
+        <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="http://justanr.github.io/theme/css/style.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="http://justanr.github.io/theme/css/solarizedlight.css" media="screen">
+        <link rel="shortcut icon" href="http://justanr.github.io/theme/images/favicon.ico" type="image/x-icon" />
+        <link rel="apple-touch-icon" href="http://justanr.github.io/theme/images/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" sizes="57x57" href="http://justanr.github.io/theme/images/apple-touch-icon-57x57.png" />
+        <link rel="apple-touch-icon" sizes="72x72" href="http://justanr.github.io/theme/images/apple-touch-icon-72x72.png" />
+        <link rel="apple-touch-icon" sizes="114x114" href="http://justanr.github.io/theme/images/apple-touch-icon-114x114.png" />
+        <link rel="apple-touch-icon" sizes="144x144" href="http://justanr.github.io/theme/images/apple-touch-icon-144x144.png" />
+        <link rel="icon" href="http://justanr.github.io/theme/images/apple-touch-icon-144x144.png" />
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-64904436-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+    </head>
+    <body>
+        <div id="content-sans-footer">
+        <div class="navbar navbar-static-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="http://justanr.github.io/"><span class=site-name>from alec.thoughts import *</span></a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav pull-right top-menu">
+                            <li ><a href="http://justanr.github.io">Home</a></li>
+                            <li ><a href="http://justanr.github.io/categories.html">Categories</a></li>
+                            <li ><a href="http://justanr.github.io/tags.html">Tags</a></li>
+                            <li ><a href="http://justanr.github.io/archives.html">Archives</a></li>
+                            <li><form class="navbar-search" action="http://justanr.github.io/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span1"></div>
+                <div class="span10">
+<article>
+<div class="row-fluid">
+    <header class="page_header span10 offset2">
+    <h1><a href="http://justanr.github.io/getting-start-with-aiohttpweb-a-todo-tutorial"> Getting start with aiohttp.web: A todo tutorial  </a></h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+
+            <p><a class="reference external" href="http://aiohttp.readthedocs.io/en/stable/">aiohttp</a> is an HTTP
+toolkit based on the Python 3.4+
+<a class="reference external" href="https://docs.python.org/3/library/asyncio.html">asyncio</a> module. It
+includes:</p>
+<ul class="simple">
+<li>A <a class="reference external" href="http://docs.python-requests.org/en/master/">requests</a>-like HTTP
+client</li>
+<li>A high level HTTP server interface meant for building web
+applications</li>
+<li>A low level HTTP server for web servers that don't need the
+conveniences of the high level server</li>
+</ul>
+<p>The difference between the high and low level servers is that the high
+level server offers things such as:</p>
+<ul class="simple">
+<li>Routing</li>
+<li>Signals for startup, loop available and shutdown</li>
+<li>Middlewares</li>
+<li>Mounting subapplications (similar but not quite the same as Flask's
+blueprints)</li>
+</ul>
+<p>The low level server still allows the use of the high level request,
+response and websocket objects so you're not so low that you'll dealing
+with TCP sockets directly.</p>
+<p>In this guide, we'll build a simple Todo application as a short
+introduction to getting started with the high level server. In the
+future, I hope to cover more complex applications, but the todo list has
+become the fizzbuzz of web programming.</p>
+<div class="section" id="installation">
+<h2>Installation</h2>
+<p>You'll need at least Python 3.6. aiohttp does run on Python 3.4, but I
+much prefer the async and await functionality introduced in Python 3.5.
+The reason for using 3.6 is making using the async comprehensions
+introduced in that version. Other than that, everything here should run
+in 3.5 (and 3.7 if you're into alpha builds).</p>
+<p>Once you've ensured that at least 3.6 is installed, you need to install
+aiohttp. I suggest making a virtualenv for this:</p>
+<pre class="code bash literal-block">
+python3.6 -m venv asynctodo
+<span class="nb">source</span> asynctodo/bin/activate
+python -m pip install <span class="nv">aiohttp</span><span class="o">==</span><span class="m">2</span>.0.7  <span class="c1"># current version as 2017-04-16</span>
+</pre>
+</div>
+<div class="section" id="the-basic-application">
+<h2>The basic application</h2>
+<p>We're going to start small with a simple in memory list of dictionaries
+and routes that will display it and individual items from it. Since this
+is an inmemory object and we'll be restarting the server a few times
+(aiohttp does not come with a reloader but I'll cover that later). I am
+naming this file <tt class="docutils literal">aiotodo.py</tt> and will reference this file name
+several times, if you decide to name it something else, just subsitute
+that name in where ever <tt class="docutils literal">aiotodo.py</tt> or <tt class="docutils literal">aiotodo</tt> appears.</p>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">aiohttp</span> <span class="k">import</span> <span class="n">web</span>
+
+<span class="n">TODOS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span>
+        <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'Start this tutorial'</span><span class="p">,</span>
+        <span class="s1">'finished'</span><span class="p">:</span> <span class="kc">True</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'Finish this tutorial'</span><span class="p">,</span>
+        <span class="s1">'finished'</span><span class="p">:</span> <span class="kc">False</span>
+    <span class="p">}</span>
+<span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">get_all_todos</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s1">'id'</span><span class="p">:</span> <span class="n">idx</span><span class="p">,</span> <span class="o">**</span><span class="n">todo</span><span class="p">}</span> <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">todo</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">TODOS</span><span class="p">)</span>
+    <span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">get_one_todo</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">match_info</span><span class="p">[</span><span class="s1">'todo'</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="nb">id</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">TODOS</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">json_response</span><span class="p">({</span><span class="s1">'error'</span><span class="p">:</span> <span class="s1">'Todo not found'</span><span class="p">},</span> <span class="n">status</span><span class="o">=</span><span class="mi">404</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">json_response</span><span class="p">({</span><span class="s1">'id'</span><span class="p">:</span> <span class="nb">id</span><span class="p">,</span> <span class="o">**</span><span class="n">TODOS</span><span class="p">[</span><span class="nb">id</span><span class="p">]})</span>
+
+<span class="k">def</span> <span class="nf">app_factory</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="p">()):</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">web</span><span class="o">.</span><span class="n">Application</span><span class="p">()</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_get</span><span class="p">(</span><span class="s1">'/todos/'</span><span class="p">,</span> <span class="n">get_all_todos</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'all_todos'</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_get</span><span class="p">(</span><span class="s1">'/todos/{id:\d+}'</span><span class="p">,</span> <span class="n">get_one_todo</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'one_todo'</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">app</span>
+</pre>
+<p>There's a little bit going on here. Let's break it down.</p>
+<p><tt class="docutils literal">aiohttp.web</tt> is where all the high level application server
+components live. It provides things such as the application class, the
+request and response classes, and helpers like <tt class="docutils literal">json_response</tt> which
+is a shortcut to creating <tt class="docutils literal">application/json</tt> responses without needing
+to remember to manually dump the object graph yourself.</p>
+<p><tt class="docutils literal">get_all_todos</tt> and <tt class="docutils literal">get_one_todo</tt> are our route handlers. You'll
+notice they aren't async -- this is alright as the server is capable of
+dealing with both sync and async handlers. Handlers should accept the
+route in a Django style. However unlike Django and Flask (but apparently
+similar to Pyramid), url parameters are accessed through the
+<tt class="docutils literal">request.match_info</tt> mapping. The request object contains everything
+relevant about a particular request including a reference to the
+application that produced it.</p>
+<p>The <tt class="docutils literal">{'id': id, **todo}</tt> syntax, if you're unfamiliar, was added in
+3.5 and allows a mapping to be unpacked into a dictionary literal. The
+same change was made for sequences and list, set and tuple literals as
+well (using <tt class="docutils literal">*</tt> unpacking as opposed to <tt class="docutils literal">**</tt> unpacking). This is
+very useful extending copies of dictionaries.</p>
+<p><tt class="docutils literal">app_factory</tt> is more than a nicety for grouping all the application
+construction together, it's need for both invoking the aiohttp dev
+server and for the gunicorn aiohttp workers. You'll notice it accepts
+<tt class="docutils literal">args</tt>, when executed from the command line, arguments that the
+aiohttp entrypoint doesn't understand are passed here -- we'll be using
+that later.</p>
+<p>Finally, application routing is something of a mix of Flask and Django.
+It uses <tt class="docutils literal">{name:pattern}</tt> to capture URL parameters. The name portion
+becomes available in the <tt class="docutils literal">request.match_info</tt> dictionary, whereas the
+pattern portion is a regex. However, while it's vaguely similar to the
+Flask (actually Werkzeug) routing pattern, there is no notion of a
+converter so conversion must done manually in the route.</p>
+<div class="section" id="cavaets">
+<h3>Cavaets</h3>
+<p>There are a few things I want to warn about here:</p>
+<ul class="simple">
+<li>Even though the <tt class="docutils literal">aiohttp.Application</tt> can use synchronous route
+handlers, you should take care to <em>never</em> do anything that would
+block the event loop powering the application. This includes
+synchronous IO and CPU intensive tasks.</li>
+<li>With the pattern portion of URL parameters, any unmatched <tt class="docutils literal">{</tt> or
+<tt class="docutils literal">}</tt> will cause the router to refuse building the route with an
+exception. However, using matched <tt class="docutils literal">{}</tt> pairs (e.g. <tt class="docutils literal">\d{2}</tt>) will
+work. <a class="reference external" href="https://github.com/aio-libs/aiohttp/issues/1778">See Issue 1778 on
+aiohttp</a> for some
+more details.</li>
+<li>aiohttp's default router does not enforce any sort of automatic
+trailing slash redirection, so <tt class="docutils literal">/todos</tt> and <tt class="docutils literal">/todos/</tt> are
+considered separate endpoints. Be careful with this if you are
+expecting it to handle trailing vs no trailing <tt class="docutils literal">/</tt> for you</li>
+<li>Finally, the note about regex matching in routes above only applies
+to the default aiohttp router. There are other implementations of it
+(in fact, the maintainers of the library encourage you to try them).</li>
+</ul>
+</div>
+</div>
+<div class="section" id="running-the-application">
+<h2>Running the application</h2>
+<p>Now that we have a basic application, we have something we can run with
+the aiohttp devserver. In the same directory as <tt class="docutils literal">aiotodo.py</tt> and with
+your virtualenv active (<tt class="docutils literal">source asynctodo/bin/activate</tt>) run:</p>
+<pre class="code bash literal-block">
+python -m aiohttp.web -P <span class="m">8080</span> aiotodo:app_factory
+</pre>
+<p>You should see:</p>
+<pre class="literal-block">
+======== Running on http://localhost:8080 ========
+(Press CTRL+C to quit)
+</pre>
+<p>When you do, you can open a browser and navigate to
+<tt class="docutils literal">localhost:8080/todos/</tt> (note the trailing <tt class="docutils literal">/</tt>) and see the two
+initial items we put in the list along with their ids. You can also
+navigate to <tt class="docutils literal">localhost:8080/todos/0</tt> and <tt class="docutils literal">localhost:8080/todos/1</tt>
+(note no trailing <tt class="docutils literal">/</tt>) to view individual todos.</p>
+</div>
+<div class="section" id="creating-updating-and-deleting-todos">
+<h2>Creating, Updating and Deleting Todos</h2>
+<p>To actually be able to interact with the Todo List, we need to add a few
+more handlers:</p>
+<pre class="code ipython3 literal-block">
+<span class="k">async</span> <span class="k">def</span> <span class="nf">create_todo</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">request</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="s1">'name'</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">json_response</span><span class="p">({</span><span class="s1">'error'</span><span class="p">:</span> <span class="s1">'&quot;name&quot; is a required field'</span><span class="p">})</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">json_response</span><span class="p">({</span><span class="s1">'error'</span><span class="p">:</span> <span class="s1">'&quot;name&quot; must be a string with at least one character'</span><span class="p">})</span>
+
+    <span class="n">data</span><span class="p">[</span><span class="s1">'finished'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'finished'</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+    <span class="n">TODOS</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">new_id</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">TODOS</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span>
+        <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s1">'Location'</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="p">[</span><span class="s1">'one_todo'</span><span class="p">]</span><span class="o">.</span><span class="n">url_for</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">new_id</span><span class="p">))},</span>
+        <span class="n">status</span><span class="o">=</span><span class="mi">303</span>
+    <span class="p">)</span>
+</pre>
+<p>Most of this is (hopefully) straight forward. We need to <tt class="docutils literal">await</tt> the
+json parsing as it is an IO operation. We also return a response with no
+body but a redirect status of 303 SEE OTHER <em>and</em> the Location header
+set to where the client should go to. The
+<tt class="docutils literal"><span class="pre">request.app.router[...].url_for()</span></tt> is how you construct URLs to other
+endpoints with the aiohttp server -- the lookup on the router
+corresponds to the <tt class="docutils literal"><span class="pre">name='...'</span></tt> argument to the route constructor
+(<tt class="docutils literal">add_get</tt> etc).</p>
+<p>There is an assumption here is that clients will automatically follow
+the redirect to where we created the todo at. If not (curl for example),
+they will need to read the <tt class="docutils literal">Location</tt> header and manually handle it.</p>
+<p>Updating and deleting are similar:</p>
+<pre class="code ipython3 literal-block">
+<span class="k">async</span> <span class="k">def</span> <span class="nf">update_todo</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">match_info</span><span class="p">[</span><span class="s1">'id'</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="nb">id</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">TODOS</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">json_response</span><span class="p">({</span><span class="s1">'error'</span><span class="p">:</span> <span class="s1">'Todo not found'</span><span class="p">},</span> <span class="n">status</span><span class="o">=</span><span class="mi">404</span><span class="p">)</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="s1">'finished'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">json_response</span><span class="p">({</span><span class="s1">'error'</span><span class="p">:</span> <span class="s1">'&quot;finished&quot; is a required key'</span><span class="p">},</span> <span class="n">status</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span>
+
+    <span class="n">TODO</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="s1">'finished'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'finished'</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="mi">204</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">remove_todo</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">match_info</span><span class="p">[</span><span class="s1">'id'</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="nb">id</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">TODOS</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">json_response</span><span class="p">({</span><span class="s1">'error'</span><span class="p">:</span> <span class="s1">'Todo not found'</span><span class="p">})</span>
+
+    <span class="k">del</span> <span class="n">TODOS</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="mi">204</span><span class="p">)</span>
+</pre>
+<p>Hopefully there's nothing surprising here. Just deleting the item out of
+the list is a little questionable -- we could replace it with <tt class="docutils literal">None</tt>
+and in both of the get handlers deal with that.</p>
+<p>The biggest difference between the create and these endpoints is that
+the create returns a redirect to where the todo ended up and these
+return a No Content status. The reasoning being that a client won't know
+where the new todo is so we should tell them (they could consult the
+main list, but why force them), whereas since the client just acted upon
+the individual todo, they know where it is -- or &quot;was&quot; for the delete,
+in this implementation it's simply been replaced by the next or is now
+out of bounds.</p>
+<p>Now, to hook up these handlers to the application:</p>
+<pre class="code ipython3 literal-block">
+<span class="k">def</span> <span class="nf">app_factory</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="p">()):</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">web</span><span class="o">.</span><span class="n">Application</span><span class="p">()</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_get</span><span class="p">(</span><span class="s1">'/todos/'</span><span class="p">,</span> <span class="n">get_all_todos</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'all_todos'</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_post</span><span class="p">(</span><span class="s1">'/todos/'</span><span class="p">,</span> <span class="n">create_todo</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'create_todo'</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_get</span><span class="p">(</span><span class="s1">'/todos/{id:\d+}'</span><span class="p">,</span> <span class="n">get_one_todo</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'one_todo'</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="s1">'/todos/{id:\d+}'</span><span class="p">,</span> <span class="n">update_todo</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'update_todo'</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_delete</span><span class="p">(</span><span class="s1">'/todos/{id:\d+}'</span><span class="p">,</span> <span class="n">remove_todo</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'remove_todo'</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">app</span>
+</pre>
+<p>Now run the server again (stopping the old one if you didn't already)
+and use your favorite tool to make POST, PATCH and DELETE requests
+against these new endpoints. You now have a fully functional todo list
+application -- well, for some clients, I'll leave the Web 2.0 javascript
+client as an exercise for you to implement or a potential future post.</p>
+</div>
+<div class="section" id="making-it-persistent">
+<h2>Making it persistent</h2>
+<p>I really don't like blogs that take you halfway to a solution and then
+leave you with obvious questions like, &quot;What if I wanted to make this
+persistent?&quot; So let's go there.</p>
+<p>The next thing we'll need to do is install some postgres related
+packages. The first is
+<a class="reference external" href="http://initd.org/psycopg/docs/install.html">psycopg2</a>, I've linked
+the install documentation in case a simple <tt class="docutils literal">pip install psycopg2</tt> does
+not work. In addition, we'll want to install aiopg and sqlalchemy.</p>
+<p>Make sure the virtualenv is activated:</p>
+<pre class="code bash literal-block">
+python -m pip install psycopg2 aiopg sqlalchemy
+</pre>
+<p>The next thing you might wonder is why aiopg over
+<a class="reference external" href="https://github.com/MagicStack/asyncpg">asyncpg</a> if asyncpg is
+roughly 3x times faster? Application speed isn't everything, I value my
+time for writing and maintaining code over the run time of an
+application. On top of that, writing raw SQL can be tedious. If I could
+determine that aiopg was in fact a bottleneck and asyncpg would fix it,
+that when I would determine that change.</p>
+<p>And honestly, if I was truly valuing speed of the application, I would
+not be writing it in Python in the first place.</p>
+<div class="section" id="running-a-database">
+<h3>Running a database</h3>
+<p>I've chosen Postgres here because it's a personal favorite. There is
+also <a class="reference external" href="https://github.com/aio-libs/aiomysql">aiomysql</a>. And bindings
+for <a class="reference external" href="https://github.com/aio-libs/aioodbc">SQLite</a> as well. Either
+way, getting access to a database is up to the reader. I run Xubuntu so
+I ended up using the <a class="reference external" href="https://hub.docker.com/_/postgres/">Postgres docker
+image</a>:</p>
+<pre class="code bash literal-block">
+mkdir -p tmp/pgdata
+docker run -d --name postgres -p <span class="m">5432</span>:5432 <span class="se">\
+</span>    -v <span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/tmp/pgdata:/var/lib/postgres/data <span class="se">\
+</span>    -e <span class="nv">POSTGRES_USER</span><span class="o">=</span>aiotodo -e <span class="nv">POSTGRES_PASSWORD</span><span class="o">=</span><span class="m">12345</span> -e <span class="nv">POSTGRES_DB</span><span class="o">=</span>aiotodo <span class="se">\
+</span>    postgres
+</pre>
+<p>If you're confused by that, it's okay. However explaining docker,
+volumes and other things about this are out of scope for this article.
+The short of it is Linux magic fairy dust and then a postgres database
+appears.</p>
+</div>
+</div>
+<div class="section" id="connecting-the-application-to-the-database">
+<h2>Connecting the application to the database</h2>
+<p>With the packages installed and the database running, we can start
+connecting to it from the application. The first thing will be writing
+the code that will make the table we want to use. We'll also create the
+SQLAlchemy view of the table as well.</p>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">aiopg.sa</span> <span class="k">import</span> <span class="n">create_engine</span>
+<span class="kn">import</span> <span class="nn">sqlalchemy</span> <span class="k">as</span> <span class="nn">sa</span>
+
+<span class="n">metadata</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">MetaData</span><span class="p">()</span>
+<span class="n">todo_tbl</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span>
+    <span class="s1">'todos'</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span>
+    <span class="n">sa</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">'id'</span><span class="p">,</span> <span class="n">sa</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+    <span class="n">sa</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">'name'</span><span class="p">,</span> <span class="n">sa</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="mi">255</span><span class="p">),</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+    <span class="n">sa</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">'finished'</span><span class="p">,</span> <span class="n">sa</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(),</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="p">)</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">create_table</span><span class="p">(</span><span class="n">engine</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">engine</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">'DROP TABLE IF EXISTS todos'</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">'''CREATE TABLE todos (
+            id SERIAL PRIMARY KEY,
+            name VARCHAR(255) NOT NULL UNIQUE,
+            finished BOOLEAN NOT NOT NULL DEFAULT FALSE
+        )'''</span><span class="p">)</span>
+</pre>
+<p>When's the last time you wrote DDL by hand? There are ways to hook
+alembic up to this application and have that manage creating tables for
+us, but that's something I'll cover another time.</p>
+<p>If you've only ever been exposed to SQLAlchemy's ORM layer, you've maybe
+written something like this before for many-to-many relationships, but
+there's an entire layer of SQLAlchemy that stradles the area between raw
+SQL and ORM called the <a class="reference external" href="http://docs.sqlalchemy.org/en/latest/core/tutorial.html">Core
+layer</a>. And
+that's what we'll be using for this section. Now for things that make
+the application interact with the database:</p>
+<pre class="code ipython3 literal-block">
+<span class="k">async</span> <span class="k">def</span> <span class="nf">attach_db</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
+    <span class="n">app</span><span class="p">[</span><span class="s1">'db'</span><span class="p">]</span> <span class="o">=</span> <span class="k">await</span> <span class="n">create_engine</span><span class="p">(</span>
+        <span class="s1">' '</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
+            <span class="c1"># this comes from the docker run command above</span>
+            <span class="c1"># yours may vary depending on the database you're using</span>
+            <span class="c1"># and how you configured the user, password, and database name</span>
+            <span class="s1">'host=localhost'</span><span class="p">,</span>
+            <span class="s1">'port=5432'</span><span class="p">,</span>
+            <span class="s1">'dbname=aiotodo'</span><span class="p">,</span>
+            <span class="s1">'username=aiotodo'</span><span class="p">,</span>
+            <span class="s1">'password=12345'</span>
+        <span class="p">])</span>
+    <span class="p">)</span>
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">teardown_db</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
+    <span class="n">app</span><span class="p">[</span><span class="s1">'db'</span><span class="p">]</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">await</span> <span class="n">app</span><span class="p">[</span><span class="s1">'db'</span><span class="p">]</span><span class="o">.</span><span class="n">wait_closed</span><span class="p">()</span>
+    <span class="n">app</span><span class="p">[</span><span class="s1">'db'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">populate_initial_values</span><span class="p">(</span><span class="n">engine</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">engine</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">todos_tbl</span><span class="o">.</span><span class="n">insert</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">({</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'Start this tutorial'</span><span class="p">,</span> <span class="s1">'finished'</span><span class="p">:</span> <span class="kc">True</span><span class="p">}))</span>
+        <span class="k">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">todos_tbl</span><span class="o">.</span><span class="n">insert</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">({</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'Finish this tutorial'</span><span class="p">,</span> <span class="s1">'finished'</span><span class="p">:</span> <span class="kc">False</span><span class="p">}))</span>
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">setup_todo_table</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
+    <span class="k">await</span> <span class="n">create_table</span><span class="p">(</span><span class="n">app</span><span class="p">[</span><span class="s1">'db'</span><span class="p">])</span>
+    <span class="k">await</span> <span class="n">populate_initial_values</span><span class="p">(</span><span class="n">app</span><span class="p">[</span><span class="s1">'db'</span><span class="p">])</span>
+</pre>
+<p>All of these functions are going to be signal handlers in the
+application there are four default signals that we can integrate with.
+All of them recieve the application as its sole argument.</p>
+<ul class="simple">
+<li><tt class="docutils literal">on_loop_available</tt>: fired when the loop becomes available in a
+synchronous manner, so any async work needs to use the application
+loop explicitly. This is the only (current) handler that is
+synchronous.</li>
+<li><tt class="docutils literal">on_startup</tt>: fired right before the application begins, this is
+very useful for setting up background tasks (such as long polling
+tasks)</li>
+<li><tt class="docutils literal">on_teardown</tt>: fired after the application has recieved a shutdown
+signal from the caller and requests have finished. Here we should
+teardown anything we have setup and close long running connections to
+remote services.</li>
+<li><tt class="docutils literal">on_cleanup</tt>: fired after teardown has finished and allows final
+cleanup steps to run, for example tearing down objects that we
+couldn't in the teardown setup because of dependencies between
+components</li>
+</ul>
+<p>I find that <tt class="docutils literal">on_startup</tt> and <tt class="docutils literal">on_teardown</tt> are the ones I use most,
+however I have needed to use <tt class="docutils literal">on_loop_available</tt> once or twice (for
+example, an application that integrates
+<a class="reference external" href="http://docs.python-zeep.org/en/master/">zeep</a> into aiohttp as its
+start up uses the loop to do work rather than <tt class="docutils literal">await</tt>).</p>
+<p>To hook these handlers up to the application, we simply append them to
+the signal we want to use. Additionally, we'll add an optional argument
+to the application factory that determines if the table creation and
+initial population of it should run.</p>
+<pre class="code ipython3 literal-block">
+<span class="k">def</span> <span class="nf">app_factory</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="p">()):</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">web</span><span class="o">.</span><span class="n">Application</span><span class="p">()</span>
+
+    <span class="n">app</span><span class="o">.</span><span class="n">on_startup</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attach_db</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">on_teardown</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">teardown_db</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s1">'--make-table'</span> <span class="ow">in</span> <span class="n">a</span><span class="p">:</span>
+        <span class="n">app</span><span class="o">.</span><span class="n">on_startup</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">setup_todo_table</span><span class="p">)</span>
+
+    <span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_get</span><span class="p">(</span><span class="s1">'/todos/'</span><span class="p">,</span> <span class="n">get_all_todos</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'all_todos'</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_post</span><span class="p">(</span><span class="s1">'/todos/'</span><span class="p">,</span> <span class="n">create_todo</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'create_todo'</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_get</span><span class="p">(</span><span class="s1">'/todos/{id:\d+}'</span><span class="p">,</span> <span class="n">get_one_todo</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'one_todo'</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="s1">'/todos/{id:\d+}'</span><span class="p">,</span> <span class="n">update_todo</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'update_todo'</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_delete</span><span class="p">(</span><span class="s1">'/todos/{id:\d+}'</span><span class="p">,</span> <span class="n">remove_todo</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'remove_todo'</span><span class="p">)</span>
+</pre>
+<p>Now let's re-run the application with the new command to create the
+table:</p>
+<pre class="code bash literal-block">
+python -m aiohttp.web -P <span class="m">8080</span> --make-table aiotodo:app_factory
+</pre>
+<p>Assuming we've done everything correctly the application will start up
+just fine. All of the data is coming from in memory list for now, but
+we've successfully hooked the application up to the database. When you
+cancel out of the server you should see no warnings or exceptions as
+well.</p>
+<p>I'll note that <tt class="docutils literal"><span class="pre">--make-table</span></tt> will always drop the existing todo table
+when used. If you're making changes to the code and want to preserve the
+data be sure to remove that flag.</p>
+</div>
+<div class="section" id="manipulating-the-database-from-handlers">
+<h2>Manipulating the database from handlers</h2>
+<p>Retrieving, updating, inserting and deleting the Todos from the database
+is fairly straightforward. Since the request we receive in the handler
+has access to the application which has a connection pool on it, it's
+mostly of adding some <tt class="docutils literal">async with</tt> blocks in place of list
+manipulations. Not all of this is super performant or what you'd want to
+do for a production application but for a first pass it's not that bad.</p>
+<p>First we'll do the easy ones, fetching data from the database:</p>
+<pre class="code ipython3 literal-block">
+<span class="k">async</span> <span class="k">def</span> <span class="nf">get_all_todos</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">request</span><span class="o">.</span><span class="n">app</span><span class="p">[</span><span class="s1">'db'</span><span class="p">]</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+        <span class="n">todos</span> <span class="o">=</span> <span class="p">[</span><span class="nb">dict</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">items</span><span class="p">())</span> <span class="k">async</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">todo_tbl</span><span class="o">.</span><span class="n">select</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">todo_tbl</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id</span><span class="p">))]</span>
+        <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">json_response</span><span class="p">(</span><span class="n">todos</span><span class="p">)</span>
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">get_one_todo</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">match_info</span><span class="p">[</span><span class="s1">'id'</span><span class="p">])</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">request</span><span class="o">.</span><span class="n">app</span><span class="p">[</span><span class="s1">'db'</span><span class="p">]</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">todo_tbl</span><span class="o">.</span><span class="n">select</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">todo_tbl</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="nb">id</span><span class="p">))</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="k">await</span> <span class="n">result</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">row</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">json_response</span><span class="p">({</span><span class="s1">'error'</span><span class="p">:</span> <span class="s1">'Todo not found'</span><span class="p">},</span> <span class="n">status</span><span class="o">=</span><span class="mi">404</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">json_response</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+</pre>
+<p>These should be drop in replacements for the original versions. The
+biggest change that might be not be apparent is in <tt class="docutils literal">get_one_todo</tt>.
+First we fetch a pointer to a result set then we await the first result
+from that set. Finally, we need to check if we actually got a result or
+nothing. We could iterate over the result, as in <tt class="docutils literal">get_all_todos</tt> but
+using <tt class="docutils literal">fetchone</tt> makes it apparent we're expecting exactly one result.</p>
+<p>If you run the application now, you should get the same output for the
+two get calls.</p>
+<p>We've seen <tt class="docutils literal">async with</tt> a few times and now <tt class="docutils literal">async for</tt> has been
+introduced so I should take some time to explain those.</p>
+<div class="section" id="async-with">
+<h3><tt class="docutils literal">async with</tt></h3>
+<p>If you're familiar with context managers, e.g. the <tt class="docutils literal">with</tt> statement,
+<tt class="docutils literal">async with</tt> is an <a class="reference external" href="https://www.python.org/dev/peps/pep-0492/#asynchronous-context-managers-and-async-with">asynchronous context
+manager</a>.
+The biggest difference is that instead of <tt class="docutils literal">def __enter__</tt> and
+<tt class="docutils literal">def __exit__</tt> we use <tt class="docutils literal">async def __aenter__</tt> and
+<tt class="docutils literal">async def __aexit__</tt>. This means that we can await things in the
+setup and teardown phases of the block. Here it's being used to get a
+database connection and later terminate it.</p>
+<p>You may have also seen constructs such as <tt class="docutils literal">with await something</tt> (or
+<tt class="docutils literal">with (yield from something)</tt> in 3.4). This is completely different as
+this is a coroutine that returns a context manager.</p>
+</div>
+<div class="section" id="async-for">
+<h3><tt class="docutils literal">async for</tt></h3>
+<p>Similar to <tt class="docutils literal">async with</tt>, <tt class="docutils literal">async for</tt> is <a class="reference external" href="https://www.python.org/dev/peps/pep-0492/#asynchronous-iterators-and-async-for">the asynchronous version of
+iteration</a>.
+This allows us to iterate over something that needs to do async IO to
+produce values. There have been some churn in the async iteration
+protocol, but as of today (2017-04-16) the interface is
+<tt class="docutils literal">def __aiter__</tt> returning an object that has <tt class="docutils literal">async def __anext__</tt>
+and <tt class="docutils literal">def __aiter__</tt>. Previously, it was <tt class="docutils literal">async def __aiter__</tt>
+returning the same sort of object. Confusingly, this change was made in
+3.5.2, so you may see warnings about an <tt class="docutils literal">async for</tt> construct
+returning an awaitable rather than an async iterator.</p>
+<p>In this code, we're making use of <a class="reference external" href="https://www.python.org/dev/peps/pep-0530/">async
+comprehensions</a> which
+allows an asynchronous iterator to power comprehensions directly rather
+than needing to do:</p>
+<pre class="code python literal-block">
+<span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">async</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">things</span><span class="p">:</span>
+    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre>
+<p>The restriction being that you can only use them inside of a coroutine.
+This change also supports awaiting coroutines in a comprehension as well
+and async generator expressions (if you want super lazy evaluation of
+values).</p>
+<p>I digress though. Let's get back to updating the other end points.</p>
+</div>
+</div>
+<div class="section" id="updating-and-deleting">
+<h2>Updating and Deleting</h2>
+<p>These are also straightforward with just replacing the original list
+manipulation with database connections:</p>
+<pre class="code ipython3 literal-block">
+<span class="k">async</span> <span class="k">def</span> <span class="nf">remove_todo</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">match_info</span><span class="p">[</span><span class="s1">'id'</span><span class="p">])</span>
+
+    <span class="k">async</span> <span class="k">with</span> <span class="n">request</span><span class="o">.</span><span class="n">app</span><span class="p">[</span><span class="s1">'db'</span><span class="p">]</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">todo_tbl</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">todo_tbl</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="nb">id</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">rowcount</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">json_response</span><span class="p">({</span><span class="s1">'error'</span><span class="p">:</span> <span class="s1">'Todo not found'</span><span class="p">},</span> <span class="n">status</span><span class="o">=</span><span class="mi">404</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="mi">204</span><span class="p">)</span>
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">update_todo</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">match_info</span><span class="p">[</span><span class="s1">'id'</span><span class="p">])</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">request</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="s1">'finished'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">json_response</span><span class="p">({</span><span class="s1">'error'</span><span class="p">:</span> <span class="s1">'&quot;finished&quot; is a required key'</span><span class="p">},</span> <span class="n">status</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">with</span> <span class="n">request</span><span class="o">.</span><span class="n">app</span><span class="p">[</span><span class="s1">'db'</span><span class="p">]</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="n">todo_tbl</span><span class="o">.</span><span class="n">update</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">todo_tbl</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="nb">id</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">({</span>
+                <span class="s1">'finished'</span><span class="p">:</span> <span class="nb">bool</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'finished'</span><span class="p">])</span>
+            <span class="p">})</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">rowcount</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">json_response</span><span class="p">({</span><span class="s1">'error'</span><span class="p">:</span> <span class="s1">'Todo not found'</span><span class="p">},</span> <span class="n">status</span><span class="o">=</span><span class="mi">404</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="mi">204</span><span class="p">)</span>
+</pre>
+<p>These are mostly the same except instead of checking the ID before doing
+other checks, we reverse it:</p>
+<ul class="simple">
+<li>Check that we have everything we need</li>
+<li>Manipulate the database</li>
+<li>Check the rowcount attribute to see if we actually did anything</li>
+</ul>
+<p>An important note about <tt class="docutils literal">rowcount</tt> is that it returns how many rows
+<em>matched</em> the query, not how many were changed by it. For a delete, this
+will always be the same, but for updates there's no guarantee for that.</p>
+<p>I suggest running the application again and playing with these two new
+endpoints (remember <tt class="docutils literal"><span class="pre">--make-table</span></tt> flag deletes the existing data).</p>
+</div>
+<div class="section" id="inserts">
+<h2>Inserts</h2>
+<p>This one is a little more complicated that the others as <tt class="docutils literal">aiopg.sa</tt>
+doesn't implement everything that the SQLAlchemy core layer does.</p>
+<pre class="code ipython3 literal-block">
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="k">import</span> <span class="n">sql</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">create_todo</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">request</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="s1">'name'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">json_response</span><span class="p">({</span><span class="s1">'error'</span><span class="p">:</span> <span class="s1">'&quot;name&quot; is a required field'</span><span class="p">})</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">json_response</span><span class="p">({</span><span class="s1">'error'</span><span class="p">:</span> <span class="s1">'&quot;name&quot; must be a string with at least one character'</span><span class="p">})</span>
+
+    <span class="n">todo</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s1">'finished'</span><span class="p">:</span> <span class="nb">bool</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'finished'</span><span class="p">,</span> <span class="kc">False</span><span class="p">))}</span>
+
+    <span class="k">async</span> <span class="k">with</span> <span class="n">request</span><span class="o">.</span><span class="n">app</span><span class="p">[</span><span class="s1">'db'</span><span class="p">]</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+        <span class="k">async</span> <span class="k">with</span> <span class="n">conn</span><span class="o">.</span><span class="n">begin</span><span class="p">():</span>
+            <span class="k">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">todo_tbl</span><span class="o">.</span><span class="n">insert</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="n">todo</span><span class="p">))</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+                <span class="n">sql</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="n">sql</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">todo_tbl</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s1">'id'</span><span class="p">)])</span>
+            <span class="p">)</span>
+            <span class="n">new_id</span> <span class="o">=</span> <span class="k">await</span> <span class="n">result</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span>
+        <span class="n">status</span><span class="o">=</span><span class="mi">303</span><span class="p">,</span>
+        <span class="n">headers</span><span class="o">=</span><span class="p">{</span>
+            <span class="s1">'Location'</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="p">[</span><span class="s1">'one_todo'</span><span class="p">]</span><span class="o">.</span><span class="n">url_for</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">new_id</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+</pre>
+<p>The reason this is more complicated than what would be in a typical
+SQLAlchemy Core insert and return the new id is that <tt class="docutils literal">aiopg.sa</tt>
+doesn't implement the <tt class="docutils literal">inserted_primary_key</tt> attribute that the
+SQLAlchemy Core does, instead we need to go back to the database
+ourselves and fetch the largest id from the table. We do all this inside
+of a transaction to prevent a race where two people submit a new todo at
+the same time and both end up being redirected to the same todo item.</p>
+<p>Since I'm unfamiliar with the finer points of the Core layer, I couldn't
+make the documentation example work:</p>
+<pre class="code python literal-block">
+<span class="n">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">tbl</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">sql</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">tbl</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s1">'id'</span><span class="p">)))</span>
+</pre>
+<p>This resulted in an exception about how the expression wasn't tied to a
+connection and after tinkering a bit, that changed to an exception about
+how aggregate functions cannot be used in a WHERE clause, even though
+I'm not 100% why SQLA was trying to do that.</p>
+<p>For those not in know, an aggregate function is any SQL function that
+rolls up many values into one. They can't be used in a WHERE clause, but
+they can be used in a HAVING clause (which is basically WHERE for
+aggregate values).</p>
+<p>Again, I disgress.</p>
+</div>
+<div class="section" id="the-takeaway">
+<h2>The takeaway</h2>
+<p>Hopefully this will encourage you to start writing some web services
+using the asyncio and surrounding ecosystem. I've been using the aiohttp
+webserver for the last few months in various applications. I will admit
+to missing some things that are just there in the Flask and Django
+ecosystems, but there's nothing that can't be adapted or rebuilt to fit
+into the aiohttp world.</p>
+<p>There's quite a few things I haven't covered here that could be used to
+improve and/or extend the functionality of this code:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://aiohttp.readthedocs.io/en/stable/web.html#class-based-views">Class base
+views</a>
+for organizing the routes that have multiple HTTP methods attached to
+them</li>
+<li><a class="reference external" href="http://aiohttp.readthedocs.io/en/stable/web.html#websockets">Websockets</a>
+could be useful for synchronizing state across multiple clients. For
+example, you add an item and I recieve an update about it.</li>
+<li>Using
+<a class="reference external" href="https://github.com/aio-libs/aiohttp-devtools">aiohttp-devtools</a>
+to get autoreloading of the application's code</li>
+<li>Or testing --
+<a class="reference external" href="https://pypi.python.org/pypi/pytest-asyncio">pytest-asyncio</a> is
+indispensable for this, and aiohttp ships with testing utilities for
+its server (though oddly not for the client side stuff)</li>
+</ul>
+</div>
+
+            <aside>
+            <nav>
+            <ul class="articles_timeline">
+ 
+                <li class="previous_article">« <a href="http://justanr.github.io/mistakes-when-dockerizing-python-apps" title="Previous: Mistakes when dockerizing Python apps">Mistakes when dockerizing Python apps</a></li>
+            </ul>
+            </nav>
+            </aside>
+<section>
+<hr/>
+<p id="comment-message">I spilled my brains, spill some of yours. </p>
+<div class="accordion" id="accordion2">
+    <div class="accordion-group">
+        <div class="accordion-heading">
+            <a class="accordion-toggle disqus-comment-count" data-toggle="collapse" data-parent="#accordion2" 
+                href="http://justanr.github.io/getting-start-with-aiohttpweb-a-todo-tutorial/#disqus_thread">
+                Comments
+            </a>
+        </div>
+        <div id="disqus_thread" class="accordion-body collapse">
+            <div class="accordion-inner">
+                <div class="comments">
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ballinoctobear';
+        var disqus_identifier = 'http://justanr.github.io/getting-start-with-aiohttpweb-a-todo-tutorial';
+    var disqus_url = 'http://justanr.github.io/getting-start-with-aiohttpweb-a-todo-tutorial';
+
+    (function() {
+         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+         dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+     })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+        </div>
+        <section>
+        <div class="span2" style="float:right;font-size:0.9em;">
+ 
+            <h4>Published</h4>
+            <time pubdate="pubdate" datetime="2017-04-16T00:00:00-04:00">Apr 16, 2017</time>
+            <h4>Category</h4>
+            <a class="category-link" href="/categories.html#tutorial-ref">tutorial</a> 
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article"> 
+                <li><a href="/tags.html#aiohttp-ref">aiohttp
+                    <span>1</span>
+</a></li>
+                <li><a href="/tags.html#asyncio-ref">asyncio
+                    <span>1</span>
+</a></li>
+                <li><a href="/tags.html#python-ref">python
+                    <span>18</span>
+</a></li>
+            </ul>
+
+        </div>
+        </section>
+    </div>
+    </article>
+                </div>
+                <div class="span1"></div>
+            </div>
+        </div>
+    </div>
+<footer>
+<div id="footer">
+    <ul class="footer-content">
+        <li class="elegant-license">Shared under the Creative Commons for content and MIT for code</li>
+        <li class="elegant-power">Powered by <a href="http://getpelican.com/" title="Pelican Home Page">Pelican</a>. Theme: <a href="http://oncrashreboot.com/pelican-elegant" title="Theme Elegant Home Page">Elegant</a> by <a href="http://oncrashreboot.com" title="Talha Mansoor Home Page">Talha Mansoor</a></li>
+    </ul>
+</div>
+</footer>            <script src="http://code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+<script type="text/javascript">
+    var disqus_shortname = 'ballinoctobear';
+
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+    </script>
+    </body>
+</html>
