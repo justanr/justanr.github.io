@@ -106,11 +106,18 @@ to remember to manually dump the object graph yourself.&lt;/p&gt;
 &lt;p&gt;&lt;tt class="docutils literal"&gt;get_all_todos&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;get_one_todo&lt;/tt&gt; are our route handlers. You'll
 notice they aren't async -- this is alright as the server is capable of
 dealing with both sync and async handlers. Handlers should accept the
-route in a Django style. However unlike Django and Flask (but apparently
-similar to Pyramid), url parameters are accessed through the
+request in a Django style. However unlike Django and Flask (but
+apparently similar to Pyramid), url parameters are accessed through the
 &lt;tt class="docutils literal"&gt;request.match_info&lt;/tt&gt; mapping. The request object contains everything
 relevant about a particular request including a reference to the
 application that produced it.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Update&lt;/strong&gt; &lt;a class="reference external" href="https://www.reddit.com/user/nerdwaller"&gt;/u/nerdwaller&lt;/a&gt;
+pointed out that route handler should always be async to encourage you
+to think in coroutines. I've left the original code here to be coherent
+with the text, however, to transform them into coroutines all that would
+change is using &lt;tt class="docutils literal"&gt;async def&lt;/tt&gt; rather than just &lt;tt class="docutils literal"&gt;def&lt;/tt&gt;. I have to agree
+that this promotes a nice symmetry to the other route handlers even in
+the simple case of dumping a list to json.&lt;/p&gt;
 &lt;p&gt;The &lt;tt class="docutils literal"&gt;{'id': id, **todo}&lt;/tt&gt; syntax, if you're unfamiliar, was added in
 3.5 and allows a mapping to be unpacked into a dictionary literal. The
 same change was made for sequences and list, set and tuple literals as
